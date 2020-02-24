@@ -1,0 +1,58 @@
+.login {
+  position: relative;
+  @include bg("img/mountain.jpg");
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  position: relative;
+
+  .form-wrapper {
+    transform: translate(-50%, -50%);
+    position: absolute;
+    left: 50%;
+    top: 45%;
+
+    .form {
+      h2 {
+        color: white;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .login-form {
+        width: 400px;
+        border-radius: 4px;
+        background-color: white;
+        border: 1px solid white;
+        padding: 44px 24px 44px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+
+        .login-code-img {
+          width: 60px;
+          height: 20px;
+          display: inline-block;
+          // box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+          border: 1px solid gray;
+          line-height: 1;
+          margin-right: 8px;
+
+          img {
+            object-fit: contain;
+          }
+        }
+
+        .login-refresh {
+          color: #1890ff;
+          cursor: pointer;
+        }
+
+        .login-code-refresh {
+          text-align: right;
+        }
+
+        .login-confirm-btn {
+          text-align: center;
+        }
+      }
+    }
+  }
+}

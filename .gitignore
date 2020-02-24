@@ -1,0 +1,19 @@
+.DS_Store
+node_modules/
+npm-debug.log
+yarn-error.log
+.cache-loader
+.python-version
+dist/qa
+dist/dev
+.eslintcache
+
+# *
+*.DS_Store
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

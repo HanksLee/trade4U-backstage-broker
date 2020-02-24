@@ -1,0 +1,9 @@
+.html,
+.body {
+  font-size: 14px;
+}
+
+#app {
+  // overflow-y: scroll;
+  @include no-scrollbar();
+}
