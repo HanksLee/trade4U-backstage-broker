@@ -16,7 +16,7 @@ const routes: any[] = [
   // },
   {
     component: loadable(() => import(/* webpackChunkName: "Deposit" */ './pages/Finance/Deposit/DepositList')),
-  },
+  }
 ];
 
 export default function AppRouter(props) {

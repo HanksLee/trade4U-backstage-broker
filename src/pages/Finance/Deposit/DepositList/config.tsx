@@ -126,7 +126,7 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => (
-        <Button style={{display: 'none'}} type='primary' onClick={() => {
+        <Button style={{ display: 'none', }} type='primary' onClick={() => {
           self.props.finance.setCurrentDeposit({});
           self.toggleDepositModal();
         }}><Icon type="plus" />添加</Button>

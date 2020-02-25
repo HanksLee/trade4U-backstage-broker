@@ -62,7 +62,7 @@ export const PAGE_ROUTES = [
       {
         title: '出入金汇率表',
         path: '/dashboard/finance/rate',
-      },
-    ]
+      }
+    ],
   }
 ];

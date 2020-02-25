@@ -158,10 +158,10 @@ export default class DepositEditor extends BaseReact<IDepositEditorProps, IDepos
               disabled={currentShowDeposit.pay_status == 1}
               placeholder='请输入变更原因'
               rows={6} onChange={evt => {
-              setCurrentDeposit({
-                reason: evt.target.value,
-              }, false);
-            }} />)}
+                setCurrentDeposit({
+                  reason: evt.target.value,
+                }, false);
+              }} />)}
           </FormItem>
         </Form>
       </div>
