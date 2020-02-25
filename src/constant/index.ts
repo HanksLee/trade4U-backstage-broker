@@ -41,3 +41,28 @@ export const PAGE_PERMISSION_MAP = {
   '/dashboard/order/position': 'VIEW_ORDER_POSITION_PAGE',
   '/dashboard/manager': 'VIEW_MANAGER_PAGE',
 };
+
+export const PAGE_ROUTES = [
+  {
+    title: '财务管理',
+    path: '/dashboard/finance',
+    children: [
+      {
+        title: '入金管理',
+        path: '/dashboard/finance/deposit',
+      },
+      {
+        title: '出金管理',
+        path: '/dashboard/finance/withdraw',
+      },
+      {
+        title: '支付方式',
+        path: '/dashboard/finance/payment',
+      },
+      {
+        title: '出入金汇率表',
+        path: '/dashboard/finance/rate',
+      },
+    ]
+  }
+];

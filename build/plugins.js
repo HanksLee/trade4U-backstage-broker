@@ -39,7 +39,7 @@ const basePlugins = [
 const devPlugins = [
   new FriendlyErrorsPlugin(),
   new HtmlWebpackPlugin({
-    title: 'Moon Admin Main',
+    title: 'Moon Admin Broker',
     template: resolve('build/index.html'),
     filename: resolve(`dist/${config.mode}/index.html`),    inject: true,
     alwaysWriteToDisk: true,
