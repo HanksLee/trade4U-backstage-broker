@@ -1,6 +1,5 @@
-import { computed, action, observable } from "mobx";
+import { action, observable } from "mobx";
 import BaseStore from "store/base";
-import { PAGE_ROUTES } from "constant";
 
 class CommonStore extends BaseStore {
   @observable
@@ -17,12 +16,19 @@ class CommonStore extends BaseStore {
   userInfo: any = {};
 
   @observable
-  sidebar: any[] = PAGE_ROUTES;
-
-  @computed
-  get computedSidebar() {
-    return this.sidebar;
+  sidebar: any[] | null = null;
+  @action
+  setSidebar = (sidebar: any) => {
+    this.sidebar = sidebar;
   }
+
+  @observable
+  permissions: any[] | null = null;
+  @action
+  setPermissions = (permissions: string[]) => {
+    this.permissions = permissions;
+  }
+
 
   @action
   getUserInfo = async params => {

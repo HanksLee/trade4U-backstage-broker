@@ -2,7 +2,7 @@ import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
 import { withRouter } from 'react-router-dom';
 import AppRouter from '../../router';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Spin } from 'antd';
 import UserDropdown from 'components/UserDropdown';
 import { PAGE_ROUTES } from 'constant';
 import union from 'lodash/union';
@@ -97,7 +97,11 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
     };
   }
 
-  componentDidMount() {}
+  async componentDidMount() {
+    const res = await this.$api.role.getMenus();
+    this.props.common.setSidebar(res.data.menu);
+    this.props.common.setPermissions(res.data.permission);
+  }
 
   toggle = () => {
     this.setState({
@@ -120,7 +124,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
   renderMenu = (): JSX.Element => {
     const { selectedKeys, openKeys, } = this.state;
-    const { computedSidebar, } = this.props.common;
+    const { sidebar, } = this.props.common;
 
     return (
       <Menu
@@ -131,7 +135,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
         onClick={this.onMenuItemClick}
         selectedKeys={selectedKeys}
       >
-        {computedSidebar.map(route => this.renderMenuItem(route))}
+        {sidebar.map(route => this.renderMenuItem(route))}
       </Menu>
     );
   };
@@ -139,7 +143,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   renderMenuItem = (route: any): JSX.Element => {
     if (route.children && route.children.length > 0) {
       return (
-        <SubMenu key={route.path} title={route.title}>
+        <SubMenu key={route.path} title={route.name}>
           {route.children.map(subRoute => this.renderMenuItem(subRoute))}
         </SubMenu>
       );
@@ -147,9 +151,8 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
     return (
       <MenuItem key={route.path}>
-        {/* <Icon type="user" /> */}
         <span>
-          <a>{route.title}</a>
+          <a>{route.name}</a>
         </span>
       </MenuItem>
     );
@@ -157,7 +160,16 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
   render() {
     const { collapsed, showContainer, } = this.state;
-    const { location, } = this.props;
+    const { location, common, } = this.props;
+
+    // 还未加载到菜单数据
+    if (!common.sidebar) {
+      return (
+        <Layout className="layout">
+          <Spin className="absolute-center" />
+        </Layout>
+      );
+    }
 
     return (
       <Layout className="layout">

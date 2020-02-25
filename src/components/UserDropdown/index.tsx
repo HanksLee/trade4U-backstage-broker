@@ -1,10 +1,8 @@
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { Menu, Dropdown, Icon } from "antd";
-import Cookies from "js-cookie";
 import "./index.scss";
 import { inject, observer } from "mobx-react";
-import utils from 'utils';
 
 export interface IUserDropdownProps {
   onBtnClick?(): void;
