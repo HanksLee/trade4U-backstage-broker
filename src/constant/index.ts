@@ -34,8 +34,9 @@ export const WeeklyOrder = [
   'Saturday'
 ];
 
-// 主要用于控制菜单的显示隐藏
+// 主要用于控制菜单的显示隐藏，key 为路由地址，value 为主后台配置的菜单权限
 export const PAGE_PERMISSION_MAP = {
   '/dashboard/role': 'VIEW_ROLE_PAGE',
-  '/dashboard/order/postion': 'VIEW_ORDER_POSITION_PAGE',
+  '/dashboard/order': 'VIEW_ORDER_PAGE',
+  '/dashboard/order/position': 'VIEW_ORDER_POSITION_PAGE',
 };
