@@ -93,15 +93,15 @@ export default class PermissionEditor extends BaseReact<any, IPermissionEditorSt
   }
 
   getMenuList = async () => {
-    const res = await this.$api.broker.getRoleMenuList();
+    const res = await this.$api.role.getRoleMenuList();
     this.setState({
       menuList: res.data,
-      formatedMenuList: this.formateMenuList(res.data),
+      formatedMenuList: this.formateMenuList(res.data.results),
     });
   }
 
   getPermission = async () => {
-    const res = await this.$api.broker.getRoleDetail(this.roleId);
+    const res = await this.$api.role.getRoleDetail(this.roleId);
     this.setState({
       selectedPermissions: res.data.permissions,
     });
@@ -119,8 +119,8 @@ export default class PermissionEditor extends BaseReact<any, IPermissionEditorSt
 
   savePermission = async () => {
     const { selectedPermissions, } = this.state;
-    this.$api.broker.updateBrokerPermission({
-      broker_id: this.brokerId,
+    this.$api.role.updateRolePermission({
+      role_id: this.roleId,
       permission_ids: selectedPermissions,
     })
       .then(() => {

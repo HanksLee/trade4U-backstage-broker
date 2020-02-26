@@ -4,12 +4,10 @@ import { withRouter } from 'react-router-dom';
 import AppRouter from '../../router';
 import { Layout, Menu, Icon, Spin } from 'antd';
 import UserDropdown from 'components/UserDropdown';
-import { PAGE_ROUTES } from 'constant';
 import union from 'lodash/union';
 import './index.scss';
 import { inject, observer } from 'mobx-react';
 
-const logo = 'https://cdn.pixabay.com/photo/2017/01/11/08/31/icon-1971130__480.png';
 const { Header, Sider, Content, } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -69,15 +67,17 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   static getDerivedStateFromProps(nextProps, prevState) {
     const {
       location: { pathname, },
-      // common: {},
+      common: { sidebar, },
     } = nextProps;
+
+    if (!sidebar) return null;
 
     const pathLevel = union(
       prevState.openKeys,
       computedPathLevel(pathname)
     ).sort((a, b) => b.length - a.length);
 
-    const pathlist = exactFromSidebarPath(PAGE_ROUTES);
+    const pathlist = exactFromSidebarPath(sidebar);
     let selectedKeys = [];
     pathlist.forEach(item => {
       if (

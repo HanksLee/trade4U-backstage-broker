@@ -20,10 +20,10 @@ const deleteRole = (id: string): Promise<any> =>
 
 // 获取所有菜单和权限数据
 const getRoleMenuList = (config): Promise<any> =>
-  API.get("/system/role-menu", config);
+  API.get("/broker/role-menu", config);
 
 const updateRolePermission = (config): Promise<any> =>
-  API.post(`/system/role-menu`, config);
+  API.post(`/broker/role-menu`, config);
 
 export default {
   getMenus,

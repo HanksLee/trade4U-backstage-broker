@@ -1,10 +1,13 @@
 import CommonHeader from "components/CommonHeader";
 import EditRoleModal from "./EditRoleModal";
+import PermissionEditor from './PermissionEditor';
+import moment from 'moment';
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { Button, Icon, Table, Popconfirm } from "antd";
 import { ColumnProps } from "antd/lib/table";
+import { Route } from 'react-router-dom';
 import "./index.scss";
 
 export interface RoleType {
@@ -33,6 +36,12 @@ export default class Role extends BaseReact<{}, IRoleState> {
   componentDidMount() {
     this.getRoleList();
   }
+
+  componentDidUpdate() {
+    if (this.props.location.pathname === "/dashboard/role") {
+      this.props.history.replace("/dashboard/role/list");
+    }
+  }
   
   getRoleList = async () => {
     const res = await this.$api.role.getRoleList();
@@ -57,6 +66,7 @@ export default class Role extends BaseReact<{}, IRoleState> {
         key: "create_time",
         title: "创建时间",
         dataIndex: "create_time",
+        render: text => moment(text * 1000).format('YYYY-MM-DD'),
       },
       {
         key: "action",
@@ -79,7 +89,7 @@ export default class Role extends BaseReact<{}, IRoleState> {
   };
 
   goToEditor = (id: any): void => {
-    const url = `/dashboard/role/editor?id=${id}`;
+    const url = `/dashboard/role/permission?id=${id}`;
     this.props.history.push(url);
   }
 
@@ -116,12 +126,10 @@ export default class Role extends BaseReact<{}, IRoleState> {
     }
   };
 
-  render() {
+  renderListPage = () => {
     const { currentRole, roleList, isShowEditRoleModal, } = this.state;
-
     return (
-      <div>
-        <CommonHeader {...this.props} links={[]} title="角色管理" />
+      <>
         <div className="panel-block common-list">
           <section className='common-list-addbtn'>
             <Button type="primary" onClick={() => this.showEditRoleModal()}>
@@ -147,6 +155,23 @@ export default class Role extends BaseReact<{}, IRoleState> {
             />
           )
         }
+      </>
+    );
+  }
+
+  render() {
+    const { match, } = this.props;
+
+    return (
+      <div>
+        <CommonHeader {...this.props} links={[]} title="角色管理" />
+        <Route
+          path={`${match.url}/list`}
+          render={this.renderListPage}
+        />
+        <Route path={`${match.url}/permission`} render={props => (
+          <PermissionEditor {...props} getRoleList={this.getRoleList} />
+        )} />
       </div>
     );
   }
