@@ -7,6 +7,7 @@ import UserDropdown from 'components/UserDropdown';
 import union from 'lodash/union';
 import './index.scss';
 import { inject, observer } from 'mobx-react';
+import { PAGE_PERMISSION_MAP } from 'constant';
 
 const { Header, Sider, Content, } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -99,8 +100,8 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
   async componentDidMount() {
     const res = await this.$api.role.getMenus();
-    this.props.common.setSidebar(res.data.menu);
     this.props.common.setPermissions(res.data.permission);
+    this.props.common.setSidebar(res.data.menu);
   }
 
   toggle = () => {
@@ -141,6 +142,10 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   };
 
   renderMenuItem = (route: any): JSX.Element => {
+    const { permissions, } = this.props.common;
+
+    if (permissions.indexOf(PAGE_PERMISSION_MAP[route.path]) === -1) return null;
+
     if (route.children && route.children.length > 0) {
       return (
         <SubMenu key={route.path} title={route.name}>

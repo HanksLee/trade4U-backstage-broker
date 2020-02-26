@@ -34,6 +34,8 @@ export const WeeklyOrder = [
   'Saturday'
 ];
 
-export const PAGE_ROUTES = [
-
-];
+// 主要用于控制菜单的显示隐藏
+export const PAGE_PERMISSION_MAP = {
+  '/dashboard/role': 'VIEW_ROLE_PAGE',
+  '/dashboard/order/postion': 'VIEW_ORDER_POSITION_PAGE',
+};

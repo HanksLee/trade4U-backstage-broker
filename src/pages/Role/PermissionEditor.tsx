@@ -31,6 +31,7 @@ export interface IPermissionEditorState {
   menuList: MenuType[];
   formatedMenuList: FormatedMenuType[];
   selectedPermissions: string[];
+  can_modify: boolean;
 }
 
 // @ts-ignore
@@ -43,6 +44,7 @@ export default class PermissionEditor extends BaseReact<any, IPermissionEditorSt
     menuList: [],
     formatedMenuList: [],
     selectedPermissions: [],
+    can_modify: false,
   }
 
   constructor(props) {
@@ -103,6 +105,7 @@ export default class PermissionEditor extends BaseReact<any, IPermissionEditorSt
   getPermission = async () => {
     const res = await this.$api.role.getRoleDetail(this.roleId);
     this.setState({
+      can_modify: res.data.can_modify,
       selectedPermissions: res.data.permissions,
     });
   }
@@ -276,7 +279,7 @@ export default class PermissionEditor extends BaseReact<any, IPermissionEditorSt
   }
 
   render() {
-    const { formatedMenuList, isEditing, } = this.state;
+    const { formatedMenuList, isEditing, can_modify, } = this.state;
 
     return (
       <div className='editor'>
@@ -286,7 +289,7 @@ export default class PermissionEditor extends BaseReact<any, IPermissionEditorSt
               isEditing ? (
                 <Button onClick={() => this.savePermission()}>保存编辑</Button>
               ) : (
-                <Button type="primary" onClick={this.editPermission}>编辑权限</Button>
+                can_modify && <Button type="primary" onClick={this.editPermission}>编辑权限</Button>
               )
             }
             <Button onClick={() => this.goBack()}>取消</Button>

@@ -9,6 +9,7 @@ import { Button, Icon, Table, Popconfirm } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import { Route } from 'react-router-dom';
 import "./index.scss";
+import { PAGE_PERMISSION_MAP } from 'constant';
 
 export interface RoleType {
   id: number;
@@ -16,6 +17,7 @@ export interface RoleType {
   managers: number;
   permissions: number[];
   create_time: number;
+  can_modify: boolean;
 }
 
 interface IRoleState {
@@ -25,7 +27,7 @@ interface IRoleState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/role", { exact: false, permissionCode: 'xixix', })
+@WithRoute("/dashboard/role", { exact: false, permissionCode: PAGE_PERMISSION_MAP['/dashboard/role'], })
 export default class Role extends BaseReact<{}, IRoleState> {
   state = {
     roleList: [],
@@ -72,6 +74,8 @@ export default class Role extends BaseReact<{}, IRoleState> {
         key: "action",
         title: "操作",
         render: (_, record) => {
+          if (!record.can_modify) return null;
+
           return (
             <div className="common-list-table-operation">
               <span onClick={() => this.showEditRoleModal(record)}>编辑</span>
