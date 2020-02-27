@@ -196,6 +196,70 @@ class FinanceStore extends BaseStore {
       utils.setLStorage("currentPayment", this.currentPayment);
     }
   };
+  @observable
+  filterRate = {
+    page_size: 10,
+    current_page: 1,
+  };
+  @action
+  setFilterRate = (filter, overwrite = false) => {
+    if (overwrite) {
+      this.filterRate = filter;
+    } else {
+      this.filterRate = {
+        ...this.filterRate,
+        ...filter,
+      };
+    }
+  };
+  @observable
+  rateList = [];
+  @observable
+  rateListMeta = {};
+  @action
+  getRateList = async config => {
+    const res = await this.$api.finance.getRateList(config);
+    this.setRateList(res.data);
+  };
+  @action
+  setRateList = data => {
+    this.paymentList = data.results;
+    this.paymentListMeta = {
+      total: data.count,
+    };
+  };
+  @observable
+  currentRate: any = {};
+
+  @computed
+  get currentShowRate() {
+    const obj: any = {};
+
+    return {
+      ...this.currentRate,
+      ...obj,
+    };
+  }
+  @action
+  getCurrentRate = async (id, config = {}) => {
+    const res = await this.$api.finance.getCurrentRate(id, config);
+    this.setCurrentRate(res.data);
+  };
+  @action
+  setCurrentRate = (rule, overwrite = true, store = true) => {
+    if (overwrite) {
+      this.currentRate = rule;
+    } else {
+      this.currentRate = {
+        ...this.currentRate,
+        ...rule,
+      };
+    }
+
+    if (store) {
+      utils.setLStorage("currentRate", this.currentRate);
+    }
+  };
 }
 
 export default new FinanceStore();

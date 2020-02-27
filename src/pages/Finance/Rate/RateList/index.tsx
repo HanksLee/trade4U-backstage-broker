@@ -4,31 +4,31 @@ import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import DepositEdtior from 'pages/Finance/Deposit/DepositEditor';
+import RateEdtior from 'pages/Finance/Rate/RateEditor';
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from 'utils';
 import { Modal } from 'antd';
 
-export interface IDepositListProps { }
+export interface IRateListProps { }
 
-export interface IDepositListState {
+export interface IRateListState {
   // filter: any;
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/finance/deposit", { exact: false, })
+@WithRoute("/dashboard/finance/rate", { exact: false, })
 @inject("common", "finance")
 @observer
-export default class DepositList extends BaseReact<IDepositListProps, IDepositListState> {
-  private $depositEditor = null;
+export default class RateList extends BaseReact<IRateListProps, IRateListState> {
+  private $rateEditor = null;
   state = {
     filter: {},
     tableLoading: false,
     currentPage: 1,
     selectedRowKeys: [],
-    depositModalVisible: false,
+    rateModalVisible: true,
     scopeOptions: [
       {
         id: 1,
@@ -56,8 +56,8 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
   }
 
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/finance/deposit") {
-      this.props.history.replace("/dashboard/finance/deposit/list");
+    if (this.props.location.pathname === "/dashboard/finance/rate") {
+      this.props.history.replace("/dashboard/finance/rate/list");
     }
   }
 
@@ -81,7 +81,7 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
         },
       },
       async () => {
-        await this.props.finance.getDepositList({
+        await this.props.finance.getRateList({
           params: this.state.filter,
         });
         this.setState({ tableLoading: false, });
@@ -89,52 +89,52 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
     );
   };
 
-  toggleDepositModal = async (id?) => {
-    if (!this.state.depositModalVisible) {
-      await this.props.finance.getCurrentDeposit(id);
-    } else {
-      this.props.finance.setCurrentDeposit({}, true, false);
-    }
+  toggleRateModal = async (id?) => {
+    // if (!this.state.rateModalVisible) {
+    //   await this.props.finance.getCurrentRate(id);
+    // } else {
+    //   this.props.finance.setCurrentRate({}, true, false);
+    // }
 
     this.setState({
-      depositModalVisible: !this.state.depositModalVisible,
+      rateModalVisible: !this.state.rateModalVisible,
     });
   }
 
   onModalConfirm = async () => {
-    const { currentDeposit, } = this.props.finance;
+    const { currentRate, } = this.props.finance;
 
     let res;
-    if (!currentDeposit.name) {
+    if (!currentRate.name) {
       return this.$msg.warn('请输入利润规则名称');
     }
 
-    if (!currentDeposit.scope) {
+    if (!currentRate.scope) {
       return this.$msg.warn('请选择利润规则作用域');
     }
 
-    if (!currentDeposit.func_name) {
+    if (!currentRate.func_name) {
       return this.$msg.warn('请输入利润规则函数');
     }
 
     let payload: any = {
-      name: currentDeposit.name,
-      scope: currentDeposit.scope,
-      func_name: currentDeposit.func_name,
+      name: currentRate.name,
+      scope: currentRate.scope,
+      func_name: currentRate.func_name,
     };
 
-    if (currentDeposit.id) {
-      // payload['id'] = currentDeposit.id,
-      res = await this.$api.finance.updateDeposit(currentDeposit.id, payload);
+    if (currentRate.id) {
+      // payload['id'] = currentRate.id,
+      res = await this.$api.finance.updateRate(currentRate.id, payload);
     } else {
-      res = await this.$api.finance.createDeposit(payload);
+      res = await this.$api.finance.createRate(payload);
     }
 
-    const statusCode = currentDeposit.id ? 200 : 201;
+    const statusCode = currentRate.id ? 200 : 201;
 
     if (res.status == statusCode) {
-      this.$msg.success(!currentDeposit.id ? '利润规则添加成功' : '利润规则编辑成功');
-      this.toggleDepositModal();
+      this.$msg.success(!currentRate.id ? '利润规则添加成功' : '利润规则编辑成功');
+      this.toggleRateModal();
       this.getDataList(this.state.filter);
     } else {
       this.$msg.error(res.data.msg);
@@ -143,13 +143,14 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
 
   onModalCancel = () => {
     this.setState({
-      depositModalVisible: false,
+      rateModalVisible: false,
     });
-    this.props.finance.setCurrentDeposit({}, true, false);
+    this.props.finance.setCurrentRate({}, true, false);
   }
 
   resetPagination = async (page_size, current_page) => {
-    this.props.finance.setFilterDeposit({
+    return;
+    this.props.finance.setFilterRate({
       page_size,
       current_page,
     });
@@ -158,7 +159,7 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
         current_page,
       },
       async () => {
-        const filter = this.props.finance.filterDeposit;
+        const filter = this.props.finance.filterRate;
 
         this.getDataList(filter);
       }
@@ -166,7 +167,7 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
   };
   // @ts-ignore
   private onSearch = async () => {
-    this.props.finance.setFilterDeposit({
+    this.props.finance.setFilterRate({
       current_page: 1,
     });
     this.setState(
@@ -174,7 +175,7 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
         currentPage: 1,
       },
       () => {
-        this.getDataList(this.props.finance.filterDeposit);
+        this.getDataList(this.props.finance.filterRate);
       }
     );
   };
@@ -185,20 +186,20 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
       current_page: 1,
     };
 
-    this.props.finance.setFilterDeposit(filter, true);
+    this.props.finance.setFilterRate(filter, true);
 
     this.setState(
       {
         currentPage: 1,
       },
       () => {
-        this.getDataList(this.props.finance.filterDeposit);
+        this.getDataList(this.props.finance.filterRate);
       }
     );
   };
 
   goToEditor = (record: any): void => {
-    const url = `/dashboard/finance/deposit/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
+    const url = `/dashboard/finance/rate/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
   }
 
@@ -212,8 +213,8 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
   render() {
     const { match, } = this.props;
     const computedTitle = '入金管理';
-    const { depositModalVisible, } = this.state;
-    const { currentDeposit, } = this.props.finance;
+    const { rateModalVisible, } = this.state;
+    const { currentRate, } = this.props.finance;
 
     return (
       <div>
@@ -223,17 +224,17 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
         {
-          depositModalVisible && (
+          rateModalVisible && (
             <Modal
-              width={720}
-              visible={depositModalVisible}
+              width={900}
+              visible={rateModalVisible}
               title={
-                utils.isEmpty(currentDeposit.id) ? '添加利润规则' : '编辑利润规则'
+                utils.isEmpty(currentRate.id) ? '添加利润规则' : '编辑利润规则'
               }
               onOk={this.onModalConfirm}
               onCancel={this.onModalCancel}
             >
-              <DepositEdtior onRef={ref => this.$depositEditor = ref} />
+              <RateEdtior onRef={ref => this.$rateEditor = ref} />
             </Modal>
           )
         }

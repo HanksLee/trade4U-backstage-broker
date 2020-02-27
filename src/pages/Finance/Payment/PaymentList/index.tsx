@@ -89,7 +89,13 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     );
   };
 
-  togglePaymentModal = () => {
+  togglePaymentModal = async (id?) => {
+    if (!this.state.paymentModalVisible) {
+      await this.props.finance.getCurrentPayment(id);
+    } else {
+      this.props.finance.setCurrentPayment({}, true, false);
+    }
+
     this.setState({
       paymentModalVisible: !this.state.paymentModalVisible,
     });
@@ -127,7 +133,7 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     const statusCode = currentPayment.id ? 200 : 201;
 
     if (res.status == statusCode) {
-      this.$msg.success(!currentPayment.uid ? '利润规则添加成功' : '利润规则编辑成功');
+      this.$msg.success(!currentPayment.id ? '利润规则添加成功' : '利润规则编辑成功');
       this.togglePaymentModal();
       this.getDataList(this.state.filter);
     } else {
@@ -139,55 +145,54 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     this.setState({
       paymentModalVisible: false,
     });
-    this.props.finance.setCurrentPayment({});
+    this.props.finance.setCurrentPayment({}, true, false);
   }
 
-  resetPagination = async (pageSize, pageNum) => {
+  resetPagination = async (page_size, current_page) => {
+    this.props.finance.setFilterPayment({
+      page_size,
+      current_page,
+    });
     this.setState(
       {
-        filter: {
-          ...this.state.filter,
-          page_size: pageSize,
-          current_page: pageNum,
-        },
+        current_page,
       },
       async () => {
-        const filter = this.state.filter;
+        const filter = this.props.finance.filterPayment;
+
         this.getDataList(filter);
       }
     );
   };
   // @ts-ignore
   private onSearch = async () => {
-    const filter: any = this.state.filter;
-
-    // console.log('filter', filter);
-
+    this.props.finance.setFilterPayment({
+      current_page: 1,
+    });
     this.setState(
       {
-        filter: {
-          ...filter,
-          current_page: 1,
-        },
         currentPage: 1,
       },
       () => {
-        this.getDataList(this.state.filter);
+        this.getDataList(this.props.finance.filterPayment);
       }
     );
   };
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { current_page: 1, pageSize: this.state.filter.page_size, };
+    const filter: any = {
+      current_page: 1,
+    };
+
+    this.props.finance.setFilterPayment(filter, true);
 
     this.setState(
       {
-        filter,
         currentPage: 1,
       },
       () => {
-        this.getDataList(this.state.filter);
+        this.getDataList(this.props.finance.filterPayment);
       }
     );
   };
@@ -195,7 +200,6 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
   goToEditor = (record: any): void => {
     const url = `/dashboard/finance/payment/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
-    this.props.finance.setCurrentPayment(record, true, false);
   }
 
   renderMenu = (record): JSX.Element => {
@@ -207,7 +211,7 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
 
   render() {
     const { match, } = this.props;
-    const computedTitle = '支付管理';
+    const computedTitle = '入金管理';
     const { paymentModalVisible, } = this.state;
     const { currentPayment, } = this.props.finance;
 

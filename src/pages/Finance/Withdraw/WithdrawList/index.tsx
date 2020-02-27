@@ -89,7 +89,13 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     );
   };
 
-  toggleWithdrawModal = () => {
+  toggleWithdrawModal = async (id?) => {
+    if (!this.state.withdrawModalVisible) {
+      await this.props.finance.getCurrentWithdraw(id);
+    } else {
+      this.props.finance.setCurrentWithdraw({}, true, false);
+    }
+
     this.setState({
       withdrawModalVisible: !this.state.withdrawModalVisible,
     });
@@ -127,7 +133,7 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     const statusCode = currentWithdraw.id ? 200 : 201;
 
     if (res.status == statusCode) {
-      this.$msg.success(!currentWithdraw.uid ? '利润规则添加成功' : '利润规则编辑成功');
+      this.$msg.success(!currentWithdraw.id ? '利润规则添加成功' : '利润规则编辑成功');
       this.toggleWithdrawModal();
       this.getDataList(this.state.filter);
     } else {
@@ -139,55 +145,54 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     this.setState({
       withdrawModalVisible: false,
     });
-    this.props.finance.setCurrentWithdraw({});
+    this.props.finance.setCurrentWithdraw({}, true, false);
   }
 
-  resetPagination = async (pageSize, pageNum) => {
+  resetPagination = async (page_size, current_page) => {
+    this.props.finance.setFilterWithdraw({
+      page_size,
+      current_page,
+    });
     this.setState(
       {
-        filter: {
-          ...this.state.filter,
-          page_size: pageSize,
-          current_page: pageNum,
-        },
+        current_page,
       },
       async () => {
-        const filter = this.state.filter;
+        const filter = this.props.finance.filterWithdraw;
+
         this.getDataList(filter);
       }
     );
   };
   // @ts-ignore
   private onSearch = async () => {
-    const filter: any = this.state.filter;
-
-    // console.log('filter', filter);
-
+    this.props.finance.setFilterWithdraw({
+      current_page: 1,
+    });
     this.setState(
       {
-        filter: {
-          ...filter,
-          current_page: 1,
-        },
         currentPage: 1,
       },
       () => {
-        this.getDataList(this.state.filter);
+        this.getDataList(this.props.finance.filterWithdraw);
       }
     );
   };
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { current_page: 1, pageSize: this.state.filter.page_size, };
+    const filter: any = {
+      current_page: 1,
+    };
+
+    this.props.finance.setFilterWithdraw(filter, true);
 
     this.setState(
       {
-        filter,
         currentPage: 1,
       },
       () => {
-        this.getDataList(this.state.filter);
+        this.getDataList(this.props.finance.filterWithdraw);
       }
     );
   };
@@ -195,7 +200,6 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
   goToEditor = (record: any): void => {
     const url = `/dashboard/finance/withdraw/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
-    this.props.finance.setCurrentWithdraw(record, true, false);
   }
 
   renderMenu = (record): JSX.Element => {
@@ -207,7 +211,7 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
 
   render() {
     const { match, } = this.props;
-    const computedTitle = '出金管理';
+    const computedTitle = '入金管理';
     const { withdrawModalVisible, } = this.state;
     const { currentWithdraw, } = this.props.finance;
 

@@ -46,6 +46,21 @@ const updatePayment = (id: string, config): Promise<any> =>
 const deletePayment = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/system/symbol/${id}`, config);
 
+  const getRateList = (config: AxiosRequestConfig): Promise<any> =>
+  API.get("/system/symbol", config);
+
+const getCurrentRate = (id: string, config): Promise<any> =>
+  API.get(`/system/symbol/${id}`, config);
+
+const createRate = (config): Promise<any> =>
+  API.post(`/system/symbol`, config);
+
+const updateRate = (id: string, config): Promise<any> =>
+  API.patch(`/system/symbol/${id}`, config);
+
+const deleteRate = (id: string, config: AxiosRequestConfig): Promise<any> =>
+  API.delete(`/system/symbol/${id}`, config);
+
 export default {
   getDepositList,
   getCurrentDeposit,
@@ -62,4 +77,9 @@ export default {
   createPayment,
   updatePayment,
   deletePayment,
+  getRateList,
+  getCurrentRate,
+  createRate,
+  updateRate,
+  deleteRate,
 };

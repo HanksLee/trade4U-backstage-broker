@@ -86,14 +86,14 @@ const config = self => {
         return (
           <div className="common-list-table-operation">
             <span onClick={() => {
-              self.props.finance.setCurrentDeposit(record, true, false);
-              self.toggleDepositModal(record.id);
+              self.props.finance.setCurrentRate(record, true, false);
+              self.toggleRateModal(record.id);
             }}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除当前记录"
               onConfirm={async () => {
-                const res = await self.$api.finance.deleteDeposit(record.id);
+                const res = await self.$api.finance.deleteRate(record.id);
 
                 if (res.status === 204) {
                   self.getDataList(self.state.filter);
@@ -113,7 +113,7 @@ const config = self => {
 
   const pagination = {
     ...self.props.common.paginationConfig,
-    total: self.props.finance.depositListMeta.total,
+    total: self.props.finance.rateListMeta.total,
     current: self.state.currentPage,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
@@ -126,9 +126,9 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => (
-        <Button style={{ display: 'none', }} type='primary' onClick={() => {
-          self.props.finance.setCurrentDeposit({});
-          self.toggleDepositModal();
+        <Button type='primary' onClick={() => {
+          self.props.finance.setCurrentRate({});
+          self.toggleRateModal();
         }}><Icon type="plus" />添加</Button>
       ),
     },
@@ -158,7 +158,7 @@ const config = self => {
       rowKey: "id",
       // rowSelection,
       columns,
-      dataSource: self.props.finance.depositList,
+      dataSource: self.props.finance.rateList,
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {
@@ -180,14 +180,14 @@ const config = self => {
           delete payload.sort;
         }
 
-        self.props.finance.setFilterDeposit(payload);
+        self.props.finance.setFilterRate(payload);
 
         self.setState(
           {
             currentPage: pagination.current,
           },
           () => {
-            self.getDataList(self.props.finance.filterDeposit);
+            self.getDataList(self.props.finance.filterRate);
           }
         );
       },

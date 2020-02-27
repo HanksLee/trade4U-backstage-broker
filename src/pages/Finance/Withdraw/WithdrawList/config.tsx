@@ -229,16 +229,14 @@ const config = self => {
           delete payload.sort;
         }
 
+        self.props.finance.setFilterWithdraw(payload);
+
         self.setState(
           {
-            filter: {
-              ...self.state.filter,
-              ...payload,
-            },
             currentPage: pagination.current,
           },
           () => {
-            self.getDataList(self.state.filter);
+            self.getDataList(self.props.finance.filterWithdraw);
           }
         );
       },
