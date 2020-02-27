@@ -39,4 +39,5 @@ export const PAGE_PERMISSION_MAP = {
   '/dashboard/role': 'VIEW_ROLE_PAGE',
   '/dashboard/order': 'VIEW_ORDER_PAGE',
   '/dashboard/order/position': 'VIEW_ORDER_POSITION_PAGE',
+  '/dashboard/manager': 'VIEW_MANAGER_PAGE',
 };
