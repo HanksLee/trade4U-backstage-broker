@@ -29,7 +29,7 @@ interface BrokerListState {
 };
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/manger", { exact: false, permissionCode: PAGE_PERMISSION_MAP['/dashboard/manager'], })
+@WithRoute("/dashboard/manager", { exact: false, permissionCode: PAGE_PERMISSION_MAP['/dashboard/manager'], })
 // @inject("common", "broker")
 @observer
 export default class BrokerList extends BaseReact<{}, BrokerListState> {

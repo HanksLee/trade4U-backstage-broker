@@ -6,6 +6,9 @@ import loadable from "@loadable/component";
  */
 const routes: any[] = [
   {
+    component: loadable(() => import(/* webpackChunkName: "manager-page" */ './pages/Manager')),
+  },
+  {
     component: loadable(() => import(/* webpackChunkName: "role-page" */ './pages/Role')),
   }
 ];
