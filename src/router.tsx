@@ -16,6 +16,12 @@ const routes: any[] = [
   // },
   {
     component: loadable(() => import(/* webpackChunkName: "Deposit" */ './pages/Finance/Deposit/DepositList')),
+  },
+  {
+    component: loadable(() => import(/* webpackChunkName: "Withdraw" */ './pages/Finance/Withdraw/WithdrawList')),
+  },
+  {
+    component: loadable(() => import(/* webpackChunkName: "Withdraw" */ './pages/Finance/Payment/PaymentList')),
   }
 ];
 

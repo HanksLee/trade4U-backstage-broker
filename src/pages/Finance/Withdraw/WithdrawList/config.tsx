@@ -24,56 +24,105 @@ const config = self => {
       },
     },
     {
-      title: "通道名称",
-      dataIndex: "scope",
+      title: "省份",
+      dataIndex: "province",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "收款商户",
+      title: "城市",
+      dataIndex: "city",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "银行卡号",
+      dataIndex: "bank_no",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "开户行",
+      dataIndex: "acount",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "支行名称",
       dataIndex: "func_name",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "支付金额",
+      title: "申请时间",
       dataIndex: "func_name",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "支付状态",
+      title: "出金",
       dataIndex: "func_name",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "支付单号",
+      title: "审核状态",
       dataIndex: "func_name",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "提交时间",
+      title: "审核时间",
       dataIndex: "func_name",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "回执时间",
+      title: "审核人",
       dataIndex: "func_name",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "回执单号",
+      title: "划款状态",
+      dataIndex: "func_name",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "划款人",
+      dataIndex: "func_name",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "划款单号",
+      dataIndex: "func_name",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "划款时间",
+      dataIndex: "func_name",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "备注",
       dataIndex: "func_name",
       render: (text, record) => {
         return text || '--';
@@ -86,14 +135,14 @@ const config = self => {
         return (
           <div className="common-list-table-operation">
             <span onClick={() => {
-              self.props.finance.setCurrentDeposit(record, true, false);
-              self.toggleDepositModal();
+              self.props.finance.setCurrentWithdraw(record, true, false);
+              self.toggleWithdrawModal();
             }}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除当前记录"
               onConfirm={async () => {
-                const res = await self.$api.finance.deleteDeposit(record.id);
+                const res = await self.$api.finance.deleteWithdraw(record.id);
 
                 if (res.status === 204) {
                   self.getDataList(self.state.filter);
@@ -113,7 +162,7 @@ const config = self => {
 
   const pagination = {
     ...self.props.common.paginationConfig,
-    total: self.props.finance.depositListMeta.total,
+    total: self.props.finance.withdrawListMeta.total,
     current: self.state.currentPage,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
@@ -127,8 +176,8 @@ const config = self => {
     addBtn: {
       title: () => (
         <Button style={{ display: 'none', }} type='primary' onClick={() => {
-          self.props.finance.setCurrentDeposit({});
-          self.toggleDepositModal();
+          self.props.finance.setCurrentWithdraw({});
+          self.toggleWithdrawModal();
         }}><Icon type="plus" />添加</Button>
       ),
     },
@@ -158,7 +207,7 @@ const config = self => {
       rowKey: "id",
       // rowSelection,
       columns,
-      dataSource: self.props.finance.depositList,
+      dataSource: self.props.finance.withdrawList,
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {
