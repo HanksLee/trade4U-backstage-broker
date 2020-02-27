@@ -5,7 +5,7 @@ import {
   Input,
   Select,
   Col,
-  Row,
+  Row
 } from 'antd';
 import './index.scss';
 import {
@@ -58,7 +58,7 @@ export default class RateEditor extends BaseReact<IRateEditorProps, IRateEditorS
     return (
       <div className='editor rate-editor'>
         <Form className='editor-form'>
-          <Row style={{textAlign: 'center'}} type='flex' justify="space-around" align="top">
+          <Row style={{ textAlign: 'center', }} type='flex' justify="space-around" align="top">
             <Col span="5">类型</Col>
             <Col span="5">交易货币</Col>
             <Col span="5">支付货币</Col>
@@ -92,7 +92,7 @@ export default class RateEditor extends BaseReact<IRateEditorProps, IRateEditorS
                       disabled={currentShowRate.pay_status == 1}
                     >
                       {
-                        [{ field: 'deposit', translation: '出金' }].map(item => (
+                        [{ field: 'deposit', translation: '出金', }].map(item => (
                           // @ts-ignore
                           <Option key={item.field}>
                             {item.translation}
@@ -122,7 +122,7 @@ export default class RateEditor extends BaseReact<IRateEditorProps, IRateEditorS
                 disabled={currentShowRate.pay_status == 1}
               >
                 {
-                  [{ field: 'deposit', translation: '出金' }].map(item => (
+                  [{ field: 'deposit', translation: '出金', }].map(item => (
                     // @ts-ignore
                     <Option key={item.field}>
                       {item.translation}
@@ -148,7 +148,7 @@ export default class RateEditor extends BaseReact<IRateEditorProps, IRateEditorS
                 disabled={currentShowRate.pay_status == 1}
               >
                 {
-                  [{ field: 'deposit', translation: '出金' }].map(item => (
+                  [{ field: 'deposit', translation: '出金', }].map(item => (
                     // @ts-ignore
                     <Option key={item.field}>
                       {item.translation}

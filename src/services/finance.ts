@@ -46,7 +46,7 @@ const updatePayment = (id: string, config): Promise<any> =>
 const deletePayment = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/system/symbol/${id}`, config);
 
-  const getRateList = (config: AxiosRequestConfig): Promise<any> =>
+const getRateList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/system/symbol", config);
 
 const getCurrentRate = (id: string, config): Promise<any> =>
