@@ -16,7 +16,7 @@ const updateDeposit = (id: string, config): Promise<any> =>
 const deleteDeposit = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/system/symbol/${id}`, config);
 
-  const getWithdrawList = (config: AxiosRequestConfig): Promise<any> =>
+const getWithdrawList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/system/symbol", config);
 
 const getCurrentWithdraw = (id: string, config): Promise<any> =>
@@ -31,7 +31,7 @@ const updateWithdraw = (id: string, config): Promise<any> =>
 const deleteWithdraw = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/system/symbol/${id}`, config);
 
-  const getPaymentList = (config: AxiosRequestConfig): Promise<any> =>
+const getPaymentList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/system/symbol", config);
 
 const getCurrentPayment = (id: string, config): Promise<any> =>

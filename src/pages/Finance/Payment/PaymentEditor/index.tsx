@@ -189,8 +189,8 @@ export default class PaymentEditor extends BaseReact<IPaymentEditorProps, IPayme
               ],
             })(<Input type='number' placeholder='请输入实付金额' />)}
           </FormItem>
-{/* 直连方式 */}
-<FormItem
+          {/* 直连方式 */}
+          <FormItem
             label='直连方式'
             className='push-type-select'
             {...getFormItemLayout(6, 6)}
@@ -226,7 +226,7 @@ export default class PaymentEditor extends BaseReact<IPaymentEditorProps, IPayme
             }
           </FormItem>
 
-<FormItem label='最低入金' {...getFormItemLayout(6, 16)} required>
+          <FormItem label='最低入金' {...getFormItemLayout(6, 16)} required>
             {getFieldDecorator('account', {
               initialValue: currentPayment.account,
               rules: [
@@ -247,8 +247,8 @@ export default class PaymentEditor extends BaseReact<IPaymentEditorProps, IPayme
               ],
             })(<Input type='number' placeholder='请输入实付金额' />)}
           </FormItem>
-{/* 适用范围 */}
-{/* 实名认证 */}
+          {/* 适用范围 */}
+          {/* 实名认证 */}
           <FormItem
             label='实名认证'
             className='push-type-select'
@@ -285,7 +285,7 @@ export default class PaymentEditor extends BaseReact<IPaymentEditorProps, IPayme
             }
           </FormItem>
 
-<FormItem label='登录地址' {...getFormItemLayout(6, 16)} required>
+          <FormItem label='登录地址' {...getFormItemLayout(6, 16)} required>
             {getFieldDecorator('account', {
               initialValue: currentPayment.account,
               rules: [
