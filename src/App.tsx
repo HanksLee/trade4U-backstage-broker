@@ -1,3 +1,4 @@
+import Auth from 'pages/Auth';
 import ErrorBoundary from 'components/ErrorBoundary';
 import HTML5Backend from "react-dnd-html5-backend";
 import Index from "pages/Index";
@@ -51,6 +52,9 @@ class App extends BaseReact {
             <DndProvider backend={HTML5Backend}>
               <Router>
                 <Switch>
+                  <Route exact path="/auth">
+                    <Auth />
+                  </Route>
                   {/* 这里在 io 拦截器进行拦截一进入首页就进行路由跳转 */}
                   <Route exact path="/">
                     {!!token ? (
