@@ -21,7 +21,7 @@ export default class API implements IAPI {
 
   private handleInterceptors() {
     this.api.interceptors.request.use((config: AxiosRequestConfig) => {
-      const token = utils.getLStorage('MOON_ADMIN_MAIN_TOKEN');
+      const token = utils.getLStorage('MOON_ADMIN_BROKER_TOKEN');
       if (token) {
         config['headers']['Authorization'] = `Token ${token}`;
       }
@@ -42,6 +42,8 @@ export default class API implements IAPI {
         const { response: { data, status, }, } = err;
         message.error(data.message);
         if (status == 401) {
+          localStorage.removeItem('MOON_ADMIN_BROKER_TOKEN');
+
           window.location.href =
             process.env.NODE_ENV === "production"
               ? "/login"
