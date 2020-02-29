@@ -1,6 +1,11 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm } from "antd";
 import utils from "utils";
+import StatusText from 'components/StatusText';
+import moment from 'moment';
+import {
+  FORMAT_TIME
+} from 'constant';
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
@@ -14,13 +19,9 @@ const config = self => {
   const columns = [
     {
       title: "姓名",
-      dataIndex: "name",
-    },
-    {
-      title: "上级",
-      dataIndex: "parent",
+      dataIndex: "user_display",
       render: (text, record) => {
-        return text || '--';
+        return text && text.username || '--';
       },
     },
     {
@@ -39,91 +40,125 @@ const config = self => {
     },
     {
       title: "银行卡号",
-      dataIndex: "bank_no",
+      dataIndex: "card_number",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "开户行",
-      dataIndex: "acount",
+      dataIndex: "bank",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "支行名称",
-      dataIndex: "func_name",
+      dataIndex: "sub_branch",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "申请时间",
-      dataIndex: "func_name",
+      dataIndex: "create_time",
+      render: (text, record) => {
+        return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
+    },
+    {
+      title: "预计出金",
+      dataIndex: "expect_amount",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "出金",
-      dataIndex: "func_name",
+      title: "实际出金",
+      dataIndex: "actual_amount",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "审核状态",
-      dataIndex: "func_name",
+      dataIndex: "review_status",
       render: (text, record) => {
-        return text || '--';
+        const statusType = {
+          2: 'hot',
+          1: 'normal',
+          0: 'block',
+        };
+        const statusText = {
+          2: '审核不通过',
+          1: '审核成功',
+          0: '待审核',
+        };
+
+        return <StatusText type={
+          statusType[record.review_status]
+        } text={
+          statusText[record.review_status]
+        } />;
       },
     },
     {
       title: "审核时间",
-      dataIndex: "func_name",
+      dataIndex: "review_time",
       render: (text, record) => {
-        return text || '--';
-      },
+        return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
     },
     {
       title: "审核人",
-      dataIndex: "func_name",
+      dataIndex: "reviewer",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "划款状态",
-      dataIndex: "func_name",
+      dataIndex: "remit_status",
       render: (text, record) => {
-        return text || '--';
+        const statusType = {
+          2: 'hot',
+          1: 'normal',
+          0: 'block',
+        };
+        const statusText = {
+          2: '划款失败',
+          1: '划款成功',
+          0: '待划款',
+        };
+
+        return <StatusText type={
+          statusType[record.remit_status]
+        } text={
+          statusText[record.remit_status]
+        } />;
       },
     },
     {
       title: "划款人",
-      dataIndex: "func_name",
+      dataIndex: "remitter",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "划款单号",
-      dataIndex: "func_name",
+      dataIndex: "remit_number",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "划款时间",
-      dataIndex: "func_name",
+      dataIndex: "remit_time",
       render: (text, record) => {
-        return text || '--';
-      },
+        return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
     },
     {
       title: "备注",
-      dataIndex: "func_name",
+      dataIndex: "remarks",
       render: (text, record) => {
         return text || '--';
       },
@@ -135,7 +170,7 @@ const config = self => {
         return (
           <div className="common-list-table-operation">
             <span onClick={() => {
-              self.props.finance.setCurrentWithdraw(record, true, false);
+              self.props.finance.getCurrentWithdraw(record.id);
               self.toggleWithdrawModal();
             }}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
@@ -182,7 +217,6 @@ const config = self => {
       ),
     },
     searcher: {
-      hideSearcher: true,
       batchControl: {
         placeholder: "请选择",
         showBatchControl: !utils.isEmpty(self.state.selectedRowKeys),
@@ -197,10 +231,142 @@ const config = self => {
         },
       },
       widgets: [
+        [
+          {
+            type: 'Input',
+            label: '姓名',
+            placeholder: '请输入姓名',
+            value: self.state.user__username || undefined,
+            onChange(evt) {
+              self.onInputChanged('user__username', evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
+          {
+            type: 'Input',
+            label: '省份',
+            placeholder: '请输入省份',
+            value: self.state.province || undefined,
+            onChange(evt) {
+              self.onInputChanged('province', evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
+          {
+            type: 'Input',
+            label: '城市',
+            placeholder: '请输入城市',
+            value: self.state.city || undefined,
+            onChange(evt) {
+              self.onInputChanged('city', evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          }
+        ],
+        [
+          {
+            type: 'Select',
+            label: '审核状态',
+            placeholder: '请选择审核状态',
+            // width: 200,
+            value: self.state.reviewStatus,
+            option: {
+              key: 'id',
+              value: 'id',
+              title: 'name',
+              data: [
+                {
+                  id: 0,
+                  name: '待审核',
+                },
+                {
+                  id: 1,
+                  name: '审核成功',
+                },
+                {
+                  id: 2,
+                  name: '审核不通过',
+                }
+              ],
+            },
+            onChange(val, elem) {
+              self.onOptionSelect('review', val, elem);
+            },
+            onSelect(val, elem) {
+            },
+            onBlur() {
+            },
+          },
+          {
+            type: 'Select',
+            label: '划款状态',
+            placeholder: '请选择划款状态',
+            // width: 200,
+            value: self.state.remitStatus,
+            option: {
+              key: 'id',
+              value: 'id',
+              title: 'name',
+              data: [
+                {
+                  id: 0,
+                  name: '待划款',
+                },
+                {
+                  id: 1,
+                  name: '划款成功',
+                },
+                {
+                  id: 2,
+                  name: '划款失败',
+                }
+              ],
+            },
+            onChange(val, elem) {
+              self.onOptionSelect('remit', val, elem);
+            },
+            onSelect(val, elem) {
+            },
+            onBlur() {
+            },
+          }
+        ],
+        {
+          type: 'RangePicker',
+          label: '审核时间',
+          placeholder: ['开始日期', '结束日期'],
+          showTime: { format: 'HH:mm:ss', },
+          format: FORMAT_TIME,
+          alias: [1, 7, 30],
+          value: self.state.reviewDateRange || [],
+          onChange(value) {
+            self.onDateRangeChange('review', value);
+          },
+        },
+        {
+          type: 'RangePicker',
+          label: '划款时间',
+          placeholder: ['开始日期', '结束日期'],
+          showTime: { format: 'HH:mm:ss', },
+          format: FORMAT_TIME,
+          alias: [1, 7, 30],
+          value: self.state.remitDateRange || [],
+          onChange(value) {
+            self.onDateRangeChange('remit', value);
+          },
+        }
       ],
       onSearch() {
+        self.onSearch();
       },
       onReset() {
+        self.onReset();
       },
     },
     table: {

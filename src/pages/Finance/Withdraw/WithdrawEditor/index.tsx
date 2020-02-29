@@ -11,8 +11,6 @@ import {
 } from 'mobx-react';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
-const TextArea = Input.TextArea;
 
 const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
@@ -37,16 +35,8 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
 
   async componentDidMount() {
     this.props.onRef(this);
-    this.initData();
   }
 
-  initData = async () => {
-    const res = await this.$api.finance.getScopeOptions();
-
-    this.setState({
-      scopeOptions: res.data.data,
-    });
-  }
 
   render() {
     const { scopeOptions, } = this.state;
@@ -57,73 +47,34 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
       <div className='editor talent-editor'>
         <Form className='editor-form'>
           <FormItem label='姓名' {...getFormItemLayout(6, 16)} required>
-            {getFieldDecorator('name', {
-              initialValue: currentWithdraw.name,
+            {getFieldDecorator('username', {
+              initialValue: currentWithdraw.user_display && currentShowWithdraw.user_display.username,
               rules: [
               ],
             })(<Input placeholder='请输入姓名' disabled />)}
           </FormItem>
           <FormItem label='划款单号' {...getFormItemLayout(6, 16)} required>
-            {getFieldDecorator('account', {
-              initialValue: currentWithdraw.account,
+            {getFieldDecorator('remit_number', {
+              initialValue: currentWithdraw.remit_number,
               rules: [
               ],
-            })(<Input placeholder='请输入划款单号' disabled />)}
-          </FormItem>
-          <FormItem
-            label='通道类型'
-            className='push-type-select'
-            {...getFormItemLayout(6, 6)}
-            required
-          >
-            {
-              getFieldDecorator('pay_status', {
-                initialValue: currentShowWithdraw && currentShowWithdraw.pay_status,
-              })(
-                <Select
-                  // @ts-ignore
-                  getPopupContainer={() => document.getElementsByClassName('push-type-select')[0]}
-                  placeholder='请选择支付状态'
-                  onChange={(value, elem: any) => {
-                    setCurrentWithdraw({
-                      pay_status: value,
-                    }, false);
-                  }}
-                  onFocus={async () => {
-
-                  }}
-                >
-                  {
-                    scopeOptions.map(item => (
-                      // @ts-ignore
-                      <Option key={item.field}>
-                        {item.translation}
-                      </Option>
-                    ))
-                  }
-                </Select>
-              )
-            }
+            })(<Input placeholder='请输入划款单号' onChange={evt => {
+              setCurrentWithdraw({
+                remit_number: evt.target.value,
+              }, false);
+            }}
+            />)}
           </FormItem>
           <FormItem label='实付金额' {...getFormItemLayout(6, 16)} required>
-            {getFieldDecorator('account', {
-              initialValue: currentWithdraw.account,
+            {getFieldDecorator('actual_amount', {
+              initialValue: currentWithdraw.actual_amount,
               rules: [
               ],
-            })(<Input type='number' placeholder='请输入实付金额' />)}
-          </FormItem>
-          <FormItem label='变更原因' {...getFormItemLayout(6, 16)}>
-            {getFieldDecorator('reason', {
-              initialValue: currentShowWithdraw && currentShowWithdraw.reason,
-              rules: [
-              ],
-            })(<TextArea
-              placeholder='请输入变更原因'
-              rows={6} onChange={evt => {
-                setCurrentWithdraw({
-                  reason: evt.target.value,
-                }, false);
-              }} />)}
+            })(<Input type='number' placeholder='请输入实付金额' onChange={evt => {
+              setCurrentWithdraw({
+                actual_amount: +evt.target.value,
+              }, false);
+            }}/>)}
           </FormItem>
         </Form>
       </div>

@@ -3,9 +3,7 @@ import { BaseReact } from 'components/BaseReact';
 import {
   Form,
   Input,
-  Select,
-  Row,
-  Col
+  Select
 } from 'antd';
 import './index.scss';
 import {

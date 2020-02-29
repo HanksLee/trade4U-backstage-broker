@@ -2,34 +2,34 @@ import { AxiosRequestConfig } from "axios";
 import { moonAPI as API } from "utils/request";
 
 const getDepositList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/system/symbol", config);
+  API.get("/broker/deposit", config);
 
 const getCurrentDeposit = (id: string, config): Promise<any> =>
-  API.get(`/system/symbol/${id}`, config);
+  API.get(`/broker/deposit/${id}`, config);
 
 const createDeposit = (config): Promise<any> =>
-  API.post(`/system/symbol`, config);
+  API.post(`/broker/deposit`, config);
 
 const updateDeposit = (id: string, config): Promise<any> =>
-  API.patch(`/system/symbol/${id}`, config);
+  API.patch(`/broker/deposit/${id}`, config);
 
 const deleteDeposit = (id: string, config: AxiosRequestConfig): Promise<any> =>
-  API.delete(`/system/symbol/${id}`, config);
+  API.delete(`/broker/deposit/${id}`, config);
 
 const getWithdrawList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/system/symbol", config);
+  API.get("/broker/withdraw", config);
 
 const getCurrentWithdraw = (id: string, config): Promise<any> =>
-  API.get(`/system/symbol/${id}`, config);
+  API.get(`/broker/withdraw/${id}`, config);
 
 const createWithdraw = (config): Promise<any> =>
-  API.post(`/system/symbol`, config);
+  API.post(`/broker/withdraw`, config);
 
 const updateWithdraw = (id: string, config): Promise<any> =>
-  API.patch(`/system/symbol/${id}`, config);
+  API.patch(`/broker/withdraw/${id}`, config);
 
 const deleteWithdraw = (id: string, config: AxiosRequestConfig): Promise<any> =>
-  API.delete(`/system/symbol/${id}`, config);
+  API.delete(`/broker/withdraw/${id}`, config);
 
 const getPaymentList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/system/symbol", config);

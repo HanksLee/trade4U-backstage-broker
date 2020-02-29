@@ -29,20 +29,13 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     currentPage: 1,
     selectedRowKeys: [],
     withdrawModalVisible: false,
-    scopeOptions: [
-      {
-        id: 1,
-        name: '保证金计算',
-      },
-      {
-        id: 2,
-        name: '盈亏计算',
-      },
-      {
-        id: 3,
-        name: '预付款计算',
-      }
-    ],
+    user__username: undefined,
+    province: undefined,
+    city: undefined,
+    reviewStatus: undefined,
+    remitStatus: undefined,
+    reviewDateRange: [],
+    remitDateRange: [],
   };
 
   async componentDidMount() {
@@ -52,7 +45,6 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
-    // this.getScopeOptions();
   }
 
   componentDidUpdate() {
@@ -61,28 +53,17 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     }
   }
 
-  getScopeOptions = async () => {
-    const res = await this.$api.finance.getScopeOptions();
-
-    if (res.data.status == 200) {
-      this.setState({
-        scopeOptions: res.data.list,
-      });
-    }
-  }
-
   getDataList = (payload = {}) => {
     this.setState(
       {
         tableLoading: true,
-        filter: {
-          ...this.state.filter,
-          ...payload,
-        },
       },
       async () => {
+        this.props.finance.setFilterWithdraw({
+          ...payload,
+        });
         await this.props.finance.getWithdrawList({
-          params: this.state.filter,
+          params: this.props.finance.filterWithdraw,
         });
         this.setState({ tableLoading: false, });
       }
@@ -90,12 +71,6 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
   };
 
   toggleWithdrawModal = async (id?) => {
-    if (!this.state.withdrawModalVisible) {
-      await this.props.finance.getCurrentWithdraw(id);
-    } else {
-      this.props.finance.setCurrentWithdraw({}, true, false);
-    }
-
     this.setState({
       withdrawModalVisible: !this.state.withdrawModalVisible,
     });
@@ -105,22 +80,18 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     const { currentWithdraw, } = this.props.finance;
 
     let res;
-    if (!currentWithdraw.name) {
-      return this.$msg.warn('请输入利润规则名称');
+    if (!currentWithdraw.remit_number) {
+      return this.$msg.warn('请输入划款单号');
     }
 
-    if (!currentWithdraw.scope) {
-      return this.$msg.warn('请选择利润规则作用域');
+    if (!currentWithdraw.actual_amount) {
+      return this.$msg.warn('请输入实付金额');
     }
 
-    if (!currentWithdraw.func_name) {
-      return this.$msg.warn('请输入利润规则函数');
-    }
 
     let payload: any = {
-      name: currentWithdraw.name,
-      scope: currentWithdraw.scope,
-      func_name: currentWithdraw.func_name,
+      remit_number: currentWithdraw.remit_number,
+      actual_amount: currentWithdraw.actual_amount,
     };
 
     if (currentWithdraw.id) {
@@ -190,6 +161,13 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     this.setState(
       {
         currentPage: 1,
+        user__username: undefined,
+        province: undefined,
+        city: undefined,
+        reviewStatus: undefined,
+        remitStatus: undefined,
+        reviewDateRange: [],
+        remitDateRange: [],
       },
       () => {
         this.getDataList(this.props.finance.filterWithdraw);
@@ -206,12 +184,44 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     return null;
   };
 
+  onDateRangeChange = (field, dateRange) => {
+    this.props.finance.setFilterWithdraw({
+      [`${field}_time__start`]: dateRange[0].unix(),
+      [`${field}_time__end`]: dateRange[1].unix(),
+    });
+
+    this.setState({
+      [`${field}DateRange`]: dateRange,
+    });
+  }
+
+  onInputChanged = (field, value) => {
+    this.setState({
+      [field]: value,
+    });
+    this.props.finance.setFilterWithdraw({
+      [field]: value ? value : undefined,
+    });
+  }
+
+  onOptionSelect = (field, value, elem) => {
+    this.setState({
+      [`${field}Status`]: value,
+    }, () => {
+      this.props.finance.setFilterWithdraw({
+        [`${field}_status`]: value,
+      });
+
+      this.getDataList(this.state.filter);
+    });
+  }
+
   // @ts-ignore
   private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;
-    const computedTitle = '入金管理';
+    const computedTitle = '出金管理';
     const { withdrawModalVisible, } = this.state;
     const { currentWithdraw, } = this.props.finance;
 

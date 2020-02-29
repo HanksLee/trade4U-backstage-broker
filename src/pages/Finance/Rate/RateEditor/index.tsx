@@ -14,12 +14,11 @@ import {
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const TextArea = Input.TextArea;
 
-const getFormItemLayout = (label, wrapper, offset?) => ({
-  labelCol: { span: label, offset, },
-  wrapperCol: { span: wrapper, },
-});
+// const getFormItemLayout = (label, wrapper, offset?) => ({
+//   labelCol: { span: label, offset, },
+//   wrapperCol: { span: wrapper, },
+// });
 
 export interface IRateEditorProps {
 
@@ -51,7 +50,7 @@ export default class RateEditor extends BaseReact<IRateEditorProps, IRateEditorS
   }
 
   render() {
-    const { scopeOptions, } = this.state;
+    // const { scopeOptions, } = this.state;
     const { currentRate, currentShowRate, setCurrentRate, } = this.props.finance;
     const { getFieldDecorator, } = this.props.form;
 

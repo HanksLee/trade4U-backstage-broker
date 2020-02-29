@@ -3,13 +3,13 @@ import { Button, Icon, Popconfirm } from "antd";
 import utils from "utils";
 
 const config = self => {
-  const { selectedRowKeys, } = self.state;
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: (selectedRowKeys, selectedRows) => {
-      self.setState({ selectedRowKeys: selectedRowKeys, });
-    },
-  };
+  // const { selectedRowKeys, } = self.state;
+  // const rowSelection = {
+  //   selectedRowKeys,
+  //   onChange: (selectedRowKeys, selectedRows) => {
+  //     self.setState({ selectedRowKeys: selectedRowKeys, });
+  //   },
+  // };
 
   const columns = [
     {

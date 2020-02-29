@@ -24,6 +24,17 @@ export const marketOptions = [
   }
 ];
 
+export const depositOptions = [
+  {
+    id: 0,
+    name: '未支付',
+  },
+  {
+    id: 1,
+    name: '已支付',
+  }
+];
+
 export const WeeklyOrder = [
   'Sunday',
   'Monday',
@@ -41,6 +52,9 @@ export const PAGE_PERMISSION_MAP = {
   '/dashboard/order/position': 'VIEW_ORDER_POSITION_PAGE',
   '/dashboard/manager': 'VIEW_MANAGER_PAGE',
   '/dashboard/account': 'VIEW_ACCOUNT_PAGE',
+  '/dashboard/finance': 'VIEW_FINANCE_PAGE',
+  '/dashboard/finance/deposit': 'VIEW_FINANCE_DEPOSIT_PAGE',
+  '/dashboard/finance/withdraw': 'VIEW_FINANCE_WITHDRAW_PAGE',
 };
 
 export const PAGE_ROUTES = [

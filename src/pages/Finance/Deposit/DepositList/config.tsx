@@ -1,6 +1,11 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm } from "antd";
 import utils from "utils";
+import moment from 'moment';
+import {
+  FORMAT_TIME
+} from 'constant';
+import StatusText from 'components/StatusText';
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
@@ -14,67 +19,86 @@ const config = self => {
   const columns = [
     {
       title: "姓名",
-      dataIndex: "name",
+      dataIndex: "user_display",
+      render: (text, record) => text.username || '--',
     },
     {
       title: "上级",
-      dataIndex: "parent",
+      dataIndex: "superior",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "通道名称",
-      dataIndex: "scope",
       render: (text, record) => {
-        return text || '--';
+        return record.payment_display && record.payment_display.name || '--';
       },
     },
     {
       title: "收款商户",
-      dataIndex: "func_name",
+      render: (text, record) => {
+        return record.payment_display && record.payment_display.merchant || '--';
+      },
+    },
+    {
+      title: "充值金额",
+      dataIndex: "expect_amount",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "支付金额",
-      dataIndex: "func_name",
+      dataIndex: "actual_amount",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "支付状态",
-      dataIndex: "func_name",
+      dataIndex: "status",
       render: (text, record) => {
-        return text || '--';
+        const statusType = {
+          1: 'normal',
+          0: 'block',
+        };
+        const statusText = {
+          1: '已支付',
+          0: '未支付',
+        };
+
+        return <StatusText type={
+          statusType[record.status]
+        } text={
+          statusText[record.status]
+        } />;
       },
     },
     {
       title: "支付单号",
-      dataIndex: "func_name",
+      dataIndex: "order_number",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "提交时间",
-      dataIndex: "func_name",
+      dataIndex: "create_time",
       render: (text, record) => {
-        return text || '--';
+        return text && moment(text * 1000).format(FORMAT_TIME) || '--';
       },
     },
     {
       title: "回执时间",
-      dataIndex: "func_name",
+      dataIndex: "notify_time",
       render: (text, record) => {
-        return text || '--';
+        return text && moment(text * 1000).format(FORMAT_TIME) || '--';
       },
     },
     {
       title: "回执单号",
-      dataIndex: "func_name",
+      dataIndex: "notify_ordernumber",
       render: (text, record) => {
         return text || '--';
       },
@@ -85,8 +109,11 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => {
-              self.props.finance.setCurrentDeposit(record, true, false);
+            <span onClick={async () => {
+              await self.props.finance.getCurrentDeposit(record.id);
+              self.setState({
+                initStatus: self.props.finance.currentDeposit.status,
+              });
               self.toggleDepositModal(record.id);
             }}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
@@ -126,14 +153,13 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => (
-        <Button style={{ display: 'none', }} type='primary' onClick={() => {
-          self.props.finance.setCurrentDeposit({});
+        <Button  type='primary' style={{ display: 'none', }} onClick={() => {
+          self.props.finance.setCurrentDeposit({}, true, false);
           self.toggleDepositModal();
         }}><Icon type="plus" />添加</Button>
       ),
     },
     searcher: {
-      hideSearcher: true,
       batchControl: {
         placeholder: "请选择",
         showBatchControl: !utils.isEmpty(self.state.selectedRowKeys),
@@ -148,10 +174,74 @@ const config = self => {
         },
       },
       widgets: [
+        [
+          {
+            type: 'Input',
+            label: '姓名',
+            placeholder: '请输入姓名',
+            value: self.state.user__username || undefined,
+            onChange(evt) {
+              self.onInputChanged('user__username', evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
+          {
+            type: 'Input',
+            label: '金额',
+            placeholder: '请输入金额',
+            value: self.state.expect_amount || undefined,
+            onChange(evt) {
+              self.onInputChanged('expect_amount', evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          }
+        ],
+        {
+          type: 'Input',
+          label: '订单号',
+          placeholder: '请输入订单号',
+          value: self.state.order_number || undefined,
+          onChange(evt) {
+            self.onInputChanged('order_number', evt.target.value);
+          },
+          onPressEnter(evt) {
+            self.onSearch();
+          },
+        },
+        {
+          type: 'RangePicker',
+          label: '提交时间',
+          placeholder: ['开始日期', '结束日期'],
+          showTime: { format: 'HH:mm:ss', },
+          format: FORMAT_TIME,
+          alias: [1, 7, 30],
+          value: self.state.createDateRange || [],
+          onChange(value) {
+            self.onDateRangeChange('create', value);
+          },
+        },
+        {
+          type: 'RangePicker',
+          label: '回执时间',
+          placeholder: ['开始日期', '结束日期'],
+          showTime: { format: 'HH:mm:ss', },
+          format: FORMAT_TIME,
+          alias: [1, 7, 30],
+          value: self.state.notifyDateRange || [],
+          onChange(value) {
+            self.onDateRangeChange('notify', value);
+          },
+        }
       ],
       onSearch() {
+        self.onSearch();
       },
       onReset() {
+        self.onReset();
       },
     },
     table: {

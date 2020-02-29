@@ -29,20 +29,12 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
     currentPage: 1,
     selectedRowKeys: [],
     depositModalVisible: false,
-    scopeOptions: [
-      {
-        id: 1,
-        name: '保证金计算',
-      },
-      {
-        id: 2,
-        name: '盈亏计算',
-      },
-      {
-        id: 3,
-        name: '预付款计算',
-      }
-    ],
+    user__username: undefined,
+    expect_amount: undefined,
+    order_number: undefined,
+    createDateRange: [],
+    notifyDateRange: [],
+    initStatus: 0, // 订单状态
   };
 
   async componentDidMount() {
@@ -75,27 +67,29 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
     this.setState(
       {
         tableLoading: true,
-        filter: {
-          ...this.state.filter,
-          ...payload,
-        },
       },
       async () => {
+        this.props.finance.setFilterDeposit({
+          ...payload,
+        });
         await this.props.finance.getDepositList({
-          params: this.state.filter,
+          params: this.props.finance.filterDeposit,
         });
         this.setState({ tableLoading: false, });
       }
     );
   };
 
-  toggleDepositModal = async (id?) => {
-    if (!this.state.depositModalVisible) {
-      await this.props.finance.getCurrentDeposit(id);
-    } else {
-      this.props.finance.setCurrentDeposit({}, true, false);
-    }
+  onInputChanged = (field, value) => {
+    this.setState({
+      [field]: value,
+    });
+    this.props.finance.setFilterDeposit({
+      [field]: value ? value : undefined,
+    });
+  }
 
+  toggleDepositModal = async (id?) => {
     this.setState({
       depositModalVisible: !this.state.depositModalVisible,
     });
@@ -105,22 +99,14 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
     const { currentDeposit, } = this.props.finance;
 
     let res;
-    if (!currentDeposit.name) {
-      return this.$msg.warn('请输入利润规则名称');
-    }
-
-    if (!currentDeposit.scope) {
-      return this.$msg.warn('请选择利润规则作用域');
-    }
-
-    if (!currentDeposit.func_name) {
-      return this.$msg.warn('请输入利润规则函数');
+    if (currentDeposit.status == null) {
+      return this.$msg.warn('请选择支付状态');
     }
 
     let payload: any = {
-      name: currentDeposit.name,
-      scope: currentDeposit.scope,
-      func_name: currentDeposit.func_name,
+      order_number: currentDeposit.order_number,
+      status: currentDeposit.status,
+      remarks: currentDeposit.remarks,
     };
 
     if (currentDeposit.id) {
@@ -133,7 +119,7 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
     const statusCode = currentDeposit.id ? 200 : 201;
 
     if (res.status == statusCode) {
-      this.$msg.success(!currentDeposit.id ? '利润规则添加成功' : '利润规则编辑成功');
+      this.$msg.success(!currentDeposit.id ? '订单状态添加成功' : '订单状态编辑成功');
       this.toggleDepositModal();
       this.getDataList(this.state.filter);
     } else {
@@ -146,6 +132,17 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
       depositModalVisible: false,
     });
     this.props.finance.setCurrentDeposit({}, true, false);
+  }
+
+  onDateRangeChange = (field, dateRange) => {
+    this.props.finance.setFilterDeposit({
+      [`${field}_time__start`]: dateRange[0].unix(),
+      [`${field}_time__end`]: dateRange[1].unix(),
+    });
+
+    this.setState({
+      [`${field}DateRange`]: dateRange,
+    });
   }
 
   resetPagination = async (page_size, current_page) => {
@@ -183,6 +180,7 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
     // @ts-ignore
     const filter: any = {
       current_page: 1,
+      page_size: this.props.finance.filterDeposit.page_size,
     };
 
     this.props.finance.setFilterDeposit(filter, true);
@@ -190,6 +188,11 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
     this.setState(
       {
         currentPage: 1,
+        user__username: undefined,
+        expect_amount: undefined,
+        order_number: undefined,
+        createDateRange: [],
+        notifyDateRange: [],
       },
       () => {
         this.getDataList(this.props.finance.filterDeposit);
@@ -212,7 +215,7 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
   render() {
     const { match, } = this.props;
     const computedTitle = '入金管理';
-    const { depositModalVisible, } = this.state;
+    const { depositModalVisible, initStatus, } = this.state;
     const { currentDeposit, } = this.props.finance;
 
     return (
@@ -228,12 +231,12 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
               width={720}
               visible={depositModalVisible}
               title={
-                utils.isEmpty(currentDeposit.id) ? '添加利润规则' : '编辑利润规则'
+                utils.isEmpty(currentDeposit.id) ? '添加订单状态' : '更改订单状态'
               }
               onOk={this.onModalConfirm}
               onCancel={this.onModalCancel}
             >
-              <DepositEdtior onRef={ref => this.$depositEditor = ref} />
+              <DepositEdtior initStatus={initStatus} onRef={ref => this.$depositEditor = ref} />
             </Modal>
           )
         }
