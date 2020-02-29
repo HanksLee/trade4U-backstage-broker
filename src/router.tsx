@@ -11,9 +11,9 @@ const routes: any[] = [
   {
     component: loadable(() => import(/* webpackChunkName: "role-page" */ './pages/Role')),
   },
-  // {
-  //   component: loadable(() => import(/* webpackChunkName: "Index" */ './pages/Index')),
-  // },
+  {
+    component: loadable(() => import(/* webpackChunkName: "account-page" */ './pages/Account')),
+  },
   {
     component: loadable(() => import(/* webpackChunkName: "Deposit" */ './pages/Finance/Deposit/DepositList')),
   },

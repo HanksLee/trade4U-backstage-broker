@@ -1,0 +1,19 @@
+.account-editor-form {
+  .ant-form-item-label {
+    width: 80px;
+  }
+
+  .id-card-form {
+    width: 900px;
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px dashed rgba(0, 0, 0, .1);
+  }
+
+  .upload-image-preview {
+    width: 400px;
+    height: 200px;
+  }
+}

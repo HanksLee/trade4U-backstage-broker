@@ -40,6 +40,7 @@ export const PAGE_PERMISSION_MAP = {
   '/dashboard/order': 'VIEW_ORDER_PAGE',
   '/dashboard/order/position': 'VIEW_ORDER_POSITION_PAGE',
   '/dashboard/manager': 'VIEW_MANAGER_PAGE',
+  '/dashboard/account': 'VIEW_ACCOUNT_PAGE',
 };
 
 export const PAGE_ROUTES = [
