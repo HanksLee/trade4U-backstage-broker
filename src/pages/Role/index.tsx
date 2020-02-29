@@ -80,7 +80,7 @@ export default class Role extends BaseReact<{}, IRoleState> {
             <div className="common-list-table-operation">
               <span onClick={() => this.showEditRoleModal(record)}>编辑</span>
               <span className="common-list-table-operation-spliter" />
-              <span onClick={() => this.goToEditor(record.id)}>分配权限</span>
+              <span onClick={() => this.goToEditor(record.id)}>授权</span>
               <span className="common-list-table-operation-spliter" />
               <Popconfirm title="确认删除？" onConfirm={() => this.deleteRole(record.id)}>
                 <span>删除</span>
