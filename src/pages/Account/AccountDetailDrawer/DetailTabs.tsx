@@ -101,7 +101,7 @@ export default class DetailTabsModal extends BaseReact<IDetailTabsProps, IDetail
               )}
             >
               {logLoading && logHasMore && (
-                <div className="log-loading-container">
+                <div className="list-loading-container">
                   <Spin />
                 </div>
               )}

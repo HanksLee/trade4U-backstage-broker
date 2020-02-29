@@ -1,5 +1,6 @@
 
 import * as React from 'react';
+import DepositList from './DepositList';
 import DetailTabs from './DetailTabs';
 import { BaseReact } from 'components/BaseReact';
 import { Collapse, Drawer } from 'antd';
@@ -40,12 +41,7 @@ export default class AccountDetailModal extends BaseReact<IAccountDetailDrawerPr
         <DetailTabs id={props.id} />
         <Collapse style={{ margin: '15px 0', }}>
           <Collapse.Panel key="money" header="最近出入金">
-            <p>1</p>
-          </Collapse.Panel>
-        </Collapse>
-        <Collapse style={{ marginBottom: '15px', }}>
-          <Collapse.Panel key="money2" header="最近出入金2">
-            <p>1</p>
+            <DepositList name={props.name} />
           </Collapse.Panel>
         </Collapse>
       </Drawer>
