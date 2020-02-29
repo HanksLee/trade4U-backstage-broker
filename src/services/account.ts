@@ -21,6 +21,9 @@ const resetAccountPassword = (id: string, config): Promise<any> =>
 const updateAccountBalance = (id: string, config): Promise<any> =>
   API.put(`/broker/account/${id}/change-balance`, config);
 
+const getAccountLoginLog = (id: string, config): Promise<any> =>
+  API.get(`/broker/account/${id}/login-log`, config);
+
 export default {
   getAccountList,
   createAccount,
@@ -29,4 +32,5 @@ export default {
   getAccountDetail,
   resetAccountPassword,
   updateAccountBalance,
+  getAccountLoginLog,
 };

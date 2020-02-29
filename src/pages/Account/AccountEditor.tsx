@@ -54,23 +54,23 @@ export default class AccountEditor extends BaseReact<{}> {
     return (
       <Form className='editor-form account-editor-form' layout="inline">
         <FormItem label="姓" required>
-          {getFieldDecorator('first_name', {
-            initialValue: accountDetail && accountDetail.first_name,
+          {getFieldDecorator('last_name', {
+            initialValue: accountDetail && accountDetail.last_name,
           })(
             <Input placeholder="请输入姓氏" onChange={evt => {
               this.setCurrentAccount({
-                first_name: evt.target.value,
+                last_name: evt.target.value,
               });
             }} style={{ display: 'inline-block', width: 200, }} />
           )}
         </FormItem>
         <FormItem label="名" required>
-          {getFieldDecorator('last_name', {
-            initialValue: accountDetail && accountDetail.last_name,
+          {getFieldDecorator('first_name', {
+            initialValue: accountDetail && accountDetail.first_name,
           })(
             <Input placeholder="请输入名字" onChange={evt => {
               this.setCurrentAccount({
-                last_name: evt.target.value,
+                first_name: evt.target.value,
               });
             }} style={{ display: 'inline-block', width: 200, }} />
           )}

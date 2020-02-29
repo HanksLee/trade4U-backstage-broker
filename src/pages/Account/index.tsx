@@ -1,3 +1,4 @@
+import AccountDetailDrawer from './AccountDetailDrawer';
 import AccountEditor from './AccountEditor';
 import CommonHeader from 'components/CommonHeader';
 import CommonList from 'components/CommonList';
@@ -6,7 +7,7 @@ import listConfig from './config';
 import WithRoute from 'components/WithRoute';
 import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
-import { Drawer, Modal } from 'antd';
+import { Modal } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { Route } from 'react-router-dom';
 import { PAGE_PERMISSION_MAP } from 'constant';
@@ -148,12 +149,14 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     ));
   }
 
-  goToEditor = (id?: number) => {
+  goToEditor = (e: any, id?: number) => {
+    e.stopPropagation(); // 固定列上的事件，会触发底部事件
     const url = `/dashboard/account/editor?id=${id ? id : 0}`;
     this.props.history.push(url);
   }
 
-  viewDetail = (record: Account) => {
+  viewDetail = (e: any, record: Account) => {
+    e.stopPropagation(); // 固定列上的事件，会触发底部事件
     this.setState({
       currentAccount: record,
       isShowDetailDrawer: true,
@@ -222,17 +225,15 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
         <Route path={`${match.url}/editor`} render={props => (
           <AccountEditor {...props} getAccountList={this.getDataList} />
         )} />
-        <Drawer
-          title="客户详情"
-          placement="right"
-          closable={false}
-          visible={isShowDetailDrawer}
-          onClose={this.hideDetailDrawer}
-        >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Drawer>
+        {
+          isShowDetailDrawer && (
+            <AccountDetailDrawer
+              id={currentAccount.id}
+              name={currentAccount.last_name + currentAccount.first_name}
+              onClose={this.hideDetailDrawer}
+            />
+          )
+        }
         {
           isShowBalanceModal && currentAccount && (
             <EditBalanceModal

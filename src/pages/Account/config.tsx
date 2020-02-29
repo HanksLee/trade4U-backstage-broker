@@ -10,7 +10,7 @@ const config = self => {
       title: "名字",
       width: 150,
       render: (_, record) => {
-        return record.first_name + record.last_name;
+        return record.last_name + record.first_name;
       },
     },
     {
@@ -21,46 +21,8 @@ const config = self => {
     {
       title: "代理",
       width: 150,
-      dataIndex: 'agent',
-    },
-    {
-      title: "生日",
-      width: 150,
-      dataIndex: 'birth',
-    },
-    {
-      title: "电话",
-      width: 150,
-      dataIndex: 'mobile',
-    },
-    {
-      title: "国籍",
-      dataIndex: 'nationality_name',
-      width: 150,
-      ellipsis: true,
-    },
-    {
-      title: "居住国",
-      dataIndex: 'country_of_residence_name',
-      width: 150,
-      ellipsis: true,
-    },
-    {
-      title: "城市",
-      dataIndex: 'city',
-      width: 150,
-      ellipsis: true,
-    },
-    {
-      title: "街道",
-      dataIndex: 'street',
-      width: 150,
-      ellipsis: true,
-    },
-    {
-      title: "邮编",
-      width: 150,
-      dataIndex: 'postal',
+      dataIndex: 'agent_name',
+      ellipsis: true, // 必须保留
     },
     {
       title: "邮箱",
@@ -84,8 +46,8 @@ const config = self => {
       },
     },
     {
-      title: "是否只读",
-      width: 100,
+      title: "只读",
+      width: 80,
       align: 'center',
       dataIndex: 'read_only',
       render: (text, record) => {
@@ -97,8 +59,8 @@ const config = self => {
       },
     },
     {
-      title: "是否禁用",
-      width: 100,
+      title: "禁用",
+      width: 80,
       align: 'center',
       dataIndex: 'disable_status',
       render: (text, record) => {
@@ -135,9 +97,9 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => self.goToEditor(record.id)}>编辑</span>
+            <span onClick={(e) => self.goToEditor(e, record.id)}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
-            <span onClick={() => self.viewDetail(record)}>详情</span>
+            <span onClick={(e) => self.viewDetail(e, record)}>详情</span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除客户"
@@ -195,7 +157,6 @@ const config = self => {
           label: '用户名',
           placeholder: '请输入用户名',
           value: self.state.tempFilter.username || undefined,
-          width: '120px',
           onChange(evt) {
             self.onInputChanged('username', evt.target.value);
           },
@@ -203,6 +164,18 @@ const config = self => {
             self.onSearch();
           },
         }, {
+          type: 'Input',
+          label: '手机',
+          placeholder: '请输入手机号',
+          value: self.state.tempFilter.phone || undefined,
+          onChange(evt) {
+            self.onInputChanged('phone', evt.target.value);
+          },
+          onPressEnter(evt) {
+            self.onSearch();
+          },
+        }],
+        {
           type: 'RangePicker',
           label: '创建时间',
           placeholders: ['开始时间', '结束时间'],
@@ -215,7 +188,7 @@ const config = self => {
           onPressEnter(evt) {
             self.onSearch();
           },
-        }]
+        }
       ],
       onSearch() {
         self.onSearch();
@@ -229,7 +202,7 @@ const config = self => {
       columns,
       dataSource: self.state.accountList,
       pagination,
-      scroll: { x: 12 * 150 + 2 * 200, },
+      scroll: { x: 9 * 150, },
       onChange(pagination, filters) {
         const payload: any = {};
 
