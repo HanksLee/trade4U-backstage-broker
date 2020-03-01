@@ -78,10 +78,20 @@ export default class TransactionList extends BaseReact<{}, TransactionListState>
 
   // @ts-ignore
   private onSearch = async () => {
-    this.getDataList({
+    const filter: any = {
       page: 1,
       ...this.state.tempFilter,
-    });
+    };
+
+    if (filter.start_time) {
+      filter.start_time = filter.start_time.unix();
+    }
+
+    if (filter.end_time) {
+      filter.end_time = filter.end_time.unix();
+    }
+
+    this.getDataList(filter);
   };
 
   // @ts-ignore
