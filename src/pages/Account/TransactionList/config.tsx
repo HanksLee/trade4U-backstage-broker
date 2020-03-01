@@ -4,55 +4,61 @@ import utils from 'utils';
 const config = self => {
   const columns = [
     {
-      title: "ip",
-      dataIndex: "ip",
+      title: "客户名称",
+      dataIndex: "username",
       width: 150,
       fixed: 'left',
     },
     {
-      title: "手机",
+      title: "手机号",
       dataIndex: 'phone',
       width: 150,
     },
     {
-      title: '方式',
-      dataIndex: 'in_or_out',
-      render: (text) => (text ? '减少' : '增加'),
+      title: '明细类型',
+      dataIndex: 'cause',
+      ellipsis: true,
       width: 150,
     },
     {
-      title: '金额',
-      dataIndex: 'amount',
-      width: 150,
-    },
-    {
-      title: '变动前金额',
+      title: '原有余额',
       dataIndex: 'before_balance',
       width: 150,
     },
     {
-      title: '变动后金额',
+      title: '变动金额',
+      dataIndex: 'amount',
+      width: 150,
+      render: (text, record) => {
+        return text == 0 ? 0 : (record.in_or_out === -1 ? `-${text}` : `+${text}`);
+      },
+    },
+    {
+      title: '现有余额',
       dataIndex: 'after_balance',
       width: 150,
     },
     {
-      title: '原因',
-      dataIndex: 'cause',
-      ellipsis: true,
-      width: 200,
-    },
-    {
-      title: '备注',
-      dataIndex: 'remarks',
-      ellipsis: true,
+      title: '相关订单',
+      dataIndex: 'order_number',
       width: 200,
     },
     {
       title: '创建时间',
       dataIndex: 'create_time',
       width: 200,
-      fixed: 'right',
       render: (text) => moment(text * 1000).format('YYYY-MM-DD: hh-mm-ss'),
+    },
+    {
+      title: "ip",
+      dataIndex: "ip",
+      width: 150,
+    },
+    {
+      title: '备注',
+      dataIndex: 'remarks',
+      ellipsis: true,
+      width: 200,
     }
   ];
 
@@ -114,28 +120,16 @@ const config = self => {
         }],
         [{
           type: 'Input',
-          label: '提现订单号',
-          placeholder: '请输入提现订单号',
-          value: self.state.tempFilter.withdraw_ordernum || undefined,
+          label: '订单号',
+          placeholder: '请输入订单号',
+          value: self.state.tempFilter.order_number || undefined,
           onChange(evt) {
-            self.onInputChanged('withdraw_ordernum', evt.target.value);
+            self.onInputChanged('order_number', evt.target.value);
           },
           onPressEnter(evt) {
             self.onSearch();
           },
         },
-        {
-          type: 'Input',
-          label: '入金订单号',
-          placeholder: '请输入入金订单号',
-          value: self.state.tempFilter.deposit_ordernum || undefined,
-          onChange(evt) {
-            self.onInputChanged('deposit_ordernum', evt.target.value);
-          },
-          onPressEnter(evt) {
-            self.onSearch();
-          },
-        }],
         {
           type: 'RangePicker',
           label: '创建时间',
@@ -149,7 +143,7 @@ const config = self => {
           onPressEnter(evt) {
             self.onSearch();
           },
-        }
+        }]
       ],
       onSearch() {
         self.onSearch();
@@ -163,7 +157,7 @@ const config = self => {
       columns,
       dataSource: self.state.transactionList,
       pagination,
-      scroll: { x: 1000, },
+      scroll: { x: 7 * 150 + 3 * 200, },
       onChange(pagination, filters) {
         const payload: any = {};
 
