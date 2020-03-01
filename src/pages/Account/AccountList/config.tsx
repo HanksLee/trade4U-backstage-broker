@@ -41,7 +41,7 @@ const config = self => {
       dataIndex: 'read_only',
       render: (text, record) => {
         const handleChange = (e) => {
-          const title = `确认对「${record.first_name + record.last_name}」${ text ? '启用' : '关闭'}只读？`;
+          const title = `确认对「${record.first_name + record.last_name}」${ e.target.checked ? '启用' : '关闭'}只读？`;
           self.updateAccountDetailField(record.id, 'read_only', e.target.checked ? 1 : 0, title);
         };
         return <Checkbox checked={text} onChange={handleChange} />;
@@ -54,7 +54,7 @@ const config = self => {
       dataIndex: 'disable_status',
       render: (text, record) => {
         const handleChange = (e) => {
-          const title = `确认对「${record.first_name + record.last_name}」${ text ? '开启' : '关闭'}禁用？`;
+          const title = `确认对「${record.first_name + record.last_name}」${ e.target.checked ? '开启' : '关闭'}禁用？`;
           self.updateAccountDetailField(record.id, 'disable_status', e.target.checked ? 1 : 0, title);
         };
         return <Checkbox checked={text} onChange={handleChange} />;
