@@ -5,7 +5,7 @@ export const SHARE_DATA = {
   imgUrl: "",
 };
 
-export const FORMAT_TIME = 'YYYY.MM.DD HH:mm';
+export const FORMAT_TIME = 'YYYY.MM.DD HH:mm:ss';
 
 export const UPLOAD_URL = "https://upyun.com";
 

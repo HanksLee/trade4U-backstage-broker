@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Icon, Popconfirm } from "antd";
+import { Button, Icon, Popconfirm,Checkbox } from "antd";
 import utils from "utils";
 import StatusText from 'components/StatusText';
 
@@ -67,23 +67,34 @@ const config = self => {
       },
     },
     {
-      title: "状态",
+      title: "禁用",
       dataIndex: "status",
       render: (text, record) => {
-        const statusType = {
-          1: 'normal',
-          0: 'hot',
+        const handleChange = async (e) => {
+          const res = await self.$api.finance.updatePayment(record.id, {
+            status: text == 0 ? 1 : 0
+          });
+          if (res.status === 200) {
+            self.getDataList(self.props.finance.filterPayment);
+          } else {
+            self.$msg.error(res.data.message);
+          }
         };
-        const statusText = {
-          1: '启用',
-          0: '禁用',
-        };
+        return <Checkbox checked={text} onChange={handleChange} />;
+        // const statusType = {
+        //   1: 'normal',
+        //   0: 'hot',
+        // };
+        // const statusText = {
+        //   1: '启用',
+        //   0: '禁用',
+        // };
 
-        return <StatusText type={
-          statusType[record.status]
-        } text={
-          statusText[record.status]
-        } />;
+        // return <StatusText type={
+        //   statusType[record.status]
+        // } text={
+        //   statusText[record.status]
+        // } />;
       },
     },
     {
@@ -103,7 +114,7 @@ const config = self => {
                 const res = await self.$api.finance.deletePayment(record.id);
 
                 if (res.status === 204) {
-                  self.getDataList(self.state.filter);
+                  self.getDataList(self.props.finance.filterPayment);
                 } else {
                   self.$msg.error(res.data.message);
                 }

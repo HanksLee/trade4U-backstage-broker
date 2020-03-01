@@ -169,7 +169,7 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     if (res.status == statusCode) {
       this.$msg.success(!currentPayment.id ? '支付方式添加成功' : '支付方式编辑成功');
       this.togglePaymentModal();
-      this.getDataList(this.state.filter);
+      this.getDataList(this.props.finance.filterPayment);
     } else {
       this.$msg.error(res.data.msg);
     }
@@ -261,7 +261,7 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
         [`${field}`]: value,
       });
 
-      this.getDataList(this.state.filter);
+      this.getDataList(this.props.finance.filterPayment);
     });
   }
 

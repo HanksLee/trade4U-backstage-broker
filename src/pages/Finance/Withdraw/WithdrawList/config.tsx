@@ -180,7 +180,7 @@ const config = self => {
                 const res = await self.$api.finance.deleteWithdraw(record.id);
 
                 if (res.status === 204) {
-                  self.getDataList(self.state.filter);
+                  self.getDataList(self.props.filterWithdraw);
                 } else {
                   self.$msg.error(res.data.message);
                 }

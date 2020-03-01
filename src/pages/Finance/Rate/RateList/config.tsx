@@ -82,7 +82,7 @@ const config = self => {
                 const res = await self.$api.finance.deleteRate(record.id);
 
                 if (res.status === 204) {
-                  self.getDataList(self.state.filter);
+                  self.getDataList(self.props.finance.filterRate);
                 } else {
                   self.$msg.error(res.data.message);
                 }

@@ -121,7 +121,7 @@ export default class DepositList extends BaseReact<IDepositListProps, IDepositLi
     if (res.status == statusCode) {
       this.$msg.success(!currentDeposit.id ? '订单状态添加成功' : '订单状态编辑成功');
       this.toggleDepositModal();
-      this.getDataList(this.state.filter);
+      this.getDataList(this.props.finance.filterDeposit);
     } else {
       this.$msg.error(res.data.msg);
     }

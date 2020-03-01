@@ -106,7 +106,7 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     if (res.status == statusCode) {
       this.$msg.success(!currentWithdraw.id ? '利润规则添加成功' : '利润规则编辑成功');
       this.toggleWithdrawModal();
-      this.getDataList(this.state.filter);
+      this.getDataList(this.props.finance.filterWithdraw);
     } else {
       this.$msg.error(res.data.msg);
     }
@@ -212,7 +212,7 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
         [`${field}_status`]: value,
       });
 
-      this.getDataList(this.state.filter);
+      this.getDataList(this.props.finance.filterWithdraw);
     });
   }
 

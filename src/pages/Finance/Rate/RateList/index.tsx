@@ -112,7 +112,7 @@ export default class RateList extends BaseReact<IRateListProps, IRateListState> 
     if (res.status == statusCode) {
       this.$msg.success(!currentRate.id ? '利润规则添加成功' : '利润规则编辑成功');
       this.toggleRateModal();
-      this.getDataList(this.state.filter);
+      this.getDataList(this.props.finance.filterRate);
     } else {
       this.$msg.error(res.data.msg);
     }
