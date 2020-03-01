@@ -59,7 +59,7 @@ export default class TransactionList extends BaseReact<{}, TransactionListState>
     
     const res = await this.$api.account.getTransactionList({ params: payload, });
     const { results, page_size, current_page, count, } = res.data;
-    if ((res.data.results.length === 0) && res.data.offset !== 0) {
+    if ((results.length === 0) && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
       this.getDataList({ ...payload, page: current_page - 1, });
     } else {
