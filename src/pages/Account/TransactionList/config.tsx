@@ -6,41 +6,52 @@ const config = self => {
     {
       title: "ip",
       dataIndex: "ip",
+      width: 150,
+      fixed: 'left',
     },
     {
       title: "手机",
       dataIndex: 'phone',
+      width: 150,
     },
     {
       title: '方式',
       dataIndex: 'in_or_out',
       render: (text) => (text ? '减少' : '增加'),
+      width: 150,
     },
     {
       title: '金额',
       dataIndex: 'amount',
+      width: 150,
     },
     {
       title: '变动前金额',
       dataIndex: 'before_balance',
+      width: 150,
     },
     {
       title: '变动后金额',
       dataIndex: 'after_balance',
+      width: 150,
     },
     {
       title: '原因',
       dataIndex: 'cause',
       ellipsis: true,
+      width: 200,
     },
     {
       title: '备注',
       dataIndex: 'remarks',
       ellipsis: true,
+      width: 200,
     },
     {
       title: '创建时间',
       dataIndex: 'create_time',
+      width: 200,
+      fixed: 'right',
       render: (text) => moment(text * 1000).format('YYYY-MM-DD: hh-mm-ss'),
     }
   ];
@@ -152,6 +163,7 @@ const config = self => {
       columns,
       dataSource: self.state.transactionList,
       pagination,
+      scroll: { x: 1000, },
       onChange(pagination, filters) {
         const payload: any = {};
 
