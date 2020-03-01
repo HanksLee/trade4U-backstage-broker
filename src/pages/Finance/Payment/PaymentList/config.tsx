@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Icon, Popconfirm,Checkbox } from "antd";
+import { Button, Icon, Popconfirm, Checkbox } from "antd";
 import utils from "utils";
 import StatusText from 'components/StatusText';
 
@@ -72,7 +72,7 @@ const config = self => {
       render: (text, record) => {
         const handleChange = async (e) => {
           const res = await self.$api.finance.updatePayment(record.id, {
-            status: text == 0 ? 1 : 0
+            status: text == 0 ? 1 : 0,
           });
           if (res.status === 200) {
             self.getDataList(self.props.finance.filterPayment);
