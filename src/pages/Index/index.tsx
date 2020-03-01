@@ -143,7 +143,6 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
   renderMenuItem = (route: any): JSX.Element => {
     const { permissions, } = this.props.common;
-
     if (permissions.indexOf(PAGE_PERMISSION_MAP[route.path]) === -1) return null;
 
     if (route.children && route.children.length > 0) {

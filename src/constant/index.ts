@@ -52,6 +52,8 @@ export const PAGE_PERMISSION_MAP = {
   '/dashboard/order/position': 'VIEW_ORDER_POSITION_PAGE',
   '/dashboard/manager': 'VIEW_MANAGER_PAGE',
   '/dashboard/account': 'VIEW_ACCOUNT_PAGE',
+  '/dashboard/account/account': 'VIEW_ACCOUNT_LIST_PAGE',
+  '/dashboard/account/transaction': 'VIEW_ACCOUNT_TRANSACTION_PAGE',
   '/dashboard/finance': 'VIEW_FINANCE_PAGE',
   '/dashboard/finance/deposit': 'VIEW_FINANCE_DEPOSIT_PAGE',
   '/dashboard/finance/withdraw': 'VIEW_FINANCE_WITHDRAW_PAGE',

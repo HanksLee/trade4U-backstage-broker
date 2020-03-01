@@ -35,24 +35,13 @@ const config = self => {
       dataIndex: 'group_name',
     },
     {
-      title: "余额",
-      width: 150,
-      dataIndex: 'balance',
-      render: (text, record) => {
-        const handleClick = () => {
-          self.handleChangeBalance(record);
-        };
-        return <>{text} <Icon type="edit" onClick={handleClick} /></>;
-      },
-    },
-    {
       title: "只读",
       width: 80,
       align: 'center',
       dataIndex: 'read_only',
       render: (text, record) => {
         const handleChange = (e) => {
-          const title = `确认将「${record.first_name + record.last_name}」设为${ text ? '可读' : '不可读'} 吗？`;
+          const title = `确认对「${record.first_name + record.last_name}」${ text ? '启用' : '关闭'}只读？`;
           self.updateAccountDetailField(record.id, 'read_only', e.target.checked ? 1 : 0, title);
         };
         return <Checkbox checked={text} onChange={handleChange} />;
@@ -65,10 +54,21 @@ const config = self => {
       dataIndex: 'disable_status',
       render: (text, record) => {
         const handleChange = (e) => {
-          const title = `确认将「${record.first_name + record.last_name}」设为${ text ? '禁用' : '不禁用'} 吗？`;
+          const title = `确认对「${record.first_name + record.last_name}」${ text ? '开启' : '关闭'}禁用？`;
           self.updateAccountDetailField(record.id, 'disable_status', e.target.checked ? 1 : 0, title);
         };
         return <Checkbox checked={text} onChange={handleChange} />;
+      },
+    },
+    {
+      title: "余额",
+      width: 150,
+      dataIndex: 'balance',
+      render: (text, record) => {
+        const handleClick = () => {
+          self.handleChangeBalance(record);
+        };
+        return <>{text} <Icon type="edit" onClick={handleClick} /></>;
       },
     },
     {

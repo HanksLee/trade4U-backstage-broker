@@ -52,6 +52,7 @@ class App extends BaseReact {
             <DndProvider backend={HTML5Backend}>
               <Router>
                 <Switch>
+                  {/* 从主后台直接登录券商后台的中间页面 */}
                   <Route exact path="/auth">
                     <Auth />
                   </Route>

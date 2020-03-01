@@ -52,7 +52,7 @@ interface AccountListState {
 };
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/account", { exact: false, permissionCode: PAGE_PERMISSION_MAP['/dashboard/account'], })
+@WithRoute("/dashboard/account/account", { exact: false, permissionCode: PAGE_PERMISSION_MAP['/dashboard/account/account'], })
 @inject("common", "account")
 @observer
 export default class AccountList extends BaseReact<{}, AccountListState> {
@@ -78,8 +78,8 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   }
 
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/account") {
-      this.props.history.replace("/dashboard/account/list");
+    if (this.props.location.pathname === "/dashboard/account/account") {
+      this.props.history.replace("/dashboard/account/account/list");
     }
   }
 
@@ -150,13 +150,11 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   }
 
   goToEditor = (e: any, id?: number) => {
-    e.stopPropagation(); // 固定列上的事件，会触发底部事件
-    const url = `/dashboard/account/editor?id=${id ? id : 0}`;
+    const url = `/dashboard/account/account/editor?id=${id ? id : 0}`;
     this.props.history.push(url);
   }
 
   viewDetail = (e: any, record: Account) => {
-    e.stopPropagation(); // 固定列上的事件，会触发底部事件
     this.setState({
       currentAccount: record,
       isShowDetailDrawer: true,
@@ -217,7 +215,7 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     const { isShowDetailDrawer, isShowBalanceModal, currentAccount, } = this.state;
     return (
       <div>
-        <CommonHeader {...this.props} links={[]} title="客户管理" />
+        <CommonHeader {...this.props} links={[]} title="客户列表" />
         <Route
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}

@@ -12,7 +12,10 @@ const routes: any[] = [
     component: loadable(() => import(/* webpackChunkName: "role-page" */ './pages/Role')),
   },
   {
-    component: loadable(() => import(/* webpackChunkName: "account-page" */ './pages/Account')),
+    component: loadable(() => import(/* webpackChunkName: "account-page" */ './pages/Account/AccountList')),
+  },
+  {
+    component: loadable(() => import(/* webpackChunkName: "transaction-page" */ './pages/Account/TransactionList')),
   },
   {
     component: loadable(() => import(/* webpackChunkName: "Deposit" */ './pages/Finance/Deposit/DepositList')),

@@ -101,14 +101,14 @@ export default class EditBalanceModal extends BaseReact<IEditBalanceModalProps, 
               <Input disabled={true} />
             )}
           </FormItem>
-          <FormItem label='余额' {...getFormItemLayout(5, 13)} required>
+          <FormItem label='金额' {...getFormItemLayout(5, 13)} required>
             {getFieldDecorator('balance', {
               initialValue: balance,
               rules: [
-                { required: true, message: '请填写余额', }
+                { required: true, message: '请填写金额', }
               ],
             })(
-              <InputNumber placeholder="请输入余额" style={{ width: '200px', }} />
+              <InputNumber placeholder="请输入金额" style={{ width: '200px', }} />
             )}
           </FormItem>
           <FormItem label='类型' {...getFormItemLayout(5, 13)} required>
