@@ -57,6 +57,9 @@ export const PAGE_PERMISSION_MAP = {
   '/dashboard/finance': 'VIEW_FINANCE_PAGE',
   '/dashboard/finance/deposit': 'VIEW_FINANCE_DEPOSIT_PAGE',
   '/dashboard/finance/withdraw': 'VIEW_FINANCE_WITHDRAW_PAGE',
+  '/dashboard/finance/payment': 'VIEW_FINANCE_PAYMENT_PAGE',
+  '/dashboard/finance/rate': 'VIEW_FINANCE_RATE_PAGE',
+  '/dashboard/product': 'VIEW_PRODUCT_PAGE',
 };
 
 export const PAGE_ROUTES = [

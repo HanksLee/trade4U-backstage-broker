@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm } from "antd";
 import utils from "utils";
+import StatusText from 'components/StatusText';
 
 const config = self => {
   // const { selectedRowKeys, } = self.state;
@@ -13,8 +14,8 @@ const config = self => {
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
+      title: "券商 ID",
+      dataIndex: "broker",
     },
     {
       title: "通道名称",
@@ -32,44 +33,57 @@ const config = self => {
     },
     {
       title: "商户名称",
-      dataIndex: "city",
+      dataIndex: "merchant",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "商户号",
-      dataIndex: "bank_no",
+      dataIndex: "merchant_number",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "最低入金",
-      dataIndex: "acount",
+      dataIndex: "min_deposit",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "最高入金",
-      dataIndex: "func_name",
+      dataIndex: "max_deposit",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "入金手续费",
-      dataIndex: "func_name",
+      dataIndex: "fee",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "状态",
-      dataIndex: "func_name",
+      dataIndex: "status",
       render: (text, record) => {
-        return text || '--';
+        const statusType = {
+          1: 'normal',
+          0: 'hot',
+        };
+        const statusText = {
+          1: '启用',
+          0: '禁用',
+        };
+
+        return <StatusText type={
+          statusType[record.status]
+        } text={
+          statusText[record.status]
+        } />;
       },
     },
     {
@@ -79,7 +93,7 @@ const config = self => {
         return (
           <div className="common-list-table-operation">
             <span onClick={() => {
-              self.props.finance.setCurrentPayment(record, true, false);
+              self.props.finance.getCurrentPayment(record.id);
               self.togglePaymentModal();
             }}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
@@ -126,7 +140,6 @@ const config = self => {
       ),
     },
     searcher: {
-      hideSearcher: true,
       batchControl: {
         placeholder: "请选择",
         showBatchControl: !utils.isEmpty(self.state.selectedRowKeys),
@@ -141,10 +154,69 @@ const config = self => {
         },
       },
       widgets: [
+        [
+          {
+            type: 'Input',
+            label: '通道名称',
+            placeholder: '请输入通道名称',
+            value: self.state.name || undefined,
+            onChange(evt) {
+              self.onInputChanged('name', evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
+          {
+            type: 'Input',
+            label: '通道编码',
+            placeholder: '请输入通道编码',
+            value: self.state.code || undefined,
+            onChange(evt) {
+              self.onInputChanged('code', evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          }
+        ],
+        [
+          {
+            type: 'Select',
+            label: '状态',
+            placeholder: '请选择状态',
+            // width: 200,
+            value: self.state.status,
+            option: {
+              key: 'id',
+              value: 'id',
+              title: 'name',
+              data: [
+                {
+                  id: 0,
+                  name: '禁用',
+                },
+                {
+                  id: 1,
+                  name: '启用',
+                }
+              ],
+            },
+            onChange(val, elem) {
+              self.onOptionSelect('status', val, elem);
+            },
+            onSelect(val, elem) {
+            },
+            onBlur() {
+            },
+          }
+        ]
       ],
       onSearch() {
+        self.onSearch();
       },
       onReset() {
+        self.onReset();
       },
     },
     table: {

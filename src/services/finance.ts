@@ -32,34 +32,34 @@ const deleteWithdraw = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/broker/withdraw/${id}`, config);
 
 const getPaymentList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/system/symbol", config);
+  API.get("/broker/payment", config);
 
 const getCurrentPayment = (id: string, config): Promise<any> =>
-  API.get(`/system/symbol/${id}`, config);
+  API.get(`/broker/payment/${id}`, config);
 
 const createPayment = (config): Promise<any> =>
-  API.post(`/system/symbol`, config);
+  API.post(`/broker/payment`, config);
 
 const updatePayment = (id: string, config): Promise<any> =>
-  API.patch(`/system/symbol/${id}`, config);
+  API.patch(`/broker/payment/${id}`, config);
 
 const deletePayment = (id: string, config: AxiosRequestConfig): Promise<any> =>
-  API.delete(`/system/symbol/${id}`, config);
+  API.delete(`/broker/payment/${id}`, config);
 
 const getRateList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/system/symbol", config);
+  API.get("/broker/exchangerate", config);
 
 const getCurrentRate = (id: string, config): Promise<any> =>
-  API.get(`/system/symbol/${id}`, config);
+  API.get(`/broker/exchangerate/${id}`, config);
 
 const createRate = (config): Promise<any> =>
-  API.post(`/system/symbol`, config);
+  API.post(`/broker/exchangerate`, config);
 
 const updateRate = (id: string, config): Promise<any> =>
-  API.patch(`/system/symbol/${id}`, config);
+  API.patch(`/broker/exchangerate/${id}`, config);
 
 const deleteRate = (id: string, config: AxiosRequestConfig): Promise<any> =>
-  API.delete(`/system/symbol/${id}`, config);
+  API.delete(`/broker/exchangerate/${id}`, config);
 
 export default {
   getDepositList,

@@ -28,21 +28,7 @@ export default class RateList extends BaseReact<IRateListProps, IRateListState> 
     tableLoading: false,
     currentPage: 1,
     selectedRowKeys: [],
-    rateModalVisible: true,
-    scopeOptions: [
-      {
-        id: 1,
-        name: '保证金计算',
-      },
-      {
-        id: 2,
-        name: '盈亏计算',
-      },
-      {
-        id: 3,
-        name: '预付款计算',
-      }
-    ],
+    rateModalVisible: false,
   };
 
   async componentDidMount() {
@@ -61,28 +47,18 @@ export default class RateList extends BaseReact<IRateListProps, IRateListState> 
     }
   }
 
-  getScopeOptions = async () => {
-    const res = await this.$api.finance.getScopeOptions();
-
-    if (res.data.status == 200) {
-      this.setState({
-        scopeOptions: res.data.list,
-      });
-    }
-  }
-
   getDataList = (payload = {}) => {
     this.setState(
       {
         tableLoading: true,
-        filter: {
-          ...this.state.filter,
-          ...payload,
-        },
       },
       async () => {
+        this.props.finance.setFilterRate({
+          ...payload,
+        });
+
         await this.props.finance.getRateList({
-          params: this.state.filter,
+          params: this.props.finance.filterRate,
         });
         this.setState({ tableLoading: false, });
       }
@@ -90,12 +66,6 @@ export default class RateList extends BaseReact<IRateListProps, IRateListState> 
   };
 
   toggleRateModal = async (id?) => {
-    // if (!this.state.rateModalVisible) {
-    //   await this.props.finance.getCurrentRate(id);
-    // } else {
-    //   this.props.finance.setCurrentRate({}, true, false);
-    // }
-
     this.setState({
       rateModalVisible: !this.state.rateModalVisible,
     });
@@ -105,22 +75,29 @@ export default class RateList extends BaseReact<IRateListProps, IRateListState> 
     const { currentRate, } = this.props.finance;
 
     let res;
-    if (!currentRate.name) {
-      return this.$msg.warn('请输入利润规则名称');
+    if (!currentRate.trade_currency) {
+      return this.$msg.warn('请选择交易货币');
     }
 
-    if (!currentRate.scope) {
-      return this.$msg.warn('请选择利润规则作用域');
+    if (!currentRate.pay_currency) {
+      return this.$msg.warn('请选择支付货币');
     }
 
-    if (!currentRate.func_name) {
-      return this.$msg.warn('请输入利润规则函数');
+    if (currentRate.rate == null) {
+      return this.$msg.warn('请输入入金汇率');
     }
+
+    if (currentRate.out_rate == null) {
+      return this.$msg.warn('请输入出金汇率');
+    }
+
 
     let payload: any = {
-      name: currentRate.name,
-      scope: currentRate.scope,
-      func_name: currentRate.func_name,
+      broker: currentRate.broker,
+      trade_currency: currentRate.trade_currency,
+      pay_currency: currentRate.pay_currency,
+      rate: currentRate.rate,
+      out_rate: currentRate.out_rate,
     };
 
     if (currentRate.id) {
@@ -149,7 +126,6 @@ export default class RateList extends BaseReact<IRateListProps, IRateListState> 
   }
 
   resetPagination = async (page_size, current_page) => {
-    return;
     this.props.finance.setFilterRate({
       page_size,
       current_page,

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Icon, Popconfirm } from "antd";
+import { Button, Icon, Popconfirm, Popover } from "antd";
 import utils from "utils";
 
 const config = self => {
@@ -13,68 +13,54 @@ const config = self => {
 
   const columns = [
     {
-      title: "姓名",
-      dataIndex: "name",
+      title: "券商 ID",
+      dataIndex: "broker",
     },
     {
-      title: "上级",
-      dataIndex: "parent",
+      title: () => {
+        return <div>
+          <span style={{ marginRight: 4, }}>交易货币</span>
+          <Popover content={'平台结算的货币类型'}>
+            <Icon type="question-circle" />
+          </Popover>
+        </div>;
+      },
+      dataIndex: "trade_currency_display",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "通道名称",
-      dataIndex: "scope",
+      title: () => {
+        return <div>
+          <span style={{ marginRight: 4, }}>支付货币</span>
+          <Popover content={'客户支付或者收款的货币类型'}>
+            <Icon type="question-circle" />
+          </Popover>
+        </div>;
+      },
+      dataIndex: "pay_currency_display",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "收款商户",
-      dataIndex: "func_name",
+      title: "描述",
+      dataIndex: "description",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "支付金额",
-      dataIndex: "func_name",
+      title: "入金汇率",
+      dataIndex: "rate",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "支付状态",
-      dataIndex: "func_name",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      title: "支付单号",
-      dataIndex: "func_name",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      title: "提交时间",
-      dataIndex: "func_name",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      title: "回执时间",
-      dataIndex: "func_name",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      title: "回执单号",
-      dataIndex: "func_name",
+      title: "出金汇率",
+      dataIndex: "out_rate",
       render: (text, record) => {
         return text || '--';
       },
@@ -86,7 +72,7 @@ const config = self => {
         return (
           <div className="common-list-table-operation">
             <span onClick={() => {
-              self.props.finance.setCurrentRate(record, true, false);
+              self.props.finance.getCurrentRate(record.id);
               self.toggleRateModal(record.id);
             }}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
@@ -126,7 +112,7 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => (
-        <Button type='primary' onClick={() => {
+        <Button type='primary' style={{ display: 'none', }} onClick={() => {
           self.props.finance.setCurrentRate({});
           self.toggleRateModal();
         }}><Icon type="plus" />添加</Button>
@@ -150,8 +136,10 @@ const config = self => {
       widgets: [
       ],
       onSearch() {
+        self.onSearch();
       },
       onReset() {
+        self.onReset();
       },
     },
     table: {

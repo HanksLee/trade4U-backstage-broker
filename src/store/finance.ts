@@ -141,7 +141,7 @@ class FinanceStore extends BaseStore {
     if (overwrite) {
       this.filterPayment = filter;
     } else {
-      this.filterWithdraw = {
+      this.filterPayment = {
         ...this.filterPayment,
         ...filter,
       };
@@ -222,8 +222,8 @@ class FinanceStore extends BaseStore {
   };
   @action
   setRateList = data => {
-    this.paymentList = data.results;
-    this.paymentListMeta = {
+    this.rateList = data.results;
+    this.rateListMeta = {
       total: data.count,
     };
   };

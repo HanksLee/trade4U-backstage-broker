@@ -10,6 +10,8 @@ const login = async (config) => moonAPI.post('/broker/login', config);
 
 const getConstantByKey = async (key: string) => moonAPI.get(`/constant/${key}`);
 
+
+
 export default {
   uploadFile,
   getCodeImg,

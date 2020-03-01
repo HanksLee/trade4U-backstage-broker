@@ -29,20 +29,9 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     currentPage: 1,
     selectedRowKeys: [],
     paymentModalVisible: false,
-    scopeOptions: [
-      {
-        id: 1,
-        name: '保证金计算',
-      },
-      {
-        id: 2,
-        name: '盈亏计算',
-      },
-      {
-        id: 3,
-        name: '预付款计算',
-      }
-    ],
+    name: undefined,
+    code: undefined,
+    status: undefined,
   };
 
   async componentDidMount() {
@@ -61,28 +50,18 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     }
   }
 
-  getScopeOptions = async () => {
-    const res = await this.$api.finance.getScopeOptions();
-
-    if (res.data.status == 200) {
-      this.setState({
-        scopeOptions: res.data.list,
-      });
-    }
-  }
-
   getDataList = (payload = {}) => {
     this.setState(
       {
         tableLoading: true,
-        filter: {
-          ...this.state.filter,
-          ...payload,
-        },
       },
       async () => {
+        this.props.finance.setFilterPayment({
+          ...payload,
+        });
+
         await this.props.finance.getPaymentList({
-          params: this.state.filter,
+          params: this.props.finance.filterPayment,
         });
         this.setState({ tableLoading: false, });
       }
@@ -90,12 +69,6 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
   };
 
   togglePaymentModal = async (id?) => {
-    if (!this.state.paymentModalVisible) {
-      await this.props.finance.getCurrentPayment(id);
-    } else {
-      this.props.finance.setCurrentPayment({}, true, false);
-    }
-
     this.setState({
       paymentModalVisible: !this.state.paymentModalVisible,
     });
@@ -105,26 +78,87 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     const { currentPayment, } = this.props.finance;
 
     let res;
+
+    if (!currentPayment.broker) {
+      return this.$msg.warn('请输入券商 ID');
+    }
+
     if (!currentPayment.name) {
-      return this.$msg.warn('请输入利润规则名称');
+      return this.$msg.warn('请输入通道名称');
     }
 
-    if (!currentPayment.scope) {
-      return this.$msg.warn('请选择利润规则作用域');
+    if (!currentPayment.code) {
+      return this.$msg.warn('请输入通道编码');
     }
 
-    if (!currentPayment.func_name) {
-      return this.$msg.warn('请输入利润规则函数');
+    if (!currentPayment.merchant) {
+      return this.$msg.warn('请输入商户名称');
+    }
+
+    if (!currentPayment.merchant_number) {
+      return this.$msg.warn('请输入商户编号');
+    }
+
+    if (!currentPayment.pub_key) {
+      return this.$msg.warn('请输入公钥');
+    }
+
+    if (!currentPayment.pri_key) {
+      return this.$msg.warn('请输入私钥');
+    }
+
+    if (!currentPayment.currency) {
+      return this.$msg.warn('请输入支持货币');
+    }
+
+    if (!currentPayment.merchant_key) {
+      return this.$msg.warn('请输入商户 key');
+    }
+
+    if (currentPayment.redirect == null) {
+      return this.$msg.warn('请输入银行/三方');
+    }
+
+    if (!currentPayment.domain) {
+      return this.$msg.warn('请输入支付域名');
+    }
+
+    if (currentPayment.min_deposit == null) {
+      return this.$msg.warn('请输入最低入金');
+    }
+
+    if (currentPayment.max_deposit == null) {
+      return this.$msg.warn('请输入最高入金');
+    }
+
+    if (currentPayment.fee == null) {
+      return this.$msg.warn('请输入金手续费');
+    }
+
+    if (currentPayment.scope == null) {
+      return this.$msg.warn('请选择适用范围');
     }
 
     let payload: any = {
+      broker: currentPayment.broker,
       name: currentPayment.name,
+      code: currentPayment.code,
+      merchant: currentPayment.merchant,
+      merchant_number: currentPayment.merchant_number,
+      pub_key: currentPayment.pub_key,
+      pri_key: currentPayment.pri_key,
+      currency: currentPayment.currency,
+      merchant_key: currentPayment.merchant_key,
+      redirect: currentPayment.redirect,
+      domain: currentPayment.domain,
+      min_deposit: currentPayment.min_deposit,
+      max_deposit: currentPayment.max_deposit,
+      fee: currentPayment.fee,
       scope: currentPayment.scope,
-      func_name: currentPayment.func_name,
+      remarks: currentPayment.remarks,
     };
 
     if (currentPayment.id) {
-      // payload['id'] = currentPayment.id,
       res = await this.$api.finance.updatePayment(currentPayment.id, payload);
     } else {
       res = await this.$api.finance.createPayment(payload);
@@ -133,7 +167,7 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     const statusCode = currentPayment.id ? 200 : 201;
 
     if (res.status == statusCode) {
-      this.$msg.success(!currentPayment.id ? '利润规则添加成功' : '利润规则编辑成功');
+      this.$msg.success(!currentPayment.id ? '支付方式添加成功' : '支付方式编辑成功');
       this.togglePaymentModal();
       this.getDataList(this.state.filter);
     } else {
@@ -190,6 +224,9 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     this.setState(
       {
         currentPage: 1,
+        name: undefined,
+        code: undefined,
+        status: undefined,
       },
       () => {
         this.getDataList(this.props.finance.filterPayment);
@@ -206,12 +243,34 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     return null;
   };
 
+  onInputChanged = (field, value) => {
+    this.setState({
+      [field]: value,
+    });
+
+    this.props.finance.setFilterPayment({
+      [field]: value ? value : undefined,
+    });
+  }
+
+  onOptionSelect = (field, value, elem) => {
+    this.setState({
+      [`${field}`]: value,
+    }, () => {
+      this.props.finance.setFilterPayment({
+        [`${field}`]: value,
+      });
+
+      this.getDataList(this.state.filter);
+    });
+  }
+
   // @ts-ignore
   private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;
-    const computedTitle = '入金管理';
+    const computedTitle = '支付方式';
     const { paymentModalVisible, } = this.state;
     const { currentPayment, } = this.props.finance;
 
@@ -223,12 +282,12 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
         {
-          paymentModalVisible && (
+          paymentModalVisible  && (
             <Modal
-              width={720}
+              width={900}
               visible={paymentModalVisible}
               title={
-                utils.isEmpty(currentPayment.id) ? '添加利润规则' : '编辑利润规则'
+                utils.isEmpty(currentPayment.id) ? '添加支付方式' : '编辑支付方式'
               }
               onOk={this.onModalConfirm}
               onCancel={this.onModalCancel}
