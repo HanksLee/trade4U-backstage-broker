@@ -167,7 +167,7 @@ const config = self => {
     },
     {
       title: "划款时间",
-      width: 300,
+      width: 200,
       dataIndex: "remit_time",
       render: (text, record) => {
         return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
@@ -175,7 +175,7 @@ const config = self => {
     {
       // width: 120,
       title: "操作",
-      width: 200,
+      width: 260,
       fixed: 'right',
       render: (text, record) => {
         return (
@@ -205,6 +205,10 @@ const config = self => {
       },
     }
   ];
+
+  const columnsWidth = columns.reduce(function(total, cur) {
+    return total + cur.width;
+  }, 0);
 
   const pagination = {
     ...self.props.common.paginationConfig,
@@ -383,7 +387,8 @@ const config = self => {
     table: {
       rowKey: "id",
       // rowSelection,
-      scroll: { x: 2600, },
+      scroll: { x: columnsWidth, },
+      // tableLayout: 'fixed',
       columns,
       dataSource: self.props.finance.withdrawList,
       pagination,

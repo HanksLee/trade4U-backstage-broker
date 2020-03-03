@@ -184,7 +184,7 @@ const config = self => {
           value: self.state.type__name,
           option: {
             key: 'id',
-            value: 'id',
+            value: 'name',
             title: 'name',
             data: self.state.typeOptions || [],
           },

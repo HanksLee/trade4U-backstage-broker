@@ -68,7 +68,7 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
       type__name: val,
     }, () => {
       this.props.product.setFilterProduct({
-        type_name: val,
+        type__name: val,
       });
     });
   }
