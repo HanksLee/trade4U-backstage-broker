@@ -45,6 +45,37 @@ export const WeeklyOrder = [
   'Saturday'
 ];
 
+export const THREE_DAY_OPTIONS = [
+  {
+    id: 0,
+    name: '周日',
+  },
+  {
+    id: 1,
+    name: '周一',
+  },
+  {
+    id: 2,
+    name: '周二',
+  },
+  {
+    id: 3,
+    name: '周三',
+  },
+  {
+    id: 4,
+    name: '周四',
+  },
+  {
+    id: 5,
+    name: '周五',
+  },
+  {
+    id: 6,
+    name: '周六',
+  }
+];
+
 // 主要用于控制菜单的显示隐藏，key 为路由地址，value 为主后台配置的菜单权限
 export const PAGE_PERMISSION_MAP = {
   '/dashboard/role': 'VIEW_ROLE_PAGE',

@@ -58,21 +58,6 @@ export default class PaymentEditor extends BaseReact<IPaymentEditorProps, IPayme
     return (
       <div className='editor talent-editor'>
         <Form className='editor-form'>
-          <Row type="flex" justify='start'>
-            <Col span={12}>
-              <FormItem label='券商 ID' {...getFormItemLayout(6, 16)} required>
-                {getFieldDecorator('broker', {
-                  initialValue: currentPayment.broker,
-                  rules: [
-                  ],
-                })(<Input placeholder='请输入券商 ID' onChange={evt => {
-                  setCurrentPayment({
-                    broker: evt.target.value,
-                  }, false);
-                }}/>)}
-              </FormItem>
-            </Col>
-          </Row>
           <Row type="flex" justify='space-around'>
             <Col span={12}>
               <FormItem label='通道名称' {...getFormItemLayout(6, 16)} required>
@@ -132,7 +117,7 @@ export default class PaymentEditor extends BaseReact<IPaymentEditorProps, IPayme
 
           <Row type="flex" justify='space-around'>
             <Col span={12}>
-              <FormItem label='公钥' {...getFormItemLayout(6, 16)} required>
+              <FormItem label='公钥' {...getFormItemLayout(6, 16)}>
                 {getFieldDecorator('pub_key', {
                   initialValue: currentPayment.pub_key,
                   rules: [
@@ -145,7 +130,7 @@ export default class PaymentEditor extends BaseReact<IPaymentEditorProps, IPayme
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem label='私钥' {...getFormItemLayout(6, 16)} required>
+              <FormItem label='私钥' {...getFormItemLayout(6, 16)}>
                 {getFieldDecorator('pri_key', {
                   initialValue: currentPayment.pri_key,
                   rules: [
@@ -160,7 +145,7 @@ export default class PaymentEditor extends BaseReact<IPaymentEditorProps, IPayme
           </Row>
           <Row type="flex" justify='space-around'>
             <Col span={12}>
-              <FormItem label='商户 key' {...getFormItemLayout(6, 16)} required>
+              <FormItem label='商户 key' {...getFormItemLayout(6, 16)}>
                 {getFieldDecorator('merchant_key', {
                   initialValue: currentPayment.merchant_key,
                   rules: [
@@ -216,7 +201,7 @@ export default class PaymentEditor extends BaseReact<IPaymentEditorProps, IPayme
           </Row>
           <Row type="flex" justify='space-around'>
             <Col span={12}>
-              <FormItem label='支付域名' {...getFormItemLayout(6, 16)} required>
+              <FormItem label='支付域名' {...getFormItemLayout(6, 16)}>
                 {getFieldDecorator('domain', {
                   initialValue: currentPayment.domain,
                   rules: [

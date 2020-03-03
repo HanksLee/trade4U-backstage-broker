@@ -18,16 +18,19 @@ const routes: any[] = [
     component: loadable(() => import(/* webpackChunkName: "transaction-page" */ './pages/Account/TransactionList')),
   },
   {
-    component: loadable(() => import(/* webpackChunkName: "Deposit" */ './pages/Finance/Deposit/DepositList')),
+    component: loadable(() => import(/* webpackChunkName: "finance-deposit-page" */ './pages/Finance/Deposit/DepositList')),
   },
   {
-    component: loadable(() => import(/* webpackChunkName: "Withdraw" */ './pages/Finance/Withdraw/WithdrawList')),
+    component: loadable(() => import(/* webpackChunkName: "finance-withdraw-page" */ './pages/Finance/Withdraw/WithdrawList')),
   },
   {
-    component: loadable(() => import(/* webpackChunkName: "Withdraw" */ './pages/Finance/Payment/PaymentList')),
+    component: loadable(() => import(/* webpackChunkName: "finance-payment-page" */ './pages/Finance/Payment/PaymentList')),
   },
   {
-    component: loadable(() => import(/* webpackChunkName: "finance-rate" */ './pages/Finance/Rate/RateList')),
+    component: loadable(() => import(/* webpackChunkName: "finance-rate-page" */ './pages/Finance/Rate/RateList')),
+  },
+  {
+    component: loadable(() => import(/* webpackChunkName: "product-page" */ './pages/Product/ProductList')),
   }
 ];
 
