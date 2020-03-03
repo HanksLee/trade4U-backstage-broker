@@ -16,10 +16,10 @@ const updateProduct = (id: string, config): Promise<any> =>
 const deleteProduct = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/broker/symbol/${id}`, config);
 
-  const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
+const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/symbol_type", config);
 
-  const getTransactionModeOptions = (config) => API.get('/constant/system_symbol_transaction_mode_choices', config);
+const getTransactionModeOptions = (config) => API.get('/constant/system_symbol_transaction_mode_choices', config);
 
 const getBgColorOptions = (config) => API.get('/constant/background_color_choices', config);
 

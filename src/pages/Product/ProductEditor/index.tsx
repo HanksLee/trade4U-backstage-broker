@@ -897,10 +897,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           </Button>
           {
             <Button
-            disabled={currentProduct.id}
-            type='primary' onClick={this.handleSubmit}>{
-              (this.state.mode == 'edit') ? '确认修改' : '保存'
-            }</Button>
+              disabled={currentProduct.id}
+              type='primary' onClick={this.handleSubmit}>{
+                (this.state.mode == 'edit') ? '确认修改' : '保存'
+              }</Button>
           }
         </FormItem>
       </Form>

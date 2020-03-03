@@ -383,7 +383,7 @@ const config = self => {
     table: {
       rowKey: "id",
       // rowSelection,
-      scroll: {x: 2600},
+      scroll: { x: 2600, },
       columns,
       dataSource: self.props.finance.withdrawList,
       pagination,

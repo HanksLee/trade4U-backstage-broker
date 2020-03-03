@@ -49,7 +49,7 @@ const config = self => {
       title: '产品编码',
       render: (text, record) => {
         return record.product_display && record.product_display.code || '--';
-      }
+      },
     },
     {
       width: 100,
@@ -141,7 +141,7 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => (
-        <Button type='primary' style={{ display: 'none' }} onClick={() => {
+        <Button type='primary' style={{ display: 'none', }} onClick={() => {
           self.goToEditor({});
         }}><Icon type="plus" />添加</Button>
       ),
@@ -232,7 +232,7 @@ const config = self => {
               self.onStatusSelected(val, elem);
             },
           }
-        ],
+        ]
       ],
       onSearch() {
         self.onSearch();

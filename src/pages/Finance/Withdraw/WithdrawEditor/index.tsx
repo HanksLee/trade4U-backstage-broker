@@ -81,20 +81,20 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
             />)}
           </FormItem>
           <FormItem label='备注' {...getFormItemLayout(6, 16)}>
-              {getFieldDecorator('remarks', {
-                initialValue: currentWithdraw && currentWithdraw.remarks,
-                rules: [
-                ],
-              })(<TextArea
-                disabled={currentShowWithdraw.remit_status == 1}
-                style={{ width: 400, }}
-                placeholder='请输入备注'
-                rows={6} onChange={evt => {
-                  setCurrentWithdraw({
-                    remarks: evt.target.value,
-                  }, false);
-                }} />)}
-            </FormItem>
+            {getFieldDecorator('remarks', {
+              initialValue: currentWithdraw && currentWithdraw.remarks,
+              rules: [
+              ],
+            })(<TextArea
+              disabled={currentShowWithdraw.remit_status == 1}
+              style={{ width: 400, }}
+              placeholder='请输入备注'
+              rows={6} onChange={evt => {
+                setCurrentWithdraw({
+                  remarks: evt.target.value,
+                }, false);
+              }} />)}
+          </FormItem>
         </Form>
       </div>
     );
