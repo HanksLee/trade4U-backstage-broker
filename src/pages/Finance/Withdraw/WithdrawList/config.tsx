@@ -111,17 +111,17 @@ const config = self => {
             color: 'red',
           },
           1: {
-            color: '#1890ff'
+            color: '#1890ff',
           },
           0: {
             color: '',
-          }
-        }
+          },
+        };
 
         return <StatusText type={
           statusType[record.review_status]
         } text={
-        <span style={styleMap[record.review_status]}>{statusText[record.review_status]}</span>
+          <span style={styleMap[record.review_status]}>{statusText[record.review_status]}</span>
         } />;
       },
     },
@@ -161,17 +161,17 @@ const config = self => {
             color: 'red',
           },
           1: {
-            color: '#1890ff'
+            color: '#1890ff',
           },
           0: {
             color: '',
-          }
-        }
+          },
+        };
 
         return <StatusText type={
           statusType[record.remit_status]
         } text={
-        <span style={styleMap[record.remit_status]}>{statusText[record.remit_status]}</span>
+          <span style={styleMap[record.remit_status]}>{statusText[record.remit_status]}</span>
         } />;
       },
     },

@@ -73,14 +73,14 @@ const config = self => {
             color: 'red',
           },
           1: {
-            color: '#1890ff'
+            color: '#1890ff',
           },
-        }
+        };
 
         return <StatusText style type={
           statusType[record.status]
         } text={
-        <span style={styleMap[record.status]}>{statusText[record.status]}</span>
+          <span style={styleMap[record.status]}>{statusText[record.status]}</span>
         } />;
       },
     },
