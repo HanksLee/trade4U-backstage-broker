@@ -10,7 +10,7 @@ const typeMap = {
 
 export default class StatusText extends React.Component<any> {
   render() {
-    const { text, type, } = this.props;
+    const { text, type} = this.props;
 
     return (
       <span className={`status-text ${typeMap[type]}`}>

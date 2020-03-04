@@ -45,13 +45,6 @@ const config = self => {
       },
     },
     {
-      title: "描述",
-      dataIndex: "description",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
       title: "入金汇率",
       dataIndex: "rate",
       render: (text, record) => {

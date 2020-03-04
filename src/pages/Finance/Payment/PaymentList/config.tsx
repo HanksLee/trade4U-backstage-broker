@@ -63,7 +63,7 @@ const config = self => {
       },
     },
     {
-      title: "禁用",
+      title: "启用",
       dataIndex: "status",
       render: (text, record) => {
         const handleChange = async (e) => {

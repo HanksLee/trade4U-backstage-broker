@@ -24,6 +24,7 @@ const config = self => {
       render: (text, record) => {
         return text && text.username || '--';
       },
+      fixed: 'left',
     },
     {
       title: "省份",
@@ -59,7 +60,7 @@ const config = self => {
     },
     {
       title: "支行名称",
-      width: 200,
+      width: 140,
       dataIndex: "sub_branch",
       render: (text, record) => {
         return text || '--';
@@ -67,14 +68,14 @@ const config = self => {
     },
     {
       title: "申请时间",
-      width: 300,
+      width: 140,
       dataIndex: "create_time",
       render: (text, record) => {
         return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
     },
     {
       title: "预计出金",
-      width: 100,
+      width: 140,
       dataIndex: "expect_amount",
       render: (text, record) => {
         return text || '--';
@@ -82,7 +83,7 @@ const config = self => {
     },
     {
       title: "实际出金",
-      width: 100,
+      width: 140,
       dataIndex: "actual_amount",
       render: (text, record) => {
         return text || '--';
@@ -90,8 +91,10 @@ const config = self => {
     },
     {
       title: "审核状态",
-      width: 200,
+      width: 100,
       dataIndex: "review_status",
+      ellipsis: true,
+
       render: (text, record) => {
         const statusType = {
           2: 'hot',
@@ -103,17 +106,28 @@ const config = self => {
           1: '审核成功',
           0: '待审核',
         };
+        const styleMap = {
+          2: {
+            color: 'red',
+          },
+          1: {
+            color: '#1890ff'
+          },
+          0: {
+            color: '',
+          }
+        }
 
         return <StatusText type={
           statusType[record.review_status]
         } text={
-          statusText[record.review_status]
+        <span style={styleMap[record.review_status]}>{statusText[record.review_status]}</span>
         } />;
       },
     },
     {
       title: "审核时间",
-      width: 300,
+      width: 140,
       dataIndex: "review_time",
       render: (text, record) => {
         return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
@@ -128,7 +142,7 @@ const config = self => {
     },
     {
       title: "划款状态",
-      width: 200,
+      width: 100,
       dataIndex: "remit_status",
       render: (text, record) => {
         const statusType = {
@@ -142,16 +156,28 @@ const config = self => {
           0: '待划款',
         };
 
+        const styleMap = {
+          2: {
+            color: 'red',
+          },
+          1: {
+            color: '#1890ff'
+          },
+          0: {
+            color: '',
+          }
+        }
+
         return <StatusText type={
           statusType[record.remit_status]
         } text={
-          statusText[record.remit_status]
+        <span style={styleMap[record.remit_status]}>{statusText[record.remit_status]}</span>
         } />;
       },
     },
     {
       title: "划款人",
-      width: 200,
+      width: 100,
       dataIndex: "remitter",
       render: (text, record) => {
         return text || '--';
@@ -159,7 +185,7 @@ const config = self => {
     },
     {
       title: "划款单号",
-      width: 200,
+      width: 140,
       dataIndex: "remit_number",
       render: (text, record) => {
         return text || '--';
@@ -167,7 +193,7 @@ const config = self => {
     },
     {
       title: "划款时间",
-      width: 200,
+      width: 140,
       dataIndex: "remit_time",
       render: (text, record) => {
         return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },

@@ -61,17 +61,26 @@ const config = self => {
       render: (text, record) => {
         const statusType = {
           1: 'normal',
-          0: 'block',
+          0: 'hot',
         };
         const statusText = {
           1: '已支付',
           0: '未支付',
         };
 
-        return <StatusText type={
+        const styleMap = {
+          0: {
+            color: 'red',
+          },
+          1: {
+            color: '#1890ff'
+          },
+        }
+
+        return <StatusText style type={
           statusType[record.status]
         } text={
-          statusText[record.status]
+        <span style={styleMap[record.status]}>{statusText[record.status]}</span>
         } />;
       },
     },
@@ -115,7 +124,7 @@ const config = self => {
                 initStatus: self.props.finance.currentDeposit.status,
               });
               self.toggleDepositModal(record.id);
-            }}>编辑</span>
+            }}>补单</span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除当前记录"
