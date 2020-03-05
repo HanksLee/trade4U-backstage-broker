@@ -61,17 +61,31 @@ const config = self => {
       render: (text, record) => {
         const statusType = {
           1: "normal",
-          0: "block"
+          0: "hot"
         };
         const statusText = {
           1: "已支付",
           0: "未支付"
         };
 
+        const styleMap = {
+          0: {
+            color: "red"
+          },
+          1: {
+            color: "#1890ff"
+          }
+        };
+
         return (
           <StatusText
+            style
             type={statusType[record.status]}
-            text={statusText[record.status]}
+            text={
+              <span style={styleMap[record.status]}>
+                {statusText[record.status]}
+              </span>
+            }
           />
         );
       }
@@ -119,7 +133,7 @@ const config = self => {
                 self.toggleDepositModal(record.id);
               }}
             >
-              编辑
+              补单
             </span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm

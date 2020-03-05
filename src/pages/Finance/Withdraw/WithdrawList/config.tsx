@@ -19,13 +19,16 @@ const config = self => {
   const columns = [
     {
       title: "姓名",
+      width: 100,
       dataIndex: "user_display",
       render: (text, record) => {
         return text && text.username || '--';
       },
+      fixed: 'left',
     },
     {
       title: "省份",
+      width: 100,
       dataIndex: "province",
       render: (text, record) => {
         return text || '--';
@@ -33,6 +36,7 @@ const config = self => {
     },
     {
       title: "城市",
+      width: 100,
       dataIndex: "city",
       render: (text, record) => {
         return text || '--';
@@ -40,6 +44,7 @@ const config = self => {
     },
     {
       title: "银行卡号",
+      width: 200,
       dataIndex: "card_number",
       render: (text, record) => {
         return text || '--';
@@ -47,6 +52,7 @@ const config = self => {
     },
     {
       title: "开户行",
+      width: 200,
       dataIndex: "bank",
       render: (text, record) => {
         return text || '--';
@@ -54,6 +60,7 @@ const config = self => {
     },
     {
       title: "支行名称",
+      width: 140,
       dataIndex: "sub_branch",
       render: (text, record) => {
         return text || '--';
@@ -61,12 +68,14 @@ const config = self => {
     },
     {
       title: "申请时间",
+      width: 140,
       dataIndex: "create_time",
       render: (text, record) => {
         return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
     },
     {
       title: "预计出金",
+      width: 140,
       dataIndex: "expect_amount",
       render: (text, record) => {
         return text || '--';
@@ -74,6 +83,7 @@ const config = self => {
     },
     {
       title: "实际出金",
+      width: 140,
       dataIndex: "actual_amount",
       render: (text, record) => {
         return text || '--';
@@ -81,7 +91,10 @@ const config = self => {
     },
     {
       title: "审核状态",
+      width: 100,
       dataIndex: "review_status",
+      ellipsis: true,
+
       render: (text, record) => {
         const statusType = {
           2: 'hot',
@@ -93,22 +106,35 @@ const config = self => {
           1: '审核成功',
           0: '待审核',
         };
+        const styleMap = {
+          2: {
+            color: 'red',
+          },
+          1: {
+            color: '#1890ff',
+          },
+          0: {
+            color: '',
+          },
+        };
 
         return <StatusText type={
           statusType[record.review_status]
         } text={
-          statusText[record.review_status]
+          <span style={styleMap[record.review_status]}>{statusText[record.review_status]}</span>
         } />;
       },
     },
     {
       title: "审核时间",
+      width: 140,
       dataIndex: "review_time",
       render: (text, record) => {
         return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
     },
     {
       title: "审核人",
+      width: 100,
       dataIndex: "reviewer",
       render: (text, record) => {
         return text || '--';
@@ -116,6 +142,7 @@ const config = self => {
     },
     {
       title: "划款状态",
+      width: 100,
       dataIndex: "remit_status",
       render: (text, record) => {
         const statusType = {
@@ -129,15 +156,28 @@ const config = self => {
           0: '待划款',
         };
 
+        const styleMap = {
+          2: {
+            color: 'red',
+          },
+          1: {
+            color: '#1890ff',
+          },
+          0: {
+            color: '',
+          },
+        };
+
         return <StatusText type={
           statusType[record.remit_status]
         } text={
-          statusText[record.remit_status]
+          <span style={styleMap[record.remit_status]}>{statusText[record.remit_status]}</span>
         } />;
       },
     },
     {
       title: "划款人",
+      width: 100,
       dataIndex: "remitter",
       render: (text, record) => {
         return text || '--';
@@ -145,6 +185,7 @@ const config = self => {
     },
     {
       title: "划款单号",
+      width: 140,
       dataIndex: "remit_number",
       render: (text, record) => {
         return text || '--';
@@ -152,27 +193,23 @@ const config = self => {
     },
     {
       title: "划款时间",
+      width: 140,
       dataIndex: "remit_time",
       render: (text, record) => {
         return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
     },
     {
-      title: "备注",
-      dataIndex: "remarks",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
       // width: 120,
       title: "操作",
+      width: 260,
+      fixed: 'right',
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
             <span onClick={() => {
               self.props.finance.getCurrentWithdraw(record.id);
               self.toggleWithdrawModal();
-            }}>编辑</span>
+            }}>划款登记</span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除当前记录"
@@ -194,6 +231,10 @@ const config = self => {
       },
     }
   ];
+
+  const columnsWidth = columns.reduce(function(total, cur) {
+    return total + cur.width;
+  }, 0);
 
   const pagination = {
     ...self.props.common.paginationConfig,
@@ -372,6 +413,8 @@ const config = self => {
     table: {
       rowKey: "id",
       // rowSelection,
+      scroll: { x: columnsWidth, },
+      // tableLayout: 'fixed',
       columns,
       dataSource: self.props.finance.withdrawList,
       pagination,

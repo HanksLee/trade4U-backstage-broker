@@ -79,10 +79,6 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
 
     let res;
 
-    if (!currentPayment.broker) {
-      return this.$msg.warn('请输入券商 ID');
-    }
-
     if (!currentPayment.name) {
       return this.$msg.warn('请输入通道名称');
     }
@@ -99,28 +95,13 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
       return this.$msg.warn('请输入商户编号');
     }
 
-    if (!currentPayment.pub_key) {
-      return this.$msg.warn('请输入公钥');
-    }
-
-    if (!currentPayment.pri_key) {
-      return this.$msg.warn('请输入私钥');
-    }
 
     if (!currentPayment.currency) {
       return this.$msg.warn('请输入支持货币');
     }
 
-    if (!currentPayment.merchant_key) {
-      return this.$msg.warn('请输入商户 key');
-    }
-
     if (currentPayment.redirect == null) {
       return this.$msg.warn('请输入银行/三方');
-    }
-
-    if (!currentPayment.domain) {
-      return this.$msg.warn('请输入支付域名');
     }
 
     if (currentPayment.min_deposit == null) {
@@ -140,7 +121,6 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     }
 
     let payload: any = {
-      broker: currentPayment.broker,
       name: currentPayment.name,
       code: currentPayment.code,
       merchant: currentPayment.merchant,

@@ -1,121 +1,122 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm, Checkbox } from "antd";
 import utils from "utils";
-import StatusText from 'components/StatusText';
+import { WeeklyOrder } from 'constant';
+import moment from 'moment';
 
 const config = self => {
-  // const { selectedRowKeys, } = self.state;
-  // const rowSelection = {
-  //   selectedRowKeys,
-  //   onChange: (selectedRowKeys, selectedRows) => {
-  //     self.setState({ selectedRowKeys: selectedRowKeys, });
-  //   },
-  // };
+  const { selectedRowKeys, } = self.state;
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectedRowKeys, selectedRows) => {
+      self.setState({ selectedRowKeys: selectedRowKeys, });
+    },
+  };
 
   const columns = [
     {
-      title: "通道名称",
+      width: 100,
+      title: "品种 ID",
+      dataIndex: "id",
+      ellipsis: true,
+    },
+    {
+      width: 100,
+      title: "品种名称",
       dataIndex: "name",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "通道编码",
-      dataIndex: "code",
+      width: 100,
+      title: "品种类型",
+      dataIndex: "type_display",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "商户名称",
-      dataIndex: "merchant",
+      width: 100,
+      title: "行情产品",
+      dataIndex: "product_display",
+      render: (text, record) => {
+        return text.name || '--';
+      },
+    },
+    {
+      width: 100,
+      title: '产品编码',
+      render: (text, record) => {
+        return record.product_display && record.product_display.code || '--';
+      },
+    },
+    {
+      width: 100,
+      title: "小数位",
+      dataIndex: "decimals_place",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "商户号",
-      dataIndex: "merchant_number",
+      width: 100,
+      title: "合约大小",
+      dataIndex: "contract_size",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "最低入金",
-      dataIndex: "min_deposit",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      title: "最高入金",
-      dataIndex: "max_deposit",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      title: "入金手续费",
-      dataIndex: "fee",
+      width: 100,
+      title: "点差",
+      dataIndex: "spread",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       title: "启用",
+      width: 200,
       dataIndex: "status",
       render: (text, record) => {
         const handleChange = async (e) => {
-          const res = await self.$api.finance.updatePayment(record.id, {
+          const res = await self.$api.product.updateProduct(record.id, {
             status: text == 0 ? 1 : 0,
           });
           if (res.status === 200) {
-            self.getDataList(self.props.finance.filterPayment);
+            self.getDataList(self.props.product.filterProduct);
           } else {
             self.$msg.error(res.data.message);
           }
         };
         return <Checkbox checked={text} onChange={handleChange} />;
-        // const statusType = {
-        //   1: 'normal',
-        //   0: 'hot',
-        // };
-        // const statusText = {
-        //   1: '启用',
-        //   0: '禁用',
-        // };
-
-        // return <StatusText type={
-        //   statusType[record.status]
-        // } text={
-        //   statusText[record.status]
-        // } />;
       },
     },
     {
-      // width: 120,
+      width: 100,
+      // fixed: 'right',
       title: "操作",
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
             <span onClick={() => {
-              self.props.finance.getCurrentPayment(record.id);
-              self.togglePaymentModal();
+              self.goToEditor(record);
             }}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
-              title="请问是否确定删除当前记录"
+              title="请问是否确定删除当前规则"
               onConfirm={async () => {
-                const res = await self.$api.finance.deletePayment(record.id);
+                const res = await self.$api.product.deleteProduct(record.id);
 
                 if (res.status === 204) {
-                  self.getDataList(self.props.finance.filterPayment);
+                  self.$msg.success('当期记录删除成功');
+                  self.getDataList(self.state.filter);
                 } else {
                   self.$msg.error(res.data.message);
                 }
               }}
-              onCancel={() => {}}
+              onCancel={() => { }}
             >
               <span>删除</span>
             </Popconfirm>
@@ -127,9 +128,9 @@ const config = self => {
 
   const pagination = {
     ...self.props.common.paginationConfig,
-    total: self.props.finance.paymentListMeta.total,
+    total: self.props.product.productListMeta.total,
     current: self.state.currentPage,
-    onChange: (current, pageSize) => {},
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
@@ -140,13 +141,13 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => (
-        <Button style={{ display: 'none', }} type='primary' onClick={() => {
-          self.props.finance.setCurrentPayment({});
-          self.togglePaymentModal();
+        <Button type='primary' style={{ display: 'none', }} onClick={() => {
+          self.goToEditor({});
         }}><Icon type="plus" />添加</Button>
       ),
     },
     searcher: {
+      // hideSearcher: true,
       batchControl: {
         placeholder: "请选择",
         showBatchControl: !utils.isEmpty(self.state.selectedRowKeys),
@@ -161,44 +162,62 @@ const config = self => {
         },
       },
       widgets: [
+        [{
+          type: 'Input',
+          label: '品种名称',
+          placeholder: '请输入品种名称',
+          value: self.state.name || undefined,
+          onChange(evt) {
+            self.onInputChanged('name', evt.target.value);
+          },
+          onPressEnter(evt) {
+            self.onSearch();
+          },
+        },
+        {
+          type: 'Select',
+          label: '品种类型',
+          showSearch: false,
+          placeholder: '请选择品种类型',
+          allowClear: false,
+          width: 150,
+          value: self.state.type__name,
+          option: {
+            key: 'id',
+            value: 'name',
+            title: 'name',
+            data: self.state.typeOptions || [],
+          },
+          onSelect(val, elem) {
+            self.onTypeSelected(val, elem);
+          },
+        }],
         [
           {
             type: 'Input',
-            label: '通道名称',
-            placeholder: '请输入通道名称',
-            value: self.state.name || undefined,
+            label: '产品编码',
+            placeholder: '请输入产品编码',
+            value: self.state.product__code || undefined,
             onChange(evt) {
-              self.onInputChanged('name', evt.target.value);
+              self.onInputChanged('product__code', evt.target.value);
             },
             onPressEnter(evt) {
               self.onSearch();
             },
           },
           {
-            type: 'Input',
-            label: '通道编码',
-            placeholder: '请输入通道编码',
-            value: self.state.code || undefined,
-            onChange(evt) {
-              self.onInputChanged('code', evt.target.value);
-            },
-            onPressEnter(evt) {
-              self.onSearch();
-            },
-          }
-        ],
-        [
-          {
             type: 'Select',
             label: '状态',
+            showSearch: false,
             placeholder: '请选择状态',
-            // width: 200,
+            allowClear: false,
+            width: 150,
             value: self.state.status,
             option: {
               key: 'id',
               value: 'id',
               title: 'name',
-              data: [
+              data:  [
                 {
                   id: 0,
                   name: '禁用',
@@ -209,12 +228,8 @@ const config = self => {
                 }
               ],
             },
-            onChange(val, elem) {
-              self.onOptionSelect('status', val, elem);
-            },
             onSelect(val, elem) {
-            },
-            onBlur() {
+              self.onStatusSelected(val, elem);
             },
           }
         ]
@@ -229,13 +244,15 @@ const config = self => {
     table: {
       rowKey: "id",
       // rowSelection,
+      tableLayout: 'fixed',
       columns,
-      dataSource: self.props.finance.paymentList,
+      dataSource: self.props.product.productList,
       pagination,
+      scroll: { x: (columns.length - 1) * 100 + 240, },
       onChange(pagination, filters, sorter) {
         const payload: any = {
-          current_page: pagination.current,
-          page_size: pagination.pageSize,
+          pageNum: pagination.current,
+          pageSize: pagination.pageSize,
         };
 
         if (!utils.isEmpty(filters)) {
@@ -252,14 +269,14 @@ const config = self => {
           delete payload.sort;
         }
 
-        self.props.finance.setFilterPayment(payload);
+        self.props.product.setFilterProduct(payload);
 
         self.setState(
           {
             currentPage: pagination.current,
           },
           () => {
-            self.getDataList(self.props.finance.filterPayment);
+            self.getDataList(self.props.product.filterProduct);
           }
         );
       },

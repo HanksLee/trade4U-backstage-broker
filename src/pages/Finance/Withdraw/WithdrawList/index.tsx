@@ -92,6 +92,7 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     let payload: any = {
       remit_number: currentWithdraw.remit_number,
       actual_amount: currentWithdraw.actual_amount,
+      remarks: currentWithdraw.remarks,
     };
 
     if (currentWithdraw.id) {
@@ -238,7 +239,7 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
               width={720}
               visible={withdrawModalVisible}
               title={
-                utils.isEmpty(currentWithdraw.id) ? '添加利润规则' : '编辑利润规则'
+                utils.isEmpty(currentWithdraw.id) ? '添加出金' : '编辑出金'
               }
               onOk={this.onModalConfirm}
               onCancel={this.onModalCancel}

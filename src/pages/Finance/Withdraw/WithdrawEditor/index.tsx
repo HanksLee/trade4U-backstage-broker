@@ -11,6 +11,7 @@ import {
 } from 'mobx-react';
 
 const FormItem = Form.Item;
+const TextArea = Input.TextArea;
 
 const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
@@ -63,6 +64,7 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
                 remit_number: evt.target.value,
               }, false);
             }}
+            disabled={currentShowWithdraw.remit_status == 1}
             />)}
           </FormItem>
           <FormItem label='实付金额' {...getFormItemLayout(6, 16)} required>
@@ -74,7 +76,24 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
               setCurrentWithdraw({
                 actual_amount: +evt.target.value,
               }, false);
-            }}/>)}
+            }}
+            disabled={currentShowWithdraw.remit_status == 1}
+            />)}
+          </FormItem>
+          <FormItem label='备注' {...getFormItemLayout(6, 16)}>
+            {getFieldDecorator('remarks', {
+              initialValue: currentWithdraw && currentWithdraw.remarks,
+              rules: [
+              ],
+            })(<TextArea
+              disabled={currentShowWithdraw.remit_status == 1}
+              style={{ width: 400, }}
+              placeholder='请输入备注'
+              rows={6} onChange={evt => {
+                setCurrentWithdraw({
+                  remarks: evt.target.value,
+                }, false);
+              }} />)}
           </FormItem>
         </Form>
       </div>
