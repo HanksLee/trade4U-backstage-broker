@@ -1,15 +1,15 @@
 import CommonHeader from "components/CommonHeader";
 import EditRoleModal from "./EditRoleModal";
-import PermissionEditor from './PermissionEditor';
-import moment from 'moment';
+import PermissionEditor from "./PermissionEditor";
+import moment from "moment";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { Button, Icon, Table, Popconfirm } from "antd";
 import { ColumnProps } from "antd/lib/table";
-import { Route } from 'react-router-dom';
+import { Route } from "react-router-dom";
 import "./index.scss";
-import { PAGE_PERMISSION_MAP } from 'constant';
+import { PAGE_PERMISSION_MAP } from "constant";
 
 export interface RoleType {
   id: number;
@@ -27,12 +27,15 @@ interface IRoleState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/role", { exact: false, permissionCode: PAGE_PERMISSION_MAP['/dashboard/role'], })
+@WithRoute("/dashboard/role", {
+  exact: false,
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/role"]
+})
 export default class Role extends BaseReact<{}, IRoleState> {
   state = {
     roleList: [],
     currentRole: null,
-    isShowEditRoleModal: false,
+    isShowEditRoleModal: false
   };
 
   componentDidMount() {
@@ -44,31 +47,31 @@ export default class Role extends BaseReact<{}, IRoleState> {
       this.props.history.replace("/dashboard/role/list");
     }
   }
-  
+
   getRoleList = async () => {
     const res = await this.$api.role.getRoleList();
     this.setState({
-      roleList: res.data.results,
+      roleList: res.data.results
     });
-  }
+  };
 
   getTableColumns = (): ColumnProps<RoleType>[] => {
     return [
       {
         key: "name",
         title: "角色名称",
-        dataIndex: "name",
+        dataIndex: "name"
       },
       {
         key: "name",
         title: "账户数量",
-        dataIndex: "managers",
+        dataIndex: "managers"
       },
       {
         key: "create_time",
         title: "创建时间",
         dataIndex: "create_time",
-        render: text => moment(text * 1000).format('YYYY-MM-DD'),
+        render: text => moment(text * 1000).format("YYYY-MM-DD")
       },
       {
         key: "action",
@@ -82,12 +85,15 @@ export default class Role extends BaseReact<{}, IRoleState> {
               <span className="common-list-table-operation-spliter" />
               <span onClick={() => this.goToEditor(record.id)}>授权</span>
               <span className="common-list-table-operation-spliter" />
-              <Popconfirm title="确认删除？" onConfirm={() => this.deleteRole(record.id)}>
+              <Popconfirm
+                title="确认删除？"
+                onConfirm={() => this.deleteRole(record.id)}
+              >
                 <span>删除</span>
               </Popconfirm>
             </div>
           );
-        },
+        }
       }
     ];
   };
@@ -95,24 +101,24 @@ export default class Role extends BaseReact<{}, IRoleState> {
   goToEditor = (id: any): void => {
     const url = `/dashboard/role/permission?id=${id}`;
     this.props.history.push(url);
-  }
+  };
 
   showEditRoleModal = (role?: RoleType) => {
     if (role) {
       this.setState({
-        currentRole: role,
+        currentRole: role
       });
     }
 
     this.setState({
-      isShowEditRoleModal: true,
+      isShowEditRoleModal: true
     });
   };
 
   hideEditRoleModal = () => {
     this.setState({
       isShowEditRoleModal: false,
-      currentRole: null,
+      currentRole: null
     });
   };
 
@@ -131,16 +137,16 @@ export default class Role extends BaseReact<{}, IRoleState> {
   };
 
   renderListPage = () => {
-    const { currentRole, roleList, isShowEditRoleModal, } = this.state;
+    const { currentRole, roleList, isShowEditRoleModal } = this.state;
     return (
       <>
         <div className="panel-block common-list">
-          <section className='common-list-addbtn'>
+          <section className="common-list-addbtn">
             <Button type="primary" onClick={() => this.showEditRoleModal()}>
               <Icon type="plus" /> 添加
             </Button>
           </section>
-          <section className='common-list-table'>
+          <section className="common-list-table">
             <Table
               rowKey="id"
               columns={this.getTableColumns()}
@@ -150,32 +156,30 @@ export default class Role extends BaseReact<{}, IRoleState> {
             />
           </section>
         </div>
-        {
-          isShowEditRoleModal  && (
-            <EditRoleModal
-              role={currentRole}
-              onOk={this.handleUpdateRole}
-              onCancel={this.hideEditRoleModal}
-            />
-          )
-        }
+        {isShowEditRoleModal && (
+          <EditRoleModal
+            role={currentRole}
+            onOk={this.handleUpdateRole}
+            onCancel={this.hideEditRoleModal}
+          />
+        )}
       </>
     );
-  }
+  };
 
   render() {
-    const { match, } = this.props;
+    const { match } = this.props;
 
     return (
       <div>
         <CommonHeader {...this.props} links={[]} title="角色管理" />
+        <Route path={`${match.url}/list`} render={this.renderListPage} />
         <Route
-          path={`${match.url}/list`}
-          render={this.renderListPage}
+          path={`${match.url}/permission`}
+          render={props => (
+            <PermissionEditor {...props} getRoleList={this.getRoleList} />
+          )}
         />
-        <Route path={`${match.url}/permission`} render={props => (
-          <PermissionEditor {...props} getRoleList={this.getRoleList} />
-        )} />
       </div>
     );
   }

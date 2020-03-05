@@ -6,7 +6,7 @@ class FinanceStore extends BaseStore {
   @observable
   filterDeposit = {
     page_size: 10,
-    current_page: 1,
+    current_page: 1
   };
   @action
   setFilterDeposit = (filter, overwrite = false) => {
@@ -15,7 +15,7 @@ class FinanceStore extends BaseStore {
     } else {
       this.filterDeposit = {
         ...this.filterDeposit,
-        ...filter,
+        ...filter
       };
     }
   };
@@ -32,7 +32,7 @@ class FinanceStore extends BaseStore {
   setDepositList = data => {
     this.depositList = data.results;
     this.depositListMeta = {
-      total: data.count,
+      total: data.count
     };
   };
   @observable
@@ -44,7 +44,7 @@ class FinanceStore extends BaseStore {
 
     return {
       ...this.currentDeposit,
-      ...obj,
+      ...obj
     };
   }
   @action
@@ -59,7 +59,7 @@ class FinanceStore extends BaseStore {
     } else {
       this.currentDeposit = {
         ...this.currentDeposit,
-        ...rule,
+        ...rule
       };
     }
 
@@ -70,7 +70,7 @@ class FinanceStore extends BaseStore {
   @observable
   filterWithdraw = {
     page_size: 10,
-    current_page: 1,
+    current_page: 1
   };
   @action
   setFilterWithdraw = (filter, overwrite = false) => {
@@ -79,7 +79,7 @@ class FinanceStore extends BaseStore {
     } else {
       this.filterWithdraw = {
         ...this.filterWithdraw,
-        ...filter,
+        ...filter
       };
     }
   };
@@ -96,7 +96,7 @@ class FinanceStore extends BaseStore {
   setWithdrawList = data => {
     this.withdrawList = data.results;
     this.withdrawListMeta = {
-      total: data.count,
+      total: data.count
     };
   };
   @observable
@@ -108,7 +108,7 @@ class FinanceStore extends BaseStore {
 
     return {
       ...this.currentWithdraw,
-      ...obj,
+      ...obj
     };
   }
   @action
@@ -123,7 +123,7 @@ class FinanceStore extends BaseStore {
     } else {
       this.currentWithdraw = {
         ...this.currentWithdraw,
-        ...rule,
+        ...rule
       };
     }
 
@@ -134,7 +134,7 @@ class FinanceStore extends BaseStore {
   @observable
   filterPayment = {
     page_size: 10,
-    current_page: 1,
+    current_page: 1
   };
   @action
   setFilterPayment = (filter, overwrite = false) => {
@@ -143,7 +143,7 @@ class FinanceStore extends BaseStore {
     } else {
       this.filterPayment = {
         ...this.filterPayment,
-        ...filter,
+        ...filter
       };
     }
   };
@@ -160,7 +160,7 @@ class FinanceStore extends BaseStore {
   setPaymentList = data => {
     this.paymentList = data.results;
     this.paymentListMeta = {
-      total: data.count,
+      total: data.count
     };
   };
   @observable
@@ -172,7 +172,7 @@ class FinanceStore extends BaseStore {
 
     return {
       ...this.currentPayment,
-      ...obj,
+      ...obj
     };
   }
   @action
@@ -187,7 +187,7 @@ class FinanceStore extends BaseStore {
     } else {
       this.currentPayment = {
         ...this.currentPayment,
-        ...rule,
+        ...rule
       };
     }
 
@@ -198,7 +198,7 @@ class FinanceStore extends BaseStore {
   @observable
   filterRate = {
     page_size: 10,
-    current_page: 1,
+    current_page: 1
   };
   @action
   setFilterRate = (filter, overwrite = false) => {
@@ -207,7 +207,7 @@ class FinanceStore extends BaseStore {
     } else {
       this.filterRate = {
         ...this.filterRate,
-        ...filter,
+        ...filter
       };
     }
   };
@@ -224,7 +224,7 @@ class FinanceStore extends BaseStore {
   setRateList = data => {
     this.rateList = data.results;
     this.rateListMeta = {
-      total: data.count,
+      total: data.count
     };
   };
   @observable
@@ -236,7 +236,7 @@ class FinanceStore extends BaseStore {
 
     return {
       ...this.currentRate,
-      ...obj,
+      ...obj
     };
   }
   @action
@@ -251,7 +251,7 @@ class FinanceStore extends BaseStore {
     } else {
       this.currentRate = {
         ...this.currentRate,
-        ...rule,
+        ...rule
       };
     }
 

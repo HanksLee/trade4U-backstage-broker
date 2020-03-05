@@ -6,7 +6,7 @@ import axios, {
 } from "axios";
 import { message } from "antd";
 import NProgress from "nprogress";
-import utils from 'utils';
+import utils from "utils";
 
 export interface IAPI {
   getInstance(): AxiosInstance;
@@ -20,18 +20,21 @@ export default class API implements IAPI {
   }
 
   private handleInterceptors() {
-    this.api.interceptors.request.use((config: AxiosRequestConfig) => {
-      const token = utils.getLStorage('MOON_ADMIN_BROKER_TOKEN');
-      if (token) {
-        config['headers']['Authorization'] = `Token ${token}`;
-      }
+    this.api.interceptors.request.use(
+      (config: AxiosRequestConfig) => {
+        const token = utils.getLStorage("MOON_ADMIN_BROKER_TOKEN");
+        if (token) {
+          config["headers"]["Authorization"] = `Token ${token}`;
+        }
 
-      NProgress.start();
-      return config;
-    }, (err: AxiosError) => {
-      NProgress.done();
-      return Promise.reject(err);
-    });
+        NProgress.start();
+        return config;
+      },
+      (err: AxiosError) => {
+        NProgress.done();
+        return Promise.reject(err);
+      }
+    );
 
     this.api.interceptors.response.use(
       async (res: AxiosResponse) => {
@@ -39,10 +42,12 @@ export default class API implements IAPI {
         return res;
       },
       (err: AxiosError) => {
-        const { response: { data, status, }, } = err;
+        const {
+          response: { data, status }
+        } = err;
         message.error(data.message);
         if (status == 401) {
-          localStorage.removeItem('MOON_ADMIN_BROKER_TOKEN');
+          localStorage.removeItem("MOON_ADMIN_BROKER_TOKEN");
 
           window.location.href =
             process.env.NODE_ENV === "production"
@@ -66,11 +71,11 @@ export default class API implements IAPI {
 }
 
 const apiMap = {
-  dev: '/api/moon/api',
-  qa: 'http://api.cangshu360.com/api',
-  prod: 'http://api.cangshu360.com/api',
+  dev: "/api/moon/api",
+  qa: "http://api.cangshu360.com/api",
+  prod: "http://api.cangshu360.com/api"
 };
 
 export const moonAPI = new API({
-  baseURL: apiMap[process.env.MODE],
+  baseURL: apiMap[process.env.MODE]
 }).getInstance();
