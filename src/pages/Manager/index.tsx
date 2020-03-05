@@ -35,7 +35,7 @@ interface ManagerListState extends IManagerState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/manager", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/manager"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/manager"],
 })
 @inject("common", "manager")
 @observer
@@ -48,16 +48,16 @@ export default class ManagerList extends BaseReact<{}, ManagerListState> {
     total: 0,
     roleList: [],
     currentUser: null,
-    isShowEditUserModal: false
+    isShowEditUserModal: false,
   };
 
   async componentDidMount() {
-    const { filter } = this.props.manager;
-    const { paginationConfig } = this.props.common;
+    const { filter, } = this.props.manager;
+    const { paginationConfig, } = this.props.common;
 
     this.getDataList({
       page_size: filter.page_size || paginationConfig.defaultPageSize,
-      page: filter.page || 1
+      page: filter.page || 1,
     });
   }
 
@@ -69,27 +69,27 @@ export default class ManagerList extends BaseReact<{}, ManagerListState> {
 
   getDataList = async (filter?: any) => {
     const payload = filter
-      ? { ...this.props.manager.filter, ...filter }
+      ? { ...this.props.manager.filter, ...filter, }
       : this.props.manager.filter;
     this.setState({
-      tableLoading: true
+      tableLoading: true,
     });
 
-    const res = await this.$api.manager.getManagerList({ params: payload });
-    const { results, page_size, current_page, count } = res.data;
+    const res = await this.$api.manager.getManagerList({ params: payload, });
+    const { results, page_size, current_page, count, } = res.data;
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
-      this.getDataList({ ...payload, page: current_page - 1 });
+      this.getDataList({ ...payload, page: current_page - 1, });
     } else {
       this.props.manager.setFilter({
         page_size,
         page: current_page,
-        name: payload.name
+        name: payload.name,
       });
       this.setState({
         managerList: results,
         tableLoading: false,
-        total: count
+        total: count,
       });
     }
   };
@@ -152,19 +152,19 @@ export default class ManagerList extends BaseReact<{}, ManagerListState> {
   showEditUserModal = (user?: ManagerType) => {
     if (user) {
       this.setState({
-        currentUser: user
+        currentUser: user,
       });
     }
 
     this.setState({
-      isShowEditUserModal: true
+      isShowEditUserModal: true,
     });
   };
 
   hideEditUserModal = () => {
     this.setState({
       isShowEditUserModal: false,
-      currentUser: null
+      currentUser: null,
     });
   };
 
@@ -174,8 +174,8 @@ export default class ManagerList extends BaseReact<{}, ManagerListState> {
   };
 
   render() {
-    const { match } = this.props;
-    const { currentUser, isShowEditUserModal } = this.state;
+    const { match, } = this.props;
+    const { currentUser, isShowEditUserModal, } = this.state;
     return (
       <>
         <div>

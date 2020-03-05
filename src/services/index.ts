@@ -11,5 +11,5 @@ export default {
   finance,
   role,
   manager,
-  product
+  product,
 };

@@ -29,13 +29,13 @@ interface IRoleState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/role", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/role"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/role"],
 })
 export default class Role extends BaseReact<{}, IRoleState> {
   state = {
     roleList: [],
     currentRole: null,
-    isShowEditRoleModal: false
+    isShowEditRoleModal: false,
   };
 
   componentDidMount() {
@@ -51,7 +51,7 @@ export default class Role extends BaseReact<{}, IRoleState> {
   getRoleList = async () => {
     const res = await this.$api.role.getRoleList();
     this.setState({
-      roleList: res.data.results
+      roleList: res.data.results,
     });
   };
 
@@ -60,18 +60,18 @@ export default class Role extends BaseReact<{}, IRoleState> {
       {
         key: "name",
         title: "角色名称",
-        dataIndex: "name"
+        dataIndex: "name",
       },
       {
         key: "name",
         title: "账户数量",
-        dataIndex: "managers"
+        dataIndex: "managers",
       },
       {
         key: "create_time",
         title: "创建时间",
         dataIndex: "create_time",
-        render: text => moment(text * 1000).format("YYYY-MM-DD")
+        render: text => moment(text * 1000).format("YYYY-MM-DD"),
       },
       {
         key: "action",
@@ -93,7 +93,7 @@ export default class Role extends BaseReact<{}, IRoleState> {
               </Popconfirm>
             </div>
           );
-        }
+        },
       }
     ];
   };
@@ -106,19 +106,19 @@ export default class Role extends BaseReact<{}, IRoleState> {
   showEditRoleModal = (role?: RoleType) => {
     if (role) {
       this.setState({
-        currentRole: role
+        currentRole: role,
       });
     }
 
     this.setState({
-      isShowEditRoleModal: true
+      isShowEditRoleModal: true,
     });
   };
 
   hideEditRoleModal = () => {
     this.setState({
       isShowEditRoleModal: false,
-      currentRole: null
+      currentRole: null,
     });
   };
 
@@ -137,7 +137,7 @@ export default class Role extends BaseReact<{}, IRoleState> {
   };
 
   renderListPage = () => {
-    const { currentRole, roleList, isShowEditRoleModal } = this.state;
+    const { currentRole, roleList, isShowEditRoleModal, } = this.state;
     return (
       <>
         <div className="panel-block common-list">
@@ -168,7 +168,7 @@ export default class Role extends BaseReact<{}, IRoleState> {
   };
 
   render() {
-    const { match } = this.props;
+    const { match, } = this.props;
 
     return (
       <div>

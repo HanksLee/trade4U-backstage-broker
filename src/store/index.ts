@@ -9,5 +9,5 @@ export default {
   common,
   finance,
   manager,
-  product
+  product,
 };

@@ -5,8 +5,8 @@ import { inject, observer } from "mobx-react";
 
 const FormItem = Form.Item;
 const getFormItemLayout = (label, wrapper, offset?) => ({
-  labelCol: { span: label, offset },
-  wrapperCol: { span: wrapper }
+  labelCol: { span: label, offset, },
+  wrapperCol: { span: wrapper, },
 });
 
 interface IEditRoleModalProps {
@@ -24,24 +24,24 @@ interface IEditRoleModalState {
 @inject("common")
 @observer
 export default class EditRoleModal extends BaseReact<
-  IEditRoleModalProps,
-  IEditRoleModalState
+IEditRoleModalProps,
+IEditRoleModalState
 > {
   state = {
-    confirmLoading: false
+    confirmLoading: false,
   };
 
   handleSubmit = async evt => {
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const { role, onOk } = this.props;
+        const { role, onOk, } = this.props;
 
         let payload: any = {
-          name: values.name
+          name: values.name,
         };
 
         this.setState({
-          confirmLoading: true
+          confirmLoading: true,
         });
 
         if (!role) {
@@ -52,7 +52,7 @@ export default class EditRoleModal extends BaseReact<
             },
             () => {
               this.setState({
-                confirmLoading: false
+                confirmLoading: false,
               });
             }
           );
@@ -64,7 +64,7 @@ export default class EditRoleModal extends BaseReact<
             },
             () => {
               this.setState({
-                confirmLoading: false
+                confirmLoading: false,
               });
             }
           );
@@ -74,8 +74,8 @@ export default class EditRoleModal extends BaseReact<
   };
 
   render() {
-    const { form, role, onCancel } = this.props;
-    const { confirmLoading } = this.state;
+    const { form, role, onCancel, } = this.props;
+    const { confirmLoading, } = this.state;
     const getFieldDecorator = form.getFieldDecorator;
 
     return (
@@ -90,7 +90,7 @@ export default class EditRoleModal extends BaseReact<
           <FormItem label="角色名称" {...getFormItemLayout(5, 13)} required>
             {getFieldDecorator("name", {
               initialValue: role && role.name,
-              rules: [{ required: true, message: "请填写角色名称" }]
+              rules: [{ required: true, message: "请填写角色名称", }],
             })(<Input placeholder="请输入权限名称" />)}
           </FormItem>
         </Form>

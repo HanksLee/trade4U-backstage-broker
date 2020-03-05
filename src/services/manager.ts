@@ -23,5 +23,5 @@ export default {
   addManager,
   getManagerDetail,
   updateManager,
-  deleteManager
+  deleteManager,
 };

@@ -9,21 +9,21 @@ const config = self => {
       dataIndex: "name",
       render: (text, record) => {
         return record.username;
-      }
+      },
     },
     {
       title: "角色ＩＤ",
       dataIndex: "role_id",
       render: (text, record) => {
         return record.role;
-      }
+      },
     },
     {
       title: "角色名",
       dataIndex: "role_name",
       render: (text, record) => {
         return record.role_name;
-      }
+      },
     },
     {
       title: "状态",
@@ -34,7 +34,7 @@ const config = self => {
         } else if (record.status === 0) {
           return "禁用";
         }
-      }
+      },
     },
     {
       title: "操作",
@@ -58,7 +58,7 @@ const config = self => {
             </Popconfirm>
           </div>
         );
-      }
+      },
     }
   ];
   const pagination = {
@@ -70,9 +70,9 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
-        page: current
+        page: current,
       });
-    }
+    },
   };
 
   return {
@@ -82,7 +82,7 @@ const config = self => {
         <Button type="primary" onClick={() => self.showEditUserModal()}>
           <Icon type="plus" /> 添加
         </Button>
-      )
+      ),
     },
     searcher: {
       hideSearcher: true,
@@ -92,12 +92,12 @@ const config = self => {
         options: [
           {
             title: "删除",
-            value: "delete"
+            value: "delete",
           }
         ],
         onBatch: value => {
           self.onBatch && self.onBatch(value);
-        }
+        },
       },
 
       // widgets: [
@@ -121,7 +121,7 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      }
+      },
     },
     table: {
       rowKey: "id",
@@ -139,10 +139,10 @@ const config = self => {
 
         self.getDataList({
           page_size: pagination.pageSize,
-          page: pagination.current
+          page: pagination.current,
         });
-      }
-    }
+      },
+    },
   };
 };
 

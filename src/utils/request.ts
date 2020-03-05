@@ -43,7 +43,7 @@ export default class API implements IAPI {
       },
       (err: AxiosError) => {
         const {
-          response: { data, status }
+          response: { data, status, },
         } = err;
         message.error(data.message);
         if (status == 401) {
@@ -73,9 +73,9 @@ export default class API implements IAPI {
 const apiMap = {
   dev: "/api/moon/api",
   qa: "http://api.cangshu360.com/api",
-  prod: "http://api.cangshu360.com/api"
+  prod: "http://api.cangshu360.com/api",
 };
 
 export const moonAPI = new API({
-  baseURL: apiMap[process.env.MODE]
+  baseURL: apiMap[process.env.MODE],
 }).getInstance();

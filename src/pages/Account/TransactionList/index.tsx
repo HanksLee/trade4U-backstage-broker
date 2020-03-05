@@ -31,55 +31,55 @@ interface TransactionListState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/account/transaction", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/transaction"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/transaction"],
 })
 @inject("common", "account")
 @observer
 export default class TransactionList extends BaseReact<
-  {},
-  TransactionListState
+{},
+TransactionListState
 > {
   state = {
     transactionList: [],
     tableLoading: false,
     selectedRowKeys: [],
     tempFilter: {},
-    total: 0
+    total: 0,
   };
 
   async componentDidMount() {
-    const { filter } = this.props.account;
-    const { paginationConfig } = this.props.common;
+    const { filter, } = this.props.account;
+    const { paginationConfig, } = this.props.common;
 
     this.getDataList({
       page_size: filter.page_size || paginationConfig.defaultPageSize,
-      page: filter.page || 1
+      page: filter.page || 1,
     });
   }
 
   getDataList = async (filter?: any) => {
     const payload = filter
-      ? { ...this.props.account.filter, ...filter }
+      ? { ...this.props.account.filter, ...filter, }
       : this.props.account.filter;
     this.setState({
-      tableLoading: true
+      tableLoading: true,
     });
 
-    const res = await this.$api.account.getTransactionList({ params: payload });
-    const { results, page_size, current_page, count } = res.data;
+    const res = await this.$api.account.getTransactionList({ params: payload, });
+    const { results, page_size, current_page, count, } = res.data;
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
-      this.getDataList({ ...payload, page: current_page - 1 });
+      this.getDataList({ ...payload, page: current_page - 1, });
     } else {
       this.props.account.setFilter({
         page_size,
         page: current_page,
-        name: payload.name
+        name: payload.name,
       });
       this.setState({
         transactionList: results,
         tableLoading: false,
-        total: count
+        total: count,
       });
     }
   };
@@ -88,7 +88,7 @@ export default class TransactionList extends BaseReact<
   private onSearch = async () => {
     const filter: any = {
       page: 1,
-      ...this.state.tempFilter
+      ...this.state.tempFilter,
     };
 
     if (filter.start_time) {
@@ -107,10 +107,10 @@ export default class TransactionList extends BaseReact<
     // @ts-ignore
     this.getDataList({
       name: undefined,
-      page: 1
+      page: 1,
     });
     this.setState({
-      tempFilter: {}
+      tempFilter: {},
     });
   };
 
@@ -118,8 +118,8 @@ export default class TransactionList extends BaseReact<
     this.setState((prevState: TransactionListState) => ({
       tempFilter: {
         ...prevState.tempFilter,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 

@@ -32,13 +32,13 @@ const widgetMap = {
       onInputChange,
       onPressEnter,
       // style,
-      selectStyle
+      selectStyle,
     } = config;
 
     return (
       <InputGroup compact>
         <Select
-          style={selectStyle ? { width: 110, ...selectStyle } : { width: 110 }}
+          style={selectStyle ? { width: 110, ...selectStyle, } : { width: 110, }}
           value={selectValue}
           onChange={onSelectChange}
         >
@@ -50,7 +50,7 @@ const widgetMap = {
             ))}
         </Select>
         <Input
-          style={{ width: 238 }}
+          style={{ width: 238, }}
           value={inputValue}
           // @todo
           onChange={onInputChange}
@@ -76,7 +76,7 @@ const widgetMap = {
       filterOption,
       onChange,
       allowClear,
-      onPopupScroll
+      onPopupScroll,
     } = config;
     return (
       <>
@@ -86,7 +86,7 @@ const widgetMap = {
             allowClear={allowClear}
             value={value}
             mode={mode || false}
-            style={{ minWidth: width || 258, width }}
+            style={{ minWidth: width || 258, width, }}
             showSearch={showSearch}
             placeholder={placeholder}
             filterOption={filterOption}
@@ -120,7 +120,7 @@ const widgetMap = {
       value,
       style,
       format,
-      showTime
+      showTime,
     } = config;
 
     return (
@@ -147,14 +147,14 @@ const widgetMap = {
       onChange,
       value,
       showTime,
-      format
+      format,
     } = config;
     return (
       <>
         {label && <span className="common-list-label">{`${label}：`}</span>}
         <span className="common-list-control">
           <RangePicker
-            style={{ width: 400 }}
+            style={{ width: 400, }}
             showTime={showTime}
             format={format}
             placeholder={placeholder}
@@ -184,14 +184,14 @@ const widgetMap = {
     );
   },
   Input: config => {
-    const { label, value, placeholder, onChange, width, onPressEnter } = config;
+    const { label, value, placeholder, onChange, width, onPressEnter, } = config;
 
     return (
       <>
         {label && <span className="common-list-label">{`${label}：`}</span>}
         <span className="common-list-control">
           <Input
-            style={{ minWidth: width || 258 }}
+            style={{ minWidth: width || 258, }}
             value={value}
             onChange={onChange}
             placeholder={placeholder}
@@ -202,7 +202,7 @@ const widgetMap = {
     );
   },
   Checkbox: config => {
-    const { label, value, onChange } = config;
+    const { label, value, onChange, } = config;
     return (
       <Checkbox checked={value} onChange={onChange}>
         {label}
@@ -210,7 +210,7 @@ const widgetMap = {
     );
   },
   CheckableTag: config => {
-    const { label, option, value, onChange } = config;
+    const { label, option, value, onChange, } = config;
 
     return (
       <>
@@ -233,7 +233,7 @@ const widgetMap = {
     );
   },
   Label: (config, children) => {
-    const { label } = config;
+    const { label, } = config;
 
     return (
       <>
@@ -244,23 +244,23 @@ const widgetMap = {
   },
   Custom: config => {
     return <div>{this.props.children}</div>;
-  }
+  },
 };
 
 export default class CommonList extends React.Component<any, any> {
   state = {
-    collapse: true
+    collapse: true,
   };
 
   toggleCollapse = (bool?) => {
     this.setState({
-      collapse: !this.state.collapse
+      collapse: !this.state.collapse,
     });
   };
 
   renderSearcher = () => {
-    const { searcher, table } = this.props.config;
-    const { collapse } = this.state;
+    const { searcher, table, } = this.props.config;
+    const { collapse, } = this.state;
     const TableHeader = table && table.tableHeader;
 
     return (
@@ -279,13 +279,13 @@ export default class CommonList extends React.Component<any, any> {
             )}
             {searcher.collapseControl &&
               searcher.collapseControl.showMoreBtn && (
-                <span className="common-list-serach-more">
-                  <a onClick={this.toggleCollapse}>
-                    {collapse ? "更多" : "收起"}{" "}
-                    <Icon type={collapse ? "down" : "up"} />
-                  </a>
-                </span>
-              )}
+              <span className="common-list-serach-more">
+                <a onClick={this.toggleCollapse}>
+                  {collapse ? "更多" : "收起"}{" "}
+                  <Icon type={collapse ? "down" : "up"} />
+                </a>
+              </span>
+            )}
           </div>
         </section>
       )
@@ -293,8 +293,8 @@ export default class CommonList extends React.Component<any, any> {
   };
 
   renderWidgets = widgets => {
-    const { collapse } = this.state;
-    const { searcher } = this.props.config;
+    const { collapse, } = this.state;
+    const { searcher, } = this.props.config;
     return (
       widgets && (
         <div className="common-list-search-left">
@@ -311,7 +311,7 @@ export default class CommonList extends React.Component<any, any> {
                         ? collapse && index > 0
                           ? "none"
                           : "flex"
-                        : "flex"
+                        : "flex",
                   }}
                 >
                   {widget.map((item: any) => {
@@ -320,7 +320,7 @@ export default class CommonList extends React.Component<any, any> {
                         key={item.label}
                         className="common-list-search-col"
                         style={{
-                          ...item.style
+                          ...item.style,
                         }}
                       >
                         {widgetMap[item.type] &&
@@ -356,7 +356,7 @@ export default class CommonList extends React.Component<any, any> {
   };
 
   renderAddBtn = () => {
-    const { addBtn, searcher } = this.props.config;
+    const { addBtn, searcher, } = this.props.config;
     const AddBtnTitle = addBtn && addBtn.title;
 
     return (
@@ -367,7 +367,7 @@ export default class CommonList extends React.Component<any, any> {
             {searcher.batchControl.showBatchControl && (
               <Select
                 placeholder={searcher.batchControl.placeholder}
-                style={{ minWidth: 120 }}
+                style={{ minWidth: 120, }}
                 defaultValue={undefined}
                 onChange={searcher.batchControl.onBatch}
               >
@@ -386,7 +386,7 @@ export default class CommonList extends React.Component<any, any> {
   };
 
   renderTableHeader = () => {
-    const { tableHeader } = this.props.config;
+    const { tableHeader, } = this.props.config;
     const TableHeader = tableHeader;
 
     return (
@@ -405,7 +405,7 @@ export default class CommonList extends React.Component<any, any> {
       pagination,
       onChange,
       loading,
-      locale
+      locale,
     } = this.props.config.table;
     return (
       <section className="common-list-table">
@@ -429,7 +429,7 @@ export default class CommonList extends React.Component<any, any> {
       loading,
       pagination,
       renderCard,
-      addBtn
+      addBtn,
     } = this.props.config.cards;
 
     return (
@@ -474,7 +474,7 @@ export default class CommonList extends React.Component<any, any> {
   };
 
   render() {
-    const { config } = this.props;
+    const { config, } = this.props;
     return (
       <div className="common-list">
         {this.renderSearcher()}
