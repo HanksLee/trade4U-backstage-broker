@@ -22,7 +22,10 @@ class FinanceStore extends BaseStore {
   @observable
   depositList = [];
   @observable
-  depositListMeta = {};
+  depositListMeta = {
+    total: 0,
+    total_amount: {},
+  };
   @action
   getDepositList = async config => {
     const res = await this.$api.finance.getDepositList(config);
@@ -31,8 +34,10 @@ class FinanceStore extends BaseStore {
   @action
   setDepositList = data => {
     this.depositList = data.results;
+
     this.depositListMeta = {
       total: data.count,
+      total_amount: data.total_amount,
     };
   };
   @observable
@@ -86,7 +91,10 @@ class FinanceStore extends BaseStore {
   @observable
   withdrawList = [];
   @observable
-  withdrawListMeta = {};
+  withdrawListMeta = {
+    total: 0,
+    total_amount: {},
+  };
   @action
   getWithdrawList = async config => {
     const res = await this.$api.finance.getWithdrawList(config);
@@ -97,6 +105,7 @@ class FinanceStore extends BaseStore {
     this.withdrawList = data.results;
     this.withdrawListMeta = {
       total: data.count,
+      total_amount: data.total_amount,
     };
   };
   @observable

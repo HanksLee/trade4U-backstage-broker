@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Icon, Popconfirm } from "antd";
+import { Button, Icon, Popconfirm, Row, Col } from "antd";
 import utils from "utils";
 import StatusText from 'components/StatusText';
 import moment from 'moment';
@@ -71,7 +71,8 @@ const config = self => {
       width: 140,
       dataIndex: "create_time",
       render: (text, record) => {
-        return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
+        return text && moment(text * 1000).format(FORMAT_TIME) || '--';
+      },
     },
     {
       title: "预计出金",
@@ -130,7 +131,8 @@ const config = self => {
       width: 140,
       dataIndex: "review_time",
       render: (text, record) => {
-        return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
+        return text && moment(text * 1000).format(FORMAT_TIME) || '--';
+      },
     },
     {
       title: "审核人",
@@ -196,7 +198,8 @@ const config = self => {
       width: 140,
       dataIndex: "remit_time",
       render: (text, record) => {
-        return text && moment(text * 1000).format(FORMAT_TIME) || '--';      },
+        return text && moment(text * 1000).format(FORMAT_TIME) || '--';
+      },
     },
     {
       // width: 120,
@@ -222,7 +225,7 @@ const config = self => {
                   self.$msg.error(res.data.message);
                 }
               }}
-              onCancel={() => {}}
+              onCancel={() => { }}
             >
               <span>删除</span>
             </Popconfirm>
@@ -232,7 +235,7 @@ const config = self => {
     }
   ];
 
-  const columnsWidth = columns.reduce(function(total, cur) {
+  const columnsWidth = columns.reduce(function (total, cur) {
     return total + cur.width;
   }, 0);
 
@@ -240,7 +243,7 @@ const config = self => {
     ...self.props.common.paginationConfig,
     total: self.props.finance.withdrawListMeta.total,
     current: self.state.currentPage,
-    onChange: (current, pageSize) => {},
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
@@ -257,6 +260,23 @@ const config = self => {
         }}><Icon type="plus" />添加</Button>
       ),
     },
+    // tableHeader: () => {
+    //   const {
+    //     total_amount
+    //   } = self.props.finance.withdrawListMeta;
+
+    //   return <Row style={{marginBottom: 10, fontSize: 14}}>
+    //     <Col span={2}>
+    //       <span>预计总入金：</span>
+    //       <span style={{color: '#1890ff'}}>{total_amount && total_amount.expect_total_amount}</span>
+    //     </Col>
+    //     <Col span={2}>
+    //       <span>实际总入金：</span>
+    //       <span style={{color: '#1890ff'}}>
+    //         {total_amount && total_amount.actual_total_amount}</span>
+    //     </Col>
+    //   </Row>
+    // },
     searcher: {
       batchControl: {
         placeholder: "请选择",
@@ -413,8 +433,26 @@ const config = self => {
     table: {
       rowKey: "id",
       // rowSelection,
+      title: () => {
+        const {
+          total_amount
+        } = self.props.finance.withdrawListMeta;
+
+        return <Row style={{ marginBottom: 10, fontSize: 14 }}>
+          <Col span={3}>
+            <span style={{fontWeight: 500}}>预计总入金：</span>
+            <span style={{ color: 'red' }}>{total_amount && total_amount.expect_total_amount}</span>
+          </Col>
+          <Col span={3}>
+            <span style={{fontWeight: 500}}>实际总入金：</span>
+            <span style={{ color: 'red' }}>
+              {total_amount && total_amount.actual_total_amount}</span>
+          </Col>
+        </Row>;
+      },
       scroll: { x: columnsWidth, },
       // tableLayout: 'fixed',
+      bordered: true,
       columns,
       dataSource: self.props.finance.withdrawList,
       pagination,

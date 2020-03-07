@@ -29,6 +29,9 @@ const getMarginCurrencyOptions = (config) => API.get('/constant/system_margin_cu
 
 const getOrderModeOptions = (config) => API.get('/constant/system_symbol_order_mode_choices', config);
 
+const getRuleList = (config: AxiosRequestConfig): Promise<any> =>
+  API.get("/broker/profit_rule", config);
+
 export default {
   getProductList,
   getCurrentProduct,
@@ -41,4 +44,5 @@ export default {
   getProfitOptioins,
   getMarginCurrencyOptions,
   getOrderModeOptions,
+  getRuleList,
 };

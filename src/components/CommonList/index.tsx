@@ -406,12 +406,16 @@ export default class CommonList extends React.Component<any, any> {
       onChange,
       loading,
       locale,
+      title,
+      bordered,
     } = this.props.config.table;
     return (
       <section className="common-list-table">
         <Table
+          title={title || ''}
           locale={locale}
-          rowKey={rowKey || "id"}
+          bordered={bordered}
+          rowKey={rowKey || 'id'}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={dataSource}

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Icon, Popconfirm } from "antd";
+import { Button, Icon, Popconfirm, Row, Col } from "antd";
 import utils from "utils";
 import moment from "moment";
 import { FORMAT_TIME } from "constant";
@@ -147,7 +147,7 @@ const config = self => {
                   self.$msg.error(res.data.message);
                 }
               }}
-              onCancel={() => {}}
+              onCancel={() => { }}
             >
               <span>删除</span>
             </Popconfirm>
@@ -161,7 +161,7 @@ const config = self => {
     ...self.props.common.paginationConfig,
     total: self.props.finance.depositListMeta.total,
     current: self.state.currentPage,
-    onChange: (current, pageSize) => {},
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
@@ -273,6 +273,24 @@ const config = self => {
     table: {
       rowKey: "id",
       // rowSelection,
+      bordered: true,
+      title: () => {
+        const {
+          total_amount
+        } = self.props.finance.depositListMeta;
+
+        return <Row style={{ marginBottom: 10, fontSize: 14 }}>
+          <Col span={3}>
+            <span style={{fontWeight: 500}}>预计总入金：</span>
+            <span style={{ color: 'red' }}>{total_amount && total_amount.expect_total_amount}</span>
+          </Col>
+          <Col span={3}>
+            <span style={{fontWeight: 500}}>实际总入金：</span>
+            <span style={{ color: 'red' }}>
+              {total_amount && total_amount.actual_total_amount}</span>
+          </Col>
+        </Row>;
+      },
       columns,
       dataSource: self.props.finance.depositList,
       pagination,
