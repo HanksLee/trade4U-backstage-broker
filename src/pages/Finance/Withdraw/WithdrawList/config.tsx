@@ -435,17 +435,17 @@ const config = self => {
       // rowSelection,
       title: () => {
         const {
-          total_amount
+          total_amount,
         } = self.props.finance.withdrawListMeta;
 
-        return <Row style={{ marginBottom: 10, fontSize: 14 }}>
+        return <Row style={{ marginBottom: 10, fontSize: 14, }}>
           <Col span={3}>
-            <span style={{fontWeight: 500}}>预计总入金：</span>
-            <span style={{ color: 'red' }}>{total_amount && total_amount.expect_total_amount}</span>
+            <span style={{ fontWeight: 500, }}>预计总入金：</span>
+            <span style={{ color: 'red', }}>{total_amount && total_amount.expect_total_amount}</span>
           </Col>
           <Col span={3}>
-            <span style={{fontWeight: 500}}>实际总入金：</span>
-            <span style={{ color: 'red' }}>
+            <span style={{ fontWeight: 500, }}>实际总入金：</span>
+            <span style={{ color: 'red', }}>
               {total_amount && total_amount.actual_total_amount}</span>
           </Col>
         </Row>;
