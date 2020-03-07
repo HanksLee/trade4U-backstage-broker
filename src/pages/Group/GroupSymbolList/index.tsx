@@ -36,13 +36,18 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
     isShowEditSymbolTypeModal: false,
   };
 
+  constructor(props) {
+    super(props);
+    this.groupId = this.$qs.parse(this.props.location.search).id;
+  }
+  
+
   async componentDidMount() {
     this.getDataList();
-    this.groupId = this.$qs.parse(this.props.location.search).id;
   }
 
   getDataList = async () => {
-    const res = await this.$api.group.getGroupSymbolTypeList({ group: this.groupId, });
+    const res = await this.$api.group.getGroupSymbolTypeList({ params: { group: this.groupId, }, });
     this.setState({
       symbolTypeList: res.data,
     });
@@ -117,7 +122,7 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
         dataIndex: "leverage",
       },
       {
-        key: "action",
+        key: "actions",
         title: "操作",
         render: (_, record) => {
           return (
