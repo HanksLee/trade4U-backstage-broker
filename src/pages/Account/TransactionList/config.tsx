@@ -47,7 +47,7 @@ const config = self => {
       title: '创建时间',
       dataIndex: 'create_time',
       width: 200,
-      render: (text) => moment(text * 1000).format('YYYY-MM-DD: hh-mm-ss'),
+      render: (text) => moment(text * 1000).format('YYYY-MM-DD: hh:mm:ss'),
     },
     {
       title: "ip",

@@ -8,8 +8,8 @@ import { BaseReact } from "components/BaseReact";
 import { Button, Icon, Table, Popconfirm } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import { Route } from "react-router-dom";
-import "./index.scss";
 import { PAGE_PERMISSION_MAP } from "constant";
+import "./index.scss";
 
 export interface RoleType {
   id: number;

@@ -91,6 +91,7 @@ export const PAGE_PERMISSION_MAP = {
   '/dashboard/finance/payment': 'VIEW_FINANCE_PAYMENT_PAGE',
   '/dashboard/finance/rate': 'VIEW_FINANCE_RATE_PAGE',
   '/dashboard/product': 'VIEW_PRODUCT_PAGE',
+  '/dashboard/group': 'VIEW_GROUP_PAGE',
 };
 
 export const PAGE_ROUTES = [
