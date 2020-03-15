@@ -158,7 +158,7 @@ class AgencyStore extends BaseStore {
   @action
   getCurrentRebate = async (id, config = {}) => {
     const res = await this.$api.agency.getRebateSettings(id, config);
-    this.setCurrentRebate(res.data);
+    this.setCurrentRebate(res.data, true, false);
   };
   @action
   setCurrentRebate = (rule, overwrite = true, store = true) => {
