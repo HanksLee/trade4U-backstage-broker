@@ -34,6 +34,18 @@ const routes: any[] = [
   },
   {
     component: loadable(() => import(/* webpackChunkName: "product-page" */ './pages/Group/GroupList')),
+  },
+  // {
+  //   component: loadable(() => import(/* webpackChunkName: "agency-log" */ './pages/Agency/AgencyLog/AgencyLogList')),
+  // },
+  {
+    component: loadable(() => import(/* webpackChunkName: "agency-log" */ './pages/Agency/AgencyLog/AgencyLogList')),
+  },
+  {
+    component: loadable(() => import(/* webpackChunkName: "agency-info" */ './pages/Agency/AgencyInfo/AgencyInfoList')),
+  },
+  {
+    component: loadable(() => import(/* webpackChunkName: "agency-agent" */ './pages/Agency/AgencyMember/AccountList')),
   }
 ];
 

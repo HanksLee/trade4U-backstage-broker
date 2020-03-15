@@ -4,6 +4,7 @@ import finance from "./finance";
 import group from "./group";
 import manager from "./manager";
 import product from "./product";
+import agency from "./agency";
 
 export default {
   account,
@@ -12,4 +13,5 @@ export default {
   group,
   manager,
   product,
+  agency,
 };

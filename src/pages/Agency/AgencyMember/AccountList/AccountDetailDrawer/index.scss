@@ -1,0 +1,18 @@
+.account-detail-tabs {
+  border: 1px solid rgba(0, 0, 0, .1);
+  box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.08);
+  padding: 5px;
+
+  .ant-tabs-tabpane {
+    padding: 0 10px;
+    height: 230px;
+    overflow: auto;;
+  }
+
+  .list-loading-container {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    text-align: center;
+  }
+}

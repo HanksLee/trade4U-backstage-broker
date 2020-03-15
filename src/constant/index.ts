@@ -92,6 +92,10 @@ export const PAGE_PERMISSION_MAP = {
   '/dashboard/finance/rate': 'VIEW_FINANCE_RATE_PAGE',
   '/dashboard/product': 'VIEW_PRODUCT_PAGE',
   '/dashboard/group': 'VIEW_GROUP_PAGE',
+  '/dashboard/agency': 'VIEW_AGENCY_PAGE',
+  '/dashboard/agency/log': 'VIEW_AGENCY_LOG_PAGE',
+  '/dashboard/agency/info': 'VIEW_AGENCY_INFO_PAGE',
+  '/dashboard/agency/agent': 'VIEW_AGENCY_AGENT_PAGE',
 };
 
 export const PAGE_ROUTES = [
