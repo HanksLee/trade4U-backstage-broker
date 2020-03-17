@@ -67,7 +67,7 @@ const routes: any[] = [
   {
     component: loadable(() =>
       import(
-        /* webpackChunkName: "verify-opne-account-page" */ "./pages/verify/OpenAccount"
+        /* webpackChunkName: "verify-opne-account-page" */ "./pages/Verify/OpenAccount"
       )
     ),
   },

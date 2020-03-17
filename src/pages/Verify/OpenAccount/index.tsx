@@ -24,6 +24,10 @@ export interface VerityType {
   inspect_person_name: string;
 }
 
+interface IVerityProps {
+
+}
+
 interface IVerityState {
   verifyList: VerityType[];
   currentVerify: VerityType | null;
@@ -43,7 +47,7 @@ interface VerityListState extends IVerityState {
 })
 @inject("common", "verify")
 @observer
-export default class VerifyList extends BaseReact<{}, VerityListState> {
+export default class VerifyList extends BaseReact<IVerityProps, VerityListState> {
   state = {
     verifyList: [],
     tableLoading: false,
