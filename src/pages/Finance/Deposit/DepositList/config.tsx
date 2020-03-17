@@ -281,11 +281,11 @@ const config = self => {
 
         return <Row style={{ marginBottom: 10, fontSize: 14, }}>
           <Col span={3}>
-            <span style={{ fontWeight: 500, }}>预计总入金：</span>
+            <span style={{ fontWeight: 500, }}>充值总金额：</span>
             <span style={{ color: 'red', }}>{total_amount && total_amount.expect_total_amount}</span>
           </Col>
           <Col span={3}>
-            <span style={{ fontWeight: 500, }}>实际总入金：</span>
+            <span style={{ fontWeight: 500, }}>支付总金额：</span>
             <span style={{ color: 'red', }}>
               {total_amount && total_amount.actual_total_amount}</span>
           </Col>

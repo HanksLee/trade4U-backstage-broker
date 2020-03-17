@@ -336,9 +336,9 @@ export default class RebateSettingsEditor extends BaseReact<IRebateSettingsEdito
     const obj = {};
 
     commission_rule.forEach(item => {
-      obj[item.id] = {
-        fix_amount: item.fix_amount,
-        rate: item.rate,
+      obj[item.id.toString()] = {
+        fix_amount: item.fix_amount.toString(),
+        rate: item.rate.toString(),
       };
     });
 
