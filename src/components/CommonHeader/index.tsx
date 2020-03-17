@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Breadcrumb } from "antd";
 import utils from "utils";
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from "mobx-react";
 import "./index.scss";
 
 interface CommonHeaderProps {
@@ -14,10 +14,13 @@ interface CommonHeaderProps {
   currentTab: any;
 }
 
-@inject('common')
+@inject("common")
 @observer
 export default class CommonHeader extends React.Component<CommonHeaderProps> {
-  breadcrumbs = utils.getPageBreadcrumb(this.props.common.sidebar, this.props.location.pathname);
+  breadcrumbs = utils.getPageBreadcrumb(
+    this.props.common.sidebar,
+    this.props.location.pathname
+  );
 
   render() {
     const { title, links, tabs, currentTab, history, onTabClick, } = this.props;
@@ -39,7 +42,9 @@ export default class CommonHeader extends React.Component<CommonHeaderProps> {
               links.map((link, index) => (
                 <a
                   key={index}
-                  onClick={() => { history.push(link.path); }}
+                  onClick={() => {
+                    history.push(link.path);
+                  }}
                 >
                   {link.title}
                 </a>
@@ -50,7 +55,9 @@ export default class CommonHeader extends React.Component<CommonHeaderProps> {
           {tabs &&
             tabs.map((tab, index) => (
               <a
-                onClick={() => { onTabClick(tab.id); }}
+                onClick={() => {
+                  onTabClick(tab.id);
+                }}
                 className={`${currentTab === tab.id ? "tab-active" : ""} `}
               >
                 <span>{tab.title}</span>

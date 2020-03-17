@@ -209,25 +209,27 @@ IEditUserModalState
               rules: [{ required: true, message: "角色不能为空值", }],
             })(<Cascader options={roleList} />)}
           </FormItem>
-          <FormItem label="状态" {...getFormItemLayout(5, 13)} required>
-            {getFieldDecorator("status", {
-              initialValue: (user && [String(user.status)]) || ["1"],
-              rules: [{ required: true, message: "状态不能为空值", }],
-            })(
-              <Cascader
-                options={[
-                  {
-                    value: "1",
-                    label: "启用",
-                  },
-                  {
-                    value: "0",
-                    label: "禁用",
-                  }
-                ]}
-              />
-            )}
-          </FormItem>
+          {!user && (
+            <FormItem label="状态" {...getFormItemLayout(5, 13)} required>
+              {getFieldDecorator("status", {
+                initialValue: (user && [String(user.status)]) || ["1"],
+                rules: [{ required: true, message: "状态不能为空值", }],
+              })(
+                <Cascader
+                  options={[
+                    {
+                      value: "1",
+                      label: "启用",
+                    },
+                    {
+                      value: "0",
+                      label: "禁用",
+                    }
+                  ]}
+                />
+              )}
+            </FormItem>
+          )}
         </Form>
       </Modal>
     );

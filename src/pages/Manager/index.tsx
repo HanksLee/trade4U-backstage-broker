@@ -2,13 +2,14 @@ import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import EditUserModal from "./EditUserModal";
 import listConfig from "./config";
-import utils from "utils";
+// import utils from "utils";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import { PAGE_PERMISSION_MAP } from "constant";
+import "./index.scss";
 
 export interface ManagerType {
   id: number;

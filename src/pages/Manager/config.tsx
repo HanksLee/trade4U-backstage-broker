@@ -1,6 +1,6 @@
 import utils from "utils";
 import * as React from "react";
-import { Button, Icon, Popconfirm } from "antd";
+import { Button, Icon, Popconfirm, Checkbox } from "antd";
 
 const config = self => {
   const columns = [
@@ -26,14 +26,20 @@ const config = self => {
       },
     },
     {
-      title: "状态",
+      title: "启用",
       dataIndex: "status",
       render: (text, record) => {
-        if (record.status === 1) {
-          return "启用";
-        } else if (record.status === 0) {
-          return "禁用";
-        }
+        const handleChange = async e => {
+          const res = await self.$api.manager.updateManager(record.id, {
+            status: text == 0 ? 1 : 0,
+          });
+          if (res.status === 200) {
+            self.getDataList(self.props.manager.filter);
+          } else {
+            self.$msg.error(res.data.message);
+          }
+        };
+        return <Checkbox checked={text} onChange={handleChange} />;
       },
     },
     {

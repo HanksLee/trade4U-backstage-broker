@@ -5,6 +5,8 @@ import group from "./group";
 import manager from "./manager";
 import product from "./product";
 import agency from "./agency";
+import verify from "./verify";
+import system from "./system";
 
 export default {
   account,
@@ -14,4 +16,6 @@ export default {
   manager,
   product,
   agency,
+  verify,
+  system,
 };
