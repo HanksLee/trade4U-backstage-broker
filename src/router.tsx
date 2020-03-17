@@ -64,13 +64,13 @@ const routes: any[] = [
       )
     )
   },
-  {
-    component: loadable(() =>
-      import(
-        /* webpackChunkName: "verify-opne-account-page" */ "./pages/verify/OpenAccount"
-      )
-    )
-  },
+  // {
+  //   component: loadable(() =>
+  //     import(
+  //       /* webpackChunkName: "verify-opne-account-page" */ "./pages/verify/OpenAccount"
+  //     )
+  //   )
+  // },
   {
     component: loadable(() =>
       import(
