@@ -1,5 +1,6 @@
 import moment from 'moment';
 import utils from 'utils';
+import * as React from 'react';
 
 const config = self => {
   const columns = [
@@ -30,7 +31,12 @@ const config = self => {
       dataIndex: 'amount',
       width: 150,
       render: (text, record) => {
-        return text == 0 ? 0 : (record.in_or_out === -1 ? `-${text}` : `+${text}`);
+        return text == 0
+          ? 0
+          : (
+            record.in_or_out === -1
+              ? <span style={{ color: 'red', }}>{`-${text}`}</span>
+              : <span style={{ color: 'green', }}>{`+${text}`}</span>);
       },
     },
     {
@@ -67,7 +73,7 @@ const config = self => {
     total: self.state.total,
     current: self.props.account.filter.page,
     pageSize: self.props.account.filter.page_size,
-    onChange: (current, pageSize) => {},
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,

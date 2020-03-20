@@ -40,13 +40,13 @@ interface VerifyOpenAccountListState extends IVerifyOpenAccountState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/verify/openaccount", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/openaccount"],
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/openaccount"]
 })
 @inject("common", "verify")
 @observer
 export default class VerifyList extends BaseReact<
-{},
-VerifyOpenAccountListState
+  {},
+  VerifyOpenAccountListState
 > {
   state = {
     verifyList: [],
@@ -55,16 +55,16 @@ VerifyOpenAccountListState
     total: 0,
     tempFilter: {},
     currentVerify: null,
-    isShowEditVerifyModal: false,
+    isShowEditVerifyModal: false
   };
 
   async componentDidMount() {
-    const { filter, } = this.props.verify;
-    const { paginationConfig, } = this.props.common;
+    const { filter } = this.props.verify;
+    const { paginationConfig } = this.props.common;
 
     this.getDataList({
       page_size: filter.page_size || paginationConfig.defaultPageSize,
-      page: filter.page || 1,
+      page: filter.page || 1
     });
   }
 
@@ -76,27 +76,27 @@ VerifyOpenAccountListState
 
   getDataList = async (filter?: any) => {
     const payload = filter
-      ? { ...this.props.verify.filter, ...filter, }
+      ? { ...this.props.verify.filter, ...filter }
       : this.props.verify.filter;
     this.setState({
-      tableLoading: true,
+      tableLoading: true
     });
 
-    const res = await this.$api.verify.getVerifyList({ params: payload, });
-    const { results, page_size, current_page, count, } = res.data;
+    const res = await this.$api.verify.getVerifyList({ params: payload });
+    const { results, page_size, current_page, count } = res.data;
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
-      this.getDataList({ ...payload, page: current_page - 1, });
+      this.getDataList({ ...payload, page: current_page - 1 });
     } else {
       this.props.verify.setFilter({
         page_size,
         page: current_page,
-        name: payload.name,
+        name: payload.name
       });
       this.setState({
         verifyList: results,
         tableLoading: false,
-        total: count,
+        total: count
       });
     }
   };
@@ -113,19 +113,19 @@ VerifyOpenAccountListState
   showEditVerifyModal = (verify?: VerifyOpenAccountType) => {
     if (verify) {
       this.setState({
-        currentVerify: verify,
+        currentVerify: verify
       });
     }
 
     this.setState({
-      isShowEditVerifyModal: true,
+      isShowEditVerifyModal: true
     });
   };
 
   hideEditVerifyModal = () => {
     this.setState({
       isShowEditVerifyModal: false,
-      currentVerify: null,
+      currentVerify: null
     });
   };
 
@@ -135,8 +135,8 @@ VerifyOpenAccountListState
   };
 
   render() {
-    const { match, } = this.props;
-    const { currentVerify, isShowEditVerifyModal, } = this.state;
+    const { match } = this.props;
+    const { currentVerify, isShowEditVerifyModal } = this.state;
     return (
       <>
         <div>

@@ -42,28 +42,26 @@ const config = self => {
       },
     },
     {
-      title: "金额",
-      // width: 100,
-      dataIndex: "amount",
+      title: '原有余额',
+      dataIndex: 'before_balance',
+      width: 150,
+    },
+    {
+      title: '变动金额',
+      dataIndex: 'amount',
+      width: 150,
       render: (text, record) => {
-        return text || '--';
+        return text == 0
+          ? 0
+          : (record.in_or_out === -1
+            ? <span style={{ color: 'red', }}>{`-${text}`}</span>
+            : <span style={{ color: 'green', }}>{`+${text}`}</span>);
       },
     },
     {
-      title: "变动前金额",
-      // width: 100,
-      dataIndex: "before_balance",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      title: "变动后金额",
-      // width: 100,
-      dataIndex: "after_balance",
-      render: (text, record) => {
-        return text || '--';
-      },
+      title: '现有余额',
+      dataIndex: 'after_balance',
+      width: 150,
     },
     {
       title: "ip",

@@ -44,13 +44,18 @@
       position: absolute;
       right: 0;
       bottom: 0;
+      margin-left: 10px;
     }
+  }
+
+  .common-list-search-batch {
+    margin-left: 10px;
   }
 
   .common-list-addbtn {
     margin-bottom: 24px;
     display: flex;
-    justify-content: space-between;
+    justify-content: start;
   }
 
   .common-list-table {
