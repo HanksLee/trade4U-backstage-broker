@@ -1,100 +1,22 @@
 import { action, observable, computed } from "mobx";
 import BaseStore from "store/base";
-import utils from "utils";
-import { WeeklyOrder } from "constant";
-import moment from "moment";
 
-class ProductStore extends BaseStore {
+class SystemStore extends BaseStore {
   @observable
-  filterProduct = {
+  filter = {
     page_size: 10,
     current_page: 1,
   };
   @action
-  setFilterProduct = (filter, overwrite = false) => {
+  setFilter = (filter, overwrite = false) => {
     if (overwrite) {
-      this.filterProduct = filter;
+      this.filter = filter;
     } else {
-      this.filterProduct = {
-        ...this.filterProduct,
+      this.filter = {
+        ...this.filter,
         ...filter,
       };
     }
   };
-  @observable
-  productList = [];
-  @observable
-  productListMeta = {};
-  @action
-  getProductList = async config => {
-    const res = await this.$api.product.getProductList(config);
-    const testRes = await this.$api.system.getBrokerConfigList({});
-    this.setProductList(res.data);
-  };
-  @action
-  setProductList = data => {
-    this.productList = data.results;
-    this.productListMeta = {
-      total: data.count,
-    };
-  };
-  @observable
-  currentProduct: any = {};
-
-  @computed
-  get currentShowProduct() {
-    const obj: any = {};
-
-    if (!utils.isEmpty(this.currentProduct.trading_times)) {
-      obj.trading_times = WeeklyOrder.map(item => {
-        const matched = JSON.parse(this.currentProduct.trading_times)[item];
-
-        if (matched) {
-          return {
-            day: item,
-            trades: matched.trades.map(time => (time && moment(time)) || null),
-          };
-        }
-
-        return {
-          day: item,
-          trades: [],
-        };
-      });
-    } else {
-      obj.trading_times = WeeklyOrder.map(item => {
-        return {
-          day: item,
-          trades: [],
-        };
-      });
-    }
-
-    return {
-      ...this.currentProduct,
-      ...obj,
-    };
-  }
-  @action
-  getCurrentProduct = async (id, config = {}) => {
-    const res = await this.$api.product.getCurrentProduct(id, config);
-    this.setCurrentProduct(res.data);
-  };
-  @action
-  setCurrentProduct = (rule, overwrite = true, store = true) => {
-    if (overwrite) {
-      this.currentProduct = rule;
-    } else {
-      this.currentProduct = {
-        ...this.currentProduct,
-        ...rule,
-      };
-    }
-
-    if (store) {
-      utils.setLStorage("currentProduct", this.currentProduct);
-    }
-  };
 }
-
-export default new ProductStore();
+export default new SystemStore();

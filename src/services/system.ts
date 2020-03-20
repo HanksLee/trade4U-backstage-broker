@@ -4,10 +4,8 @@ import { moonAPI as API } from "utils/request";
 const getBrokerDealerList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/broker_dealer", config);
 
-const updateBrokerDealer = (
-  id: string,
-  config: AxiosRequestConfig
-): Promise<any> => API.patch(`/broker/broker_dealer/${id}`, config);
+const updateBrokerDealer = (config: AxiosRequestConfig): Promise<any> =>
+  API.patch("/broker/broker_dealer", config);
 
 const getBrokerConfigList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/config", config);

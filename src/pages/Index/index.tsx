@@ -9,7 +9,7 @@ import "./index.scss";
 import { inject, observer } from "mobx-react";
 import { PAGE_PERMISSION_MAP } from "constant";
 
-const { Header, Sider, Content, } = Layout;
+const { Header, Sider, Content } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 
@@ -20,6 +20,7 @@ export interface IIndexState {
   selectedKeys: string[];
   openKeys: string[];
   showContainer: boolean;
+  title: string;
 }
 
 // 用于计算出侧边栏的展开路径的数组
@@ -63,12 +64,13 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
     openKeys: [],
     selectedKeys: [],
     showContainer: true,
+    title: ""
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const {
-      location: { pathname, },
-      common: { sidebar, },
+      location: { pathname },
+      common: { sidebar }
     } = nextProps;
 
     if (!sidebar) return null;
@@ -94,7 +96,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
     return {
       openKeys: pathLevel,
-      selectedKeys,
+      selectedKeys
     };
   }
 
@@ -102,30 +104,31 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
     const res = await this.$api.role.getMenus();
     this.props.common.setPermissions(res.data.permission);
     this.props.common.setSidebar(res.data.menu);
+    this.getTitle();
   }
 
   toggle = () => {
     this.setState({
-      collapsed: !this.state.collapsed,
+      collapsed: !this.state.collapsed
     });
   };
 
   onMenuItemClick = item => {
     this.setState({
-      openKeys: item.keyPath,
+      openKeys: item.keyPath
     });
     this.props.history.push(item.key);
   };
 
   onOpenChange = item => {
     this.setState({
-      openKeys: item,
+      openKeys: item
     });
   };
 
   renderMenu = (): JSX.Element => {
-    const { selectedKeys, openKeys, } = this.state;
-    const { sidebar, } = this.props.common;
+    const { selectedKeys, openKeys } = this.state;
+    const { sidebar } = this.props.common;
 
     return (
       <Menu
@@ -142,7 +145,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   };
 
   renderMenuItem = (route: any): JSX.Element => {
-    const { permissions, } = this.props.common;
+    const { permissions } = this.props.common;
     if (permissions.indexOf(PAGE_PERMISSION_MAP[route.path]) === -1)
       return null;
 
@@ -163,9 +166,20 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
     );
   };
 
+  getTitle = async () => {
+    const resDealer = await this.$api.system.getBrokerDealerList();
+    const { name } = resDealer.data;
+    if (name !== "") {
+      this.setState({ title: `${name}后台` });
+      document.title = name;
+    } else {
+      this.setState({ title: "WeTrade券商后台" });
+    }
+  };
+
   render() {
-    const { collapsed, showContainer, } = this.state;
-    const { location, common, } = this.props;
+    const { collapsed, showContainer, title } = this.state;
+    const { location, common } = this.props;
 
     // 还未加载到菜单数据
     if (!common.sidebar) {
@@ -180,22 +194,20 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
       <Layout className="layout">
         {showContainer && (
           <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
-            <div className="logo">
-              {!collapsed && <span>Wetrade 券商后台</span>}
-            </div>
+            <div className="logo">{!collapsed && <span>{title}</span>}</div>
             {this.renderMenu()}
           </Sider>
         )}
         <Layout
           style={{
             // minWidth: 1280,
-            overflow: "hidden",
+            overflow: "hidden"
           }}
         >
           {showContainer && (
             <Header className="header">
               <Icon
-                style={{ visibility: "hidden", }}
+                style={{ visibility: "hidden" }}
                 className="trigger"
                 type={this.state.collapsed ? "menu-unfold" : "menu-fold"}
                 onClick={this.toggle}
@@ -213,10 +225,10 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
           >
             {location.pathname === "/dashboard" ||
             location.pathname === "/dashboard/" ? (
-                <p style={{ fontSize: 30, fontWeight: 500, margin: 20, }}>
+              <p style={{ fontSize: 30, fontWeight: 500, margin: 20 }}>
                 🐕 🐩 🐈 &nbsp;Welcome to Wetrade!
-                </p>
-              ) : null}
+              </p>
+            ) : null}
             <AppRouter />
           </Content>
         </Layout>

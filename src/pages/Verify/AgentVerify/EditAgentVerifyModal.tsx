@@ -12,13 +12,13 @@ const getFormItemLayout = (label, wrapper, offset?) => ({
   wrapperCol: { span: wrapper, },
 });
 
-interface IEditUserVerifyModalProps {
-  userVerify: any;
+interface IEditAgentVerifyModalProps {
+  agentVerify: any;
   onOk: () => void;
   onCancel: () => void;
 }
 
-interface IEditUserVerifyModalState {
+interface IEditAgentVerifyModalState {
   roleList: any[];
   defaultRole: any[];
   confirmLoading: boolean;
@@ -28,9 +28,9 @@ interface IEditUserVerifyModalState {
 @Form.create()
 @inject("common")
 @observer
-export default class EditUserVerifyModal extends BaseReact<
-IEditUserVerifyModalProps,
-IEditUserVerifyModalState
+export default class EditAgentVerifyModal extends BaseReact<
+IEditAgentVerifyModalProps,
+IEditAgentVerifyModalState
 > {
   state = {
     confirmLoading: false,
@@ -43,7 +43,7 @@ IEditUserVerifyModalState
   handleSubmit = async evt => {
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const { userVerify, onOk, } = this.props;
+        const { agentVerify, onOk, } = this.props;
 
         let payload: any = {
           reason: values.reason,
@@ -53,7 +53,7 @@ IEditUserVerifyModalState
           confirmLoading: true,
         });
 
-        this.$api.verify.updateVerify(userVerify.id, payload).then(
+        this.$api.verify.updateVerify(agentVerify.id, payload).then(
           () => {
             this.$msg.success("開戶審批更新成功");
             onOk();
@@ -69,14 +69,14 @@ IEditUserVerifyModalState
   };
 
   render() {
-    const { form, userVerify, onCancel, } = this.props;
+    const { form, agentVerify, onCancel, } = this.props;
     const { confirmLoading, } = this.state;
     const getFieldDecorator = form.getFieldDecorator;
 
     return (
       <Modal
         visible={true}
-        title={"开户审批编辑"}
+        title={"代理审批编辑"}
         onOk={this.handleSubmit}
         onCancel={onCancel}
         confirmLoading={confirmLoading}
@@ -84,15 +84,15 @@ IEditUserVerifyModalState
         <Form className="editor-form">
           <FormItem label="审核原因" {...getFormItemLayout(5, 13)} required>
             {getFieldDecorator("reason", {
-              initialValue: (userVerify && userVerify.reason) || "",
+              initialValue: (agentVerify && agentVerify.reason) || "",
               rules: [{ required: true, message: "审核原因不能为空", }],
             })(<Input placeholder="请输入审核原因" />)}
           </FormItem>
-          {userVerify && (
+          {agentVerify && (
             <FormItem label="审核状态" {...getFormItemLayout(5, 13)} required>
               {getFieldDecorator("inspect_status", {
-                initialValue: (userVerify && [
-                  String(userVerify.inspect_status)
+                initialValue: (agentVerify && [
+                  String(agentVerify.inspect_status)
                 ]) || ["0"],
                 rules: [{ required: true, message: "状态不能为空值", }],
               })(

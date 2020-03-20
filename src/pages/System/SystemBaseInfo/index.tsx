@@ -21,8 +21,8 @@ const getFormItemLayout = (
   wrapper: number,
   offset?: undefined
 ) => ({
-  labelCol: { span: label, offset, },
-  wrapperCol: { span: wrapper, },
+  labelCol: { span: label, offset },
+  wrapperCol: { span: wrapper }
 });
 
 export interface ISystemBaseInfoEditorProps {}
@@ -40,14 +40,14 @@ export interface ISystemBaseInfoEditorState {
 
 @withRoute("/dashboard/system/baseinfo", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/system/baseinfo"],
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/system/baseinfo"]
 })
 @Form.create()
 @inject("common", "system")
 @observer
 export default class SystemBaseInfoEditor extends BaseReact<
-ISystemBaseInfoEditorProps,
-ISystemBaseInfoEditorState
+  ISystemBaseInfoEditorProps,
+  ISystemBaseInfoEditorState
 > {
   state = {
     id: "",
@@ -55,11 +55,10 @@ ISystemBaseInfoEditorState
     domain: "",
     background_corner: "",
     logo: "",
-    company_logo: "",
+    company_logo: ""
   };
 
   async componentDidMount() {
-    // console.log(await this.$api.system.getBrokerDealerList());
     this.getList();
   }
 
@@ -74,18 +73,18 @@ ISystemBaseInfoEditorState
         name: res.data.name,
         domain: res.data.domain,
         logo: res.data.logo,
-        id: res.data.id,
+        id: res.data.id
       });
     }
   };
 
   renderEditor = () => {
-    const { getFieldDecorator, } = this.props.form;
-    const { name, domain, logo, } = this.state;
+    const { getFieldDecorator } = this.props.form;
+    const { name, domain, logo } = this.state;
     return (
       <Form className="editor-form">
         <FormItem>
-          <h2 className="editor-form-title form-title">基礎信息</h2>
+          <h2 className="editor-form-title form-title">基础信息</h2>
         </FormItem>
         <FormItem label="domain" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("domain", {
@@ -93,29 +92,29 @@ ISystemBaseInfoEditorState
             rules: [
               {
                 pattern: /[a-zA-Z]+/,
-                message: "只能輸入英文",
+                message: "只能输入英文"
               }
-            ],
+            ]
           })(
             <Input
               placeholder="domain"
-              style={{ display: "inline-block", width: 200, }}
+              style={{ display: "inline-block", width: 200 }}
             />
           )}
         </FormItem>
-        <FormItem label="網站標題" {...getFormItemLayout(3, 12)}>
+        <FormItem label="网站标题" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("name", {
-            initialValue: name || "",
+            initialValue: name || ""
           })(
             <Input
-              placeholder="請輸入網站標題"
-              style={{ display: "inline-block", width: 200, }}
+              placeholder="请输入网站标题"
+              style={{ display: "inline-block", width: 200 }}
             />
           )}
         </FormItem>
         <FormItem label="logo" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("logo", {
-            valuePropName: "fileList",
+            valuePropName: "fileList"
           })(
             <Upload
               accept="image/*"
@@ -126,7 +125,7 @@ ISystemBaseInfoEditorState
               {logo ? (
                 <div
                   className="upload-image-preview"
-                  style={{ backgroundImage: `url(${logo})`, }}
+                  style={{ backgroundImage: `url(${logo})` }}
                 />
               ) : (
                 <div className="upload-image-preview">
@@ -157,22 +156,24 @@ ISystemBaseInfoEditorState
     formData.append("file", file);
     const res = await this.$api.common.uploadFile(formData);
     this.setState({
-      logo: res.data.file_path,
+      logo: res.data.file_path
     });
   };
 
   handleSubmit = async (evt: any) => {
-    const { id, logo, } = this.state;
+    const { id, logo } = this.state;
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
         let payload: any = {
           domain: values.domain,
           name: values.name,
-          logo,
+          logo
         };
-        const res = this.$api.system.updateBrokerDealer(id, payload);
+        const res = await this.$api.system.updateBrokerDealer(payload);
+
         if (res.status === 200) {
-          this.$msg.success("基礎信息更新成功");
+          this.$msg.success("基础信息更新成功");
+          // document.title = res.data.
         }
         //     const { currentProduct } = this.props.product;
         //     const { mode } = this.state;
@@ -246,7 +247,7 @@ ISystemBaseInfoEditorState
   render() {
     return (
       <>
-        <CommonHeader {...this.props} links={[]} title="基礎信息" />
+        <CommonHeader {...this.props} links={[]} title="基础信息" />
         <div className="editor food-card-editor">
           <section className="editor-content panel-block">
             {this.renderEditor()}

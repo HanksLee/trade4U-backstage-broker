@@ -7,71 +7,81 @@ import { FORMAT_TIME } from "constant";
 const config = self => {
   const columns = [
     {
-      title: "用户名",
-      width: 200,
+      title: "名字",
+      width: 100,
       dataIndex: "username",
-      render: (text, record) => {
-        return record.username || "--";
-      },
-      // fixed: "left"
+      fixed: "left",
     },
     {
       title: "手机",
       width: 200,
       dataIndex: "phone",
-      render: (text, record) => {
-        return record.phone || "--";
-      },
+      ellipsis: true,
     },
     {
-      title: "身分证",
-      width: 200,
-      dataIndex: "id_card",
-      render: (text, record) => {
-        return record.id_card || "--";
-      },
+      title: "单号",
+      width: 250,
+      dataIndex: "order_number",
     },
     {
-      title: "身分证正面",
-      width: 200,
-      dataIndex: "id_card_front",
-      render: (text, record) => {
-        return <img src={record.id_card_front} /> || "--";
-      },
+      title: "省份",
+      width: 100,
+      dataIndex: "province",
     },
     {
-      title: "身分证反面",
-      width: 200,
-      dataIndex: "id_card_back",
-      render: (text, record) => {
-        return <img src={record.id_card_back} /> || "--";
-      },
+      title: "城市",
+      width: 100,
+      dataIndex: "city",
     },
     {
-      title: "开户时间",
-      width: 200,
-      dataIndex: "create_time",
-      render: (text, record) => {
-        return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
-      },
+      title: "银行卡号",
+      width: 250,
+      dataIndex: "card_number",
     },
     {
-      title: "审核状态",
-      width: 200,
-      dataIndex: "inspect_status",
+      title: "开户银行",
+      width: 100,
+      dataIndex: "bank",
+    },
+    {
+      title: "支行名称",
+      width: 100,
+      dataIndex: "sub_branch",
+    },
+    {
+      title: "预计出金金额",
+      width: 250,
+      dataIndex: "expect_amount",
+    },
+    {
+      title: "预计出金货币单位",
+      width: 100,
+      dataIndex: "expect_currency",
+    },
+    {
+      title: "实际出金金额",
+      width: 250,
+      dataIndex: "actual_amount",
+    },
+    {
+      title: "实际出金货币单位",
+      width: 100,
+      dataIndex: "actual_currency",
+    },
+    {
+      title: "启用状态",
+      width: 100,
+      dataIndex: "review_status",
       render: (text, record) => {
-        switch (record.inspect_status) {
+        switch (record.review_status) {
           case 0:
-            return "未审核";
-            break;
-          case 1:
             return "待审核";
             break;
-          case 2:
+          case 1:
             return "审核通过";
             break;
-          case 3:
-            return "审核失败";
+          case 2:
+            return "审核不通过";
             break;
           default:
             return "--";
@@ -80,67 +90,105 @@ const config = self => {
     },
     {
       title: "审核时间",
-      width: 200,
-      dataIndex: "inspect_time",
+      width: 250,
+      dataIndex: "review_time",
       render: (text, record) => {
         return (
-          (record.inspect_time &&
-            moment(record.inspect_time * 1000).format(FORMAT_TIME)) ||
+          (record.review_time &&
+            moment(record.review_time * 1000).format(FORMAT_TIME)) ||
           "--"
         );
       },
     },
     {
-      title: "审核人",
-      width: 200,
-      dataIndex: "inspect_person",
+      title: "审核者",
+      width: 100,
+      dataIndex: "reviewer",
+    },
+    {
+      title: "审核者姓名",
+      width: 120,
+      dataIndex: "reviewer_name",
+    },
+    {
+      title: "划款状态",
+      width: 100,
+      dataIndex: "remit_status",
       render: (text, record) => {
-        return record.inspect_person || "--";
+        switch (record.remit_status) {
+          case 0:
+            return "待划款";
+            break;
+          case 1:
+            return "划款通过";
+            break;
+          case 2:
+            return "划款不通过";
+            break;
+          default:
+            return "--";
+        }
       },
     },
     {
-      title: "审核原因",
-      width: 300,
-      dataIndex: "inspect_reason",
+      title: "划款者",
+      width: 100,
+      dataIndex: "remitter",
+    },
+    {
+      title: "划款者姓名",
+      width: 120,
+      dataIndex: "remitter_name",
+    },
+    {
+      title: "划款单号",
+      width: 250,
+      dataIndex: "remit_number",
+    },
+    {
+      title: "划款时间",
+      width: 250,
+      dataIndex: "remit_time",
       render: (text, record) => {
-        return record.reason || "--";
+        return (
+          (record.remit_time &&
+            moment(record.remit_time * 1000).format(FORMAT_TIME)) ||
+          "--"
+        );
       },
     },
-    // {
-    //   title: "启用",
-    //   dataIndex: "status",
-    //   render: (text, record) => {
-    //     const handleChange = async e => {
-    //       const res = await self.$api.manager.updateManager(record.id, {
-    //         status: text == 0 ? 1 : 0
-    //       });
-    //       if (res.status === 200) {
-    //         self.getDataList(self.props.manager.filter);
-    //       } else {
-    //         self.$msg.error(res.data.message);
-    //       }
-    //     };
-    //     return <Checkbox checked={text} onChange={handleChange} />;
-    //   }
-    // },
+    {
+      title: "提交时间",
+      width: 250,
+      dataIndex: "create_time",
+      render: (text, record) => {
+        return (
+          (record.create_time &&
+            moment(record.create_time * 1000).format(FORMAT_TIME)) ||
+          "--"
+        );
+      },
+    },
     {
       title: "操作",
-      width: 200,
-      // fixed: "right",
+      // width: 150,
+      fixed: "right",
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => self.showEditVerifyModal(record)}>编辑</span>
-            <span className="common-list-table-operation-spliter"></span>
+            <span onClick={() => self.showEditWithdrawApplyModal(record)}>
+              编辑
+            </span>
+            {/* <span className="common-list-table-operation-spliter"></span> */}
             {/* <span onClick={() => self.goToPermissionEditor(record.id)}>
               授权
             </span>
             <span className="common-list-table-operation-spliter"></span>
-            <span onClick={() => self.brokerLogin(record.id)}>登录</span>
-            <span className="common-list-table-operation-spliter"></span> */}
+            <span onClick={() => self.brokerLogin(record.id)}>登录</span> */}
+            <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除此用户"
-              onConfirm={() => self.deleteVerify(record.id)}
+              onConfirm={() => self.deleteWithdrawApply(record.id)}
               onCancel={() => {}}
             >
               <span>删除</span>
@@ -221,7 +269,7 @@ const config = self => {
       rowKey: "id",
       scroll: { x: columnsWidth, },
       columns,
-      dataSource: self.state.verifyList,
+      dataSource: self.state.withdrawApplyList,
       pagination,
       onChange(pagination, filters) {
         const payload: any = {};

@@ -12,15 +12,13 @@ const getFormItemLayout = (label, wrapper, offset?) => ({
   wrapperCol: { span: wrapper, },
 });
 
-interface IEditUserVerifyModalProps {
-  userVerify: any;
+interface IEditWithdrawApplyVerifyModalProps {
+  withdrawApplyVerify: any;
   onOk: () => void;
   onCancel: () => void;
 }
 
-interface IEditUserVerifyModalState {
-  roleList: any[];
-  defaultRole: any[];
+interface IEditWithdrawApplyVerifyModalState {
   confirmLoading: boolean;
 }
 
@@ -28,14 +26,12 @@ interface IEditUserVerifyModalState {
 @Form.create()
 @inject("common")
 @observer
-export default class EditUserVerifyModal extends BaseReact<
-IEditUserVerifyModalProps,
-IEditUserVerifyModalState
+export default class EditWithdrawApplyVerifyModal extends BaseReact<
+IEditWithdrawApplyVerifyModalProps,
+IEditWithdrawApplyVerifyModalState
 > {
   state = {
     confirmLoading: false,
-    roleList: [],
-    defaultRole: [],
   };
 
   componentDidMount() {}
@@ -43,56 +39,59 @@ IEditUserVerifyModalState
   handleSubmit = async evt => {
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const { userVerify, onOk, } = this.props;
+        const { withdrawApplyVerify, onOk, } = this.props;
 
         let payload: any = {
-          reason: values.reason,
-          inspect_status: Number(values.inspect_status),
+          username: values.username,
+          review_status: Number(values.review_status),
         };
         this.setState({
           confirmLoading: true,
         });
 
-        this.$api.verify.updateVerify(userVerify.id, payload).then(
-          () => {
-            this.$msg.success("開戶審批更新成功");
-            onOk();
-          },
-          () => {
-            this.setState({
-              confirmLoading: false,
-            });
-          }
-        );
+        this.$api.verify
+          .updateWithdrawCommission(withdrawApplyVerify.id, payload)
+          .then(
+            () => {
+              this.$msg.success("客户出金审批更新成功");
+              onOk();
+            },
+            () => {
+              this.setState({
+                confirmLoading: false,
+              });
+            }
+          );
       }
     });
   };
 
   render() {
-    const { form, userVerify, onCancel, } = this.props;
+    const { form, withdrawApplyVerify, onCancel, } = this.props;
     const { confirmLoading, } = this.state;
     const getFieldDecorator = form.getFieldDecorator;
 
     return (
       <Modal
         visible={true}
-        title={"开户审批编辑"}
+        title={"出金审批编辑"}
         onOk={this.handleSubmit}
         onCancel={onCancel}
         confirmLoading={confirmLoading}
       >
         <Form className="editor-form">
-          <FormItem label="审核原因" {...getFormItemLayout(5, 13)} required>
-            {getFieldDecorator("reason", {
-              initialValue: (userVerify && userVerify.reason) || "",
-              rules: [{ required: true, message: "审核原因不能为空", }],
-            })(<Input placeholder="请输入审核原因" />)}
+          <FormItem label="姓名" {...getFormItemLayout(5, 13)} required>
+            {getFieldDecorator("username", {
+              initialValue:
+                (withdrawApplyVerify && withdrawApplyVerify.username) || "",
+              rules: [{ required: true, message: "姓名不能为空", }],
+            })(<Input placeholder="请输入姓名" disabled />)}
           </FormItem>
-          {userVerify && (
+          {withdrawApplyVerify && (
             <FormItem label="审核状态" {...getFormItemLayout(5, 13)} required>
-              {getFieldDecorator("inspect_status", {
-                initialValue: (userVerify && [
-                  String(userVerify.inspect_status)
+              {getFieldDecorator("review_status", {
+                initialValue: (withdrawApplyVerify && [
+                  String(withdrawApplyVerify.review_status)
                 ]) || ["0"],
                 rules: [{ required: true, message: "状态不能为空值", }],
               })(
@@ -100,18 +99,14 @@ IEditUserVerifyModalState
                   options={[
                     {
                       value: "0",
-                      label: "未审核",
-                    },
-                    {
-                      value: "1",
                       label: "待审核",
                     },
                     {
-                      value: "2",
+                      value: "1",
                       label: "审核通过",
                     },
                     {
-                      value: "3",
+                      value: "2",
                       label: "审核失败",
                     }
                   ]}

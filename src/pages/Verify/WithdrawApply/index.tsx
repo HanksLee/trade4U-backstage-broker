@@ -1,6 +1,6 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
-import EditUserModal from "./EditUserModal";
+import EditWithdrawApplyModal from "./EditWithdrawApplyModal";
 import listConfig from "./config";
 // import utils from "utils";
 import WithRoute from "components/WithRoute";
@@ -11,26 +11,38 @@ import { Route } from "react-router-dom";
 import { PAGE_PERMISSION_MAP } from "constant";
 import "./index.scss";
 
-export interface VerifyOpenAccountType {
+export interface VerifyWithdrawApplyType {
   id: number;
   username: string;
-  id_card: string;
-  id_card_front: string;
-  id_card_back: string;
+  phone: string;
+  order_number: string;
+  province: string;
+  city: string;
+  card_number: string;
+  bank: string;
+  sub_branch: string;
+  expect_amount: string;
+  expect_currency: string;
+  actual_amount: string;
+  actual_currency: string;
+  review_status: number;
+  review_time: number;
+  reviewer: string;
+  reviewer_name: string;
+  remit_status: number;
+  remitter: string;
+  remitter_name: string;
+  remit_number: string;
   create_time: number;
-  inspect_status: number;
-  inspect_time: string;
-  inspect_person: number;
-  reason: string;
 }
 
-interface IVerifyOpenAccountState {
-  verifyList: VerifyOpenAccountType[];
-  currentVerify: VerifyOpenAccountType | null;
-  isShowEditVerifyModal: boolean;
+interface IVerifyWithdrawApplyState {
+  withdrawApplyList: VerifyWithdrawApplyType[];
+  currentWithdrawApply: VerifyWithdrawApplyType | null;
+  isShowEditWithdrawApplyModal: boolean;
 }
 
-interface VerifyOpenAccountListState extends IVerifyOpenAccountState {
+interface VerifyWithdrawApplyListState extends IVerifyWithdrawApplyState {
   tableLoading: boolean;
   selectedRowKeys: string[];
   total: number;
@@ -38,24 +50,24 @@ interface VerifyOpenAccountListState extends IVerifyOpenAccountState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/verify/openaccount", {
+@WithRoute("/dashboard/verify/withdrawapply", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/openaccount"],
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/withdrawapply"],
 })
 @inject("common", "verify")
 @observer
-export default class VerifyList extends BaseReact<
+export default class VerifyWithdrawApplyList extends BaseReact<
 {},
-VerifyOpenAccountListState
+VerifyWithdrawApplyListState
 > {
   state = {
-    verifyList: [],
+    withdrawApplyList: [],
     tableLoading: false,
     selectedRowKeys: [],
     total: 0,
     tempFilter: {},
-    currentVerify: null,
-    isShowEditVerifyModal: false,
+    currentWithdrawApply: null,
+    isShowEditWithdrawApplyModal: false,
   };
 
   async componentDidMount() {
@@ -69,8 +81,8 @@ VerifyOpenAccountListState
   }
 
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/verify/openaccount") {
-      this.props.history.replace("/dashboard/verify/openaccount/list");
+    if (this.props.location.pathname === "/dashboard/verify/withdrawapply") {
+      this.props.history.replace("/dashboard/verify/withdrawapply/list");
     }
   }
 
@@ -82,7 +94,9 @@ VerifyOpenAccountListState
       tableLoading: true,
     });
 
-    const res = await this.$api.verify.getVerifyList({ params: payload, });
+    const res = await this.$api.verify.getWithdrawApplyList({
+      params: payload,
+    });
     const { results, page_size, current_page, count, } = res.data;
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
@@ -94,15 +108,15 @@ VerifyOpenAccountListState
         name: payload.name,
       });
       this.setState({
-        verifyList: results,
+        withdrawApplyList: results,
         tableLoading: false,
         total: count,
       });
     }
   };
 
-  deleteVerify = async (id: string) => {
-    const res = await this.$api.verify.deleteVerify(id);
+  deleteWithdrawApply = async (id: string) => {
+    const res = await this.$api.verify.deleteWithdrawApply(id);
     if (res.status === 204) {
       this.getDataList();
     } else {
@@ -110,37 +124,37 @@ VerifyOpenAccountListState
     }
   };
 
-  showEditVerifyModal = (verify?: VerifyOpenAccountType) => {
-    if (verify) {
+  showEditWithdrawApplyModal = (withdrawApply?: VerifyWithdrawApplyType) => {
+    if (withdrawApply) {
       this.setState({
-        currentVerify: verify,
+        currentWithdrawApply: withdrawApply,
       });
     }
 
     this.setState({
-      isShowEditVerifyModal: true,
+      isShowEditWithdrawApplyModal: true,
     });
   };
 
-  hideEditVerifyModal = () => {
+  hideEditWithdrawApplyModal = () => {
     this.setState({
-      isShowEditVerifyModal: false,
-      currentVerify: null,
+      isShowEditWithdrawApplyModal: false,
+      currentWithdrawApply: null,
     });
   };
 
-  handleUpdateVerify = () => {
-    this.hideEditVerifyModal();
+  handleUpdateWithdrawApply = () => {
+    this.hideEditWithdrawApplyModal();
     this.getDataList();
   };
 
   render() {
     const { match, } = this.props;
-    const { currentVerify, isShowEditVerifyModal, } = this.state;
+    const { currentWithdrawApply, isShowEditWithdrawApplyModal, } = this.state;
     return (
       <>
         <div>
-          <CommonHeader {...this.props} links={[]} title="开户审批" />
+          <CommonHeader {...this.props} links={[]} title="客户出金审批" />
           <Route
             path={`${match.url}/list`}
             render={props => (
@@ -148,11 +162,11 @@ VerifyOpenAccountListState
             )}
           />
         </div>
-        {isShowEditVerifyModal && (
-          <EditUserModal
-            userVerify={currentVerify}
-            onOk={this.handleUpdateVerify}
-            onCancel={this.hideEditVerifyModal}
+        {isShowEditWithdrawApplyModal && (
+          <EditWithdrawApplyModal
+            userWithdrawApply={currentWithdrawApply}
+            onOk={this.handleUpdateWithdrawApply}
+            onCancel={this.hideEditWithdrawApplyModal}
           />
         )}
       </>

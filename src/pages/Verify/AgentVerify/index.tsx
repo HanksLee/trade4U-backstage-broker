@@ -1,6 +1,6 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
-import EditUserModal from "./EditUserModal";
+import EditAgentVerifyModal from "./EditAgentVerifyModal";
 import listConfig from "./config";
 // import utils from "utils";
 import WithRoute from "components/WithRoute";
@@ -11,7 +11,7 @@ import { Route } from "react-router-dom";
 import { PAGE_PERMISSION_MAP } from "constant";
 import "./index.scss";
 
-export interface VerifyOpenAccountType {
+export interface VerifyAgentVerifyType {
   id: number;
   username: string;
   id_card: string;
@@ -24,13 +24,13 @@ export interface VerifyOpenAccountType {
   reason: string;
 }
 
-interface IVerifyOpenAccountState {
-  verifyList: VerifyOpenAccountType[];
-  currentVerify: VerifyOpenAccountType | null;
-  isShowEditVerifyModal: boolean;
+interface IVerifyAgentVerifyState {
+  agentVerifyList: VerifyAgentVerifyType[];
+  currentAgentVerify: VerifyAgentVerifyType | null;
+  isShowEditAgentVerifyModal: boolean;
 }
 
-interface VerifyOpenAccountListState extends IVerifyOpenAccountState {
+interface VerifyAgentVerifyListState extends IVerifyAgentVerifyState {
   tableLoading: boolean;
   selectedRowKeys: string[];
   total: number;
@@ -38,24 +38,24 @@ interface VerifyOpenAccountListState extends IVerifyOpenAccountState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/verify/openaccount", {
+@WithRoute("/dashboard/verify/agentverify", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/openaccount"],
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/agentverify"],
 })
 @inject("common", "verify")
 @observer
 export default class VerifyList extends BaseReact<
 {},
-VerifyOpenAccountListState
+VerifyAgentVerifyListState
 > {
   state = {
-    verifyList: [],
+    agentVerifyList: [],
     tableLoading: false,
     selectedRowKeys: [],
     total: 0,
     tempFilter: {},
-    currentVerify: null,
-    isShowEditVerifyModal: false,
+    currentAgentVerify: null,
+    isShowEditAgentVerifyModal: false,
   };
 
   async componentDidMount() {
@@ -69,8 +69,8 @@ VerifyOpenAccountListState
   }
 
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/verify/openaccount") {
-      this.props.history.replace("/dashboard/verify/openaccount/list");
+    if (this.props.location.pathname === "/dashboard/verify/agentverify") {
+      this.props.history.replace("/dashboard/verify/agentverify/list");
     }
   }
 
@@ -82,8 +82,9 @@ VerifyOpenAccountListState
       tableLoading: true,
     });
 
-    const res = await this.$api.verify.getVerifyList({ params: payload, });
+    const res = await this.$api.verify.getAgentVerifyList({ params: payload, });
     const { results, page_size, current_page, count, } = res.data;
+
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
       this.getDataList({ ...payload, page: current_page - 1, });
@@ -94,14 +95,14 @@ VerifyOpenAccountListState
         name: payload.name,
       });
       this.setState({
-        verifyList: results,
+        agentVerifyList: results,
         tableLoading: false,
         total: count,
       });
     }
   };
 
-  deleteVerify = async (id: string) => {
+  deleteAgentVerify = async (id: string) => {
     const res = await this.$api.verify.deleteVerify(id);
     if (res.status === 204) {
       this.getDataList();
@@ -110,37 +111,37 @@ VerifyOpenAccountListState
     }
   };
 
-  showEditVerifyModal = (verify?: VerifyOpenAccountType) => {
-    if (verify) {
+  showEditAgentVerifyModal = (agentVerify?: VerifyAgentVerifyType) => {
+    if (agentVerify) {
       this.setState({
-        currentVerify: verify,
+        currentAgentVerify: agentVerify,
       });
     }
 
     this.setState({
-      isShowEditVerifyModal: true,
+      isShowEditAgentVerifyModal: true,
     });
   };
 
-  hideEditVerifyModal = () => {
+  hideEditAgentVerifyModal = () => {
     this.setState({
-      isShowEditVerifyModal: false,
-      currentVerify: null,
+      isShowEditAgentVerifyModal: false,
+      currentAgentVerify: null,
     });
   };
 
-  handleUpdateVerify = () => {
-    this.hideEditVerifyModal();
+  handleUpdateAgentVerify = () => {
+    this.hideEditAgentVerifyModal();
     this.getDataList();
   };
 
   render() {
     const { match, } = this.props;
-    const { currentVerify, isShowEditVerifyModal, } = this.state;
+    const { currentAgentVerify, isShowEditAgentVerifyModal, } = this.state;
     return (
       <>
         <div>
-          <CommonHeader {...this.props} links={[]} title="开户审批" />
+          <CommonHeader {...this.props} links={[]} title="代理审批" />
           <Route
             path={`${match.url}/list`}
             render={props => (
@@ -148,11 +149,11 @@ VerifyOpenAccountListState
             )}
           />
         </div>
-        {isShowEditVerifyModal && (
-          <EditUserModal
-            userVerify={currentVerify}
-            onOk={this.handleUpdateVerify}
-            onCancel={this.hideEditVerifyModal}
+        {isShowEditAgentVerifyModal && (
+          <EditAgentVerifyModal
+            agentVerify={currentAgentVerify}
+            onOk={this.handleUpdateAgentVerify}
+            onCancel={this.hideEditAgentVerifyModal}
           />
         )}
       </>

@@ -130,7 +130,9 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => self.showEditVerifyModal(record)}>编辑</span>
+            <span onClick={() => self.showEditAgentVerifyModal(record)}>
+              编辑
+            </span>
             <span className="common-list-table-operation-spliter"></span>
             {/* <span onClick={() => self.goToPermissionEditor(record.id)}>
               授权
@@ -140,7 +142,7 @@ const config = self => {
             <span className="common-list-table-operation-spliter"></span> */}
             <Popconfirm
               title="请问是否确定删除此用户"
-              onConfirm={() => self.deleteVerify(record.id)}
+              onConfirm={() => self.deleteAgentVerify(record.id)}
               onCancel={() => {}}
             >
               <span>删除</span>
@@ -221,7 +223,7 @@ const config = self => {
       rowKey: "id",
       scroll: { x: columnsWidth, },
       columns,
-      dataSource: self.state.verifyList,
+      dataSource: self.state.agentVerifyList,
       pagination,
       onChange(pagination, filters) {
         const payload: any = {};

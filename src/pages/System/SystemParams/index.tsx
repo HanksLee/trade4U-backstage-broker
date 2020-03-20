@@ -147,13 +147,13 @@ ISystemEditorState
     } = this.state;
     const vaildatorNum = {
       patternNum: /^\d+\.?\d*$/,
-      message: "密碼必須為正整數或小數",
+      message: "密码必须为正整数或小数",
     };
 
     return (
       <Form className="editor-form">
         <FormItem>
-          <h2 className="editor-form-title form-title">出金時間配置</h2>
+          <h2 className="editor-form-title form-title">出金时间配置</h2>
         </FormItem>
         <FormItem label="時間段" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("withdraw_periods", {
@@ -189,7 +189,7 @@ ISystemEditorState
             </Checkbox.Group>
           )}
         </FormItem>
-        <FormItem label="起始時間" {...getFormItemLayout(3, 12)}>
+        <FormItem label="起始时间" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("withdraw_daily_start", {
             initialValue: withdraw_daily_start
               ? moment(withdraw_daily_start, "HH:mm")
@@ -202,7 +202,7 @@ ISystemEditorState
             />
           )}
         </FormItem>
-        <FormItem label="結束時間" {...getFormItemLayout(3, 12)}>
+        <FormItem label="结束时间" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("withdraw_daily_end", {
             initialValue: withdraw_daily_end
               ? moment(withdraw_daily_end, "HH:mm")
@@ -216,7 +216,7 @@ ISystemEditorState
           )}
         </FormItem>
         <FormItem>
-          <h2 className="editor-form-title form-title">出金金額和次數配置</h2>
+          <h2 className="editor-form-title form-title">出金金额和次数配置</h2>
         </FormItem>
         <FormItem label="最大出金金额" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("max_withdraw", {
@@ -310,7 +310,7 @@ ISystemEditorState
             rules: [
               {
                 pattern: /[a-zA-Z]+/,
-                message: "只能輸入英文",
+                message: "只能输入英文",
               }
             ],
           })(
@@ -384,7 +384,7 @@ ISystemEditorState
           JSON.stringify(payload)
         );
         if (res.status === 200) {
-          this.$msg.success("系統參數更新成功");
+          this.$msg.success("系统参数更新成功");
           this.getConfig();
         }
       }

@@ -139,29 +139,43 @@ const config = self => {
             <span className="common-list-table-operation-spliter"></span>
             <span onClick={e => self.jumpToAgentAdmin(record.id)}>跳转</span>
             <span className="common-list-table-operation-spliter"></span>
-            <span onClick={e => {
-              const url = `/dashboard/agency/agent/rebate-editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
-              self.props.history.push(url);
-            }}>返佣设置</span>
+            <span
+              onClick={e => {
+                const url = `/dashboard/agency/agent/rebate-editor?id=${
+                  !utils.isEmpty(record) ? record.id : 0
+                }`;
+                self.props.history.push(url);
+              }}
+            >
+              返佣设置
+            </span>
             <span className="common-list-table-operation-spliter"></span>
-            <span onClick={e => {
-              self.setState({
-                selectedRowKeys: [record.id],
-                isShowCustomModal: true,
-              });
-            }}>分配客户组</span>
+            <span
+              onClick={e => {
+                self.setState({
+                  selectedRowKeys: [record.id],
+                  isShowCustomModal: true,
+                });
+              }}
+            >
+              分配客户组
+            </span>
             <span className="common-list-table-operation-spliter"></span>
-            <span onClick={e => {
-              self.setState({
-                isShowAgentModal: true,
-                currentAgent: record,
-              });
-            }}>移交划转</span>
+            <span
+              onClick={e => {
+                self.setState({
+                  isShowAgentModal: true,
+                  currentAgent: record,
+                });
+              }}
+            >
+              移交划转
+            </span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除代理商"
               onConfirm={() => self.deleteAccount(record.id)}
-              onCancel={() => { }}
+              onCancel={() => {}}
             >
               <span>删除</span>
             </Popconfirm>
@@ -176,7 +190,7 @@ const config = self => {
     total: self.state.total,
     current: self.props.agency.filterAgent.current_page,
     pageSize: self.props.agency.filterAgent.page_size,
-    onChange: (current, pageSize) => { },
+    onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
@@ -196,15 +210,15 @@ const config = self => {
     },
     searcher: {
       batchControl: {
-        placeholder: '请选择',
+        placeholder: "请选择",
         showBatchControl: !utils.isEmpty(self.state.selectedRowKeys),
         options: [
           {
-            title: '划转客户组',
-            value: 'custom_group',
+            title: "划转客户组",
+            value: "custom_group",
           }
         ],
-        onBatch: (value) => {
+        onBatch: value => {
           self.onBatch(value);
         },
       },

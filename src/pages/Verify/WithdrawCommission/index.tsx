@@ -1,6 +1,6 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
-import EditUserModal from "./EditUserModal";
+import EditCommissionModal from "./EditCommissionModal";
 import listConfig from "./config";
 // import utils from "utils";
 import WithRoute from "components/WithRoute";
@@ -11,26 +11,34 @@ import { Route } from "react-router-dom";
 import { PAGE_PERMISSION_MAP } from "constant";
 import "./index.scss";
 
-export interface VerifyOpenAccountType {
+export interface VerifyCommissionType {
   id: number;
   username: string;
-  id_card: string;
-  id_card_front: string;
-  id_card_back: string;
+  phone: string;
+  order_number: string;
+  province: string;
+  city: string;
+  card_number: string;
+  bank: string;
+  sub_branch: string;
+  expect_amount: string;
+  expect_currency: string;
+  actual_amount: string;
+  actual_currency: string;
+  review_status: number;
+  review_time: number;
+  reviewer: string;
+  reviewer_name: string;
   create_time: number;
-  inspect_status: number;
-  inspect_time: string;
-  inspect_person: number;
-  reason: string;
 }
 
-interface IVerifyOpenAccountState {
-  verifyList: VerifyOpenAccountType[];
-  currentVerify: VerifyOpenAccountType | null;
-  isShowEditVerifyModal: boolean;
+interface IVerifyCommissionState {
+  commissionList: VerifyCommissionType[];
+  currentCommission: VerifyCommissionType | null;
+  isShowEditCommissionModal: boolean;
 }
 
-interface VerifyOpenAccountListState extends IVerifyOpenAccountState {
+interface VerifyCommissionListState extends IVerifyCommissionState {
   tableLoading: boolean;
   selectedRowKeys: string[];
   total: number;
@@ -38,24 +46,24 @@ interface VerifyOpenAccountListState extends IVerifyOpenAccountState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/verify/openaccount", {
+@WithRoute("/dashboard/verify/commission", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/openaccount"],
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/commission"],
 })
 @inject("common", "verify")
 @observer
-export default class VerifyList extends BaseReact<
+export default class CommissionList extends BaseReact<
 {},
-VerifyOpenAccountListState
+VerifyCommissionListState
 > {
   state = {
-    verifyList: [],
+    commissionList: [],
     tableLoading: false,
     selectedRowKeys: [],
     total: 0,
     tempFilter: {},
-    currentVerify: null,
-    isShowEditVerifyModal: false,
+    currentCommission: null,
+    isShowEditCommissionModal: false,
   };
 
   async componentDidMount() {
@@ -69,8 +77,8 @@ VerifyOpenAccountListState
   }
 
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/verify/openaccount") {
-      this.props.history.replace("/dashboard/verify/openaccount/list");
+    if (this.props.location.pathname === "/dashboard/verify/commission") {
+      this.props.history.replace("/dashboard/verify/commission/list");
     }
   }
 
@@ -82,7 +90,9 @@ VerifyOpenAccountListState
       tableLoading: true,
     });
 
-    const res = await this.$api.verify.getVerifyList({ params: payload, });
+    const res = await this.$api.verify.getWithdrawcommissionList({
+      params: payload,
+    });
     const { results, page_size, current_page, count, } = res.data;
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
@@ -94,53 +104,44 @@ VerifyOpenAccountListState
         name: payload.name,
       });
       this.setState({
-        verifyList: results,
+        commissionList: results,
         tableLoading: false,
         total: count,
       });
     }
   };
 
-  deleteVerify = async (id: string) => {
-    const res = await this.$api.verify.deleteVerify(id);
-    if (res.status === 204) {
-      this.getDataList();
-    } else {
-      this.$msg.error(res.data.message);
-    }
-  };
-
-  showEditVerifyModal = (verify?: VerifyOpenAccountType) => {
-    if (verify) {
+  showEditCommissionModal = (commission?: VerifyCommissionType) => {
+    if (commission) {
       this.setState({
-        currentVerify: verify,
+        currentCommission: commission,
       });
     }
 
     this.setState({
-      isShowEditVerifyModal: true,
+      isShowEditCommissionModal: true,
     });
   };
 
-  hideEditVerifyModal = () => {
+  hideEditCommissionModal = () => {
     this.setState({
-      isShowEditVerifyModal: false,
-      currentVerify: null,
+      isShowEditCommissionModal: false,
+      currentCommission: null,
     });
   };
 
-  handleUpdateVerify = () => {
-    this.hideEditVerifyModal();
+  handleUpdateCommission = () => {
+    this.hideEditCommissionModal();
     this.getDataList();
   };
 
   render() {
     const { match, } = this.props;
-    const { currentVerify, isShowEditVerifyModal, } = this.state;
+    const { currentCommission, isShowEditCommissionModal, } = this.state;
     return (
       <>
         <div>
-          <CommonHeader {...this.props} links={[]} title="开户审批" />
+          <CommonHeader {...this.props} links={[]} title="提交时间" />
           <Route
             path={`${match.url}/list`}
             render={props => (
@@ -148,11 +149,11 @@ VerifyOpenAccountListState
             )}
           />
         </div>
-        {isShowEditVerifyModal && (
-          <EditUserModal
-            userVerify={currentVerify}
-            onOk={this.handleUpdateVerify}
-            onCancel={this.hideEditVerifyModal}
+        {isShowEditCommissionModal && (
+          <EditCommissionModal
+            commissionVerify={currentCommission}
+            onOk={this.handleUpdateCommission}
+            onCancel={this.hideEditCommissionModal}
           />
         )}
       </>
