@@ -36,13 +36,13 @@ interface MessageContentListState extends IMessageContentState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/message/content", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/message/content"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/message/content"],
 })
 @inject("common", "message")
 @observer
 export default class MessageContentList extends BaseReact<
-  {},
-  MessageContentListState
+{},
+MessageContentListState
 > {
   state = {
     messageContentList: [],
@@ -54,16 +54,16 @@ export default class MessageContentList extends BaseReact<
     roleList: [],
     currentMessageContent: null,
     isShowEditMessageContentModal: false,
-    brokerId: null
+    brokerId: null,
   };
 
   async componentDidMount() {
-    const { filterContent } = this.props.message;
-    const { paginationConfig } = this.props.common;
+    const { filterContent, } = this.props.message;
+    const { paginationConfig, } = this.props.common;
 
     this.getDataList({
       page_size: filterContent.page_size || paginationConfig.defaultPageSize,
-      page: filterContent.page || 1
+      page: filterContent.page || 1,
     });
     this.getTypeList();
     this.getBrokerId();
@@ -79,42 +79,42 @@ export default class MessageContentList extends BaseReact<
     const res = await this.$api.system.getBrokerDealerList();
     if (res.status === 200) {
       this.setState({
-        brokerId: res.data.id
+        brokerId: res.data.id,
       });
     }
   };
 
   getTypeList = async () => {
     const res = await this.$api.message.getMessageTypeList();
-    const { results } = res.data;
-    this.setState({ messageTypeList: results });
+    const { results, } = res.data;
+    this.setState({ messageTypeList: results, });
   };
 
   getDataList = async (filterContent?: any) => {
     const payload = filterContent
-      ? { ...this.props.message.filterContent, ...filterContent }
+      ? { ...this.props.message.filterContent, ...filterContent, }
       : this.props.message.filterContent;
     this.setState({
-      tableLoading: true
+      tableLoading: true,
     });
 
     const res = await this.$api.message.getMessageContentList({
-      params: payload
+      params: payload,
     });
-    const { results, page_size, current_page, count } = res.data;
+    const { results, page_size, current_page, count, } = res.data;
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
-      this.getDataList({ ...payload, page: current_page - 1 });
+      this.getDataList({ ...payload, page: current_page - 1, });
     } else {
       this.props.message.setFilterContent({
         page_size,
         page: current_page,
-        name: payload.name
+        name: payload.name,
       });
       this.setState({
         messageContentList: results,
         tableLoading: false,
-        total: count
+        total: count,
       });
     }
   };
@@ -123,7 +123,7 @@ export default class MessageContentList extends BaseReact<
   private onSearch = async () => {
     const filter: any = {
       page: 1,
-      ...this.state.tempFilter
+      ...this.state.tempFilter,
     };
     this.getDataList(filter);
   };
@@ -133,10 +133,10 @@ export default class MessageContentList extends BaseReact<
     // @ts-ignore
     this.getDataList({
       name: undefined,
-      page: 1
+      page: 1,
     });
     this.setState({
-      tempFilter: {}
+      tempFilter: {},
     });
   };
 
@@ -144,8 +144,8 @@ export default class MessageContentList extends BaseReact<
     this.setState((prevState: MessageContentListState) => ({
       tempFilter: {
         ...prevState.tempFilter,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
@@ -176,19 +176,19 @@ export default class MessageContentList extends BaseReact<
   showEditMessageContentModal = (messageContent?: MessageContent) => {
     if (messageContent) {
       this.setState({
-        currentMessageContent: messageContent
+        currentMessageContent: messageContent,
       });
     }
 
     this.setState({
-      isShowEditMessageContentModal: true
+      isShowEditMessageContentModal: true,
     });
   };
 
   hideEditMessageContentModal = () => {
     this.setState({
       isShowEditMessageContentModal: false,
-      currentMessageContent: null
+      currentMessageContent: null,
     });
   };
 
@@ -198,11 +198,11 @@ export default class MessageContentList extends BaseReact<
   };
 
   render() {
-    const { match } = this.props;
+    const { match, } = this.props;
     const {
       currentMessageContent,
       isShowEditMessageContentModal,
-      brokerId
+      brokerId,
     } = this.state;
     return (
       <>
