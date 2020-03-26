@@ -55,7 +55,7 @@ IEditUserVerifyModalState
 
         this.$api.verify.updateVerify(userVerify.id, payload).then(
           () => {
-            this.$msg.success("開戶審批更新成功");
+            this.$msg.success("开户审批更新成功");
             onOk();
           },
           () => {

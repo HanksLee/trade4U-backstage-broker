@@ -53,7 +53,7 @@ IEditCommissionVerifyModalState
           .updateWithdrawCommission(commissionVerify.id, payload)
           .then(
             () => {
-              this.$msg.success("开户审批更新成功");
+              this.$msg.success("佣金出金审批更新成功");
               onOk();
             },
             () => {
@@ -74,7 +74,7 @@ IEditCommissionVerifyModalState
     return (
       <Modal
         visible={true}
-        title={"出金审批编辑"}
+        title={"佣金出金审批编辑"}
         onOk={this.handleSubmit}
         onCancel={onCancel}
         confirmLoading={confirmLoading}

@@ -55,7 +55,7 @@ IEditAgentVerifyModalState
 
         this.$api.verify.updateVerify(agentVerify.id, payload).then(
           () => {
-            this.$msg.success("開戶審批更新成功");
+            this.$msg.success("代理审批更新成功");
             onOk();
           },
           () => {

@@ -104,6 +104,9 @@ export const PAGE_PERMISSION_MAP = {
   "/dashboard/system": "VIEW_SYSTEM_PAGE",
   "/dashboard/system/baseinfo": "VIEW_SYSTEM_BASE_INFO_PAGE",
   "/dashboard/system/params": "VIEW_SYSTEM_PARAMS_PAGE",
+  "/dashboard/message": "VIEW_MESSAGE_PAGE",
+  "/dashboard/message/type": "VIEW_MESSAGE_TYPE_PAGE",
+  "/dashboard/message/content": "VIEW_MESSAGE_CONTENT_PAGE",
 };
 
 export const PAGE_ROUTES = [

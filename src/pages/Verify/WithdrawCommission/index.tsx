@@ -141,7 +141,7 @@ VerifyCommissionListState
     return (
       <>
         <div>
-          <CommonHeader {...this.props} links={[]} title="提交时间" />
+          <CommonHeader {...this.props} links={[]} title="佣金出金审批" />
           <Route
             path={`${match.url}/list`}
             render={props => (

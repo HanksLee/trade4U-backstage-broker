@@ -52,13 +52,13 @@ interface VerifyWithdrawApplyListState extends IVerifyWithdrawApplyState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/verify/withdrawapply", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/withdrawapply"],
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/withdrawapply"]
 })
 @inject("common", "verify")
 @observer
 export default class VerifyWithdrawApplyList extends BaseReact<
-{},
-VerifyWithdrawApplyListState
+  {},
+  VerifyWithdrawApplyListState
 > {
   state = {
     withdrawApplyList: [],
@@ -67,16 +67,16 @@ VerifyWithdrawApplyListState
     total: 0,
     tempFilter: {},
     currentWithdrawApply: null,
-    isShowEditWithdrawApplyModal: false,
+    isShowEditWithdrawApplyModal: false
   };
 
   async componentDidMount() {
-    const { filter, } = this.props.verify;
-    const { paginationConfig, } = this.props.common;
+    const { filter } = this.props.verify;
+    const { paginationConfig } = this.props.common;
 
     this.getDataList({
       page_size: filter.page_size || paginationConfig.defaultPageSize,
-      page: filter.page || 1,
+      page: filter.page || 1
     });
   }
 
@@ -88,29 +88,29 @@ VerifyWithdrawApplyListState
 
   getDataList = async (filter?: any) => {
     const payload = filter
-      ? { ...this.props.verify.filter, ...filter, }
+      ? { ...this.props.verify.filter, ...filter }
       : this.props.verify.filter;
     this.setState({
-      tableLoading: true,
+      tableLoading: true
     });
 
     const res = await this.$api.verify.getWithdrawApplyList({
-      params: payload,
+      params: payload
     });
-    const { results, page_size, current_page, count, } = res.data;
+    const { results, page_size, current_page, count } = res.data;
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
-      this.getDataList({ ...payload, page: current_page - 1, });
+      this.getDataList({ ...payload, page: current_page - 1 });
     } else {
       this.props.verify.setFilter({
         page_size,
         page: current_page,
-        name: payload.name,
+        name: payload.name
       });
       this.setState({
         withdrawApplyList: results,
         tableLoading: false,
-        total: count,
+        total: count
       });
     }
   };
@@ -127,19 +127,19 @@ VerifyWithdrawApplyListState
   showEditWithdrawApplyModal = (withdrawApply?: VerifyWithdrawApplyType) => {
     if (withdrawApply) {
       this.setState({
-        currentWithdrawApply: withdrawApply,
+        currentWithdrawApply: withdrawApply
       });
     }
 
     this.setState({
-      isShowEditWithdrawApplyModal: true,
+      isShowEditWithdrawApplyModal: true
     });
   };
 
   hideEditWithdrawApplyModal = () => {
     this.setState({
       isShowEditWithdrawApplyModal: false,
-      currentWithdrawApply: null,
+      currentWithdrawApply: null
     });
   };
 
@@ -149,8 +149,8 @@ VerifyWithdrawApplyListState
   };
 
   render() {
-    const { match, } = this.props;
-    const { currentWithdrawApply, isShowEditWithdrawApplyModal, } = this.state;
+    const { match } = this.props;
+    const { currentWithdrawApply, isShowEditWithdrawApplyModal } = this.state;
     return (
       <>
         <div>

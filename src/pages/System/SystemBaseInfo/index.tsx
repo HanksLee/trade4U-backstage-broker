@@ -161,7 +161,7 @@ ISystemBaseInfoEditorState
   };
 
   handleSubmit = async (evt: any) => {
-    const { id, logo, } = this.state;
+    const { logo, } = this.state;
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
         let payload: any = {

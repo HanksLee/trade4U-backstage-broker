@@ -74,14 +74,14 @@ const routes: any[] = [
   {
     component: loadable(() =>
       import(
-        /* webpackChunkName: "verify-withdraw-commission-page" */ "./pages/verify/WithdrawCommission"
+        /* webpackChunkName: "verify-withdraw-commission-page" */ "./pages/Verify/WithdrawCommission"
       )
     ),
   },
   {
     component: loadable(() =>
       import(
-        /* webpackChunkName: "verify-withdraw-apply-page" */ "./pages/verify/WithdrawApply"
+        /* webpackChunkName: "verify-withdraw-apply-page" */ "./pages/Verify/WithdrawApply"
       )
     ),
   },
@@ -127,6 +127,18 @@ const routes: any[] = [
     component: loadable(() =>
       import(
         /* webpackChunkName: "agency-agent" */ "./pages/Agency/AgencyMember/AccountList"
+      )
+    ),
+  },
+  {
+    component: loadable(() =>
+      import(/* webpackChunkName: "message-type" */ "./pages/Message/Type")
+    ),
+  },
+  {
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "message-content" */ "./pages/Message/Content"
       )
     ),
   }
