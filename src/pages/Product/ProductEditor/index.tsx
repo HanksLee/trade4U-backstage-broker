@@ -17,7 +17,7 @@ import Validator from 'utils/validator';
 import { inject, observer } from 'mobx-react';
 import utils from 'utils';
 import cloneDeep from 'lodash/cloneDeep';
-import { WeeklyOrder, THREE_DAY_OPTIONS } from 'constant';
+import { WeeklyOrder, THREE_DAY_OPTIONS, WeeklyMap } from 'constant';
 import moment from 'moment';
 
 const FormItem = Form.Item;
@@ -830,7 +830,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           !utils.isEmpty(currentShowProduct.trading_times) && <>
             {
               currentShowProduct.trading_times.map((item, index) => {
-                return <FormItem key={item.day} label={item.day} {...getFormItemLayout(3, 16)}>
+                return <FormItem key={item.day} label={WeeklyMap[item.day]} {...getFormItemLayout(3, 16)}>
                   <TimePicker
                     style={{ marginRight: 10, width: 180, }}
 
