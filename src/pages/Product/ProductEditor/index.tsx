@@ -52,8 +52,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
     marketOptions: [],
     transactionModeOptions: [],
     bgColorOptions: [],
-    profitOptions: [],
-    marginCurrencyOptions: [],
+    currencyOptions: [],
     orderModeOptions: [],
     deposit_rule_options: [],
     profit_bounght_rule_options: [],
@@ -72,8 +71,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
     this.getMarketOptions(); // 获取行情产品类型
     this.getTransactionModeOptions(); // 获取成交模式
     this.getBgColorOptions(); // 获取背景色
-    this.getProfitOptioins(); // 获取获利货币
-    this.getMarginCurrencyOptions(); // 获取预付款货币
+    this.getCurrencyOptions(); // 获取货币类型
     this.getOrderModeOptions(); // 获取挂单模式
     this.getDifferentScopeOptions(); // 获取不同 scope 下的计算规则
   }
@@ -174,25 +172,15 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
     }
   }
 
-  getProfitOptioins = async () => {
-    const res = await this.$api.product.getProfitOptioins({ page: 1, page_size: 200, });
+  getCurrencyOptions = async () => {
+    // const res = await this.$api.exchange.getProfitOptioins({ page: 1, page_size: 200, });
 
-    if (res.status == 200) {
-      this.setState({
-        profitOptions: res.data.data || [],
-      });
-    }
+    const res = await this.$api.common.getConstantByKey('system_currency_choices');
+    this.setState({
+      currencyOptions: res.data.data,
+    });
   }
 
-  getMarginCurrencyOptions = async () => {
-    const res = await this.$api.product.getMarginCurrencyOptions({ page: 1, page_size: 200, });
-
-    if (res.status == 200) {
-      this.setState({
-        marginCurrencyOptions: res.data.data || [],
-      });
-    }
-  }
 
   getOrderModeOptions = async () => {
     const res = await this.$api.product.getOrderModeOptions({ page: 1, page_size: 200, });
@@ -213,8 +201,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
       marketOptions,
       transactionModeOptions,
       bgColorOptions,
-      profitOptions,
-      marginCurrencyOptions,
+      currencyOptions,
       orderModeOptions,
       margin_rule_options,
       profit_rule_options,
@@ -423,7 +410,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  profitOptions.map(item => (
+                  currencyOptions.map(item => (
                     // @ts-ignore
                     <Option key={item.field}>
                       {item.translation}
@@ -459,7 +446,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  marginCurrencyOptions.map(item => (
+                  currencyOptions.map(item => (
                     // @ts-ignore
                     <Option key={item.field}>
                       {item.translation}
