@@ -42,7 +42,7 @@ export const WeeklyOrder = [
   2,
   3,
   4,
-  5,
+  5
 ];
 
 export const WeeklyMap = {

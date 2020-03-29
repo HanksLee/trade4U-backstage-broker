@@ -12,7 +12,7 @@ import {
   DatePicker,
   TimePicker,
   Row,
-  Col,
+  Col
 } from 'antd';
 import './index.scss';
 import Validator from 'utils/validator';
@@ -548,10 +548,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             initialValue: currentShowProduct && currentShowProduct.min_unit_of_price_change,
           })(<InputNumber min={0} type='number' placeholder="请输入价格变动最小单位
           " onChange={value => {
-              setCurrentProduct({
-                min_unit_of_price_change: value,
-              }, false);
-            }} style={{ display: 'inline-block', width: 200, }} />)}
+            setCurrentProduct({
+              min_unit_of_price_change: value,
+            }, false);
+          }} style={{ display: 'inline-block', width: 200, }} />)}
         </FormItem>
         <FormItem>
           <h2 className='editor-form-title form-title'>保证金计算</h2>
@@ -676,10 +676,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             initialValue: currentShowProduct && currentShowProduct.purchase_fee,
           })(<InputNumber min={0} type='number' placeholder="请输入买入库存费
           " onChange={value => {
-              setCurrentProduct({
-                purchase_fee: value,
-              }, false);
-            }} style={{ display: 'inline-block', width: 200, }} />)}
+            setCurrentProduct({
+              purchase_fee: value,
+            }, false);
+          }} style={{ display: 'inline-block', width: 200, }} />)}
         </FormItem>
         <FormItem label='卖出库存费（%）' {...getFormItemLayout(3, 12)}>
           {getFieldDecorator('selling_fee', {
@@ -815,7 +815,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
         <FormItem>
           <h2 className='editor-form-title form-title'>交易时间段</h2>
         </FormItem>
-        <Row style={{ marginBottom: 10, textAlign: 'center', fontWeight: 500 }} >
+        <Row style={{ marginBottom: 10, textAlign: 'center', fontWeight: 500, }} >
           <Col span={3}>
             交易日
           </Col>
