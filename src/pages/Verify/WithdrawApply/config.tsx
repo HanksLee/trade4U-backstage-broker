@@ -1,6 +1,6 @@
 import utils from "utils";
 import * as React from "react";
-import { Button, Icon, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 import moment from "moment";
 import { FORMAT_TIME } from "constant";
 
@@ -10,63 +10,63 @@ const config = self => {
       title: "名字",
       width: 100,
       dataIndex: "username",
-      fixed: "left",
+      fixed: "left"
     },
     {
       title: "手机",
       width: 200,
       dataIndex: "phone",
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: "单号",
       width: 250,
-      dataIndex: "order_number",
+      dataIndex: "order_number"
     },
     {
       title: "省份",
       width: 100,
-      dataIndex: "province",
+      dataIndex: "province"
     },
     {
       title: "城市",
       width: 100,
-      dataIndex: "city",
+      dataIndex: "city"
     },
     {
       title: "银行卡号",
       width: 250,
-      dataIndex: "card_number",
+      dataIndex: "card_number"
     },
     {
       title: "开户银行",
       width: 100,
-      dataIndex: "bank",
+      dataIndex: "bank"
     },
     {
       title: "支行名称",
       width: 100,
-      dataIndex: "sub_branch",
+      dataIndex: "sub_branch"
     },
     {
       title: "预计出金金额",
       width: 250,
-      dataIndex: "expect_amount",
+      dataIndex: "expect_amount"
     },
     {
       title: "预计出金货币单位",
       width: 100,
-      dataIndex: "expect_currency",
+      dataIndex: "expect_currency"
     },
     {
       title: "实际出金金额",
       width: 250,
-      dataIndex: "actual_amount",
+      dataIndex: "actual_amount"
     },
     {
       title: "实际出金货币单位",
       width: 100,
-      dataIndex: "actual_currency",
+      dataIndex: "actual_currency"
     },
     {
       title: "启用状态",
@@ -86,7 +86,7 @@ const config = self => {
           default:
             return "--";
         }
-      },
+      }
     },
     {
       title: "审核时间",
@@ -98,65 +98,65 @@ const config = self => {
             moment(record.review_time * 1000).format(FORMAT_TIME)) ||
           "--"
         );
-      },
+      }
     },
     {
       title: "审核者",
       width: 100,
-      dataIndex: "reviewer",
+      dataIndex: "reviewer"
     },
     {
       title: "审核者姓名",
       width: 120,
-      dataIndex: "reviewer_name",
+      dataIndex: "reviewer_name"
     },
-    {
-      title: "划款状态",
-      width: 100,
-      dataIndex: "remit_status",
-      render: (text, record) => {
-        switch (record.remit_status) {
-          case 0:
-            return "待划款";
-            break;
-          case 1:
-            return "划款通过";
-            break;
-          case 2:
-            return "划款不通过";
-            break;
-          default:
-            return "--";
-        }
-      },
-    },
-    {
-      title: "划款者",
-      width: 100,
-      dataIndex: "remitter",
-    },
-    {
-      title: "划款者姓名",
-      width: 120,
-      dataIndex: "remitter_name",
-    },
-    {
-      title: "划款单号",
-      width: 250,
-      dataIndex: "remit_number",
-    },
-    {
-      title: "划款时间",
-      width: 250,
-      dataIndex: "remit_time",
-      render: (text, record) => {
-        return (
-          (record.remit_time &&
-            moment(record.remit_time * 1000).format(FORMAT_TIME)) ||
-          "--"
-        );
-      },
-    },
+    // {
+    //   title: "划款状态",
+    //   width: 100,
+    //   dataIndex: "remit_status",
+    //   render: (text, record) => {
+    //     switch (record.remit_status) {
+    //       case 0:
+    //         return "待划款";
+    //         break;
+    //       case 1:
+    //         return "划款通过";
+    //         break;
+    //       case 2:
+    //         return "划款不通过";
+    //         break;
+    //       default:
+    //         return "--";
+    //     }
+    //   }
+    // },
+    // {
+    //   title: "划款者",
+    //   width: 100,
+    //   dataIndex: "remitter"
+    // },
+    // {
+    //   title: "划款者姓名",
+    //   width: 120,
+    //   dataIndex: "remitter_name"
+    // },
+    // {
+    //   title: "划款单号",
+    //   width: 250,
+    //   dataIndex: "remit_number"
+    // },
+    // {
+    //   title: "划款时间",
+    //   width: 250,
+    //   dataIndex: "remit_time",
+    //   render: (text, record) => {
+    //     return (
+    //       (record.remit_time &&
+    //         moment(record.remit_time * 1000).format(FORMAT_TIME)) ||
+    //       "--"
+    //     );
+    //   }
+    // },
     {
       title: "提交时间",
       width: 250,
@@ -167,7 +167,7 @@ const config = self => {
             moment(record.create_time * 1000).format(FORMAT_TIME)) ||
           "--"
         );
-      },
+      }
     },
     {
       title: "操作",
@@ -195,7 +195,7 @@ const config = self => {
             </Popconfirm>
           </div>
         );
-      },
+      }
     }
   ];
 
@@ -212,9 +212,9 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
-        page: current,
+        page: current
       });
-    },
+    }
   };
 
   return {
@@ -234,12 +234,12 @@ const config = self => {
         options: [
           {
             title: "删除",
-            value: "delete",
+            value: "delete"
           }
         ],
         onBatch: value => {
           self.onBatch && self.onBatch(value);
-        },
+        }
       },
 
       // widgets: [
@@ -263,11 +263,11 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      },
+      }
     },
     table: {
       rowKey: "id",
-      scroll: { x: columnsWidth, },
+      scroll: { x: columnsWidth },
       columns,
       dataSource: self.state.withdrawApplyList,
       pagination,
@@ -282,10 +282,10 @@ const config = self => {
 
         self.getDataList({
           page_size: pagination.pageSize,
-          page: pagination.current,
+          page: pagination.current
         });
-      },
-    },
+      }
+    }
   };
 };
 

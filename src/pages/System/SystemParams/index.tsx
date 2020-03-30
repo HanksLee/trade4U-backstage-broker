@@ -1,6 +1,15 @@
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import { Form, Input, Button, TimePicker, Checkbox, Row, Col } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  TimePicker,
+  Checkbox,
+  Row,
+  Col,
+  Radio
+} from "antd";
 import CommonHeader from "components/CommonHeader";
 import withRoute from "components/WithRoute";
 import { PAGE_PERMISSION_MAP } from "constant";
@@ -22,8 +31,8 @@ const getFormItemLayout = (
   wrapper: number,
   offset?: undefined
 ) => ({
-  labelCol: { span: label, offset, },
-  wrapperCol: { span: wrapper, },
+  labelCol: { span: label, offset },
+  wrapperCol: { span: wrapper }
 });
 
 export interface ISystemEditorProps {}
@@ -35,8 +44,7 @@ export interface ISystemEditorState {
   min_withdraw: string;
   max_withdraw: string;
   withdraw_daily_times: string;
-  stop_out_level_amount: string;
-  stop_out_level_unit_price: string;
+  order_tp_sl_unit: string;
   platform_currency: string;
 }
 
@@ -44,14 +52,14 @@ export interface ISystemEditorState {
 
 @withRoute("/dashboard/system/params", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/system/params"],
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/system/params"]
 })
 @Form.create()
 @inject("common", "system")
 @observer
 export default class SystemEditor extends BaseReact<
-ISystemEditorProps,
-ISystemEditorState
+  ISystemEditorProps,
+  ISystemEditorState
 > {
   state = {
     withdraw_periods: "",
@@ -60,9 +68,8 @@ ISystemEditorState
     min_withdraw: "",
     max_withdraw: "",
     withdraw_daily_times: "",
-    stop_out_level_amount: "",
-    stop_out_level_unit_price: "",
-    platform_currency: "",
+    order_tp_sl_unit: "",
+    platform_currency: ""
   };
 
   async componentDidMount() {
@@ -78,19 +85,19 @@ ISystemEditorState
       return a - b;
     });
     this.setState({
-      withdraw_periods: checkedValues.toString(),
+      withdraw_periods: checkedValues.toString()
     });
   };
 
   onStartTimeChange = (time: any, timeString: any) => {
     this.setState({
-      withdraw_daily_start: timeString,
+      withdraw_daily_start: timeString
     });
   };
 
   onEndTimeChange = (time: any, timeString: any) => {
     this.setState({
-      withdraw_daily_end: timeString,
+      withdraw_daily_end: timeString
     });
   };
 
@@ -101,31 +108,28 @@ ISystemEditorState
       res.data.forEach(function(item, index, array) {
         switch (item.key) {
           case "withdraw_periods":
-            self.setState({ withdraw_periods: item.value.split(","), });
+            self.setState({ withdraw_periods: item.value.split(",") });
             break;
           case "withdraw_daily_start":
-            self.setState({ withdraw_daily_start: item.value, });
+            self.setState({ withdraw_daily_start: item.value });
             break;
           case "withdraw_daily_end":
-            self.setState({ withdraw_daily_end: item.value, });
+            self.setState({ withdraw_daily_end: item.value });
             break;
           case "min_withdraw":
-            self.setState({ min_withdraw: item.value, });
+            self.setState({ min_withdraw: item.value });
             break;
           case "max_withdraw":
-            self.setState({ max_withdraw: item.value, });
+            self.setState({ max_withdraw: item.value });
             break;
           case "withdraw_daily_times":
-            self.setState({ withdraw_daily_times: item.value, });
+            self.setState({ withdraw_daily_times: item.value });
             break;
-          case "stop_out_level_amount":
-            self.setState({ stop_out_level_amount: item.value, });
-            break;
-          case "stop_out_level_unit_price":
-            self.setState({ stop_out_level_unit_price: item.value, });
+          case "order_tp_sl_unit":
+            self.setState({ order_tp_sl_unit: item.value });
             break;
           case "platform_currency":
-            self.setState({ platform_currency: item.value, });
+            self.setState({ platform_currency: item.value });
             break;
         }
       });
@@ -133,7 +137,7 @@ ISystemEditorState
   };
 
   renderEditor = () => {
-    const { getFieldDecorator, } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     const {
       withdraw_periods,
       withdraw_daily_start,
@@ -141,13 +145,12 @@ ISystemEditorState
       max_withdraw,
       min_withdraw,
       withdraw_daily_times,
-      stop_out_level_amount,
-      stop_out_level_unit_price,
-      platform_currency,
+      order_tp_sl_unit,
+      platform_currency
     } = this.state;
     const vaildatorNum = {
       patternNum: /^\d+\.?\d*$/,
-      message: "密码必须为正整数或小数",
+      message: "密码必须为正整数或小数"
     };
 
     return (
@@ -157,10 +160,10 @@ ISystemEditorState
         </FormItem>
         <FormItem label="時間段" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("withdraw_periods", {
-            initialValue: withdraw_periods || [],
+            initialValue: withdraw_periods || []
           })(
             <Checkbox.Group
-              style={{ width: "100%", }}
+              style={{ width: "100%" }}
               onChange={this.onPeriodsChange}
             >
               <Row>
@@ -193,7 +196,7 @@ ISystemEditorState
           {getFieldDecorator("withdraw_daily_start", {
             initialValue: withdraw_daily_start
               ? moment(withdraw_daily_start, "HH:mm")
-              : moment(),
+              : moment()
           })(
             <TimePicker
               onChange={this.onStartTimeChange}
@@ -206,7 +209,7 @@ ISystemEditorState
           {getFieldDecorator("withdraw_daily_end", {
             initialValue: withdraw_daily_end
               ? moment(withdraw_daily_end, "HH:mm")
-              : null,
+              : null
           })(
             <TimePicker
               onChange={this.onEndTimeChange}
@@ -224,13 +227,13 @@ ISystemEditorState
             rules: [
               {
                 pattern: vaildatorNum.patternNum,
-                message: vaildatorNum.message,
+                message: vaildatorNum.message
               }
-            ],
+            ]
           })(
             <Input
               placeholder="请输入最大出金金额"
-              style={{ display: "inline-block", width: 200, }}
+              style={{ display: "inline-block", width: 200 }}
             />
           )}
         </FormItem>
@@ -240,13 +243,13 @@ ISystemEditorState
             rules: [
               {
                 pattern: vaildatorNum.patternNum,
-                message: vaildatorNum.message,
+                message: vaildatorNum.message
               }
-            ],
+            ]
           })(
             <Input
               placeholder="请输入最小出金金额"
-              style={{ display: "inline-block", width: 200, }}
+              style={{ display: "inline-block", width: 200 }}
             />
           )}
         </FormItem>
@@ -256,49 +259,27 @@ ISystemEditorState
             rules: [
               {
                 pattern: vaildatorNum.patternNum,
-                message: vaildatorNum.message,
+                message: vaildatorNum.message
               }
-            ],
+            ]
           })(
             <Input
               placeholder="请输入每日出金次数"
-              style={{ display: "inline-block", width: 200, }}
+              style={{ display: "inline-block", width: 200 }}
             />
           )}
         </FormItem>
         <FormItem>
           <h2 className="editor-form-title form-title">止盈止损显示</h2>
         </FormItem>
-        <FormItem label="止盈止损显示（金额）" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("stop_out_level_amount", {
-            initialValue: stop_out_level_amount || "",
-            rules: [
-              {
-                pattern: vaildatorNum.patternNum,
-                message: vaildatorNum.message,
-              }
-            ],
+        <FormItem label="止盈止损显示" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("order_tp_sl_unit", {
+            initialValue: order_tp_sl_unit || ""
           })(
-            <Input
-              placeholder="请输入止盈止损显示（金额）"
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem label="止盈止损显示（单价）" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("stop_out_level_unit_price", {
-            initialValue: stop_out_level_unit_price || "",
-            rules: [
-              {
-                pattern: vaildatorNum.patternNum,
-                message: vaildatorNum.message,
-              }
-            ],
-          })(
-            <Input
-              placeholder="请输入止盈止损显示（单价）"
-              style={{ display: "inline-block", width: 200, }}
-            />
+            <Radio.Group>
+              <Radio value={"price"}>按單價顯示</Radio>
+              <Radio value={"profit"}>按金額顯示</Radio>
+            </Radio.Group>
           )}
         </FormItem>
         <FormItem>
@@ -310,13 +291,13 @@ ISystemEditorState
             rules: [
               {
                 pattern: /[a-zA-Z]+/,
-                message: "只能输入英文",
+                message: "只能输入英文"
               }
-            ],
+            ]
           })(
             <Input
               placeholder="平台货币"
-              style={{ display: "inline-block", width: 200, }}
+              style={{ display: "inline-block", width: 200 }}
             />
           )}
         </FormItem>
@@ -336,50 +317,46 @@ ISystemEditorState
     const {
       withdraw_periods,
       withdraw_daily_start,
-      withdraw_daily_end,
+      withdraw_daily_end
     } = this.state;
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
         let valuesArr: any = [];
         valuesArr.push({
           key: "withdraw_periods",
-          value: withdraw_periods,
+          value: withdraw_periods
         });
         valuesArr.push({
           key: "withdraw_daily_start",
-          value: withdraw_daily_start,
+          value: withdraw_daily_start
         });
         valuesArr.push({
           key: "withdraw_daily_end",
-          value: withdraw_daily_end,
+          value: withdraw_daily_end
         });
         valuesArr.push({
           key: "max_withdraw",
-          value: values.max_withdraw,
+          value: values.max_withdraw
         });
         valuesArr.push({
           key: "min_withdraw",
-          value: values.min_withdraw,
+          value: values.min_withdraw
         });
         valuesArr.push({
           key: "withdraw_daily_times",
-          value: values.withdraw_daily_times,
+          value: values.withdraw_daily_times
         });
         valuesArr.push({
-          key: "stop_out_level_amount",
-          value: values.stop_out_level_amount,
-        });
-        valuesArr.push({
-          key: "stop_out_level_unit_price",
-          value: values.stop_out_level_unit_price,
+          key: "order_tp_sl_unit",
+          value: values.order_tp_sl_unit
         });
         valuesArr.push({
           key: "platform_currency",
-          value: values.platform_currency,
+          value: values.platform_currency
         });
 
         const configs = JSON.stringify(valuesArr);
-        const payload = { configs, };
+        const payload = { configs };
         const res = await this.$api.system.updateBrokerConfig(
           JSON.stringify(payload)
         );
