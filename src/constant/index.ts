@@ -36,43 +36,53 @@ export const depositOptions = [
 ];
 
 export const WeeklyOrder = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday"
+  6,
+  0,
+  1,
+  2,
+  3,
+  4,
+  5
 ];
+
+export const WeeklyMap = {
+  6: 'Sunday',
+  0: 'Monday',
+  1: 'Tuesday',
+  2: 'Wednesday',
+  3: 'Thursday',
+  4: 'Friday',
+  5: 'Saturday',
+};
 
 export const THREE_DAY_OPTIONS = [
   {
+    id: 6,
+    name: '周日',
+  },
+  {
     id: 0,
-    name: "周日",
+    name: '周一',
   },
   {
     id: 1,
-    name: "周一",
+    name: '周二',
   },
   {
     id: 2,
-    name: "周二",
+    name: '周三',
   },
   {
     id: 3,
-    name: "周三",
+    name: '周四',
   },
   {
     id: 4,
-    name: "周四",
+    name: '周五',
   },
   {
     id: 5,
-    name: "周五",
-  },
-  {
-    id: 6,
-    name: "周六",
+    name: '周六',
   }
 ];
 
