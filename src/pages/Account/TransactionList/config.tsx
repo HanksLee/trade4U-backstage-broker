@@ -71,8 +71,8 @@ const config = self => {
   const pagination = {
     ...self.props.common.paginationConfig,
     total: self.state.total,
-    current: self.props.account.filter.page,
-    pageSize: self.props.account.filter.page_size,
+    current: self.props.transaction.filter.page,
+    pageSize: self.props.transaction.filter.page_size,
     onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({

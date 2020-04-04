@@ -8,6 +8,7 @@ import agency from "./agency";
 import verify from "./verify";
 import system from "./system";
 import message from "./message";
+import transaction from "./transaction";
 
 export default {
   account,
@@ -20,4 +21,5 @@ export default {
   verify,
   system,
   message,
+  transaction,
 };
