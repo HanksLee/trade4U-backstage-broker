@@ -5,6 +5,14 @@ import { Button, Checkbox, Icon, Popconfirm, Select } from "antd";
 const Option = Select.Option;
 
 const config = self => {
+  const { selectedRowKeys, } = self.state;
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectedRowKeys, selectedRows) => {
+      self.setState({ selectedRowKeys: selectedRowKeys, });
+    },
+  };
+
   const columns = [
     {
       title: "名字",
@@ -121,7 +129,7 @@ const config = self => {
     },
     {
       title: "操作",
-      width: 150,
+      width: 230,
       fixed: "right",
       render: (text, record) => {
         return (
@@ -129,6 +137,8 @@ const config = self => {
             <span onClick={e => self.goToEditor(e, record.id)}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
             <span onClick={e => self.viewDetail(e, record)}>详情</span>
+            <span className="common-list-table-operation-spliter"></span>
+            <span onClick={e => self.handleTransferAgent(e, record)}>划转代理</span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除客户"
@@ -172,12 +182,12 @@ const config = self => {
         showBatchControl: !utils.isEmpty(self.state.selectedRowKeys),
         options: [
           {
-            title: "删除",
-            value: "delete",
+            title: "划转客户组",
+            value: "group",
           }
         ],
         onBatch: value => {
-          self.onBatch && self.onBatch(value);
+          self.onBatch(value);
         },
       },
       widgets: [
@@ -234,6 +244,7 @@ const config = self => {
     },
     table: {
       rowKey: "id",
+      rowSelection,
       columns,
       dataSource: self.state.accountList,
       pagination,

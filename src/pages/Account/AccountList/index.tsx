@@ -4,6 +4,8 @@ import CommonHeader from 'components/CommonHeader';
 import CommonList from 'components/CommonList';
 import EditBalanceModal from './EditBalanceModal';
 import listConfig from './config';
+import TransferAgentModal from './TransferAgentModal';
+import TransferGroupModal from './TransferGroupModal';
 import WithRoute from 'components/WithRoute';
 import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
@@ -44,11 +46,11 @@ interface AccountListState {
   selectedRowKeys: string[];
   tempFilter: any;
   total: number;
-  currentAccount: {
-    id: number;
-  } | null;
+  currentAccount: Account | null;
   isShowDetailDrawer: boolean;
   isShowBalanceModal: boolean;
+  isShowTransferAgentModal: boolean;
+  isShowTransferGroupModal: boolean;
 };
 
 /* eslint new-cap: "off" */
@@ -65,6 +67,8 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     currentAccount: null,
     isShowDetailDrawer: false,
     isShowBalanceModal: false,
+    isShowTransferAgentModal: false,
+    isShowTransferGroupModal: false,
   };
 
   async componentDidMount() {
@@ -210,9 +214,48 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     });
   }
 
+  handleTransferAgent = (e: any, record: Account) => {
+    this.setState({
+      currentAccount: record,
+      isShowTransferAgentModal: true,
+    });
+  }
+
+  saveTransferAgent = () => {
+    this.hideTransferAgentModal();
+    this.getDataList();
+  }
+
+  hideTransferAgentModal = () => {
+    this.setState({
+      currentAccount: null,
+      isShowTransferAgentModal: false,
+    });
+  }
+
+  saveTransferGroup = () => {
+    this.hideTransferGroupModal();
+    this.getDataList();
+  }
+
+  hideTransferGroupModal = () => {
+    this.setState({
+      isShowTransferGroupModal: false,
+      selectedRowKeys: [],
+    });
+  }
+
+  onBatch = async (value) => {
+    if (value == 'group') {
+      this.setState({
+        isShowTransferGroupModal: true,
+      });
+    }
+  }
+
   render() {
     const { match, } = this.props;
-    const { isShowDetailDrawer, isShowBalanceModal, currentAccount, } = this.state;
+    const { isShowDetailDrawer, isShowBalanceModal, currentAccount, isShowTransferAgentModal, isShowTransferGroupModal, } = this.state;
     return (
       <div>
         <CommonHeader {...this.props} links={[]} title="客户列表" />
@@ -241,6 +284,24 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
               balance={currentAccount.balance}
               onOk={this.saveBalance}
               onCancel={this.hideEditBalanceModal}
+            />
+          )
+        }
+        {
+          isShowTransferAgentModal && currentAccount && (
+            <TransferAgentModal
+              currentAccount={currentAccount}
+              onOk={this.saveTransferAgent}
+              onCancel={this.hideTransferAgentModal}
+            />
+          )
+        }
+        {
+          isShowTransferGroupModal && (
+            <TransferGroupModal
+              accounts={this.state.selectedRowKeys}
+              onOk={this.saveTransferGroup}
+              onCancel={this.hideTransferGroupModal}
             />
           )
         }

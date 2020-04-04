@@ -141,6 +141,13 @@ const routes: any[] = [
         /* webpackChunkName: "message-content" */ "./pages/Message/Content"
       )
     ),
+  },
+  {
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "group-page" */ './pages/Group/GroupList'
+      )
+    )
   }
 ];
 
