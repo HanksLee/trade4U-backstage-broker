@@ -147,7 +147,7 @@ const routes: any[] = [
       import(
         /* webpackChunkName: "group-page" */ './pages/Group/GroupList'
       )
-    )
+    ),
   }
 ];
 
