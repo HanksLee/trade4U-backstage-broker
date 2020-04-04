@@ -29,7 +29,6 @@ class CommonStore extends BaseStore {
     this.permissions = permissions;
   }
 
-
   @action
   getUserInfo = async params => {
     const token = "";

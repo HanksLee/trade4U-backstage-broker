@@ -12,6 +12,7 @@ const config = self => {
       self.setState({ selectedRowKeys: selectedRowKeys, });
     },
   };
+  const permissions = self.props.common.permissions;
 
   const columns = [
     {
@@ -59,7 +60,7 @@ const config = self => {
             title
           );
         };
-        return <Checkbox checked={text} onChange={handleChange} />;
+        return <Checkbox disabled={permissions.indexOf('change_account') === -1} checked={text} onChange={handleChange} />;
       },
     },
     {
@@ -79,7 +80,7 @@ const config = self => {
             title
           );
         };
-        return <Checkbox checked={text} onChange={handleChange} />;
+        return <Checkbox disabled={permissions.indexOf('change_account') === -1} checked={text} onChange={handleChange} />;
       },
     },
     {
@@ -92,7 +93,12 @@ const config = self => {
         };
         return (
           <>
-            {text} <Icon type="edit" onClick={handleClick} />
+            {text}
+            {
+              permissions.indexOf('change_account_balance') !== -1 && (
+                <Icon type="edit" onClick={handleClick} />
+              )
+            }
           </>
         );
       },
@@ -112,12 +118,14 @@ const config = self => {
             title
           );
         };
+
         return (
           <Select
             labelInValue
             value={{ key: text, }}
             style={{ width: "120px", }}
             onChange={handleChange}
+            disabled={permissions.indexOf('change_account') === -1}
           >
             <Option value={0}>未审核</Option>
             <Option value={1}>待审核</Option>
@@ -134,18 +142,18 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={e => self.goToEditor(e, record.id)}>编辑</span>
+            <a disabled={permissions.indexOf('change_account') === -1} onClick={e => self.goToEditor(e, record.id)}>编辑</a>
             <span className="common-list-table-operation-spliter"></span>
-            <span onClick={e => self.viewDetail(e, record)}>详情</span>
+            <a disabled={permissions.indexOf('view_account') === -1} onClick={e => self.viewDetail(e, record)}>详情</a>
             <span className="common-list-table-operation-spliter"></span>
-            <span onClick={e => self.handleTransferAgent(e, record)}>划转代理</span>
+            <a disabled={permissions.indexOf('change_migrate_account') === -1} onClick={e => self.handleTransferAgent(e, record)}>划转代理</a>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除客户"
               onConfirm={() => self.deleteAccount(record.id)}
               onCancel={() => {}}
             >
-              <span>删除</span>
+              <a disabled={permissions.indexOf('delete_account') === -1}>删除</a>
             </Popconfirm>
           </div>
         );
@@ -170,11 +178,14 @@ const config = self => {
   return {
     // 是否显示增加按钮
     addBtn: {
-      title: () => (
-        <Button type="primary" onClick={() => self.goToEditor()}>
-          <Icon type="plus" /> 添加
-        </Button>
-      ),
+      title: () => {
+        const disabled = permissions.indexOf('add_account') === -1;
+        return (
+          <Button type="primary" onClick={() => self.goToEditor()} disabled={disabled}>
+            <Icon type="plus" /> 添加
+          </Button>
+        );
+      },
     },
     searcher: {
       batchControl: {
