@@ -82,6 +82,7 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
   }
 
   getTableColumns = (): ColumnProps<SymbolType>[] => {
+    const permissions = this.props.common.permissions;
     return [
       {
         key: "id",
@@ -127,14 +128,24 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
         render: (_, record) => {
           return (
             <div className="common-list-table-operation">
-              <span onClick={() => this.showEditSymbolTypeModal(record)}>编辑</span>
-              <span className="common-list-table-operation-spliter" />
-              <Popconfirm
-                title="确认删除？"
-                onConfirm={() => this.deleteSymbolType(record.id)}
-              >
-                <span>删除</span>
-              </Popconfirm>
+              {
+                permissions.indexOf('change_group_symbol_type') !== -1 && (
+                  <>
+                    <span onClick={() => this.showEditSymbolTypeModal(record)}>编辑</span>
+                    <span className="common-list-table-operation-spliter" />
+                  </>
+                )
+              }
+              {
+                permissions.indexOf('delete_group_symbol_type') !== -1 && (
+                  <Popconfirm
+                    title="确认删除？"
+                    onConfirm={() => this.deleteSymbolType(record.id)}
+                  >
+                    <span>删除</span>
+                  </Popconfirm>
+                )
+              }
             </div>
           );
         },
@@ -149,14 +160,20 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
 
   render() {
     const { symbolTypeList, currentSymbolType, isShowEditSymbolTypeModal, } = this.state;
+    const permissions = this.props.common.permissions;
+
     return (
       <div className="panel-block common-list">
-        <section className='common-list-addbtn'>
-          <Button type="primary" onClick={() => this.showEditSymbolTypeModal()}>
-            <Icon type="plus" /> 添加
-          </Button>
-          <Button onClick={() => this.goBack()}>取消</Button>
-        </section>
+        {
+          permissions.indexOf('change_group_symbol_type') !== -1 && (
+            <section className='common-list-addbtn'>
+              <Button type="primary" onClick={() => this.showEditSymbolTypeModal()}>
+                <Icon type="plus" /> 添加
+              </Button>
+              <Button onClick={() => this.goBack()}>取消</Button>
+            </section>
+          )
+        }
         <section className="common-list-table">
           <Table
             rowKey="id"
