@@ -65,7 +65,7 @@ const config = self => {
         };
         return <Checkbox disabled={permissions.indexOf('change_account') === -1} checked={text} onChange={handleChange} />;
       },
-    })
+    });
   }
 
   if (permissions.indexOf('change_account') !== -1) {
@@ -88,7 +88,7 @@ const config = self => {
         };
         return <Checkbox checked={text} onChange={handleChange} />;
       },
-    })
+    });
   }
 
   const columns2: any = [
@@ -117,7 +117,7 @@ const config = self => {
       width: 150,
       dataIndex: "inspect_status",
       render: (text, record) => {
-        const handleChange = (value: { label: any; key: any; }) => {
+        const handleChange = (value: { label: any; key: any }) => {
           const title = `确认将「${record.first_name +
             record.last_name}」的审核状态设为${value.label} 吗？`;
           self.updateAccountDetailField(
