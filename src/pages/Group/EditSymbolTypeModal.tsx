@@ -121,7 +121,7 @@ export default class EditSymbolTypeModal extends BaseReact<IEditSymbolTypeModalP
             })(
               <Select style={{ width: '200px', }} disabled={!!symbolType}>
                 {
-                  symbolTypeOptions.map(item => <Select.Option value={item.id}>{item.name}</Select.Option>)
+                  symbolTypeOptions.map(item => <Select.Option value={item.symbol_type}>{item.symbol_type_name}</Select.Option>)
                 }
               </Select>
             )}
