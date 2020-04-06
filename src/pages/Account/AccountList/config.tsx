@@ -14,7 +14,7 @@ const config = self => {
   };
   const permissions = self.props.common.permissions;
 
-  const columns = [
+  let columns: any = [
     {
       title: "名字",
       width: 150,
@@ -42,8 +42,11 @@ const config = self => {
       title: "客户组",
       width: 150,
       dataIndex: "group_name",
-    },
-    {
+    }
+  ];
+
+  if (permissions.indexOf('change_account') !== -1) {
+    columns.push({
       title: "只读",
       width: 80,
       align: "center",
@@ -62,8 +65,11 @@ const config = self => {
         };
         return <Checkbox disabled={permissions.indexOf('change_account') === -1} checked={text} onChange={handleChange} />;
       },
-    },
-    {
+    })
+  }
+
+  if (permissions.indexOf('change_account') !== -1) {
+    columns.push({
       title: "禁用",
       width: 80,
       align: "center",
@@ -80,9 +86,12 @@ const config = self => {
             title
           );
         };
-        return <Checkbox disabled={permissions.indexOf('change_account') === -1} checked={text} onChange={handleChange} />;
+        return <Checkbox checked={text} onChange={handleChange} />;
       },
-    },
+    })
+  }
+
+  const columns2: any = [
     {
       title: "余额",
       width: 150,
@@ -108,7 +117,7 @@ const config = self => {
       width: 150,
       dataIndex: "inspect_status",
       render: (text, record) => {
-        const handleChange = value => {
+        const handleChange = (value: { label: any; key: any; }) => {
           const title = `确认将「${record.first_name +
             record.last_name}」的审核状态设为${value.label} 吗？`;
           self.updateAccountDetailField(
@@ -142,24 +151,48 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <a disabled={permissions.indexOf('change_account') === -1} onClick={e => self.goToEditor(e, record.id)}>编辑</a>
-            <span className="common-list-table-operation-spliter"></span>
-            <a disabled={permissions.indexOf('view_account') === -1} onClick={e => self.viewDetail(e, record)}>详情</a>
-            <span className="common-list-table-operation-spliter"></span>
-            <a disabled={permissions.indexOf('change_migrate_account') === -1} onClick={e => self.handleTransferAgent(e, record)}>划转代理</a>
-            <span className="common-list-table-operation-spliter"></span>
-            <Popconfirm
-              title="请问是否确定删除客户"
-              onConfirm={() => self.deleteAccount(record.id)}
-              onCancel={() => {}}
-            >
-              <a disabled={permissions.indexOf('delete_account') === -1}>删除</a>
-            </Popconfirm>
+            {
+              permissions.indexOf('change_account') !== -1 && (
+                <>
+                  <a onClick={e => self.goToEditor(e, record.id)}>编辑</a>
+                  <span className="common-list-table-operation-spliter"></span>
+                </>
+              )
+            }
+            {
+              permissions.indexOf('view_account') !== -1 && (
+                <>
+                  <a onClick={e => self.viewDetail(e, record)}>详情</a>
+                  <span className="common-list-table-operation-spliter"></span>
+                </>
+              )
+            }
+            {
+              permissions.indexOf('change_migrate_account') !== -1 && (
+                <>
+                  <a onClick={e => self.handleTransferAgent(e, record)}>划转代理</a>
+                  <span className="common-list-table-operation-spliter"></span>
+                </>
+              )
+            }
+            {
+              permissions.indexOf('delete_account') !== -1 && (
+                <Popconfirm
+                  title="请问是否确定删除客户"
+                  onConfirm={() => self.deleteAccount(record.id)}
+                  onCancel={() => {}}
+                >
+                  <a>删除</a>
+                </Popconfirm>
+              )
+            }
           </div>
         );
       },
     }
   ];
+
+  columns = columns.concat(columns2);
 
   const pagination = {
     ...self.props.common.paginationConfig,
@@ -179,12 +212,11 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => {
-        const disabled = permissions.indexOf('add_account') === -1;
-        return (
-          <Button type="primary" onClick={() => self.goToEditor()} disabled={disabled}>
+        return permissions.indexOf('add_account') !== -1 ? (
+          <Button type="primary" onClick={() => self.goToEditor()}>
             <Icon type="plus" /> 添加
           </Button>
-        );
+        ) : null;
       },
     },
     searcher: {

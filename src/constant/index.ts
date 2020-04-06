@@ -92,7 +92,7 @@ export const PAGE_PERMISSION_MAP = {
   "/dashboard/order": "VIEW_ORDER_PAGE",
   "/dashboard/order/position": "VIEW_ORDER_POSITION_PAGE",
   "/dashboard/manager": "VIEW_MANAGER_PAGE",
-  "/dashboard/account": "VIEW_ACCOUNT_PAGE",
+  "/dashboard/account": "view_account",
   "/dashboard/account/account": "VIEW_ACCOUNT_LIST_PAGE",
   "/dashboard/account/transaction": "VIEW_ACCOUNT_TRANSACTION_PAGE",
   "/dashboard/finance": "VIEW_FINANCE_PAGE",
