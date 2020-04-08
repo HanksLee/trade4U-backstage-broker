@@ -53,7 +53,7 @@ class ProductStore extends BaseStore {
         if (matched) {
           return {
             day: item,
-            trades: matched.trades.map(time => time && moment(time) || null),
+            trades: matched.trades.map(time => time && moment(time * 1000) || null),
           };
         }
 

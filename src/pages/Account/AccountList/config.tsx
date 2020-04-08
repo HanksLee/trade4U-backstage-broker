@@ -5,7 +5,16 @@ import { Button, Checkbox, Icon, Popconfirm, Select } from "antd";
 const Option = Select.Option;
 
 const config = self => {
-  const columns = [
+  const { selectedRowKeys, } = self.state;
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectedRowKeys, selectedRows) => {
+      self.setState({ selectedRowKeys: selectedRowKeys, });
+    },
+  };
+  const permissions = self.props.common.permissions;
+
+  let columns: any = [
     {
       title: "名字",
       width: 150,
@@ -33,8 +42,11 @@ const config = self => {
       title: "客户组",
       width: 150,
       dataIndex: "group_name",
-    },
-    {
+    }
+  ];
+
+  if (permissions.indexOf('change_account') !== -1) {
+    columns.push({
       title: "只读",
       width: 80,
       align: "center",
@@ -51,10 +63,13 @@ const config = self => {
             title
           );
         };
-        return <Checkbox checked={text} onChange={handleChange} />;
+        return <Checkbox disabled={permissions.indexOf('change_account') === -1} checked={text} onChange={handleChange} />;
       },
-    },
-    {
+    });
+  }
+
+  if (permissions.indexOf('change_account') !== -1) {
+    columns.push({
       title: "禁用",
       width: 80,
       align: "center",
@@ -73,7 +88,10 @@ const config = self => {
         };
         return <Checkbox checked={text} onChange={handleChange} />;
       },
-    },
+    });
+  }
+
+  const columns2: any = [
     {
       title: "余额",
       width: 150,
@@ -84,7 +102,12 @@ const config = self => {
         };
         return (
           <>
-            {text} <Icon type="edit" onClick={handleClick} />
+            {text}
+            {
+              permissions.indexOf('change_account_balance') !== -1 && (
+                <Icon type="edit" onClick={handleClick} />
+              )
+            }
           </>
         );
       },
@@ -94,7 +117,7 @@ const config = self => {
       width: 150,
       dataIndex: "inspect_status",
       render: (text, record) => {
-        const handleChange = value => {
+        const handleChange = (value: { label: any; key: any }) => {
           const title = `确认将「${record.first_name +
             record.last_name}」的审核状态设为${value.label} 吗？`;
           self.updateAccountDetailField(
@@ -104,12 +127,14 @@ const config = self => {
             title
           );
         };
+
         return (
           <Select
             labelInValue
             value={{ key: text, }}
             style={{ width: "120px", }}
             onChange={handleChange}
+            disabled={permissions.indexOf('change_account') === -1}
           >
             <Option value={0}>未审核</Option>
             <Option value={1}>待审核</Option>
@@ -121,27 +146,53 @@ const config = self => {
     },
     {
       title: "操作",
-      width: 150,
+      width: 230,
       fixed: "right",
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={e => self.goToEditor(e, record.id)}>编辑</span>
-            <span className="common-list-table-operation-spliter"></span>
-            <span onClick={e => self.viewDetail(e, record)}>详情</span>
-            <span className="common-list-table-operation-spliter"></span>
-            <Popconfirm
-              title="请问是否确定删除客户"
-              onConfirm={() => self.deleteAccount(record.id)}
-              onCancel={() => {}}
-            >
-              <span>删除</span>
-            </Popconfirm>
+            {
+              permissions.indexOf('change_account') !== -1 && (
+                <>
+                  <a onClick={e => self.goToEditor(e, record.id)}>编辑</a>
+                  <span className="common-list-table-operation-spliter"></span>
+                </>
+              )
+            }
+            {
+              permissions.indexOf('view_account') !== -1 && (
+                <>
+                  <a onClick={e => self.viewDetail(e, record)}>详情</a>
+                  <span className="common-list-table-operation-spliter"></span>
+                </>
+              )
+            }
+            {
+              permissions.indexOf('change_migrate_account') !== -1 && (
+                <>
+                  <a onClick={e => self.handleTransferAgent(e, record)}>划转代理</a>
+                  <span className="common-list-table-operation-spliter"></span>
+                </>
+              )
+            }
+            {
+              permissions.indexOf('delete_account') !== -1 && (
+                <Popconfirm
+                  title="请问是否确定删除客户"
+                  onConfirm={() => self.deleteAccount(record.id)}
+                  onCancel={() => {}}
+                >
+                  <a>删除</a>
+                </Popconfirm>
+              )
+            }
           </div>
         );
       },
     }
   ];
+
+  columns = columns.concat(columns2);
 
   const pagination = {
     ...self.props.common.paginationConfig,
@@ -160,11 +211,13 @@ const config = self => {
   return {
     // 是否显示增加按钮
     addBtn: {
-      title: () => (
-        <Button type="primary" onClick={() => self.goToEditor()}>
-          <Icon type="plus" /> 添加
-        </Button>
-      ),
+      title: () => {
+        return permissions.indexOf('add_account') !== -1 ? (
+          <Button type="primary" onClick={() => self.goToEditor()}>
+            <Icon type="plus" /> 添加
+          </Button>
+        ) : null;
+      },
     },
     searcher: {
       batchControl: {
@@ -172,12 +225,12 @@ const config = self => {
         showBatchControl: !utils.isEmpty(self.state.selectedRowKeys),
         options: [
           {
-            title: "删除",
-            value: "delete",
+            title: "划转客户组",
+            value: "group",
           }
         ],
         onBatch: value => {
-          self.onBatch && self.onBatch(value);
+          self.onBatch(value);
         },
       },
       widgets: [
@@ -234,6 +287,7 @@ const config = self => {
     },
     table: {
       rowKey: "id",
+      rowSelection,
       columns,
       dataSource: self.state.accountList,
       pagination,

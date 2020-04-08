@@ -33,7 +33,7 @@ interface TransactionListState {
   exact: false,
   permissionCode: PAGE_PERMISSION_MAP["/dashboard/transaction"],
 })
-@inject("common", "account")
+@inject("common", "transaction")
 @observer
 export default class TransactionList extends BaseReact<
 {},
@@ -48,7 +48,7 @@ TransactionListState
   };
 
   async componentDidMount() {
-    const { filter, } = this.props.account;
+    const { filter, } = this.props.transaction;
     const { paginationConfig, } = this.props.common;
 
     this.getDataList({
@@ -59,8 +59,8 @@ TransactionListState
 
   getDataList = async (filter?: any) => {
     const payload = filter
-      ? { ...this.props.account.filter, ...filter, }
-      : this.props.account.filter;
+      ? { ...this.props.transaction.filter, ...filter, }
+      : this.props.transaction.filter;
     this.setState({
       tableLoading: true,
     });
@@ -71,7 +71,7 @@ TransactionListState
       // 删除非第一页的最后一条记录，自动翻到下一页
       this.getDataList({ ...payload, page: current_page - 1, });
     } else {
-      this.props.account.setFilter({
+      this.props.transaction.setFilter({
         page_size,
         page: current_page,
         name: payload.name,

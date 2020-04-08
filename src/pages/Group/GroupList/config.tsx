@@ -3,6 +3,7 @@ import { Button, Icon, Popconfirm } from "antd";
 import utils from "utils";
 
 const config = self => {
+  const permissions = self.props.common.permissions;
   const columns = [
     {
       title: "名称",
@@ -26,11 +27,21 @@ const config = self => {
       render: (_, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => self.showEditGroupModal(record)}>编辑</span>
-            <span className="common-list-table-operation-spliter"></span>
-            <span onClick={() => self.goToGroupSymbolList(record)}>交易品种编辑</span>
             {
-              record.is_default !== 1 && (
+              permissions.indexOf('change_group') !== -1 && (
+                <>
+                  <span onClick={() => self.showEditGroupModal(record)}>编辑</span>
+                  <span className="common-list-table-operation-spliter"></span>
+                </>
+              )
+            }
+            {
+              permissions.indexOf('view_group_symbol_type') !== -1 && (
+                <span onClick={() => self.goToGroupSymbolList(record)}>交易品种编辑</span>
+              )
+            }
+            {
+              permissions.indexOf('delete_group') !== -1 && record.is_default !== 1 && (
                 <>
                   <span className="common-list-table-operation-spliter"></span>
                   <Popconfirm
@@ -65,11 +76,13 @@ const config = self => {
   return {
     // 是否显示增加按钮
     addBtn: {
-      title: () => (
-        <Button type="primary" onClick={() => self.showAddGroupModal()}>
-          <Icon type="plus" /> 添加
-        </Button>
-      ),
+      title: () => {
+        return permissions.indexOf('create_group') !== -1 ? (
+          <Button type="primary" onClick={() => self.showAddGroupModal()}>
+            <Icon type="plus" /> 添加
+          </Button>
+        ) : null;
+      },
     },
     searcher: {
       batchControl: {

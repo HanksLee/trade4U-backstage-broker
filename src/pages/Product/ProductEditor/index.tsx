@@ -850,7 +850,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                       // if (!copy[item.day].trades ) {
                       //   copy[item.day].trades  = [];
                       // }
-                      copy[item.day].trades[0] = time.valueOf();
+                      copy[item.day].trades[0] = time.unix();
                       // console.log(copy);
                       setCurrentProduct({
                         trading_times: JSON.stringify(copy),
@@ -875,7 +875,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                           };
                         });
                       }
-                      copy[item.day].trades[1] = time.valueOf();
+                      copy[item.day].trades[1] = time.unix();
                       setCurrentProduct({
                         trading_times: JSON.stringify(copy),
                       }, false);
@@ -895,7 +895,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                           };
                         });
                       }
-                      copy[item.day].trades[2] = time.valueOf();
+                      copy[item.day].trades[2] = time.unix();
                       setCurrentProduct({
                         trading_times: JSON.stringify(copy),
                       }, false);
@@ -915,7 +915,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                           };
                         });
                       }
-                      copy[item.day].trades[3] = time.valueOf();
+                      copy[item.day].trades[3] = time.unix();
                       setCurrentProduct({
                         trading_times: JSON.stringify(copy),
                       }, false);
