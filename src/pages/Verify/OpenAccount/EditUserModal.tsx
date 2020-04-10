@@ -91,21 +91,11 @@ IEditUserVerifyModalState
           {userVerify && (
             <FormItem label="审核状态" {...getFormItemLayout(5, 13)} required>
               {getFieldDecorator("inspect_status", {
-                initialValue: (userVerify && [
-                  String(userVerify.inspect_status)
-                ]) || ["0"],
+                initialValue: ["2"],
                 rules: [{ required: true, message: "状态不能为空值", }],
               })(
                 <Cascader
                   options={[
-                    {
-                      value: "0",
-                      label: "未审核",
-                    },
-                    {
-                      value: "1",
-                      label: "待审核",
-                    },
                     {
                       value: "2",
                       label: "审核通过",

@@ -21,8 +21,8 @@ const getFormItemLayout = (
   wrapper: number,
   offset?: undefined
 ) => ({
-  labelCol: { span: label, offset },
-  wrapperCol: { span: wrapper }
+  labelCol: { span: label, offset, },
+  wrapperCol: { span: wrapper, },
 });
 
 export interface ISystemBaseInfoEditorProps {}
@@ -40,14 +40,14 @@ export interface ISystemBaseInfoEditorState {
 
 @withRoute("/dashboard/system/baseinfo", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/system/baseinfo"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/system/baseinfo"],
 })
 @Form.create()
 @inject("common", "system")
 @observer
 export default class SystemBaseInfoEditor extends BaseReact<
-  ISystemBaseInfoEditorProps,
-  ISystemBaseInfoEditorState
+ISystemBaseInfoEditorProps,
+ISystemBaseInfoEditorState
 > {
   state = {
     id: "",
@@ -55,7 +55,7 @@ export default class SystemBaseInfoEditor extends BaseReact<
     domain: "",
     background_corner: "",
     logo: "",
-    company_logo: ""
+    company_logo: "",
   };
 
   async componentDidMount() {
@@ -73,14 +73,14 @@ export default class SystemBaseInfoEditor extends BaseReact<
         name: res.data.name,
         domain: res.data.domain,
         logo: res.data.logo,
-        id: res.data.id
+        id: res.data.id,
       });
     }
   };
 
   renderEditor = () => {
-    const { getFieldDecorator } = this.props.form;
-    const { name, domain, logo } = this.state;
+    const { getFieldDecorator, } = this.props.form;
+    const { name, domain, logo, } = this.state;
     return (
       <Form className="editor-form">
         <FormItem>
@@ -92,29 +92,29 @@ export default class SystemBaseInfoEditor extends BaseReact<
             rules: [
               {
                 pattern: /[a-zA-Z]+/,
-                message: "只能输入英文"
+                message: "只能输入英文",
               }
-            ]
+            ],
           })(
             <Input
               placeholder="domain"
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
         <FormItem label="网站标题" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("name", {
-            initialValue: name || ""
+            initialValue: name || "",
           })(
             <Input
               placeholder="请输入网站标题"
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
         <FormItem label="logo" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("logo", {
-            valuePropName: "fileList"
+            valuePropName: "fileList",
           })(
             <Upload
               accept="image/*"
@@ -125,7 +125,7 @@ export default class SystemBaseInfoEditor extends BaseReact<
               {logo ? (
                 <div
                   className="upload-image-preview"
-                  style={{ backgroundImage: `url(${logo})` }}
+                  style={{ backgroundImage: `url(${logo})`, }}
                 />
               ) : (
                 <div className="upload-image-preview">
@@ -156,18 +156,18 @@ export default class SystemBaseInfoEditor extends BaseReact<
     formData.append("file", file);
     const res = await this.$api.common.uploadFile(formData);
     this.setState({
-      logo: res.data.file_path
+      logo: res.data.file_path,
     });
   };
 
   handleSubmit = async (evt: any) => {
-    const { logo } = this.state;
+    const { logo, } = this.state;
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
         let payload: any = {
           domain: values.domain,
           name: values.name,
-          logo
+          logo,
         };
         const res = await this.$api.system.updateBrokerDealer(payload);
 

@@ -23,6 +23,7 @@ interface IEditMessageTypeModalProps {
 interface IEditMessageTypeModalState {
   confirmLoading: boolean;
   editorContent: string;
+  typeTitle: any[];
 }
 
 // @ts-ignore
@@ -36,9 +37,27 @@ IEditMessageTypeModalState
   state = {
     confirmLoading: false,
     editorContent: "",
+    typeTitle: [],
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.getTypeTitle();
+  }
+
+  getTypeTitle = async () => {
+    const tempArray = [];
+    const res = await this.$api.message.getMessageTypeList();
+    if (res.status == 200) {
+      res.data.results.forEach(function(item, index, array) {
+        if (tempArray.indexOf(item.title) < 0) {
+          tempArray.push(item.title);
+        }
+      });
+    }
+    this.setState({
+      typeTitle: tempArray,
+    });
+  };
 
   getEditorContent = val => {
     this.setState({ editorContent: val, });
@@ -48,13 +67,19 @@ IEditMessageTypeModalState
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
         const { messageType, onOk, brokerId, } = this.props;
-        const { editorContent, } = this.state;
+        const { editorContent, typeTitle, } = this.state;
 
         let payload: any = {
           broker: brokerId,
           key: values.key,
-          title: values.title,
         };
+
+        if (typeTitle.indexOf(values.title.join()) > -1) {
+          this.$msg.error("分类已存在");
+          return false;
+        } else {
+          payload.title = values.title.join();
+        }
 
         if (!utils.isEmpty(editorContent)) {
           payload.description = editorContent;
@@ -116,9 +141,24 @@ IEditMessageTypeModalState
           </FormItem>
           <FormItem label="名称" {...getFormItemLayout(5, 13)} required>
             {getFieldDecorator("title", {
-              initialValue: (messageType && messageType.title) || "",
+              initialValue: (messageType && [messageType.title]) || [
+                "站內公告"
+              ],
               rules: [{ required: true, message: "名称不能為空", }],
-            })(<Input placeholder="请输入名称" />)}
+            })(
+              <Cascader
+                options={[
+                  {
+                    value: "站內公告",
+                    label: "站內公告",
+                  },
+                  {
+                    value: "服务消息",
+                    label: "服务消息",
+                  }
+                ]}
+              />
+            )}
           </FormItem>
           <FormItem label="描述" {...getFormItemLayout(5, 13)}>
             {getFieldDecorator("description", {
