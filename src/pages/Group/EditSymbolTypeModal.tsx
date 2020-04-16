@@ -56,10 +56,15 @@ export default class EditSymbolTypeModal extends BaseReact<IEditSymbolTypeModalP
           action: values.action,
           max_trading_volume: values.max_trading_volume || 0,
           min_trading_volume: values.min_trading_volume || 0,
-          taxes: values.taxes || 0,
-          standard: values.standard || 0,
           leverage: values.leverage || 0,
         };
+
+        if (values.fexType) {
+          payload.fee = {
+            type: values.fexType,
+            value: values.fexValue,
+          };
+        }
 
         this.setState({
           confirmLoading: true,
@@ -140,16 +145,23 @@ export default class EditSymbolTypeModal extends BaseReact<IEditSymbolTypeModalP
               <InputNumber style={{ width: '200px', }} />
             )}
           </FormItem>
-          <FormItem label='加收手续费(百分比)' {...getFormItemLayout(9, 13)}>
-            {getFieldDecorator('taxes', {
-              initialValue: symbolType && symbolType.taxes,
+          <FormItem label='手续费类型' {...getFormItemLayout(9, 13)}>
+            {getFieldDecorator('fexType', {
+              initialValue: symbolType && symbolType.fee && symbolType.fee.type,
             })(
-              <InputNumber style={{ width: '200px', }} />
+              
+              <Select
+                placeholder="类型"
+                style={{ width: '200px', }}
+              >
+                <Select.Option value="fix">固定金额</Select.Option>
+                <Select.Option value="float">按比例</Select.Option>
+              </Select>
             )}
           </FormItem>
-          <FormItem label='交易成本每手加收(百分比)' {...getFormItemLayout(9, 13)}>
-            {getFieldDecorator('standard', {
-              initialValue: symbolType && symbolType.standard,
+          <FormItem label='手续费' {...getFormItemLayout(9, 13)}>
+            {getFieldDecorator('fexValue', {
+              initialValue: symbolType && symbolType.fee && symbolType.fee.value,
             })(
               <InputNumber style={{ width: '200px', }} />
             )}
