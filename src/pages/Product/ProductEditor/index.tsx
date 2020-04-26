@@ -26,12 +26,12 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const confirm = Modal.confirm;
 const TextArea = Input.TextArea;
-const radioStyle = { display: "block", marginBottom: 12 };
+const radioStyle = { display: "block", marginBottom: 12, };
 const RangePicker = DatePicker.RangePicker;
 
 const getFormItemLayout = (label, wrapper, offset?) => ({
-  labelCol: { span: label, offset },
-  wrapperCol: { span: wrapper }
+  labelCol: { span: label, offset, },
+  wrapperCol: { span: wrapper, },
 });
 
 export interface IProductEditorProps {}
@@ -43,8 +43,8 @@ export interface IProductEditorState {}
 @inject("common", "product")
 @observer
 export default class ProductEditor extends BaseReact<
-  IProductEditorProps,
-  IProductEditorState
+IProductEditorProps,
+IProductEditorState
 > {
   state = {
     mode: "add",
@@ -86,7 +86,7 @@ export default class ProductEditor extends BaseReact<
 
     this.setState(
       {
-        mode: search.id == 0 ? "add" : "edit"
+        mode: search.id == 0 ? "add" : "edit",
       },
       async () => {
         const currentProduct = utils.getLStorage("currentProduct");
@@ -102,7 +102,7 @@ export default class ProductEditor extends BaseReact<
             onCancel: () => {
               this.init();
               utils.rmLStorage("currentProduct");
-            }
+            },
           });
         } else {
           if (this.state.mode === "edit") {
@@ -122,7 +122,7 @@ export default class ProductEditor extends BaseReact<
       "pre_pay_rule",
       "delay_rule",
       "tax_rule",
-      'free_rule',
+      'free_rule'
     ];
 
     scopes.forEach(scope => {
@@ -132,44 +132,44 @@ export default class ProductEditor extends BaseReact<
   getScopeOptions = async (scope?) => {
     const res = await this.$api.product.getRuleList({
       params: {
-        scope
-      }
+        scope,
+      },
     });
 
     this.setState({
-      [`${scope}_options`]: res.data.results
+      [`${scope}_options`]: res.data.results,
     });
   };
 
   getGenreOptions = async () => {
-    const res = await this.$api.product.getGenreList({ offset: 0, limit: 200 });
+    const res = await this.$api.product.getGenreList({ offset: 0, limit: 200, });
     this.setState({
-      typeOptions: res.data.results
+      typeOptions: res.data.results,
     });
   };
 
   getMarketOptions = async () => {
     const res = await this.$api.market.getProductList({
       offset: 0,
-      limit: 200
+      limit: 200,
     });
     this.setState({
       marketOptions: res.data.results,
       marketMeta: {
-        total: res.count
-      }
+        total: res.count,
+      },
     });
   };
 
   getTransactionModeOptions = async () => {
     const res = await this.$api.product.getTransactionModeOptions({
       page: 1,
-      page_size: 200
+      page_size: 200,
     });
 
     if (res.status == 200) {
       this.setState({
-        transactionModeOptions: res.data.data || []
+        transactionModeOptions: res.data.data || [],
       });
     }
   };
@@ -177,12 +177,12 @@ export default class ProductEditor extends BaseReact<
   getBgColorOptions = async () => {
     const res = await this.$api.product.getBgColorOptions({
       page: 1,
-      page_size: 200
+      page_size: 200,
     });
 
     if (res.status == 200) {
       this.setState({
-        bgColorOptions: res.data.data || []
+        bgColorOptions: res.data.data || [],
       });
     }
   };
@@ -194,29 +194,29 @@ export default class ProductEditor extends BaseReact<
       "system_currency_choices"
     );
     this.setState({
-      currencyOptions: res.data.data
+      currencyOptions: res.data.data,
     });
   };
 
   getOrderModeOptions = async () => {
     const res = await this.$api.product.getOrderModeOptions({
       page: 1,
-      page_size: 200
+      page_size: 200,
     });
 
     if (res.status == 200) {
       this.setState({
-        orderModeOptions: res.data.data || []
+        orderModeOptions: res.data.data || [],
       });
     }
   };
 
   renderEditor = () => {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator, } = this.props.form;
     const {
       setCurrentProduct,
       currentShowProduct,
-      currentProduct
+      currentProduct,
     } = this.props.product;
     const {
       typeOptions,
@@ -240,19 +240,19 @@ export default class ProductEditor extends BaseReact<
 
         <FormItem label="产品名称" {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator("name", {
-            initialValue: currentShowProduct && currentShowProduct.name
+            initialValue: currentShowProduct && currentShowProduct.name,
           })(
             <Input
               placeholder="请输入产品名称"
               onChange={evt => {
                 setCurrentProduct(
                   {
-                    name: evt.target.value
+                    name: evt.target.value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
           {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
@@ -266,7 +266,7 @@ export default class ProductEditor extends BaseReact<
           {getFieldDecorator("product", {
             initialValue:
               currentShowProduct.product &&
-              currentShowProduct.product.toString()
+              currentShowProduct.product.toString(),
           })(
             <Select
               // @ts-ignore
@@ -277,7 +277,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    product: value
+                    product: value,
                   },
                   false
                 );
@@ -294,7 +294,7 @@ export default class ProductEditor extends BaseReact<
         <FormItem label="小位数" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("decimals_place", {
             initialValue:
-              currentShowProduct && currentShowProduct.decimals_place
+              currentShowProduct && currentShowProduct.decimals_place,
           })(
             <InputNumber
               min={0}
@@ -303,12 +303,12 @@ export default class ProductEditor extends BaseReact<
               onChange={value => {
                 setCurrentProduct(
                   {
-                    decimals_place: value
+                    decimals_place: value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
           {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
@@ -316,7 +316,7 @@ export default class ProductEditor extends BaseReact<
         <FormItem label="描述" {...getFormItemLayout(3, 8)}>
           {getFieldDecorator("description", {
             initialValue: currentShowProduct && currentShowProduct.description,
-            rules: []
+            rules: [],
           })(
             <TextArea
               placeholder="请输入产品描述"
@@ -324,7 +324,7 @@ export default class ProductEditor extends BaseReact<
               onChange={evt => {
                 setCurrentProduct(
                   {
-                    description: evt.target.value
+                    description: evt.target.value,
                   },
                   false
                 );
@@ -340,7 +340,7 @@ export default class ProductEditor extends BaseReact<
         >
           {getFieldDecorator("type", {
             initialValue:
-              currentShowProduct.type && currentShowProduct.type.toString()
+              currentShowProduct.type && currentShowProduct.type.toString(),
           })(
             <Select
               // @ts-ignore
@@ -351,7 +351,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    type: value
+                    type: value,
                   },
                   false
                 );
@@ -374,7 +374,7 @@ export default class ProductEditor extends BaseReact<
           {getFieldDecorator("transaction_mode", {
             initialValue:
               currentShowProduct.transaction_mode != null &&
-              currentShowProduct.transaction_mode.toString()
+              currentShowProduct.transaction_mode.toString(),
           })(
             <Select
               // @ts-ignore
@@ -385,7 +385,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    transaction_mode: value
+                    transaction_mode: value,
                   },
                   false
                 );
@@ -406,7 +406,7 @@ export default class ProductEditor extends BaseReact<
           required
         >
           {getFieldDecorator("background", {
-            initialValue: currentShowProduct && currentShowProduct.background
+            initialValue: currentShowProduct && currentShowProduct.background,
           })(
             <Select
               // @ts-ignore
@@ -417,7 +417,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    background: value
+                    background: value,
                   },
                   false
                 );
@@ -439,7 +439,7 @@ export default class ProductEditor extends BaseReact<
         >
           {getFieldDecorator("profit_currency", {
             initialValue:
-              currentShowProduct && currentShowProduct.profit_currency
+              currentShowProduct && currentShowProduct.profit_currency,
           })(
             <Select
               // @ts-ignore
@@ -450,7 +450,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    profit_currency: value
+                    profit_currency: value,
                   },
                   false
                 );
@@ -473,7 +473,7 @@ export default class ProductEditor extends BaseReact<
         >
           {getFieldDecorator("margin_currency", {
             initialValue:
-              currentShowProduct && currentShowProduct.margin_currency
+              currentShowProduct && currentShowProduct.margin_currency,
           })(
             <Select
               // @ts-ignore
@@ -484,7 +484,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    margin_currency: value
+                    margin_currency: value,
                   },
                   false
                 );
@@ -502,7 +502,7 @@ export default class ProductEditor extends BaseReact<
         <FormItem label="最大交易量" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("max_trading_volume", {
             initialValue:
-              currentShowProduct && currentShowProduct.max_trading_volume
+              currentShowProduct && currentShowProduct.max_trading_volume,
           })(
             <InputNumber
               min={0}
@@ -511,19 +511,19 @@ export default class ProductEditor extends BaseReact<
               onChange={value => {
                 setCurrentProduct(
                   {
-                    max_trading_volume: value
+                    max_trading_volume: value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
         <FormItem label="最小交易量" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("min_trading_volume", {
             initialValue:
-              currentShowProduct && currentShowProduct.min_trading_volume
+              currentShowProduct && currentShowProduct.min_trading_volume,
           })(
             <InputNumber
               min={0}
@@ -532,12 +532,12 @@ export default class ProductEditor extends BaseReact<
               onChange={value => {
                 setCurrentProduct(
                   {
-                    min_trading_volume: value
+                    min_trading_volume: value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
@@ -549,7 +549,7 @@ export default class ProductEditor extends BaseReact<
           required
         >
           {getFieldDecorator("orders_mode", {
-            initialValue: currentShowProduct && currentShowProduct.orders_mode
+            initialValue: currentShowProduct && currentShowProduct.orders_mode,
           })(
             <Select
               // @ts-ignore
@@ -560,7 +560,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    orders_mode: value
+                    orders_mode: value,
                   },
                   false
                 );
@@ -576,7 +576,7 @@ export default class ProductEditor extends BaseReact<
         </FormItem>
         <FormItem label="点差" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("spread", {
-            initialValue: currentShowProduct && currentShowProduct.spread
+            initialValue: currentShowProduct && currentShowProduct.spread,
           })(
             <InputNumber
               min={0}
@@ -585,12 +585,12 @@ export default class ProductEditor extends BaseReact<
               onChange={value => {
                 setCurrentProduct(
                   {
-                    spread: value
+                    spread: value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
@@ -601,7 +601,7 @@ export default class ProductEditor extends BaseReact<
           required
         >
           {getFieldDecorator("spread_mode", {
-            initialValue: currentShowProduct && currentShowProduct.spread_mode
+            initialValue: currentShowProduct && currentShowProduct.spread_mode,
           })(
             <Select
               // @ts-ignore
@@ -612,7 +612,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    spread_mode: value
+                    spread_mode: value,
                   },
                   false
                 );
@@ -622,11 +622,11 @@ export default class ProductEditor extends BaseReact<
               {[
                 {
                   field: "fix",
-                  translation: "固定点差"
+                  translation: "固定点差",
                 },
                 {
                   field: "float",
-                  translation: "浮动点差"
+                  translation: "浮动点差",
                 }
               ].map(item => (
                 // @ts-ignore
@@ -638,7 +638,7 @@ export default class ProductEditor extends BaseReact<
         <FormItem label="止盈止损位" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("limit_stop_level", {
             initialValue:
-              currentShowProduct && currentShowProduct.limit_stop_level
+              currentShowProduct && currentShowProduct.limit_stop_level,
           })(
             <InputNumber
               min={0}
@@ -647,19 +647,19 @@ export default class ProductEditor extends BaseReact<
               onChange={value => {
                 setCurrentProduct(
                   {
-                    limit_stop_level: value
+                    limit_stop_level: value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
 
         <FormItem label="交易量步长" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("volume_step", {
-            initialValue: currentShowProduct && currentShowProduct.volume_step
+            initialValue: currentShowProduct && currentShowProduct.volume_step,
           })(
             <InputNumber
               min={0}
@@ -668,12 +668,12 @@ export default class ProductEditor extends BaseReact<
               onChange={value => {
                 setCurrentProduct(
                   {
-                    volume_step: value
+                    volume_step: value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
@@ -684,7 +684,7 @@ export default class ProductEditor extends BaseReact<
         >
           {getFieldDecorator("min_unit_of_price_change", {
             initialValue:
-              currentShowProduct && currentShowProduct.min_unit_of_price_change
+              currentShowProduct && currentShowProduct.min_unit_of_price_change,
           })(
             <InputNumber
               min={0}
@@ -694,12 +694,12 @@ export default class ProductEditor extends BaseReact<
               onChange={value => {
                 setCurrentProduct(
                   {
-                    min_unit_of_price_change: value
+                    min_unit_of_price_change: value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
@@ -709,7 +709,7 @@ export default class ProductEditor extends BaseReact<
 
         <FormItem label="合约大小" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("contract_size", {
-            initialValue: currentShowProduct && currentShowProduct.contract_size
+            initialValue: currentShowProduct && currentShowProduct.contract_size,
           })(
             <InputNumber
               min={0}
@@ -718,12 +718,12 @@ export default class ProductEditor extends BaseReact<
               onChange={value => {
                 setCurrentProduct(
                   {
-                    contract_size: value
+                    contract_size: value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
@@ -735,7 +735,7 @@ export default class ProductEditor extends BaseReact<
           {getFieldDecorator("calculate_for_cash_deposit", {
             initialValue:
               currentShowProduct &&
-              currentShowProduct.calculate_for_cash_deposit
+              currentShowProduct.calculate_for_cash_deposit,
           })(
             <Select
               // @ts-ignore
@@ -746,7 +746,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    calculate_for_cash_deposit: value
+                    calculate_for_cash_deposit: value,
                   },
                   false
                 );
@@ -768,7 +768,7 @@ export default class ProductEditor extends BaseReact<
           {getFieldDecorator("profit_calculate_for_bought", {
             initialValue:
               currentShowProduct &&
-              currentShowProduct.profit_calculate_for_bought
+              currentShowProduct.profit_calculate_for_bought,
           })(
             <Select
               // @ts-ignore
@@ -779,7 +779,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    profit_calculate_for_bought: value
+                    profit_calculate_for_bought: value,
                   },
                   false
                 );
@@ -800,7 +800,7 @@ export default class ProductEditor extends BaseReact<
         >
           {getFieldDecorator("profit_calculate_for_sale", {
             initialValue:
-              currentShowProduct && currentShowProduct.profit_calculate_for_sale
+              currentShowProduct && currentShowProduct.profit_calculate_for_sale,
           })(
             <Select
               // @ts-ignore
@@ -811,7 +811,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    profit_calculate_for_sale: value
+                    profit_calculate_for_sale: value,
                   },
                   false
                 );
@@ -830,7 +830,7 @@ export default class ProductEditor extends BaseReact<
         </FormItem>
         <FormItem label="买入库存费（%）" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("purchase_fee", {
-            initialValue: currentShowProduct && currentShowProduct.purchase_fee
+            initialValue: currentShowProduct && currentShowProduct.purchase_fee,
           })(
             <InputNumber
               min={0}
@@ -840,18 +840,18 @@ export default class ProductEditor extends BaseReact<
               onChange={value => {
                 setCurrentProduct(
                   {
-                    purchase_fee: value
+                    purchase_fee: value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
         <FormItem label="卖出库存费（%）" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("selling_fee", {
-            initialValue: currentShowProduct && currentShowProduct.selling_fee
+            initialValue: currentShowProduct && currentShowProduct.selling_fee,
           })(
             <InputNumber
               min={0}
@@ -860,12 +860,12 @@ export default class ProductEditor extends BaseReact<
               onChange={value => {
                 setCurrentProduct(
                   {
-                    selling_fee: value
+                    selling_fee: value,
                   },
                   false
                 );
               }}
-              style={{ display: "inline-block", width: 200 }}
+              style={{ display: "inline-block", width: 200, }}
             />
           )}
         </FormItem>
@@ -876,7 +876,7 @@ export default class ProductEditor extends BaseReact<
         >
           {getFieldDecorator("calculate_for_fee", {
             initialValue:
-              currentShowProduct && currentShowProduct.calculate_for_fee
+              currentShowProduct && currentShowProduct.calculate_for_fee,
           })(
             <Select
               // @ts-ignore
@@ -887,7 +887,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    calculate_for_fee: value
+                    calculate_for_fee: value,
                   },
                   false
                 );
@@ -909,7 +909,7 @@ export default class ProductEditor extends BaseReact<
         >
           {getFieldDecorator("three_days_swap", {
             initialValue:
-              currentShowProduct && currentShowProduct.three_days_swap
+              currentShowProduct && currentShowProduct.three_days_swap,
           })(
             <Select
               // @ts-ignore
@@ -920,7 +920,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    three_days_swap: value
+                    three_days_swap: value,
                   },
                   false
                 );
@@ -942,7 +942,7 @@ export default class ProductEditor extends BaseReact<
         >
           {getFieldDecorator("hands_fee_for_bought", {
             initialValue:
-              currentShowProduct && currentShowProduct.hands_fee_for_bought
+              currentShowProduct && currentShowProduct.hands_fee_for_bought,
           })(
             <Select
               // @ts-ignore
@@ -953,7 +953,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    hands_fee_for_bought: value
+                    hands_fee_for_bought: value,
                   },
                   false
                 );
@@ -974,7 +974,7 @@ export default class ProductEditor extends BaseReact<
         >
           {getFieldDecorator("hands_fee_for_sale", {
             initialValue:
-              currentShowProduct && currentShowProduct.hands_fee_for_sale
+              currentShowProduct && currentShowProduct.hands_fee_for_sale,
           })(
             <Select
               // @ts-ignore
@@ -985,7 +985,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    hands_fee_for_sale: value
+                    hands_fee_for_sale: value,
                   },
                   false
                 );
@@ -1006,7 +1006,7 @@ export default class ProductEditor extends BaseReact<
         >
           {getFieldDecorator("calculate_for_tax", {
             initialValue:
-              currentShowProduct && currentShowProduct.calculate_for_tax
+              currentShowProduct && currentShowProduct.calculate_for_tax,
           })(
             <Select
               // @ts-ignore
@@ -1017,7 +1017,7 @@ export default class ProductEditor extends BaseReact<
               onChange={(value, elem: any) => {
                 setCurrentProduct(
                   {
-                    calculate_for_tax: value
+                    calculate_for_tax: value,
                   },
                   false
                 );
@@ -1034,7 +1034,7 @@ export default class ProductEditor extends BaseReact<
         <FormItem>
           <h2 className="editor-form-title form-title">交易时间段</h2>
         </FormItem>
-        <Row style={{ marginBottom: 10, textAlign: "center", fontWeight: 500 }}>
+        <Row style={{ marginBottom: 10, textAlign: "center", fontWeight: 500, }}>
           <Col span={3}>交易日</Col>
           <Col span={6}>上午交易时间</Col>
           <Col span={6}>下午交易时间</Col>
@@ -1049,7 +1049,7 @@ export default class ProductEditor extends BaseReact<
                   {...getFormItemLayout(3, 16)}
                 >
                   <TimePicker
-                    style={{ marginRight: 10, width: 200 }}
+                    style={{ marginRight: 10, width: 200, }}
                     placeholder={"请输入上午交易开始时间"}
                     value={item.trades && item.trades[0]}
                     onChange={time => {
@@ -1061,7 +1061,7 @@ export default class ProductEditor extends BaseReact<
                       if (utils.isEmpty(copy)) {
                         WeeklyOrder.forEach(item => {
                           copy[item] = {
-                            trades: []
+                            trades: [],
                           };
                         });
                       }
@@ -1072,14 +1072,14 @@ export default class ProductEditor extends BaseReact<
                       // console.log(copy);
                       setCurrentProduct(
                         {
-                          trading_times: JSON.stringify(copy)
+                          trading_times: JSON.stringify(copy),
                         },
                         false
                       );
 
                       setCurrentProduct(
                         {
-                          trading_times: JSON.stringify(copy)
+                          trading_times: JSON.stringify(copy),
                         },
                         false
                       );
@@ -1088,7 +1088,7 @@ export default class ProductEditor extends BaseReact<
                   <TimePicker
                     value={item.trades && item.trades[1]}
                     placeholder={"请输入上午交易结束时间"}
-                    style={{ marginRight: 10, width: 200 }}
+                    style={{ marginRight: 10, width: 200, }}
                     onChange={time => {
                       const tradeMap = {};
                       const copy = currentProduct.trading_times
@@ -1098,14 +1098,14 @@ export default class ProductEditor extends BaseReact<
                       if (utils.isEmpty(copy)) {
                         WeeklyOrder.forEach(item => {
                           copy[item] = {
-                            trades: []
+                            trades: [],
                           };
                         });
                       }
                       copy[item.day].trades[1] = time.unix();
                       setCurrentProduct(
                         {
-                          trading_times: JSON.stringify(copy)
+                          trading_times: JSON.stringify(copy),
                         },
                         false
                       );
@@ -1114,7 +1114,7 @@ export default class ProductEditor extends BaseReact<
                   <TimePicker
                     value={item.trades && item.trades[2]}
                     placeholder={"请输入下午交易开始时间"}
-                    style={{ marginRight: 10, width: 200 }}
+                    style={{ marginRight: 10, width: 200, }}
                     onChange={time => {
                       const tradeMap = {};
                       const copy = currentProduct.trading_times
@@ -1124,14 +1124,14 @@ export default class ProductEditor extends BaseReact<
                       if (utils.isEmpty(copy)) {
                         WeeklyOrder.forEach(item => {
                           copy[item] = {
-                            trades: []
+                            trades: [],
                           };
                         });
                       }
                       copy[item.day].trades[2] = time.unix();
                       setCurrentProduct(
                         {
-                          trading_times: JSON.stringify(copy)
+                          trading_times: JSON.stringify(copy),
                         },
                         false
                       );
@@ -1140,7 +1140,7 @@ export default class ProductEditor extends BaseReact<
                   <TimePicker
                     value={item.trades && item.trades[3]}
                     placeholder={"请输入下午交易结束时间"}
-                    style={{ marginRight: 10, width: 200 }}
+                    style={{ marginRight: 10, width: 200, }}
                     onChange={time => {
                       const tradeMap = {};
                       const copy = currentProduct.trading_times
@@ -1150,14 +1150,14 @@ export default class ProductEditor extends BaseReact<
                       if (utils.isEmpty(copy)) {
                         WeeklyOrder.forEach(item => {
                           copy[item] = {
-                            trades: []
+                            trades: [],
                           };
                         });
                       }
                       copy[item.day].trades[3] = time.unix();
                       setCurrentProduct(
                         {
-                          trading_times: JSON.stringify(copy)
+                          trading_times: JSON.stringify(copy),
                         },
                         false
                       );
@@ -1195,8 +1195,8 @@ export default class ProductEditor extends BaseReact<
   handleSubmit = async evt => {
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const { currentProduct } = this.props.product;
-        const { mode } = this.state;
+        const { currentProduct, } = this.props.product;
+        const { mode, } = this.state;
         let payload: any = {
           name: currentProduct.name,
           type: currentProduct.type,
@@ -1227,7 +1227,7 @@ export default class ProductEditor extends BaseReact<
           profit_calculate_for_sale: currentProduct.profit_calculate_for_sale,
           calculate_for_fee: currentProduct.calculate_for_fee,
           calculate_for_tax: currentProduct.calculate_for_tax,
-          spread_mode: currentProduct.spread_mode
+          spread_mode: currentProduct.spread_mode,
         };
 
         // console.log('payload', payload);
@@ -1243,7 +1243,7 @@ export default class ProductEditor extends BaseReact<
               this.goBack();
               this.props.product.getProductList({
                 current_page: this.props.product.filterProduct.current_page,
-                page_size: this.props.product.filterProduct.page_size
+                page_size: this.props.product.filterProduct.page_size,
               });
             }, 1500);
           }
@@ -1259,7 +1259,7 @@ export default class ProductEditor extends BaseReact<
               this.goBack();
               this.props.product.getProductList({
                 current_page: this.props.product.filterProduct.current_page,
-                page_size: this.props.product.filterProduct.page_size
+                page_size: this.props.product.filterProduct.page_size,
               });
             }, 1500);
           }
@@ -1274,42 +1274,42 @@ export default class ProductEditor extends BaseReact<
     validator.add(payload.name, [
       {
         strategy: "isNonEmpty",
-        errMsg: "请输入交易品种名字"
+        errMsg: "请输入交易品种名字",
       }
     ]);
 
     validator.add(payload.type, [
       {
         strategy: "isNonEmpty",
-        errMsg: "请选择交易品种类型"
+        errMsg: "请选择交易品种类型",
       }
     ]);
 
     validator.add(payload.product, [
       {
         strategy: "isNonEmpty",
-        errMsg: "请选择行情产品"
+        errMsg: "请选择行情产品",
       }
     ]);
 
     validator.add(payload.margin_currency, [
       {
         strategy: "isNonEmpty",
-        errMsg: "请选择预售货币款"
+        errMsg: "请选择预售货币款",
       }
     ]);
 
     validator.add(payload.profit_currency, [
       {
         strategy: "isNonEmpty",
-        errMsg: "请选择获利货币"
+        errMsg: "请选择获利货币",
       }
     ]);
 
     validator.add(payload.transaction_mode, [
       {
         strategy: "isNonEmpty",
-        errMsg: "请选择成交模式"
+        errMsg: "请选择成交模式",
       }
     ]);
 
