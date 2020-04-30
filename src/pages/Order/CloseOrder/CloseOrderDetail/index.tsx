@@ -1,363 +1,163 @@
-import Validator from 'utils/validator';
 import * as React from 'react';
+import moment from 'moment';
 import { BaseReact } from 'components/BaseReact';
-import { Form, Input, Button, Upload, Icon, Select } from 'antd';
+import { Button, Card, Menu, Table } from 'antd';
 import { inject, observer } from 'mobx-react';
-import { RcFile } from 'antd/lib/upload';
 import '../../index.scss';
 
-const FormItem = Form.Item;
-
 // @ts-ignore
-@Form.create()
-@inject('common', 'account')
+@inject('common', 'closeOrder')
 @observer
-export default class AccountEditor extends BaseReact<{}> {
+export default class CloseOrderDetail extends BaseReact<{}> {
+  orderNumber = '';
   state = {
-    mode: 'add',
-    accountDetail: null,
-    countryOptions: [],
+    orderDetail: null,
+    formula: null,
+    transactionChoices: [],
+    currentTransactionChoice: null,
   }
 
-  componentDidMount() {
+  constructor(props) {
+    super(props);
     const { location, } = this.props;
     const search = this.$qs.parse(location.search);
+    this.orderNumber = search.id;
+  }
+  
+
+  async componentDidMount() {
+    this.getCloseOrderDetail();
+    this.getOrderTransactionChoices();
+  }
+
+  getCloseOrderDetail = async () => {
+    const res = await this.$api.order.getCloseOrderDetail(this.orderNumber);
     this.setState({
-      mode: search.id === '0' ? 'add' : 'edit',
+      orderDetail: res.data,
+    });
+  }
+
+  getOrderTransactionChoices = async() => {
+    const res = await this.$api.common.getConstantByKey('ORDER_TRANSACTION_CHOICES');
+    const data = res.data.data;
+    this.setState({
+      transactionChoices: data,
+      currentTransactionChoice: data[0].field || null,
     });
 
-    if (search.id !== '0') {
-      this.getAccountDetail(search.id);
+    if (data[0]) {
+      this.getOrderFormula(data[0].field);
     }
-
-    this.getCountryOptions();
   }
 
-  getAccountDetail = async (id: string) => {
-    const res = await this.$api.account.getAccountDetail(id);
+  getOrderFormula = async (cause: string) => {
+    const res = await this.$api.order.getOrderFormula(this.orderNumber, {
+      params: {
+        cause,
+      },
+    });
     this.setState({
-      accountDetail: res.data,
+      formula: res.data,
     });
   }
 
-  getCountryOptions = async () => {
-    const res = await this.$api.common.getConstantByKey('country_choices');
-    this.setState({
-      countryOptions: res.data.data,
-    });
-  }
+  renderOrderDetail = () => {
+    const { orderDetail, } = this.state;
 
-  renderEditor = () => {
-    const { getFieldDecorator, } = this.props.form;
-    const { accountDetail, mode, countryOptions, } = this.state;
+    if (!orderDetail) return null;
 
     return (
-      <Form className='editor-form account-editor-form' layout="inline">
-        <FormItem label="姓" required>
-          {getFieldDecorator('last_name', {
-            initialValue: accountDetail && accountDetail.last_name,
-          })(
-            <Input placeholder="请输入姓氏" onChange={evt => {
-              this.setCurrentAccount({
-                last_name: evt.target.value,
-              });
-            }} style={{ display: 'inline-block', width: 200, }} />
-          )}
-        </FormItem>
-        <FormItem label="名" required>
-          {getFieldDecorator('first_name', {
-            initialValue: accountDetail && accountDetail.first_name,
-          })(
-            <Input placeholder="请输入名字" onChange={evt => {
-              this.setCurrentAccount({
-                first_name: evt.target.value,
-              });
-            }} style={{ display: 'inline-block', width: 200, }} />
-          )}
-        </FormItem>
-        <FormItem label="手机号" required>
-          {getFieldDecorator('phone', {
-            initialValue: accountDetail && accountDetail.phone,
-          })(
-            <Input placeholder="请输入手机号" onChange={evt => {
-              this.setCurrentAccount({
-                phone: evt.target.value,
-              });
-            }} style={{ display: 'inline-block', width: 200, }} />
-          )}
-        </FormItem>
-        <FormItem label="生日">
-          {getFieldDecorator('birth', {
-            initialValue: accountDetail && accountDetail.birth,
-          })(
-            <Input placeholder="请输入生日" onChange={evt => {
-              this.setCurrentAccount({
-                birth: evt.target.value,
-              });
-            }} style={{ display: 'inline-block', width: 200, }} />
-          )}
-        </FormItem>
-        <FormItem label="邮箱">
-          {getFieldDecorator('email', {
-            initialValue: accountDetail && accountDetail.email,
-          })(
-            <Input placeholder="请输入邮箱" onChange={evt => {
-              this.setCurrentAccount({
-                email: evt.target.value,
-              });
-            }} style={{ display: 'inline-block', width: 200, }} />
-          )}
-        </FormItem>
-        <FormItem label="电话">
-          {getFieldDecorator('mobile', {
-            initialValue: accountDetail && accountDetail.mobile,
-          })(
-            <Input placeholder="请输入电话" onChange={evt => {
-              this.setCurrentAccount({
-                mobile: evt.target.value,
-              });
-            }} style={{ display: 'inline-block', width: 200, }} />
-          )}
-        </FormItem>
-        <FormItem label="国籍">
-          {getFieldDecorator('nationality', {
-            initialValue: accountDetail && accountDetail.nationality,
-          })(
-            <Select placeholder="请输入国籍" style={{ width: '200px', }} onChange={value => {
-              this.setCurrentAccount({
-                nationality: value,
-              });
-            }}>
-              {
-                countryOptions.map(cause => <Select.Option value={cause.field}>{cause.translation}</Select.Option>)
-              }
-            </Select>
-          )}
-        </FormItem>
-        <FormItem label="居住国">
-          {getFieldDecorator('country_of_residence', {
-            initialValue: accountDetail && accountDetail.country_of_residence,
-          })(
-            <Select placeholder="请输入居住国" style={{ width: '200px', }} onChange={value => {
-              this.setCurrentAccount({
-                country_of_residence: value,
-              });
-            }}>
-              {
-                countryOptions.map(cause => <Select.Option value={cause.field}>{cause.translation}</Select.Option>)
-              }
-            </Select>
-          )}
-        </FormItem>
-        <FormItem label="城市">
-          {getFieldDecorator('city', {
-            initialValue: accountDetail && accountDetail.city,
-          })(
-            <Input placeholder="请输入城市" onChange={evt => {
-              this.setCurrentAccount({
-                city: evt.target.value,
-              });
-            }} style={{ display: 'inline-block', width: 200, }} />
-          )}
-        </FormItem>
-        <FormItem label="街道">
-          {getFieldDecorator('street', {
-            initialValue: accountDetail && accountDetail.street,
-          })(
-            <Input placeholder="请输入街道" onChange={evt => {
-              this.setCurrentAccount({
-                street: evt.target.value,
-              });
-            }} style={{ display: 'inline-block', width: 200, }} />
-          )}
-        </FormItem>
-        <FormItem label="邮编">
-          {getFieldDecorator('postal', {
-            initialValue: accountDetail && accountDetail.postal,
-          })(
-            <Input placeholder="请输入邮编" onChange={evt => {
-              this.setCurrentAccount({
-                postal: evt.target.value,
-              });
-            }} style={{ display: 'inline-block', width: 200, }} />
-          )}
-        </FormItem>
-        {
-          mode === 'add' && (
-            <FormItem label="密码" required>
-              {getFieldDecorator('password', {
-                initialValue: accountDetail && accountDetail.password,
-              })(
-                <Input placeholder="请输入密码" type="password" onChange={evt => {
-                  this.setCurrentAccount({
-                    password: evt.target.value,
-                  });
-                }} style={{ display: 'inline-block', width: 200, }} />
-              )}
-            </FormItem>
-          )
-        }
-        <div className="id-card-form">
-          <FormItem>
-            {getFieldDecorator('id_card_front', {
-              valuePropName: 'fileList',
-            })(
-              <Upload
-                accept="image/*"
-                listType="picture-card"
-                showUploadList={false}
-                beforeUpload={this.beforeIdCardFrontUpload}
-              >
-                {
-                  accountDetail && accountDetail.id_card_front
-                    ? (
-                      <div
-                        className="upload-image-preview"
-                        style={{ backgroundImage: `url(${accountDetail.id_card_front})`, }}
-                      />
-                    )
-                    : <div className="upload-image-preview"><Icon type="plus" /></div>
-                }
-              </Upload>
-            )}
-          </FormItem>
-          <FormItem>
-            {getFieldDecorator('id_card_back', {
-              valuePropName: 'fileList',
-            })(
-              <Upload
-                accept="image/*"
-                listType="picture-card"
-                showUploadList={false}
-                beforeUpload={this.beforeIdCardBackUpload}
-              >
-                {
-                  accountDetail && accountDetail.id_card_back
-                    ? (
-                      <div
-                        className="upload-image-preview"
-                        style={{ backgroundImage: `url(${accountDetail.id_card_back})`, }}
-                      />
-                    )
-                    : <div className="upload-image-preview"><Icon type="plus" /></div>
-                }
-              </Upload>
-            )}
-          </FormItem>
+      <Card title="订单详情">
+        <div className="order-list">
+          {
+            orderDetail ? (
+              <>
+                <div>
+                  <div><span>产品类型</span> {orderDetail.symbol_type_name}</div>
+                  <div><span>产品名称</span> {orderDetail.symbol_name}</div>
+                  <div><span>产品杠杆</span> {orderDetail.leverage}</div>
+                  <div><span>止损</span> {orderDetail.stop_loss}</div>
+                  <div><span>税金</span> {orderDetail.taxes}</div>
+                  <div><span>平仓时间</span> {orderDetail.close_time}</div>
+                </div>
+                <div>
+                  <div><span>交易方向</span> {orderDetail.action}</div>
+                  <div><span>开仓价</span> {orderDetail.open_price}</div>
+                  <div><span>开仓时间</span> {orderDetail.create_time}</div>
+                  <div><span>手续费</span> {orderDetail.fee}</div>
+                  <div><span>当前价格</span> {orderDetail.new_price}</div>
+                  <div><span>平仓理由</span> {orderDetail.close_reason}</div>
+                </div>
+                <div>
+                  <div><span>交易手数</span> {orderDetail.lots}</div>
+                  <div><span>合约量</span> {orderDetail.trading_volume}</div>
+                  <div><span>止盈</span> {orderDetail.take_profit}</div>
+                  <div><span>库存费</span> {orderDetail.swaps}</div>
+                  <div><span>当前盈亏</span> {orderDetail.profit}</div>
+                </div>
+              </>
+            ) : null
+          }
         </div>
-        <div>
-          <FormItem className='editor-form-btns'>
-            <Button type='primary' onClick={this.handleSubmit}>
-              {this.state.mode === 'edit' ? '确认修改' : '保存'}
-            </Button>
-            <Button onClick={this.goBack}>取消</Button>
-          </FormItem>
-        </div>
-      </Form>
+      </Card>
     );
-  }
-
-  setCurrentAccount = (field: any) => {
-    this.setState({
-      accountDetail: { ...this.state.accountDetail, ...field, },
-    });
-  }
-
-  beforeIdCardFrontUpload = (file: RcFile) => {
-    this.uploadFile(file, 'id_card_front');
-    return false;
-  }
-
-  beforeIdCardBackUpload = (file: RcFile) => {
-    this.uploadFile(file, 'id_card_back');
-    return false;
-  }
-
-  uploadFile = async (file: RcFile, name: string) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    const res = await this.$api.common.uploadFile(formData);
-    this.setCurrentAccount({
-      [name]: res.data.file_path,
-    });
   }
 
   goBack = () => {
     this.props.history.goBack();
+    this.props.getDataList();
   }
 
-  handleSubmit = async (evt) => {
-    this.props.form.validateFields(async (err, values) => {
-      if (!err) {
-        const { accountDetail, } = this.state;
-
-        const { mode, } = this.state;
-        let payload: any = {};
-
-        Object.keys(values).forEach(item => {
-          if (values[item] !== undefined) {
-            payload[item] = accountDetail[item];
-          }
-        });
-
-        const errMsg = this.getValidation(payload);
-        if (errMsg) return this.$msg.warn(errMsg);
-
-        if (mode == 'add') {
-          this.$api.account.createAccount(payload)
-            .then(res => {
-              this.$msg.success('客户创建成功');
-              this.goBack();
-              this.props.getAccountList();
-            });
-        } else {
-          this.$api.account.updateAccount(accountDetail.id, payload)
-            .then(res => {
-              this.$msg.success('客户更新成功');
-              this.goBack();
-              this.props.getAccountList();
-            });
-        }
+  getFormulaColumns = () => {
+    const columns = [
+      {
+        title: '公式',
+        dataIndex: 'description',
+        render: (text, { amount, }) => {
+          return `${text}=${amount}`;
+        },
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'create_time',
+        render: (text) => moment(text * 1000).format('YYYY-MM-DD hh:mm:ss'),
       }
+    ];
+    return columns;
+  }
+
+  changeTransactionChoice = (e) => {
+    this.setState({
+      currentTransactionChoice: e.key,
     });
-  }
-
-  getValidation = (payload: any) => {
-    const validator = new Validator();
-
-    validator.add(payload.first_name, [
-      {
-        strategy: 'isNonEmpty',
-        errMsg: '请输入姓氏',
-      }
-    ]);
-
-    validator.add(payload.last_name, [
-      {
-        strategy: 'isNonEmpty',
-        errMsg: '请输入名字',
-      }
-    ]);
-
-    if (this.state.mode === 'add') {
-      validator.add(payload.password, [
-        {
-          strategy: 'isNonEmpty',
-          errMsg: '请输入密码',
-        }
-      ]);
-    }
-
-    let errMsg: any = validator.start();
-
-    return errMsg;
+    this.getOrderFormula(e.key);
   }
 
   render() {
+    const { currentTransactionChoice, transactionChoices, formula, } = this.state;
     return (
       <div className='editor food-card-editor'>
         <section className='editor-content panel-block'>
-          {this.renderEditor()}
+          <Button onClick={this.goBack} style={{ marginBottom: '10px', }}>返回</Button>
+          {this.renderOrderDetail()}
+          <Menu
+            selectedKeys={[currentTransactionChoice]}
+            style={{ marginTop: '20px', }}
+            mode="horizontal"
+            onClick={this.changeTransactionChoice}
+          >
+            {
+              transactionChoices.map(choice => {
+                return <Menu.Item key={choice.field}>{choice.translation}</Menu.Item>;
+              })
+            }
+          </Menu>
+          <Table
+            rowKey="id"
+            columns={this.getFormulaColumns()}
+            dataSource={formula}
+            pagination={false}
+          />
         </section>
       </div>
     );

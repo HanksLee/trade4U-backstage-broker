@@ -61,7 +61,7 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
     this.props.openOrder.setFilter({
       page_size,
       page: current_page,
-      name: payload.name,
+      ...payload,
     });
     this.setState({
       orderList: results,
@@ -137,7 +137,7 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
         <Route path={`${match.url}/detail`} render={props => (
-          <OpenOrderDetail {...props} getAccountList={this.getDataList} />
+          <OpenOrderDetail {...props} getDataList={this.getDataList} />
         )} />
       </div>
     );

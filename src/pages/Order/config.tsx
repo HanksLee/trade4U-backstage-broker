@@ -1,8 +1,6 @@
 import * as React from "react";
 import utils from "utils";
 import moment from "moment";
-import { FORMAT_TIME } from "constant";
-import { Row, Col } from "antd";
 
 const config = self => {
   const getOrder = () => {
@@ -14,7 +12,7 @@ const config = self => {
       title: '产品名称',
       dataIndex: 'symbol_name',
       render: (text, record) => {
-        return <a onClick={() => self.goToOrderDetail(record)}>{text}</a>;
+        return <a className="link" onClick={() => self.goToOrderDetail(record)}>{text}</a>;
       },
     },
     {

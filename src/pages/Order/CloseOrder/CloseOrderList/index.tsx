@@ -55,13 +55,12 @@ export default class CloseOrderList extends BaseReact<CloseOrderListProps, Close
     this.setState({
       tableLoading: true,
     });
-    
     const res = await this.$api.order.getCloseOrderList({ params: payload, });
     const { results, page_size, current_page, count, } = res.data;
     this.props.closeOrder.setFilter({
       page_size,
       page: current_page,
-      name: payload.name,
+      ...payload,
     });
     this.setState({
       orderList: results,
@@ -134,7 +133,7 @@ export default class CloseOrderList extends BaseReact<CloseOrderListProps, Close
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
         <Route path={`${match.url}/detail`} render={props => (
-          <OpenOrderDetail {...props} getAccountList={this.getDataList} />
+          <OpenOrderDetail {...props} getDataList={this.getDataList} />
         )} />
       </div>
     );
