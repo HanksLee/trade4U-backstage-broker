@@ -14,7 +14,7 @@ const config = self => {
       title: '产品名称',
       dataIndex: 'symbol_name',
       render: (text, record) => {
-        return <a onClick={() => self.goToOrderDetail(record)}>{text}</a>
+        return <a onClick={() => self.goToOrderDetail(record)}>{text}</a>;
       },
     },
     {
