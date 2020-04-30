@@ -9,6 +9,8 @@ import verify from "./verify";
 import system from "./system";
 import message from "./message";
 import transaction from "./transaction";
+import closeOrder from "./order/closeOrder";
+import openOrder from "./order/openOrder";
 
 export default {
   account,
@@ -22,4 +24,6 @@ export default {
   system,
   message,
   transaction,
+  closeOrder,
+  openOrder,
 };

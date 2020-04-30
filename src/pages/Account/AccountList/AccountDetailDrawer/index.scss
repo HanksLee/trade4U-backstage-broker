@@ -1,18 +1,26 @@
-.account-detail-tabs {
-  border: 1px solid rgba(0, 0, 0, .1);
-  box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.08);
-  padding: 5px;
+.meta-fund {
+  display: flex;
+  justify-content: space-between;
 
-  .ant-tabs-tabpane {
-    padding: 0 10px;
-    height: 230px;
-    overflow: auto;;
+  > div:not(:first-child) {
+    padding-left: 20px;
+    border-left: 1px solid rgba(0, 0, 0, .1);
   }
 
-  .list-loading-container {
-    position: absolute;
-    bottom: 40px;
-    width: 100%;
-    text-align: center;
+  > div div span:first-child {
+    width: 80px;
+    display: inline-block;
+  }
+}
+
+.account-detail-list {
+  p {
+    height: 30px;
+    line-height: 30px;
+  }
+
+  span {
+    display: inline-block;
+    width: 100px;
   }
 }
