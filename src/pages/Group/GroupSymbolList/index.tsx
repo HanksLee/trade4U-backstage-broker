@@ -98,14 +98,14 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
         },
       },
       {
-        key: "max_trading_volume",
-        title: "最大交易量",
-        dataIndex: "max_trading_volume",
+        key: "max_lots",
+        title: "最大手数",
+        dataIndex: "max_lots",
       },
       {
-        key: "min_trading_volume",
-        title: "最小交易量",
-        dataIndex: "min_trading_volume",
+        key: "min_lots",
+        title: "最小手数",
+        dataIndex: "min_lots",
       },
       {
         key: "taxes",
