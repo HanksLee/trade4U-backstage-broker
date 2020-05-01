@@ -80,37 +80,6 @@ const config = self => {
       },
     },
     {
-      title: "结算状态",
-      // width: 100,
-      dataIndex: "in_or_out",
-      ellipsis: true,
-
-      render: (text, record) => {
-        const statusType = {
-          1: 'normal',
-          0: 'hot',
-        };
-        const statusText = {
-          1: '加钱',
-          0: '扣钱',
-        };
-
-        const styleMap = {
-          1: {
-            color: '#1890ff',
-          },
-          0: 'red',
-        };
-
-
-        return <StatusText type={
-          statusType[record.in_or_out]
-        } text={
-          <span>{statusText[record.in_or_out]}</span>
-        } />;
-      },
-    },
-    {
       title: "创建时间",
       // width: 140,
       dataIndex: "create_time",
