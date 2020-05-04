@@ -19,7 +19,7 @@ class Editor extends React.Component<IEditProps> {
     const elemMenu = this.refs.editorElemMenu;
     const elemBody = this.refs.editorElemBody;
     const editor = new E(elemMenu, elemBody);
-    const { setEditorContent } = this.props;
+    const { setEditorContent, } = this.props;
     // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
     editor.customConfig.onchange = html => {
       // console.log(editor.txt.html());
@@ -61,7 +61,7 @@ class Editor extends React.Component<IEditProps> {
       <div className="text-area">
         <div
           ref="editorElemMenu"
-          style={{ backgroundColor: "#f1f1f1", border: "1px solid #ccc" }}
+          style={{ backgroundColor: "#f1f1f1", border: "1px solid #ccc", }}
           className="editorElem-menu"
         ></div>
         <div
@@ -70,7 +70,7 @@ class Editor extends React.Component<IEditProps> {
             overflowY: "scroll",
             height: 150,
             border: "1px solid #ccc",
-            borderTop: "none"
+            borderTop: "none",
           }}
           ref="editorElemBody"
           className="editorElem-body"

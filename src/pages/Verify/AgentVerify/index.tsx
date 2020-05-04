@@ -40,13 +40,13 @@ interface VerifyAgentVerifyListState extends IVerifyAgentVerifyState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/verify/agentverify", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/agentverify"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/agentverify"],
 })
 @inject("common", "verify")
 @observer
 export default class VerifyList extends BaseReact<
-  {},
-  VerifyAgentVerifyListState
+{},
+VerifyAgentVerifyListState
 > {
   state = {
     agentVerifyList: [],
@@ -55,16 +55,16 @@ export default class VerifyList extends BaseReact<
     total: 0,
     tempFilter: {},
     currentAgentVerify: null,
-    isShowEditAgentVerifyModal: false
+    isShowEditAgentVerifyModal: false,
   };
 
   async componentDidMount() {
-    const { filter } = this.props.verify;
-    const { paginationConfig } = this.props.common;
+    const { filter, } = this.props.verify;
+    const { paginationConfig, } = this.props.common;
 
     this.getDataList({
       page_size: filter.page_size || paginationConfig.defaultPageSize,
-      page: filter.page || 1
+      page: filter.page || 1,
     });
   }
 
@@ -76,28 +76,28 @@ export default class VerifyList extends BaseReact<
 
   getDataList = async (filter?: any) => {
     const payload = filter
-      ? { ...this.props.verify.filter, ...filter }
+      ? { ...this.props.verify.filter, ...filter, }
       : this.props.verify.filter;
     this.setState({
-      tableLoading: true
+      tableLoading: true,
     });
 
-    const res = await this.$api.verify.getAgentVerifyList({ params: payload });
-    const { results, page_size, current_page, count } = res.data;
+    const res = await this.$api.verify.getAgentVerifyList({ params: payload, });
+    const { results, page_size, current_page, count, } = res.data;
 
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
-      this.getDataList({ ...payload, page: current_page - 1 });
+      this.getDataList({ ...payload, page: current_page - 1, });
     } else {
       this.props.verify.setFilter({
         page_size,
         page: current_page,
-        name: payload.name
+        name: payload.name,
       });
       this.setState({
         agentVerifyList: results,
         tableLoading: false,
-        total: count
+        total: count,
       });
     }
   };
@@ -114,19 +114,19 @@ export default class VerifyList extends BaseReact<
   showEditAgentVerifyModal = (agentVerify?: VerifyAgentVerifyType) => {
     if (agentVerify) {
       this.setState({
-        currentAgentVerify: agentVerify
+        currentAgentVerify: agentVerify,
       });
     }
 
     this.setState({
-      isShowEditAgentVerifyModal: true
+      isShowEditAgentVerifyModal: true,
     });
   };
 
   hideEditAgentVerifyModal = () => {
     this.setState({
       isShowEditAgentVerifyModal: false,
-      currentAgentVerify: null
+      currentAgentVerify: null,
     });
   };
 
@@ -136,8 +136,8 @@ export default class VerifyList extends BaseReact<
   };
 
   render() {
-    const { match } = this.props;
-    const { currentAgentVerify, isShowEditAgentVerifyModal } = this.state;
+    const { match, } = this.props;
+    const { currentAgentVerify, isShowEditAgentVerifyModal, } = this.state;
     return (
       <>
         <div>
