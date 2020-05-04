@@ -33,6 +33,9 @@ const getAccountLoginLog = (id: string, config): Promise<any> =>
 const getTransactionList = (config): Promise<any> =>
   API.get(`/broker/transaction`, config);
 
+const getAccountMetaFund = (id: string): Promise<any> =>
+  API.get(`/broker/account/${id}/meta-fund`);
+
 export default {
   getAccountList,
   createAccount,
@@ -45,4 +48,5 @@ export default {
   batchTransferAccountToGroup,
   getAccountLoginLog,
   getTransactionList,
+  getAccountMetaFund,
 };

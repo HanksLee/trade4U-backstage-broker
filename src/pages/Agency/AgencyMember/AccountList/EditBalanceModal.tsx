@@ -103,7 +103,6 @@ export default class EditBalanceModal extends BaseReact<IEditBalanceModalProps, 
           </FormItem>
           <FormItem label='金额' {...getFormItemLayout(5, 13)} required>
             {getFieldDecorator('balance', {
-              initialValue: balance,
               rules: [
                 { required: true, message: '请填写金额', }
               ],

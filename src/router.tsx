@@ -148,6 +148,20 @@ const routes: any[] = [
         /* webpackChunkName: "group-page" */ './pages/Group/GroupList'
       )
     ),
+  },
+  {
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "open-order-page" */ "./pages/Order/OpenOrder/OpenOrderList"
+      )
+    ),
+  },
+  {
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "close-order-page" */ "./pages/Order/CloseOrder/CloseOrderList"
+      )
+    ),
   }
 ];
 

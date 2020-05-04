@@ -76,6 +76,11 @@ const config = self => {
       },
     },
     {
+      width: 100,
+      title: '点差模式',
+      dataIndex: 'spread_mode_display',
+    },
+    {
       title: "启用",
       width: 200,
       dataIndex: "status",
