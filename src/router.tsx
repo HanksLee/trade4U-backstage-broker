@@ -162,6 +162,20 @@ const routes: any[] = [
         /* webpackChunkName: "close-order-page" */ "./pages/Order/CloseOrder/CloseOrderList"
       )
     ),
+  },
+  {
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "account-report-page" */ "./pages/Report/AccountReport"
+      )
+    ),
+  },
+  {
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "agency-report-page" */ "./pages/Report/AgencyReport"
+      )
+    ),
   }
 ];
 
