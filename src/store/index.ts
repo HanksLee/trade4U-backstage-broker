@@ -11,8 +11,8 @@ import message from "./message";
 import transaction from "./transaction";
 import closeOrder from "./order/closeOrder";
 import openOrder from "./order/openOrder";
-import accountReport from "./report/AccountReport";
-import agencyReport from "./report/AgencyReport";
+import accountReport from "./report/accountReport";
+import agencyReport from "./report/agencyReport";
 
 export default {
   account,
