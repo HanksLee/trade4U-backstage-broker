@@ -6,9 +6,6 @@ const config = self => {
     {
       title: "用户名",
       dataIndex: "username",
-      width: 150,
-      fixed: 'left',
-      ellipsis: true,
       render: (text) => {
         return <a className="link" onClick={() => self.pushAgencyStack(text)}>{text}</a>;
       },
@@ -16,67 +13,58 @@ const config = self => {
     {
       title: "手机号",
       dataIndex: 'phone',
-      width: 150,
     },
     {
       title: '下级代理数量',
       dataIndex: 'account_count',
-      width: 150,
     },
     {
       title: '上级代理数量',
       dataIndex: 'agent_count',
-      width: 150,
     },
     {
       title: '入金',
       dataIndex: 'deposit',
-      width: 150,
     },
     {
       title: '出金',
       dataIndex: 'net_withdraw',
-      width: 150,
     },
     {
       title: '净入金',
       dataIndex: 'net_deposit',
-      width: 150,
     },
     {
       title: '盈利笔数',
       dataIndex: 'profitable_order',
-      width: 150,
     },
     {
       title: '亏损笔数',
       dataIndex: 'loss_order',
-      width: 150,
     },
     {
       title: "手续费",
       dataIndex: "fee",
-      width: 150,
     },
     {
       title: '库存费',
       dataIndex: 'swaps',
-      width: 150,
+    },
+    {
+      title: '盈亏',
+      dataIndex: 'profit',
     },
     {
       title: '已返佣金',
       dataIndex: 'commission',
-      width: 150,
     },
     {
       title: '总佣金',
       dataIndex: 'total_commission',
-      width: 150,
     },
     {
       title: '已提款佣金',
       dataIndex: 'net_withdraw_commission',
-      width: 150,
     }
   ];
 
@@ -136,7 +124,6 @@ const config = self => {
       columns,
       dataSource: self.state.dataList,
       pagination,
-      scroll: { x: columns.length * 150, },
       onChange(pagination, filters) {
         const payload: any = {};
 
