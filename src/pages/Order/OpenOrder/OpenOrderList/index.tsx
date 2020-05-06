@@ -16,6 +16,7 @@ export interface OpenOrderListProps {}
 export interface OpenOrderListState {
   status: string;
   orderList: any[];
+  totalData: any;
   tableLoading: boolean;
   tempFilter: any;
   total: number;
@@ -29,6 +30,7 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
   state = {
     status: 'open',
     orderList: [],
+    totalData: {},
     tableLoading: false,
     tempFilter: {},
     total: 0,
@@ -57,7 +59,7 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
     });
     
     const res = await this.$api.order.getOpenOrderList({ params: payload, });
-    const { results, page_size, current_page, count, } = res.data;
+    const { results, total_data, page_size, current_page, count, } = res.data;
     this.props.openOrder.setFilter({
       page_size,
       page: current_page,
@@ -65,6 +67,7 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
     });
     this.setState({
       orderList: results,
+      totalData: total_data,
       tableLoading: false,
       total: count,
     });
