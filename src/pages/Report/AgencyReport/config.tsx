@@ -15,11 +15,11 @@ const config = self => {
       dataIndex: 'phone',
     },
     {
-      title: '下级代理数量',
+      title: '下级客户数',
       dataIndex: 'account_count',
     },
     {
-      title: '上级代理数量',
+      title: '下级代理数',
       dataIndex: 'agent_count',
     },
     {
