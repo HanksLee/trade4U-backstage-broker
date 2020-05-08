@@ -53,7 +53,7 @@ const config = self => {
       render: (text, record) => {
         return text == 0
           ? 0
-          : (record.in_or_out === -1
+          : (record.in_or_out === 0
             ? <span style={{ color: 'red', }}>{`-${text}`}</span>
             : <span style={{ color: 'green', }}>{`+${text}`}</span>);
       },

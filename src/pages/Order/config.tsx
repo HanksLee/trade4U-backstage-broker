@@ -1,6 +1,7 @@
 import * as React from "react";
 import utils from "utils";
 import moment from "moment";
+import { Row, Col } from 'antd';
 
 const config = self => {
   const getOrder = () => {
@@ -9,15 +10,27 @@ const config = self => {
 
   const columns: any = [
     {
-      title: '产品名称',
-      dataIndex: 'symbol_name',
+      title: '订单号',
+      dataIndex: 'order_number',
       render: (text, record) => {
         return <a className="link" onClick={() => self.goToOrderDetail(record)}>{text}</a>;
       },
     },
     {
+      title: '用户名',
+      dataIndex: 'username',
+    },
+    {
+      title: '手机号',
+      dataIndex: 'phone',
+    },
+    {
+      title: '产品名称',
+      dataIndex: 'symbol_name',
+    },
+    {
       title: '产品代码',
-      dataIndex: 'symbol',
+      dataIndex: 'product_code',
     },
     {
       title: '开仓价',
@@ -32,10 +45,6 @@ const config = self => {
       dataIndex: 'lots',
     },
     {
-      title: '订单号',
-      dataIndex: 'order_number',
-    },
-    {
       title: '库存费',
       dataIndex: 'swaps',
     },
@@ -45,7 +54,7 @@ const config = self => {
     },
     {
       title: '手续费',
-      dataIndex: 'swaps',
+      dataIndex: 'fee',
     },
     {
       title: '盈亏',
@@ -217,6 +226,34 @@ const config = self => {
     },
     table: {
       rowKey: "id",
+      title: () => {
+        const totalData = self.state.totalData;
+
+        return (
+          <Row style={{ marginBottom: 10, fontSize: 14, }}>
+            <Col span={4}>
+              <span style={{ fontWeight: 500, }}>盈亏：</span>
+              <span style={{ color: "red", }}>{totalData.profit}</span>
+            </Col>
+            <Col span={4}>
+              <span style={{ fontWeight: 500, }}>交易手数：</span>
+              <span style={{ color: "red", }}>{totalData.lots}</span>
+            </Col>
+            <Col span={4}>
+              <span style={{ fontWeight: 500, }}>手续费：</span>
+              <span style={{ color: "red", }}>{totalData.fee}</span>
+            </Col>
+            <Col span={4}>
+              <span style={{ fontWeight: 500, }}>库存费：</span>
+              <span style={{ color: "red", }}>{totalData.swaps}</span>
+            </Col>
+            <Col span={4}>
+              <span style={{ fontWeight: 500, }}>税费：</span>
+              <span style={{ color: "red", }}>{totalData.taxes}</span>
+            </Col>
+          </Row>
+        );
+      },
       scroll: { x: columnsWidth, },
       bordered: true,
       columns,

@@ -16,6 +16,7 @@ export interface CloseOrderListProps {}
 export interface CloseOrderListProps {
   status: string;
   orderList: any[];
+  totalData: any;
   tableLoading: boolean;
   tempFilter: any;
   total: number;
@@ -29,6 +30,7 @@ export default class CloseOrderList extends BaseReact<CloseOrderListProps, Close
   state = {
     status: 'close',
     orderList: [],
+    totalData: {},
     tableLoading: false,
     tempFilter: {},
     total: 0,
@@ -56,7 +58,7 @@ export default class CloseOrderList extends BaseReact<CloseOrderListProps, Close
       tableLoading: true,
     });
     const res = await this.$api.order.getCloseOrderList({ params: payload, });
-    const { results, page_size, current_page, count, } = res.data;
+    const { results, total_data, page_size, current_page, count, } = res.data;
     this.props.closeOrder.setFilter({
       page_size,
       page: current_page,
@@ -64,6 +66,7 @@ export default class CloseOrderList extends BaseReact<CloseOrderListProps, Close
     });
     this.setState({
       orderList: results,
+      totalData: total_data,
       tableLoading: false,
       total: count,
     });

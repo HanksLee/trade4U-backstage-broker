@@ -82,7 +82,7 @@ export default class OpenOrderDetail extends BaseReact<{}> {
                 <div>
                   <div><span>交易方向</span> {orderDetail.action}</div>
                   <div><span>开仓价</span> {orderDetail.open_price}</div>
-                  <div><span>开仓时间</span> {orderDetail.create_time}</div>
+                  <div><span>开仓时间</span> {moment(orderDetail.create_time * 1000).format('YYYY-MM-DD hh:mm:ss')}</div>
                   <div><span>手续费</span> {orderDetail.fee}</div>
                   <div><span>当前价格</span> {orderDetail.new_price}</div>
                 </div>

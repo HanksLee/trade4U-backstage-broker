@@ -9,7 +9,8 @@ import agency from "./agency";
 import verify from "./verify";
 import system from "./system";
 import message from "./message";
-import order from './order';
+import order from "./order";
+import report from "./report";
 
 export default {
   account,
@@ -24,4 +25,5 @@ export default {
   system,
   message,
   order,
+  report,
 };

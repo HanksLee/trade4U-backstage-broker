@@ -118,6 +118,9 @@ export const PAGE_PERMISSION_MAP = {
   "/dashboard/message": "VIEW_MESSAGE_PAGE",
   "/dashboard/message/type": "VIEW_MESSAGE_TYPE_PAGE",
   "/dashboard/message/content": "VIEW_MESSAGE_CONTENT_PAGE",
+  "/dashboard/report": "VIEW_REPORT_PAGE",
+  "/dashboard/report/account": "view_account_report",
+  "/dashboard/report/agency": "view_agent_report",
 };
 
 export const PAGE_ROUTES = [
