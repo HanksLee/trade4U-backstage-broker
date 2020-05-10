@@ -1,9 +1,10 @@
 
 import * as React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import moment from 'moment';
 import { Account } from '../index';
 import { BaseReact } from 'components/BaseReact';
-import { Card, Descriptions, Drawer, List, Spin, Row, Col } from 'antd';
+import { Card, Drawer, List, Spin, Row, Col } from 'antd';
 import './index.scss';
 
 interface IAccountDetailDrawerProps {
@@ -113,7 +114,10 @@ export default class AccountDetailModal extends BaseReact<IAccountDetailDrawerPr
               </div>
               <div>
                 <div><span>净值:</span><span>{metaFund.equity}</span></div>
-                <div><span>预付款比例:</span><span>{metaFund.margin_level}</span></div>
+                <div>
+                  <span>预付款比例:</span>
+                  <span>{metaFund.margin_level === 0 ? '-' : metaFund.margin_level + '%'}</span>
+                </div>
               </div>
             </div>
           )
@@ -151,7 +155,7 @@ export default class AccountDetailModal extends BaseReact<IAccountDetailDrawerPr
                     <List.Item key={item.id}>
                       <div>{item.platform}</div>
                       <div>{item.ip}</div>
-                      <div>{item.create_time}</div>
+                      <div>{moment(item.create_time * 1000).format('YYYY-MM-DD hh:mm:ss')}</div>
                     </List.Item>
                   )}
                 >

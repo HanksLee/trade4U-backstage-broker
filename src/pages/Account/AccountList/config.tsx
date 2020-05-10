@@ -76,7 +76,7 @@ const config = self => {
       dataIndex: "disable_status",
       render: (text, record) => {
         const handleChange = e => {
-          const title = `确认对「${record.first_name + record.last_name}」${
+          const title = `确认对「${record.last_name + record.first_name}」${
             e.target.checked ? "开启" : "关闭"
           }禁用？`;
           self.updateAccountDetailField(
