@@ -5,7 +5,7 @@ import moment from "moment";
 import { FORMAT_TIME } from "constant";
 
 const config = self => {
-  const { messageTypeList, brokerId } = self.state;
+  const { messageTypeList, brokerId, } = self.state;
   let columnsNum = 1;
   const columns = [
     {
@@ -13,7 +13,7 @@ const config = self => {
       dataIndex: "id",
       render: (text, record) => {
         return columnsNum++;
-      }
+      },
     },
     {
       title: "内容分类",
@@ -22,14 +22,14 @@ const config = self => {
         for (let item of messageTypeList) {
           if (item.id == text) return item.title;
         }
-      }
+      },
     },
     {
       title: "标题",
       dataIndex: "title",
       render: (text, record) => {
         return text;
-      }
+      },
     },
     // {
     //   title: "內容描述",
@@ -48,7 +48,7 @@ const config = self => {
             moment(record.create_time * 1000).format(FORMAT_TIME)) ||
           "--"
         );
-      }
+      },
     },
     {
       title: "是否显示",
@@ -57,7 +57,7 @@ const config = self => {
         const handleChange = async e => {
           const res = await self.$api.message.updateMessageContent(record.id, {
             brokerId,
-            is_display: text == 0 ? 1 : 0
+            is_display: text == 0 ? 1 : 0,
           });
           if (res.status === 200) {
             self.getDataList(self.props.message.filterContent);
@@ -66,7 +66,7 @@ const config = self => {
           }
         };
         return <Checkbox checked={text} onChange={handleChange} />;
-      }
+      },
     },
     {
       title: "操作",
@@ -92,7 +92,7 @@ const config = self => {
             </Popconfirm>
           </div>
         );
-      }
+      },
     }
   ];
   const pagination = {
@@ -104,9 +104,9 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
-        page: current
+        page: current,
       });
-    }
+    },
   };
 
   return {
@@ -119,7 +119,7 @@ const config = self => {
         >
           <Icon type="plus" /> 添加
         </Button>
-      )
+      ),
     },
     searcher: {
       // hideSearcher: true,
@@ -129,12 +129,12 @@ const config = self => {
         options: [
           {
             title: "删除",
-            value: "delete"
+            value: "delete",
           }
         ],
         onBatch: value => {
           self.onBatch && self.onBatch(value);
-        }
+        },
       },
 
       widgets: [
@@ -150,7 +150,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           }
           // {
           //   type: "Input",
@@ -172,7 +172,7 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      }
+      },
     },
     table: {
       rowKey: "id",
@@ -190,10 +190,10 @@ const config = self => {
 
         self.getDataList({
           page_size: pagination.pageSize,
-          page: pagination.current
+          page: pagination.current,
         });
-      }
-    }
+      },
+    },
   };
 };
 
