@@ -57,6 +57,8 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
           </FormItem>
           <FormItem
             label='划款状态'
+            className="push-type-select"
+
             {...getFormItemLayout(6, 6)}
           >
             <Select
@@ -101,7 +103,7 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
                     remit_number: evt.target.value,
                   }, false);
                 }}
-                disabled={currentShowWithdraw.remit_status == 1}
+                // disabled={currentShowWithdraw.remit_status == 1}
                 />)}
               </FormItem>
               <FormItem label='实付金额' {...getFormItemLayout(6, 16)} required>
@@ -114,7 +116,7 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
                     actual_amount: +evt.target.value,
                   }, false);
                 }}
-                disabled={currentShowWithdraw.remit_status == 1}
+                // disabled={currentShowWithdraw.remit_status == 1}
                 />)}
               </FormItem>
             </>
@@ -126,7 +128,7 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
               rules: [
               ],
             })(<TextArea
-              disabled={currentShowWithdraw.remit_status == 1}
+              // disabled={currentShowWithdraw.remit_status == 1}
               style={{ width: 400, }}
               placeholder='请输入备注'
               rows={6} onChange={evt => {
