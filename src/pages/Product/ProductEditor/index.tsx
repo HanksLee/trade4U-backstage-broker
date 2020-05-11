@@ -499,19 +499,19 @@ IProductEditorState
           )}
         </FormItem>
 
-        <FormItem label="最大交易量" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("max_trading_volume", {
+        <FormItem label="最大交易手数" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("max_lots", {
             initialValue:
-              currentShowProduct && currentShowProduct.max_trading_volume,
+              currentShowProduct && currentShowProduct.max_lots,
           })(
             <InputNumber
               min={0}
               type="number"
-              placeholder="请输入最大交易量"
+              placeholder="请输入最大交易手数"
               onChange={value => {
                 setCurrentProduct(
                   {
-                    max_trading_volume: value,
+                    max_lots: value,
                   },
                   false
                 );
@@ -520,19 +520,19 @@ IProductEditorState
             />
           )}
         </FormItem>
-        <FormItem label="最小交易量" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("min_trading_volume", {
+        <FormItem label="最小交易手数" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("min_lots", {
             initialValue:
-              currentShowProduct && currentShowProduct.min_trading_volume,
+              currentShowProduct && currentShowProduct.min_lots,
           })(
             <InputNumber
               min={0}
               type="number"
-              placeholder="请输入最小交易量"
+              placeholder="请输入最小交易手数"
               onChange={value => {
                 setCurrentProduct(
                   {
-                    min_trading_volume: value,
+                    min_lots: value,
                   },
                   false
                 );
@@ -1207,8 +1207,8 @@ IProductEditorState
           limit_stop_level: currentProduct.limit_stop_level,
           margin_currency: currentProduct.margin_currency,
           profit_currency: currentProduct.profit_currency,
-          max_trading_volume: currentProduct.max_trading_volume,
-          min_trading_volume: currentProduct.min_trading_volume,
+          max_lots: currentProduct.max_lots,
+          min_lots: currentProduct.min_lots,
           volume_step: currentProduct.volume_step,
           min_unit_of_price_change: currentProduct.min_unit_of_price_change,
           transaction_mode: currentProduct.transaction_mode,
