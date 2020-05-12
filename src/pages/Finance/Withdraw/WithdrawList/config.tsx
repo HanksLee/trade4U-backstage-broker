@@ -220,6 +220,7 @@ const config = self => {
             <span
               onClick={() => {
                 self.props.finance.getCurrentWithdraw(record.id);
+                self.props.finance.setInitWithdrawStatus(record.remit_status);
                 self.toggleWithdrawModal();
               }}
             >

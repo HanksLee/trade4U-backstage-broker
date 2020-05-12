@@ -42,7 +42,7 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
 
   render() {
     const { scopeOptions, } = this.state;
-    const { currentWithdraw, currentShowWithdraw, setCurrentWithdraw, } = this.props.finance;
+    const { currentWithdraw, currentShowWithdraw, setCurrentWithdraw, initRemitStatus} = this.props.finance;
     const { getFieldDecorator, } = this.props.form;
 
     return (
@@ -58,11 +58,11 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
           <FormItem
             label='划款状态'
             className="push-type-select"
-
             {...getFormItemLayout(6, 6)}
           >
             <Select
               style={{ width: 300, }}
+              disabled={initRemitStatus != 0}
               // @ts-ignore
               getPopupContainer={() => document.getElementsByClassName('push-type-select')[0]}
               placeholder='请选择划款状态'
@@ -98,7 +98,9 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
                   initialValue: currentWithdraw.remit_number,
                   rules: [
                   ],
-                })(<Input placeholder='请输入划款单号' onChange={evt => {
+                })(<Input
+                  disabled={initRemitStatus != 0}
+                  placeholder='请输入划款单号' onChange={evt => {
                   setCurrentWithdraw({
                     remit_number: evt.target.value,
                   }, false);
@@ -111,7 +113,9 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
                   initialValue: currentWithdraw.actual_amount,
                   rules: [
                   ],
-                })(<Input type='number' placeholder='请输入实付金额' onChange={evt => {
+                })(<Input
+                  disabled={initRemitStatus != 0}
+                  type='number' placeholder='请输入实付金额' onChange={evt => {
                   setCurrentWithdraw({
                     actual_amount: +evt.target.value,
                   }, false);
@@ -129,6 +133,7 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
               ],
             })(<TextArea
               // disabled={currentShowWithdraw.remit_status == 1}
+              disabled={initRemitStatus != 0}
               style={{ width: 400, }}
               placeholder='请输入备注'
               rows={6} onChange={evt => {

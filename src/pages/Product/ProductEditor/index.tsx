@@ -149,7 +149,7 @@ IProductEditorState
   };
 
   getMarketOptions = async () => {
-    const res = await this.$api.market.getProductList({
+    const res = await this.$api.product.getProductList({
       offset: 0,
       limit: 200,
     });
@@ -229,8 +229,9 @@ IProductEditorState
       profit_rule_options,
       tax_rule_options,
       fee_rule_options,
+      delay_rule_options,
     } = this.state;
-    // console.log(currentShowProduct);
+    console.log('delay_rule_options', delay_rule_options);
 
     return (
       <Form className="editor-form">
@@ -311,7 +312,6 @@ IProductEditorState
               style={{ display: "inline-block", width: 200, }}
             />
           )}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
         </FormItem>
         <FormItem label="描述" {...getFormItemLayout(3, 8)}>
           {getFieldDecorator("description", {
@@ -657,9 +657,9 @@ IProductEditorState
           )}
         </FormItem>
 
-        <FormItem label="交易量步长" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("volume_step", {
-            initialValue: currentShowProduct && currentShowProduct.volume_step,
+        <FormItem label="交易数步长" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("lots_step", {
+            initialValue: currentShowProduct && currentShowProduct.lots_step,
           })(
             <InputNumber
               min={0}
@@ -668,7 +668,7 @@ IProductEditorState
               onChange={value => {
                 setCurrentProduct(
                   {
-                    volume_step: value,
+                    lots_step: value,
                   },
                   false
                 );
@@ -869,38 +869,38 @@ IProductEditorState
             />
           )}
         </FormItem>
-        <FormItem
-          label="库存费计算"
-          className="push-type-select"
+            <FormItem
+            label="库存费计算"
+            className="push-type-select"
           {...getFormItemLayout(3, 6)}
-        >
+            >
           {getFieldDecorator("calculate_for_fee", {
             initialValue:
-              currentShowProduct && currentShowProduct.calculate_for_fee,
+            currentShowProduct && currentShowProduct.calculate_for_fee,
           })(
             <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择税金计算"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    calculate_for_fee: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
+            // @ts-ignore
+            getPopupContainer={() =>
+            document.getElementsByClassName("push-type-select")[0]
+          }
+            placeholder="请选择税金计算"
+            onChange={(value, elem: any) => {
+            setCurrentProduct(
+          {
+            calculate_for_fee: value,
+          },
+            false
+            );
+          }}
+            onFocus={async () => {}}
             >
-              {tax_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
+            {delay_rule_options.map(item => (
+              // @ts-ignore
+              <Option key={item.func_name}>{item.name}</Option>
+            ))}
             </Select>
-          )}
-        </FormItem>
+            )}
+            </FormItem>
 
         <FormItem
           label="三日库存费"
@@ -1209,7 +1209,7 @@ IProductEditorState
           profit_currency: currentProduct.profit_currency,
           max_lots: currentProduct.max_lots,
           min_lots: currentProduct.min_lots,
-          volume_step: currentProduct.volume_step,
+          lots_step: currentProduct.lots_step,
           min_unit_of_price_change: currentProduct.min_unit_of_price_change,
           transaction_mode: currentProduct.transaction_mode,
           purchase_fee: currentProduct.purchase_fee,

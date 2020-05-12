@@ -126,7 +126,7 @@ IRebateSettingsEditorState
         <Row>
           <Col span={4}></Col>
           <Col span={4}>固定金额</Col>
-          <Col span={4}>点值</Col>
+          <Col span={4}>点值(%)</Col>
         </Row>
         {commission_rule.map((item, index) => {
           return (
