@@ -42,7 +42,7 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
 
   render() {
     const { scopeOptions, } = this.state;
-    const { currentWithdraw, currentShowWithdraw, setCurrentWithdraw, initRemitStatus} = this.props.finance;
+    const { currentWithdraw, currentShowWithdraw, setCurrentWithdraw, initRemitStatus, } = this.props.finance;
     const { getFieldDecorator, } = this.props.form;
 
     return (
@@ -101,10 +101,10 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
                 })(<Input
                   disabled={initRemitStatus != 0}
                   placeholder='请输入划款单号' onChange={evt => {
-                  setCurrentWithdraw({
-                    remit_number: evt.target.value,
-                  }, false);
-                }}
+                    setCurrentWithdraw({
+                      remit_number: evt.target.value,
+                    }, false);
+                  }}
                 // disabled={currentShowWithdraw.remit_status == 1}
                 />)}
               </FormItem>
@@ -116,10 +116,10 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
                 })(<Input
                   disabled={initRemitStatus != 0}
                   type='number' placeholder='请输入实付金额' onChange={evt => {
-                  setCurrentWithdraw({
-                    actual_amount: +evt.target.value,
-                  }, false);
-                }}
+                    setCurrentWithdraw({
+                      actual_amount: +evt.target.value,
+                    }, false);
+                  }}
                 // disabled={currentShowWithdraw.remit_status == 1}
                 />)}
               </FormItem>

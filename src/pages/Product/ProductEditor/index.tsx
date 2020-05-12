@@ -57,7 +57,6 @@ IProductEditorState
     deposit_rule_options: [],
     profit_bounght_rule_options: [],
     profit_sale_rule_options: [],
-    fee_rule_options: [],
     margin_rule_options: [], // 保证金
     profit_rule_options: [], // 盈亏计算
     pre_pay_rule_options: [], // 预付款
@@ -122,7 +121,7 @@ IProductEditorState
       "pre_pay_rule",
       "delay_rule",
       "tax_rule",
-      'free_rule'
+      "fee_rule"
     ];
 
     scopes.forEach(scope => {
@@ -231,7 +230,7 @@ IProductEditorState
       fee_rule_options,
       delay_rule_options,
     } = this.state;
-    console.log('delay_rule_options', delay_rule_options);
+    // console.log('delay_rule_options', delay_rule_options);
 
     return (
       <Form className="editor-form">
@@ -825,50 +824,50 @@ IProductEditorState
             </Select>
           )}
         </FormItem>
-        <FormItem>
-          <h2 className="editor-form-title form-title">利润设定</h2>
-        </FormItem>
-        <FormItem label="买入库存费（%）" {...getFormItemLayout(3, 12)}>
+            <FormItem>
+            <h2 className="editor-form-title form-title">利润设定</h2>
+            </FormItem>
+            <FormItem label="买入库存费（%）" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("purchase_fee", {
             initialValue: currentShowProduct && currentShowProduct.purchase_fee,
           })(
             <InputNumber
-              min={0}
-              type="number"
-              placeholder="请输入买入库存费
-          "
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    purchase_fee: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
+            min={0}
+            type="number"
+            placeholder="请输入买入库存费
+            "
+            onChange={value => {
+            setCurrentProduct(
+          {
+            purchase_fee: value,
+          },
+            false
+            );
+          }}
+            style={{ display: "inline-block", width: 200, }}
             />
-          )}
-        </FormItem>
-        <FormItem label="卖出库存费（%）" {...getFormItemLayout(3, 12)}>
+            )}
+            </FormItem>
+            <FormItem label="卖出库存费（%）" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("selling_fee", {
             initialValue: currentShowProduct && currentShowProduct.selling_fee,
           })(
             <InputNumber
-              min={0}
-              type="number"
-              placeholder="请输入卖出库存费"
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    selling_fee: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
+            min={0}
+            type="number"
+            placeholder="请输入卖出库存费"
+            onChange={value => {
+            setCurrentProduct(
+          {
+            selling_fee: value,
+          },
+            false
+            );
+          }}
+            style={{ display: "inline-block", width: 200, }}
             />
-          )}
-        </FormItem>
+            )}
+            </FormItem>
             <FormItem
             label="库存费计算"
             className="push-type-select"
@@ -902,135 +901,134 @@ IProductEditorState
             )}
             </FormItem>
 
-        <FormItem
-          label="三日库存费"
-          className="push-type-select"
+            <FormItem
+            label="三日库存费"
+            className="push-type-select"
           {...getFormItemLayout(3, 6)}
-        >
+            >
           {getFieldDecorator("three_days_swap", {
             initialValue:
-              currentShowProduct && currentShowProduct.three_days_swap,
+            currentShowProduct && currentShowProduct.three_days_swap,
           })(
             <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择三日库存费"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    three_days_swap: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
+            // @ts-ignore
+            getPopupContainer={() =>
+            document.getElementsByClassName("push-type-select")[0]
+          }
+            placeholder="请选择三日库存费"
+            onChange={(value, elem: any) => {
+            setCurrentProduct(
+          {
+            three_days_swap: value,
+          },
+            false
+            );
+          }}
+            onFocus={async () => {}}
             >
-              {THREE_DAY_OPTIONS.map(item => (
-                // @ts-ignore
-                <Option key={item.id}>{item.name}</Option>
-              ))}
+            {THREE_DAY_OPTIONS.map(item => (
+              // @ts-ignore
+              <Option key={item.id}>{item.name}</Option>
+            ))}
             </Select>
-          )}
-        </FormItem>
-
-        <FormItem
-          label="买入手续费"
-          className="push-type-select"
+            )}
+            </FormItem>
+            <FormItem
+            label="买入手续费"
+            className="push-type-select"
           {...getFormItemLayout(3, 6)}
-        >
+            >
           {getFieldDecorator("hands_fee_for_bought", {
             initialValue:
-              currentShowProduct && currentShowProduct.hands_fee_for_bought,
+            currentShowProduct && currentShowProduct.hands_fee_for_bought,
           })(
             <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择买入手续费"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    hands_fee_for_bought: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
+            // @ts-ignore
+            getPopupContainer={() =>
+            document.getElementsByClassName("push-type-select")[0]
+          }
+            placeholder="请选择买入手续费"
+            onChange={(value, elem: any) => {
+            setCurrentProduct(
+          {
+            hands_fee_for_bought: value,
+          },
+            false
+            );
+          }}
+            onFocus={async () => {}}
             >
-              {fee_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
+            {fee_rule_options.map(item => (
+              // @ts-ignore
+              <Option key={item.func_name}>{item.name}</Option>
+            ))}
             </Select>
-          )}
-        </FormItem>
-        <FormItem
-          label="卖出手续费"
-          className="push-type-select"
+            )}
+            </FormItem>
+            <FormItem
+            label="卖出手续费"
+            className="push-type-select"
           {...getFormItemLayout(3, 6)}
-        >
+            >
           {getFieldDecorator("hands_fee_for_sale", {
             initialValue:
-              currentShowProduct && currentShowProduct.hands_fee_for_sale,
+            currentShowProduct && currentShowProduct.hands_fee_for_sale,
           })(
             <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请输入卖出手续费"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    hands_fee_for_sale: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
+            // @ts-ignore
+            getPopupContainer={() =>
+            document.getElementsByClassName("push-type-select")[0]
+          }
+            placeholder="请输入卖出手续费"
+            onChange={(value, elem: any) => {
+            setCurrentProduct(
+          {
+            hands_fee_for_sale: value,
+          },
+            false
+            );
+          }}
+            onFocus={async () => {}}
             >
-              {fee_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
+            {fee_rule_options.map(item => (
+              // @ts-ignore
+              <Option key={item.func_name}>{item.name}</Option>
+            ))}
             </Select>
-          )}
-        </FormItem>
-        <FormItem
-          label="税金计算"
-          className="push-type-select"
+            )}
+            </FormItem>
+            <FormItem
+            label="税金计算"
+            className="push-type-select"
           {...getFormItemLayout(3, 6)}
-        >
+            >
           {getFieldDecorator("calculate_for_tax", {
             initialValue:
-              currentShowProduct && currentShowProduct.calculate_for_tax,
+            currentShowProduct && currentShowProduct.calculate_for_tax,
           })(
             <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择税金计算"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    calculate_for_tax: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
+            // @ts-ignore
+            getPopupContainer={() =>
+            document.getElementsByClassName("push-type-select")[0]
+          }
+            placeholder="请选择税金计算"
+            onChange={(value, elem: any) => {
+            setCurrentProduct(
+          {
+            calculate_for_tax: value,
+          },
+            false
+            );
+          }}
+            onFocus={async () => {}}
             >
-              {tax_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
+            {tax_rule_options.map(item => (
+              // @ts-ignore
+              <Option key={item.func_name}>{item.name}</Option>
+            ))}
             </Select>
-          )}
-        </FormItem>
+            )}
+            </FormItem>
         <FormItem>
           <h2 className="editor-form-title form-title">交易时间段</h2>
         </FormItem>
