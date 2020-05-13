@@ -71,16 +71,17 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
                   remit_status: value,
                 }, false);
               }}
+              value={currentWithdraw.remit_status?.toString() || undefined}
               onFocus={async () => {
 
               }}
             >
               {
                 [{
-                  id: 1,
+                  id: '1',
                   name: '划款成功',
                 }, {
-                  id: 2,
+                  id: '2',
                   name: '划款失败',
                 }].map(item => (
                   // @ts-ignore
@@ -99,6 +100,7 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
                   rules: [
                   ],
                 })(<Input
+                  value={currentWithdraw.remit_number}
                   disabled={initRemitStatus != 0}
                   placeholder='请输入划款单号' onChange={evt => {
                     setCurrentWithdraw({
@@ -114,6 +116,7 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
                   rules: [
                   ],
                 })(<Input
+                  value={currentWithdraw.actual_amount}
                   disabled={initRemitStatus != 0}
                   type='number' placeholder='请输入实付金额' onChange={evt => {
                     setCurrentWithdraw({
@@ -133,6 +136,7 @@ export default class WithdrawEditor extends BaseReact<IWithdrawEditorProps, IWit
               ],
             })(<TextArea
               // disabled={currentShowWithdraw.remit_status == 1}
+              value={currentWithdraw.remarks}
               disabled={initRemitStatus != 0}
               style={{ width: 400, }}
               placeholder='请输入备注'
