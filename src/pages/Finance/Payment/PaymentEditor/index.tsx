@@ -150,7 +150,7 @@ export default class PaymentEditor extends BaseReact<IPaymentEditorProps, IPayme
                   initialValue: currentPayment.merchant_key,
                   rules: [
                   ],
-                })(<Input type='number' placeholder='请输入商户 key' onChange={evt => {
+                })(<Input placeholder='请输入商户 key' onChange={evt => {
                   setCurrentPayment({
                     merchant_key: evt.target.value,
                   }, false);
