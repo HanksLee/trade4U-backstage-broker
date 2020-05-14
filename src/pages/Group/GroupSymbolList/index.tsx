@@ -108,14 +108,17 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
         dataIndex: "min_lots",
       },
       {
-        key: "taxes",
-        title: "加收手续费(百分比)",
-        dataIndex: "taxes",
+        key: "fexType",
+        title: "手续费类型",
+        dataIndex: "fexType",
+        render: (text) => {
+          return text === 'fix' ? '固定金额' : '按比例';
+        },
       },
       {
-        key: "standard",
-        title: "交易成本每手加收(百分比)",
-        dataIndex: "standard",
+        key: "fexValue",
+        title: "手续费",
+        dataIndex: "fexValue",
       },
       {
         key: "leverage",
