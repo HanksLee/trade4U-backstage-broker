@@ -110,15 +110,17 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
       {
         key: "fexType",
         title: "手续费类型",
-        dataIndex: "fexType",
-        render: (text) => {
-          return text === 'fix' ? '固定金额' : '按比例';
+        dataIndex: "fee",
+        render: (fee) => {
+          return fee.type === 'fix' ? '固定金额' : '按比例';
         },
       },
       {
         key: "fexValue",
         title: "手续费",
-        dataIndex: "fexValue",
+        render: (fee) => {
+          return fee.value;
+        },
       },
       {
         key: "leverage",
