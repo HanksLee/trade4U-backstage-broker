@@ -118,6 +118,7 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
       {
         key: "fexValue",
         title: "手续费",
+        dataIndex: "fee",
         render: (fee) => {
           return fee.value;
         },
