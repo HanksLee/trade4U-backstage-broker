@@ -36,13 +36,13 @@ interface SMSTemplateListState extends ISMSTemplateState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/sms/smstemplate", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/sms/smstemplate"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/sms/smstemplate"],
 })
 @inject("common", "sms")
 @observer
 export default class SMSTemplateList extends BaseReact<
-  {},
-  SMSTemplateListState
+{},
+SMSTemplateListState
 > {
   state = {
     smsTemplateList: [],
@@ -52,16 +52,16 @@ export default class SMSTemplateList extends BaseReact<
     total: 0,
     roleList: [],
     currentSMSTemplate: null,
-    isShowEditSMSTemplateModal: false
+    isShowEditSMSTemplateModal: false,
   };
 
   async componentDidMount() {
-    const { filterTemplate } = this.props.sms;
-    const { paginationConfig } = this.props.common;
+    const { filterTemplate, } = this.props.sms;
+    const { paginationConfig, } = this.props.common;
 
     this.getDataList({
       page_size: filterTemplate.page_size || paginationConfig.defaultPageSize,
-      page: filterTemplate.page || 1
+      page: filterTemplate.page || 1,
     });
   }
 
@@ -73,26 +73,26 @@ export default class SMSTemplateList extends BaseReact<
 
   getDataList = async (filterTemplate?: any) => {
     const payload = filterTemplate
-      ? { ...this.props.sms.filterTemplate, ...filterTemplate }
+      ? { ...this.props.sms.filterTemplate, ...filterTemplate, }
       : this.props.sms.filterTemplate;
     this.setState({
-      tableLoading: true
+      tableLoading: true,
     });
 
-    const res = await this.$api.sms.getSMSTemplateList({ params: payload });
-    const { results, page_size, current_page, count } = res.data;
+    const res = await this.$api.sms.getSMSTemplateList({ params: payload, });
+    const { results, page_size, current_page, count, } = res.data;
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
-      this.getDataList({ ...payload, page: current_page - 1 });
+      this.getDataList({ ...payload, page: current_page - 1, });
     } else {
       this.props.sms.setFilterTemplate({
         page_size,
-        page: current_page
+        page: current_page,
       });
       this.setState({
         smsTemplateList: results,
         tableLoading: false,
-        total: count
+        total: count,
       });
     }
   };
@@ -109,19 +109,19 @@ export default class SMSTemplateList extends BaseReact<
   showEditSMSTemplateModal = (SMSTemplate?: SMSTemplate) => {
     if (SMSTemplate) {
       this.setState({
-        currentSMSTemplate: SMSTemplate
+        currentSMSTemplate: SMSTemplate,
       });
     }
 
     this.setState({
-      isShowEditSMSTemplateModal: true
+      isShowEditSMSTemplateModal: true,
     });
   };
 
   hideEditSMSTemplateModal = () => {
     this.setState({
       isShowEditSMSTemplateModal: false,
-      currentSMSTemplate: null
+      currentSMSTemplate: null,
     });
   };
 
@@ -134,7 +134,7 @@ export default class SMSTemplateList extends BaseReact<
   private onSearch = async () => {
     const filter: any = {
       page: 1,
-      ...this.state.tempFilter
+      ...this.state.tempFilter,
     };
     this.getDataList(filter);
   };
@@ -143,10 +143,10 @@ export default class SMSTemplateList extends BaseReact<
   private onReset = async () => {
     // @ts-ignore
     this.getDataList({
-      page: 1
+      page: 1,
     });
     this.setState({
-      tempFilter: {}
+      tempFilter: {},
     });
   };
 
@@ -154,14 +154,14 @@ export default class SMSTemplateList extends BaseReact<
     this.setState((prevState: SMSTemplateListState) => ({
       tempFilter: {
         ...prevState.tempFilter,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
   render() {
-    const { match } = this.props;
-    const { currentSMSTemplate, isShowEditSMSTemplateModal } = this.state;
+    const { match, } = this.props;
+    const { currentSMSTemplate, isShowEditSMSTemplateModal, } = this.state;
     return (
       <>
         <div>
