@@ -9,8 +9,8 @@ import Editor from "components/Editor";
 
 const FormItem = Form.Item;
 const getFormItemLayout = (label, wrapper, offset?) => ({
-  labelCol: { span: label, offset, },
-  wrapperCol: { span: wrapper, },
+  labelCol: { span: label, offset },
+  wrapperCol: { span: wrapper }
 });
 
 interface IEditSMSTemplateModalProps {
@@ -29,29 +29,29 @@ interface IEditSMSTemplateModalState {
 @inject("common")
 @observer
 export default class EditSMSTemplateModal extends BaseReact<
-IEditSMSTemplateModalProps,
-IEditSMSTemplateModalState
+  IEditSMSTemplateModalProps,
+  IEditSMSTemplateModalState
 > {
   state = {
     confirmLoading: false,
-    editorContent: "",
+    editorContent: ""
   };
 
   componentDidMount() {}
 
   getEditorContent = val => {
-    this.setState({ editorContent: val, });
+    this.setState({ editorContent: val });
   };
 
   handleSubmit = async evt => {
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const { smsTemplate, onOk, } = this.props;
-        const { editorContent, } = this.state;
+        const { smsTemplate, onOk } = this.props;
+        const { editorContent } = this.state;
 
         let payload: any = {
           type: values.type,
-          status: values.status ? 1 : 0,
+          status: values.status ? 1 : 0
         };
 
         if (!utils.isEmpty(editorContent)) {
@@ -59,7 +59,7 @@ IEditSMSTemplateModalState
         }
 
         this.setState({
-          confirmLoading: true,
+          confirmLoading: true
         });
 
         if (!smsTemplate) {
@@ -70,7 +70,7 @@ IEditSMSTemplateModalState
             },
             () => {
               this.setState({
-                confirmLoading: false,
+                confirmLoading: false
               });
             }
           );
@@ -82,7 +82,7 @@ IEditSMSTemplateModalState
             },
             () => {
               this.setState({
-                confirmLoading: false,
+                confirmLoading: false
               });
             }
           );
@@ -92,8 +92,8 @@ IEditSMSTemplateModalState
   };
 
   render() {
-    const { form, smsTemplate, onCancel, } = this.props;
-    const { confirmLoading, } = this.state;
+    const { form, smsTemplate, onCancel } = this.props;
+    const { confirmLoading } = this.state;
     const getFieldDecorator = form.getFieldDecorator;
     // const { TextArea } = Input;
 
@@ -110,20 +110,20 @@ IEditSMSTemplateModalState
           <FormItem label="类型" {...getFormItemLayout(3, 12)} required>
             {getFieldDecorator("type", {
               initialValue: (smsTemplate && smsTemplate.type) || "",
-              rules: [{ required: true, message: "类型不能為空", }],
+              rules: [{ required: true, message: "类型不能為空" }]
             })(<Input placeholder="请输入类型" />)}
           </FormItem>
           {!smsTemplate && (
             <FormItem label="是否启用" {...getFormItemLayout(3, 13)}>
               {getFieldDecorator("status", {
                 initialValue: false,
-                valuePropName: "checked",
+                valuePropName: "checked"
               })(<Checkbox />)}
             </FormItem>
           )}
           <FormItem label="短信内容" {...getFormItemLayout(3, 19)}>
             {getFieldDecorator("content", {
-              initialValue: (smsTemplate && smsTemplate.content) || "",
+              initialValue: (smsTemplate && smsTemplate.content) || ""
               // rules: [{ required: true, message: "分類名稱不能為空" }]
             })(
               <Editor

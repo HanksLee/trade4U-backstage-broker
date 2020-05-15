@@ -5,6 +5,7 @@ import moment from "moment";
 import { FORMAT_TIME } from "constant";
 
 const config = self => {
+  const permissions = self.props.common.permissions;
   const columns = [
     {
       title: "类型",
@@ -42,23 +43,24 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => self.showEditSMSTemplateModal(record)}>
-              编辑
-            </span>
-            <span className="common-list-table-operation-spliter"></span>
-            {/* <span onClick={() => self.goToPermissionEditor(record.id)}>
-              授权
-            </span>
-            <span className="common-list-table-operation-spliter"></span>
-            <span onClick={() => self.brokerLogin(record.id)}>登录</span>
-            <span className="common-list-table-operation-spliter"></span> */}
-            <Popconfirm
-              title="请问是否确定删除此通道模版"
-              onConfirm={() => self.deleteSMSTemplate(record.id)}
-              onCancel={() => {}}
-            >
-              <span>删除</span>
-            </Popconfirm>
+            {permissions.indexOf("change_sms_template") !== -1 && (
+              <span onClick={() => self.showEditSMSTemplateModal(record)}>
+                编辑
+              </span>
+            )}
+
+            {permissions.indexOf("delete_sms_template") !== -1 && (
+              <>
+                <span className="common-list-table-operation-spliter"></span>
+                <Popconfirm
+                  title="请问是否确定删除此通道模版"
+                  onConfirm={() => self.deleteSMSTemplate(record.id)}
+                  onCancel={() => {}}
+                >
+                  <span>删除</span>
+                </Popconfirm>
+              </>
+            )}
           </div>
         );
       },
@@ -81,11 +83,16 @@ const config = self => {
   return {
     // 是否显示增加按钮
     addBtn: {
-      title: () => (
-        <Button type="primary" onClick={() => self.showEditSMSTemplateModal()}>
-          <Icon type="plus" /> 添加
-        </Button>
-      ),
+      title: () => {
+        return permissions.indexOf("add_sms_template") !== -1 ? (
+          <Button
+            type="primary"
+            onClick={() => self.showEditSMSTemplateModal()}
+          >
+            <Icon type="plus" /> 添加
+          </Button>
+        ) : null;
+      },
     },
     searcher: {
       hideSearcher: true,
