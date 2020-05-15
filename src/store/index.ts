@@ -13,6 +13,7 @@ import closeOrder from "./order/closeOrder";
 import openOrder from "./order/openOrder";
 import accountReport from "./report/accountReport";
 import agencyReport from "./report/agencyReport";
+import sms from "./sms";
 
 export default {
   account,
@@ -30,4 +31,5 @@ export default {
   openOrder,
   accountReport,
   agencyReport,
+  sms,
 };

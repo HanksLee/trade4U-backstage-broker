@@ -35,54 +35,46 @@ export const depositOptions = [
   }
 ];
 
-export const WeeklyOrder = [
-  6,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5
-];
+export const WeeklyOrder = [6, 0, 1, 2, 3, 4, 5];
 
 export const WeeklyMap = {
-  6: 'Sunday',
-  0: 'Monday',
-  1: 'Tuesday',
-  2: 'Wednesday',
-  3: 'Thursday',
-  4: 'Friday',
-  5: 'Saturday',
+  6: "Sunday",
+  0: "Monday",
+  1: "Tuesday",
+  2: "Wednesday",
+  3: "Thursday",
+  4: "Friday",
+  5: "Saturday",
 };
 
 export const THREE_DAY_OPTIONS = [
   {
     id: 6,
-    name: '周日',
+    name: "周日",
   },
   {
     id: 0,
-    name: '周一',
+    name: "周一",
   },
   {
     id: 1,
-    name: '周二',
+    name: "周二",
   },
   {
     id: 2,
-    name: '周三',
+    name: "周三",
   },
   {
     id: 3,
-    name: '周四',
+    name: "周四",
   },
   {
     id: 4,
-    name: '周五',
+    name: "周五",
   },
   {
     id: 5,
-    name: '周六',
+    name: "周六",
   }
 ];
 
@@ -121,6 +113,10 @@ export const PAGE_PERMISSION_MAP = {
   "/dashboard/report": "VIEW_REPORT_PAGE",
   "/dashboard/report/account": "view_account_report",
   "/dashboard/report/agency": "view_agent_report",
+  "/dashboard/sms": "VIEW_SMS_PAGE",
+  "/dashboard/sms/smschannel": "VIEW_SMSCHANNEL_PAGE",
+  "/dashboard/sms/smstemplate": "VIEW_SMSTEMPLATE_PAGE",
+  "/dashboard/sms/smsrecord": "VIEW_SMSRECORD_PAGE",
 };
 
 export const PAGE_ROUTES = [

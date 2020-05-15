@@ -5,62 +5,31 @@ import moment from "moment";
 import { FORMAT_TIME } from "constant";
 
 const config = self => {
-  const { messageTypeList, brokerId, } = self.state;
-  let columnsNum = 1;
   const columns = [
     {
-      title: "序号",
-      dataIndex: "id",
+      title: "类型",
+      dataIndex: "type",
       render: (text, record) => {
-        return columnsNum++;
+        return text || "-";
       },
     },
     {
-      title: "内容分类",
-      dataIndex: "message_type",
+      title: "短信内容",
+      dataIndex: "content",
       render: (text, record) => {
-        for (let item of messageTypeList) {
-          if (item.id == text) return item.title;
-        }
+        return text || "-";
       },
     },
     {
-      title: "标题",
-      dataIndex: "title",
-      render: (text, record) => {
-        return text;
-      },
-    },
-    // {
-    //   title: "內容描述",
-    //   dataIndex: "content",
-    //   render: (text, record) => {
-    //     return text || "";
-    //   },
-    // },
-    {
-      title: "创建时间",
-      width: 200,
-      dataIndex: "create_time",
-      render: (text, record) => {
-        return (
-          (record.create_time &&
-            moment(record.create_time * 1000).format(FORMAT_TIME)) ||
-          "--"
-        );
-      },
-    },
-    {
-      title: "是否显示",
-      dataIndex: "is_display",
+      title: "启用",
+      dataIndex: "status",
       render: (text, record) => {
         const handleChange = async e => {
-          const res = await self.$api.message.updateMessageContent(record.id, {
-            brokerId,
-            is_display: text == 0 ? 1 : 0,
+          const res = await self.$api.sms.updateSMSTemplate(record.id, {
+            status: text == 0 ? 1 : 0,
           });
           if (res.status === 200) {
-            self.getDataList(self.props.message.filterContent);
+            self.getDataList(self.props.sms.filterTemplate);
           } else {
             self.$msg.error(res.data.message);
           }
@@ -73,7 +42,7 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => self.showEditMessageContentModal(record)}>
+            <span onClick={() => self.showEditSMSTemplateModal(record)}>
               编辑
             </span>
             <span className="common-list-table-operation-spliter"></span>
@@ -84,8 +53,8 @@ const config = self => {
             <span onClick={() => self.brokerLogin(record.id)}>登录</span>
             <span className="common-list-table-operation-spliter"></span> */}
             <Popconfirm
-              title="请问是否确定删除此內容"
-              onConfirm={() => self.deleteMessageContent(record.id)}
+              title="请问是否确定删除此通道模版"
+              onConfirm={() => self.deleteSMSTemplate(record.id)}
               onCancel={() => {}}
             >
               <span>删除</span>
@@ -98,8 +67,8 @@ const config = self => {
   const pagination = {
     ...self.props.common.paginationConfig,
     total: self.state.total,
-    current: self.props.message.filterContent.page,
-    pageSize: self.props.message.filterContent.page_size,
+    current: self.props.sms.filterTemplate.page,
+    pageSize: self.props.sms.filterTemplate.page_size,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
@@ -113,16 +82,13 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => (
-        <Button
-          type="primary"
-          onClick={() => self.showEditMessageContentModal()}
-        >
+        <Button type="primary" onClick={() => self.showEditSMSTemplateModal()}>
           <Icon type="plus" /> 添加
         </Button>
       ),
     },
     searcher: {
-      // hideSearcher: true,
+      hideSearcher: true,
       batchControl: {
         placeholder: "请选择",
         showBatchControl: !utils.isEmpty(self.state.selectedRowKeys),
@@ -139,27 +105,27 @@ const config = self => {
 
       widgets: [
         [
-          {
-            type: "Input",
-            label: "标题",
-            placeholder: "请输入标题",
-            value: self.state.tempFilter.title || undefined,
-            width: 150,
-            onChange(evt) {
-              self.onInputChanged("title", evt.target.value);
-            },
-            onPressEnter(evt) {
-              self.onSearch();
-            },
-          }
           // {
           //   type: "Input",
-          //   label: "内容分类",
-          //   placeholder: "请输入内容分类",
-          //   value: self.state.tempFilter.message_type || undefined,
+          //   label: "所属key",
+          //   placeholder: "请输入所属key",
+          //   value: self.state.tempFilter.key || undefined,
           //   width: 150,
           //   onChange(evt) {
-          //     self.onInputChanged("message_type", Number(evt.target.value));
+          //     self.onInputChanged("key", evt.target.value);
+          //   },
+          //   onPressEnter(evt) {
+          //     self.onSearch();
+          //   }
+          // },
+          // {
+          //   type: "Input",
+          //   label: "名称",
+          //   placeholder: "请输入名称",
+          //   value: self.state.tempFilter.title || undefined,
+          //   width: 150,
+          //   onChange(evt) {
+          //     self.onInputChanged("title", evt.target.value);
           //   },
           //   onPressEnter(evt) {
           //     self.onSearch();
@@ -177,7 +143,7 @@ const config = self => {
     table: {
       rowKey: "id",
       columns,
-      dataSource: self.state.messageContentList,
+      dataSource: self.state.smsTemplateList,
       pagination,
       onChange(pagination, filters) {
         const payload: any = {};

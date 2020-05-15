@@ -106,6 +106,21 @@ const routes: any[] = [
         /* webpackChunkName: "system-params-page" */ "./pages/System/SystemParams"
       )
     ),
+  },
+  {
+    component: loadable(() =>
+      import(/* webpackChunkName: "smschannel-page" */ "./pages/SMS/Channel")
+    ),
+  },
+  {
+    component: loadable(() =>
+      import(/* webpackChunkName: "smstemlate-page" */ "./pages/SMS/Template")
+    ),
+  },
+  {
+    component: loadable(() =>
+      import(/* webpackChunkName: "smstemlate-page" */ "./pages/SMS/Record")
+    ),
   }, // {
   //   component: loadable(() => import(/* webpackChunkName: "agency-log" */ './pages/Agency/AgencyLog/AgencyLogList')),
   // },
@@ -144,9 +159,7 @@ const routes: any[] = [
   },
   {
     component: loadable(() =>
-      import(
-        /* webpackChunkName: "group-page" */ './pages/Group/GroupList'
-      )
+      import(/* webpackChunkName: "group-page" */ "./pages/Group/GroupList")
     ),
   },
   {

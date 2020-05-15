@@ -11,6 +11,7 @@ import system from "./system";
 import message from "./message";
 import order from "./order";
 import report from "./report";
+import sms from "./sms";
 
 export default {
   account,
@@ -26,4 +27,5 @@ export default {
   message,
   order,
   report,
+  sms,
 };

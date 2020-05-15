@@ -1,6 +1,12 @@
 import { action, observable, computed } from "mobx";
 import BaseStore from "store/base";
 
+export interface Filter {
+  page_size: number;
+  page: number;
+  name?: string;
+}
+
 class SystemStore extends BaseStore {
   @observable
   filter = {
@@ -19,4 +25,5 @@ class SystemStore extends BaseStore {
     }
   };
 }
+
 export default new SystemStore();
