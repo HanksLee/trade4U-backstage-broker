@@ -80,19 +80,22 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     const { currentWithdraw, } = this.props.finance;
 
     let res;
-    if (!currentWithdraw.remit_number) {
-      return this.$msg.warn('请输入划款单号');
-    }
 
-    if (!currentWithdraw.actual_amount) {
-      return this.$msg.warn('请输入实付金额');
-    }
+    if (currentWithdraw.remit_status != 2) {
+      if (!currentWithdraw.remit_number) {
+        return this.$msg.warn('请输入划款单号');
+      }
 
+      if (!currentWithdraw.actual_amount) {
+        return this.$msg.warn('请输入实付金额');
+      }
+    }
 
     let payload: any = {
       remit_number: currentWithdraw.remit_number,
       actual_amount: currentWithdraw.actual_amount,
       remarks: currentWithdraw.remarks,
+      remit_status: currentWithdraw.remit_status,
     };
 
     if (currentWithdraw.id) {

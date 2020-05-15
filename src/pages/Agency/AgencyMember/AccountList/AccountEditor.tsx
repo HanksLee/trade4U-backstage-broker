@@ -213,73 +213,74 @@ export default class AccountEditor extends BaseReact<{}> {
             </FormItem>
           )
         }
-        <FormItem label="上级代理">
-          {getFieldDecorator('agent', {
-            initialValue: accountDetail && accountDetail.agent,
-          })(
-            <Select
-              allowClear
-              showSearch
-              filterOption={false}
-              placeholder="请选择上级代理"
-              style={{ width: '200px', }}
-              onChange={value => {
-                this.setCurrentAccount({
-                  agent: value,
-                });
-              }}
-              onFocus={async () => {
-                const res = await this.$api.agency.getAgentList({ pageNum: 1, pageSize: 20, });
+        {/*<FormItem label="上级代理">*/}
+        {/*{getFieldDecorator('agent', {*/}
+        {/*initialValue: accountDetail && accountDetail.agent,*/}
+        {/*})(*/}
+        {/*<Select*/}
+        {/*allowClear*/}
+        {/*showSearch*/}
+        {/*filterOption={false}*/}
+        {/*placeholder="请选择上级代理"*/}
+        {/*style={{ width: '200px', }}*/}
+        {/*onChange={value => {*/}
+        {/*this.setCurrentAccount({*/}
+        {/*agent: value,*/}
+        {/*});*/}
+        {/*}}*/}
+        {/*onFocus={async () => {*/}
+        {/*const res = await this.$api.agency.getAgentList({ pageNum: 1, pageSize: 20, });*/}
 
-                this.setState({
-                  agentOptions: res.data.results,
-                  agentOptionsMeta: {
-                    total: res.data.count,
-                    current_page: res.data.current_page,
-                    page_size: res.data.page_size,
-                  },
-                });
-              }}
-              onPopupScroll={throttle(async (evt) => {
-                const { agentOptions, agentOptionsMeta, } = this.state;
-                const isBottom =
-                evt && evt.target
-                  ? evt.target.scrollHeight -
-                  (evt.target.scrollTop + evt.target.clientHeight) <=
-                  10
-                  : false;
+        {/*this.setState({*/}
+        {/*agentOptions: res.data.results,*/}
+        {/*agentOptionsMeta: {*/}
+        {/*total: res.data.count,*/}
+        {/*current_page: res.data.current_page,*/}
+        {/*page_size: res.data.page_size,*/}
+        {/*},*/}
+        {/*});*/}
+        {/*}}*/}
+        {/*onPopupScroll={throttle(async (evt) => {*/}
+        {/*const { agentOptions, agentOptionsMeta, } = this.state;*/}
+        {/*const isBottom =*/}
+        {/*evt && evt.target*/}
+        {/*? evt.target.scrollHeight -*/}
+        {/*(evt.target.scrollTop + evt.target.clientHeight) <=*/}
+        {/*10*/}
+        {/*: false;*/}
 
-                if (
-                  isBottom &&
-                  agentOptionsMeta.total > agentOptions.length
-                ) {
-                  const res = await this.$api.agency.getAgentList({ pageNum: agentOptionsMeta.current_page + 1,
-                    page_size: agentOptionsMeta.page_size,
-                  });
+        {/*if (*/}
+        {/*isBottom &&*/}
+        {/*agentOptionsMeta.total > agentOptions.length*/}
+        {/*) {*/}
+        {/*const res = await this.$api.agency.getAgentList({ pageNum: agentOptionsMeta.current_page + 1,*/}
+        {/*page_size: agentOptionsMeta.page_size,*/}
+        {/*});*/}
 
-                  this.setState({
-                    agentOptions: unionBy(this.state.agentOptions, res.data.results, 'id'),
-                    agentOptionsMeta: {
-                      total: res.data.count,
-                      current_page: res.data.current_page,
-                      page_size: res.data.page_size,
-                    },
-                  });
-                }
-              }, 300)}
-              onSearch={debounce(async (value) => {
-                const res = await this.$api.agency.getAgentList({ current_page: 1, page_size: 10, username: value, });
-                this.setState({
-                  agentOptions: res.data.results,
-                });
-              }, 500)}
-            >
-              {
-                agentOptions.map(cause => <Select.Option value={cause.id}>{cause.username}</Select.Option>)
-              }
-            </Select>
-          )}
-        </FormItem>
+        {/*this.setState({*/}
+        {/*agentOptions: unionBy(this.state.agentOptions, res.data.results, 'id'),*/}
+        {/*agentOptionsMeta: {*/}
+        {/*total: res.data.count,*/}
+        {/*current_page: res.data.current_page,*/}
+        {/*page_size: res.data.page_size,*/}
+        {/*},*/}
+        {/*});*/}
+        {/*}*/}
+        {/*}, 300)}*/}
+        {/*onSearch={debounce(async (value) => {*/}
+        {/*const res = await this.$api.agency.getAgentList({ current_page: 1, page_size: 10, username: value, });*/}
+        {/*this.setState({*/}
+        {/*agentOptions: res.data.results,*/}
+        {/*});*/}
+        {/*}, 500)}*/}
+        {/*>*/}
+        {/*{*/}
+        {/*agentOptions.map(cause => <Select.Option value={cause.id}>{cause.username}</Select.Option>)*/}
+        {/*}*/}
+        {/*</Select>*/}
+        {/*)}*/}
+        {/*</FormItem>*/}
+
         <div className="id-card-form">
           <FormItem>
             {getFieldDecorator('id_card_front', {

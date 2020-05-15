@@ -57,7 +57,6 @@ IProductEditorState
     deposit_rule_options: [],
     profit_bounght_rule_options: [],
     profit_sale_rule_options: [],
-    fee_rule_options: [],
     margin_rule_options: [], // 保证金
     profit_rule_options: [], // 盈亏计算
     pre_pay_rule_options: [], // 预付款
@@ -122,7 +121,7 @@ IProductEditorState
       "pre_pay_rule",
       "delay_rule",
       "tax_rule",
-      'free_rule'
+      "fee_rule"
     ];
 
     scopes.forEach(scope => {
@@ -149,7 +148,7 @@ IProductEditorState
   };
 
   getMarketOptions = async () => {
-    const res = await this.$api.market.getProductList({
+    const res = await this.$api.product.getProductList({
       offset: 0,
       limit: 200,
     });
@@ -229,8 +228,9 @@ IProductEditorState
       profit_rule_options,
       tax_rule_options,
       fee_rule_options,
+      delay_rule_options,
     } = this.state;
-    // console.log(currentShowProduct);
+    // console.log('delay_rule_options', delay_rule_options);
 
     return (
       <Form className="editor-form">
@@ -311,7 +311,6 @@ IProductEditorState
               style={{ display: "inline-block", width: 200, }}
             />
           )}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
         </FormItem>
         <FormItem label="描述" {...getFormItemLayout(3, 8)}>
           {getFieldDecorator("description", {
@@ -499,19 +498,19 @@ IProductEditorState
           )}
         </FormItem>
 
-        <FormItem label="最大交易量" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("max_trading_volume", {
+        <FormItem label="最大交易手数" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("max_lots", {
             initialValue:
-              currentShowProduct && currentShowProduct.max_trading_volume,
+              currentShowProduct && currentShowProduct.max_lots,
           })(
             <InputNumber
               min={0}
               type="number"
-              placeholder="请输入最大交易量"
+              placeholder="请输入最大交易手数"
               onChange={value => {
                 setCurrentProduct(
                   {
-                    max_trading_volume: value,
+                    max_lots: value,
                   },
                   false
                 );
@@ -520,19 +519,19 @@ IProductEditorState
             />
           )}
         </FormItem>
-        <FormItem label="最小交易量" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("min_trading_volume", {
+        <FormItem label="最小交易手数" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("min_lots", {
             initialValue:
-              currentShowProduct && currentShowProduct.min_trading_volume,
+              currentShowProduct && currentShowProduct.min_lots,
           })(
             <InputNumber
               min={0}
               type="number"
-              placeholder="请输入最小交易量"
+              placeholder="请输入最小交易手数"
               onChange={value => {
                 setCurrentProduct(
                   {
-                    min_trading_volume: value,
+                    min_lots: value,
                   },
                   false
                 );
@@ -657,9 +656,9 @@ IProductEditorState
           )}
         </FormItem>
 
-        <FormItem label="交易量步长" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("volume_step", {
-            initialValue: currentShowProduct && currentShowProduct.volume_step,
+        <FormItem label="交易数步长" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("lots_step", {
+            initialValue: currentShowProduct && currentShowProduct.lots_step,
           })(
             <InputNumber
               min={0}
@@ -668,7 +667,7 @@ IProductEditorState
               onChange={value => {
                 setCurrentProduct(
                   {
-                    volume_step: value,
+                    lots_step: value,
                   },
                   false
                 );
@@ -836,7 +835,7 @@ IProductEditorState
               min={0}
               type="number"
               placeholder="请输入买入库存费
-          "
+            "
               onChange={value => {
                 setCurrentProduct(
                   {
@@ -876,10 +875,10 @@ IProductEditorState
         >
           {getFieldDecorator("calculate_for_fee", {
             initialValue:
-              currentShowProduct && currentShowProduct.calculate_for_fee,
+            currentShowProduct && currentShowProduct.calculate_for_fee,
           })(
             <Select
-              // @ts-ignore
+            // @ts-ignore
               getPopupContainer={() =>
                 document.getElementsByClassName("push-type-select")[0]
               }
@@ -894,8 +893,8 @@ IProductEditorState
               }}
               onFocus={async () => {}}
             >
-              {tax_rule_options.map(item => (
-                // @ts-ignore
+              {delay_rule_options.map(item => (
+              // @ts-ignore
                 <Option key={item.func_name}>{item.name}</Option>
               ))}
             </Select>
@@ -909,10 +908,10 @@ IProductEditorState
         >
           {getFieldDecorator("three_days_swap", {
             initialValue:
-              currentShowProduct && currentShowProduct.three_days_swap,
+            currentShowProduct && currentShowProduct.three_days_swap,
           })(
             <Select
-              // @ts-ignore
+            // @ts-ignore
               getPopupContainer={() =>
                 document.getElementsByClassName("push-type-select")[0]
               }
@@ -928,13 +927,12 @@ IProductEditorState
               onFocus={async () => {}}
             >
               {THREE_DAY_OPTIONS.map(item => (
-                // @ts-ignore
+              // @ts-ignore
                 <Option key={item.id}>{item.name}</Option>
               ))}
             </Select>
           )}
         </FormItem>
-
         <FormItem
           label="买入手续费"
           className="push-type-select"
@@ -942,10 +940,10 @@ IProductEditorState
         >
           {getFieldDecorator("hands_fee_for_bought", {
             initialValue:
-              currentShowProduct && currentShowProduct.hands_fee_for_bought,
+            currentShowProduct && currentShowProduct.hands_fee_for_bought,
           })(
             <Select
-              // @ts-ignore
+            // @ts-ignore
               getPopupContainer={() =>
                 document.getElementsByClassName("push-type-select")[0]
               }
@@ -961,7 +959,7 @@ IProductEditorState
               onFocus={async () => {}}
             >
               {fee_rule_options.map(item => (
-                // @ts-ignore
+              // @ts-ignore
                 <Option key={item.func_name}>{item.name}</Option>
               ))}
             </Select>
@@ -974,10 +972,10 @@ IProductEditorState
         >
           {getFieldDecorator("hands_fee_for_sale", {
             initialValue:
-              currentShowProduct && currentShowProduct.hands_fee_for_sale,
+            currentShowProduct && currentShowProduct.hands_fee_for_sale,
           })(
             <Select
-              // @ts-ignore
+            // @ts-ignore
               getPopupContainer={() =>
                 document.getElementsByClassName("push-type-select")[0]
               }
@@ -993,7 +991,7 @@ IProductEditorState
               onFocus={async () => {}}
             >
               {fee_rule_options.map(item => (
-                // @ts-ignore
+              // @ts-ignore
                 <Option key={item.func_name}>{item.name}</Option>
               ))}
             </Select>
@@ -1006,10 +1004,10 @@ IProductEditorState
         >
           {getFieldDecorator("calculate_for_tax", {
             initialValue:
-              currentShowProduct && currentShowProduct.calculate_for_tax,
+            currentShowProduct && currentShowProduct.calculate_for_tax,
           })(
             <Select
-              // @ts-ignore
+            // @ts-ignore
               getPopupContainer={() =>
                 document.getElementsByClassName("push-type-select")[0]
               }
@@ -1025,7 +1023,7 @@ IProductEditorState
               onFocus={async () => {}}
             >
               {tax_rule_options.map(item => (
-                // @ts-ignore
+              // @ts-ignore
                 <Option key={item.func_name}>{item.name}</Option>
               ))}
             </Select>
@@ -1207,9 +1205,9 @@ IProductEditorState
           limit_stop_level: currentProduct.limit_stop_level,
           margin_currency: currentProduct.margin_currency,
           profit_currency: currentProduct.profit_currency,
-          max_trading_volume: currentProduct.max_trading_volume,
-          min_trading_volume: currentProduct.min_trading_volume,
-          volume_step: currentProduct.volume_step,
+          max_lots: currentProduct.max_lots,
+          min_lots: currentProduct.min_lots,
+          lots_step: currentProduct.lots_step,
           min_unit_of_price_change: currentProduct.min_unit_of_price_change,
           transaction_mode: currentProduct.transaction_mode,
           purchase_fee: currentProduct.purchase_fee,

@@ -54,8 +54,8 @@ export default class EditSymbolTypeModal extends BaseReact<IEditSymbolTypeModalP
           group: this.props.groupId,
           symbol_type: values.symbol_type || [],
           action: values.action,
-          max_trading_volume: values.max_trading_volume || 0,
-          min_trading_volume: values.min_trading_volume || 0,
+          max_lots: values.max_lots || 0,
+          min_lots: values.min_lots || 0,
           leverage: values.leverage || 0,
         };
 
@@ -131,16 +131,16 @@ export default class EditSymbolTypeModal extends BaseReact<IEditSymbolTypeModalP
               </Select>
             )}
           </FormItem>
-          <FormItem label='最大交易量' {...getFormItemLayout(9, 13)}>
-            {getFieldDecorator('max_trading_volume', {
-              initialValue: symbolType && symbolType.max_trading_volume,
+          <FormItem label='最大交易手数' {...getFormItemLayout(9, 13)}>
+            {getFieldDecorator('max_lots', {
+              initialValue: symbolType && symbolType.max_lots,
             })(
               <InputNumber style={{ width: '200px', }} />
             )}
           </FormItem>
-          <FormItem label='最小交易量' {...getFormItemLayout(9, 13)}>
-            {getFieldDecorator('min_trading_volume', {
-              initialValue: symbolType && symbolType.min_trading_volume,
+          <FormItem label='最小交易手数 ' {...getFormItemLayout(9, 13)}>
+            {getFieldDecorator('min_lots', {
+              initialValue: symbolType && symbolType.min_lots,
             })(
               <InputNumber style={{ width: '200px', }} />
             )}
@@ -149,7 +149,7 @@ export default class EditSymbolTypeModal extends BaseReact<IEditSymbolTypeModalP
             {getFieldDecorator('fexType', {
               initialValue: symbolType && symbolType.fee && symbolType.fee.type,
             })(
-              
+
               <Select
                 placeholder="类型"
                 style={{ width: '200px', }}

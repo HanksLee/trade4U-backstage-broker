@@ -268,6 +268,12 @@ class FinanceStore extends BaseStore {
       utils.setLStorage("currentRate", this.currentRate);
     }
   };
+  @observable
+  initRemitStatus = 0;
+  @action
+  setInitWithdrawStatus = status => {
+    this.initRemitStatus = status;
+  }
 }
 
 export default new FinanceStore();

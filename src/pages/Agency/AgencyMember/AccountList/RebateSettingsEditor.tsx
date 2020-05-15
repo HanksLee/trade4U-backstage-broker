@@ -126,7 +126,7 @@ IRebateSettingsEditorState
         <Row>
           <Col span={4}></Col>
           <Col span={4}>固定金额</Col>
-          <Col span={4}>点值</Col>
+          <Col span={4}>点值(%)</Col>
         </Row>
         {commission_rule.map((item, index) => {
           return (
@@ -356,6 +356,8 @@ IRebateSettingsEditorState
         const errMsg = this.getValidation(payload);
         payload.commission_rule = this.getCommitRule(payload.commission_rule);
 
+        // console.log('commission_rule', payload.commission_rule);
+
         if (errMsg) return this.$msg.warn(errMsg);
         if (mode == "add") {
           const res = await this.$api.agency.updateRebateSettings(payload);
@@ -395,7 +397,7 @@ IRebateSettingsEditorState
     const obj = {};
 
     commission_rule.forEach(item => {
-      obj[item.id.toString()] = {
+      obj[item.code.toString()] = {
         fix_amount: item.fix_amount.toString(),
         rate: item.rate.toString(),
       };
