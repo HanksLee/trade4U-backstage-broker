@@ -72,8 +72,8 @@ export default class API implements IAPI {
 
 const apiMap = {
   dev: "/api/moon/api",
-  qa: `${window.location.origin}/api`,
-  prod: `${window.location.origin}/api`,
+  qa: `${window.location.origin.replace(/\/\/(.*?)\./, '//api.')}/api`,
+  prod: `${window.location.origin.replace(/\/\/(.*?)\./, '//api.')}/api`,
 };
 
 export const moonAPI = new API({
