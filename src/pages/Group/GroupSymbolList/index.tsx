@@ -90,6 +90,11 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
         dataIndex: "id",
       },
       {
+        key: "symbol_type_name",
+        title: "交易品种类型",
+        dataIndex: "symbol_type_name",
+      },
+      {
         key: "action",
         title: "买卖方向",
         dataIndex: "action",
