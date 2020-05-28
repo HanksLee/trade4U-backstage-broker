@@ -6,6 +6,7 @@ import { FORMAT_TIME } from "constant";
 import StatusText from "components/StatusText";
 
 const config = self => {
+  const permissions = self.props.common.permissions;
   const { selectedRowKeys, } = self.state;
   const rowSelection = {
     selectedRowKeys,
@@ -124,33 +125,38 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span
-              onClick={async () => {
-                await self.props.finance.getCurrentDeposit(record.id);
-                self.setState({
-                  initStatus: self.props.finance.currentDeposit.status,
-                });
-                self.toggleDepositModal(record.id);
-              }}
-            >
+            {
+              permissions.includes('deposit_patch_order') && <span
+                onClick={async () => {
+                  await self.props.finance.getCurrentDeposit(record.id);
+                  self.setState({
+                    initStatus: self.props.finance.currentDeposit.status,
+                  });
+                  self.toggleDepositModal(record.id);
+                }}
+              >
               补单
             </span>
+            }
             <span className="common-list-table-operation-spliter"></span>
-            <Popconfirm
-              title="请问是否确定删除当前记录"
-              onConfirm={async () => {
-                const res = await self.$api.finance.deleteDeposit(record.id);
+            {
+              permissions.includes('delete_deposit') && <Popconfirm
+                title="请问是否确定删除当前记录"
+                onConfirm={async () => {
+                  const res = await self.$api.finance.deleteDeposit(record.id);
 
-                if (res.status === 204) {
-                  self.getDataList(self.props.finance.filterDeposit);
-                } else {
-                  self.$msg.error(res.data.message);
-                }
-              }}
-              onCancel={() => { }}
-            >
-              <span>删除</span>
-            </Popconfirm>
+                  if (res.status === 204) {
+                    self.getDataList(self.props.finance.filterDeposit);
+                  } else {
+                    self.$msg.error(res.data.message);
+                  }
+                }}
+                onCancel={() => { }}
+              >
+                <span>删除</span>
+              </Popconfirm>
+            }
+
           </div>
         );
       },

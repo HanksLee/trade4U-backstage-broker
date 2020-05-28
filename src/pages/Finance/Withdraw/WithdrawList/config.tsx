@@ -7,6 +7,7 @@ import { FORMAT_TIME } from "constant";
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
+  const permissions = self.props.common.permissions;
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
@@ -217,31 +218,36 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span
-              onClick={() => {
-                self.props.finance.getCurrentWithdraw(record.id);
-                self.props.finance.setInitWithdrawStatus(record.remit_status);
-                self.toggleWithdrawModal();
-              }}
-            >
+            {
+              permissions.includes('withdraw_record') && <span
+                onClick={() => {
+                  self.props.finance.getCurrentWithdraw(record.id);
+                  self.props.finance.setInitWithdrawStatus(record.remit_status);
+                  self.toggleWithdrawModal();
+                }}
+              >
               划款登记
             </span>
-            <span className="common-list-table-operation-spliter"></span>
-            <Popconfirm
-              title="请问是否确定删除当前记录"
-              onConfirm={async () => {
-                const res = await self.$api.finance.deleteWithdraw(record.id);
+            }
 
-                if (res.status === 204) {
-                  self.getDataList(self.props.filterWithdraw);
-                } else {
-                  self.$msg.error(res.data.message);
-                }
-              }}
-              onCancel={() => {}}
-            >
-              <span>删除</span>
-            </Popconfirm>
+            <span className="common-list-table-operation-spliter"></span>
+            {
+              permissions.includes('delete_withdraw') && <Popconfirm
+                title="请问是否确定删除当前记录"
+                onConfirm={async () => {
+                  const res = await self.$api.finance.deleteWithdraw(record.id);
+
+                  if (res.status === 204) {
+                    self.getDataList(self.props.filterWithdraw);
+                  } else {
+                    self.$msg.error(res.data.message);
+                  }
+                }}
+                onCancel={() => {}}
+              >
+                <span>删除</span>
+              </Popconfirm>
+            }
           </div>
         );
       },

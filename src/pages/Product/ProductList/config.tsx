@@ -105,26 +105,30 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => {
-              self.goToEditor(record);
-            }}>编辑</span>
+            {
+              permissions.includes('edit_product') && <span onClick={() => {
+                self.goToEditor(record);
+              }}>编辑</span>
+            }
             <span className="common-list-table-operation-spliter"></span>
-            <Popconfirm
-              title="请问是否确定删除当前规则"
-              onConfirm={async () => {
-                const res = await self.$api.product.deleteProduct(record.id);
+            {
+              permissions.includes('delete_product') && <Popconfirm
+                title="请问是否确定删除当前规则"
+                onConfirm={async () => {
+                  const res = await self.$api.product.deleteProduct(record.id);
 
-                if (res.status === 204) {
-                  self.$msg.success('当期记录删除成功');
-                  self.getDataList(self.state.filter);
-                } else {
-                  self.$msg.error(res.data.message);
-                }
-              }}
-              onCancel={() => { }}
-            >
-              <span>删除</span>
-            </Popconfirm>
+                  if (res.status === 204) {
+                    self.$msg.success('当期记录删除成功');
+                    self.getDataList(self.state.filter);
+                  } else {
+                    self.$msg.error(res.data.message);
+                  }
+                }}
+                onCancel={() => { }}
+              >
+                <span>删除</span>
+              </Popconfirm>
+            }
           </div>
         );
       },
@@ -141,7 +145,7 @@ const config = self => {
       self.resetPagination(pageSize, current);
     },
   };
-
+  const permissions = self.props.common.permissions;
   return {
     // 是否显示增加按钮
     addBtn: {

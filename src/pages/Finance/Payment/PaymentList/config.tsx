@@ -11,7 +11,7 @@ const config = self => {
   //     self.setState({ selectedRowKeys: selectedRowKeys, });
   //   },
   // };
-
+  const permissions = self.props.common.permissions;
   const columns = [
     {
       title: "通道名称",
@@ -99,26 +99,30 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => {
-              self.props.finance.getCurrentPayment(record.id);
-              self.togglePaymentModal();
-            }}>编辑</span>
+            {
+              permissions.includes('edit_payment') && <span onClick={() => {
+                self.props.finance.getCurrentPayment(record.id);
+                self.togglePaymentModal();
+              }}>编辑</span>
+            }
             <span className="common-list-table-operation-spliter"></span>
-            <Popconfirm
-              title="请问是否确定删除当前记录"
-              onConfirm={async () => {
-                const res = await self.$api.finance.deletePayment(record.id);
+            {
+              permissions.includes('delete_payment') && <Popconfirm
+                title="请问是否确定删除当前记录"
+                onConfirm={async () => {
+                  const res = await self.$api.finance.deletePayment(record.id);
 
-                if (res.status === 204) {
-                  self.getDataList(self.props.finance.filterPayment);
-                } else {
-                  self.$msg.error(res.data.message);
-                }
-              }}
-              onCancel={() => {}}
-            >
-              <span>删除</span>
-            </Popconfirm>
+                  if (res.status === 204) {
+                    self.getDataList(self.props.finance.filterPayment);
+                  } else {
+                    self.$msg.error(res.data.message);
+                  }
+                }}
+                onCancel={() => {}}
+              >
+                <span>删除</span>
+              </Popconfirm>
+            }
           </div>
         );
       },
