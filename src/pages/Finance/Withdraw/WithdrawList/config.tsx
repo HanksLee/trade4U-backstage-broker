@@ -227,7 +227,7 @@ const config = self => {
                 }}
               >
               划款登记
-            </span>
+              </span>
             }
 
             <span className="common-list-table-operation-spliter"></span>

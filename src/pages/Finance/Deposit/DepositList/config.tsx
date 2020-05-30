@@ -136,7 +136,7 @@ const config = self => {
                 }}
               >
               补单
-            </span>
+              </span>
             }
             <span className="common-list-table-operation-spliter"></span>
             {

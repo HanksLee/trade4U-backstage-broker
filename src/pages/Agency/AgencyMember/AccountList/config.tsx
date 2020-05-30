@@ -148,12 +148,12 @@ const config = self => {
                 onClick={e => {
                   const url = `/dashboard/agency/agent/rebate-editor?id=${
                     !utils.isEmpty(record) ? record.id : 0
-                    }`;
+                  }`;
                   self.props.history.push(url);
                 }}
               >
               返佣设置
-            </span>
+              </span>
             }
             <span className="common-list-table-operation-spliter"></span>
             {
@@ -166,7 +166,7 @@ const config = self => {
                 }}
               >
               分配客户组
-            </span>
+              </span>
             }
             <span className="common-list-table-operation-spliter"></span>
             {
@@ -179,7 +179,7 @@ const config = self => {
                 }}
               >
               移交划转
-            </span>
+              </span>
             }
             <span className="common-list-table-operation-spliter"></span>
             {
@@ -224,7 +224,7 @@ const config = self => {
             </Button>
           )
           : null;
-      }
+      },
     },
     searcher: {
       batchControl: {
