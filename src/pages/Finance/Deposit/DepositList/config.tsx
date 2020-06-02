@@ -6,32 +6,33 @@ import { FORMAT_TIME } from "constant";
 import StatusText from "components/StatusText";
 
 const config = self => {
-  const { selectedRowKeys, } = self.state;
+  const permissions = self.props.common.permissions;
+  const { selectedRowKeys } = self.state;
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
-      self.setState({ selectedRowKeys: selectedRowKeys, });
-    },
+      self.setState({ selectedRowKeys: selectedRowKeys });
+    }
   };
 
   const columns = [
     {
       title: "姓名",
       dataIndex: "user_display",
-      render: (text, record) => text.username || "--",
+      render: (text, record) => text.username || "--"
     },
     {
       title: "上级",
       dataIndex: "superior",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "通道名称",
       render: (text, record) => {
         return (record.payment_display && record.payment_display.name) || "--";
-      },
+      }
     },
     {
       title: "收款商户",
@@ -39,21 +40,21 @@ const config = self => {
         return (
           (record.payment_display && record.payment_display.merchant) || "--"
         );
-      },
+      }
     },
     {
       title: "充值金额",
       dataIndex: "expect_amount",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "支付金额",
       dataIndex: "actual_amount",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "支付状态",
@@ -61,20 +62,20 @@ const config = self => {
       render: (text, record) => {
         const statusType = {
           1: "normal",
-          0: "hot",
+          0: "hot"
         };
         const statusText = {
           1: "已支付",
-          0: "未支付",
+          0: "未支付"
         };
 
         const styleMap = {
           0: {
-            color: "red",
+            color: "red"
           },
           1: {
-            color: "#1890ff",
-          },
+            color: "#1890ff"
+          }
         };
 
         return (
@@ -88,35 +89,35 @@ const config = self => {
             }
           />
         );
-      },
+      }
     },
     {
       title: "支付单号",
       dataIndex: "order_number",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "提交时间",
       dataIndex: "create_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
-      },
+      }
     },
     {
       title: "回执时间",
       dataIndex: "notify_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
-      },
+      }
     },
     {
       title: "回执单号",
       dataIndex: "notify_ordernumber",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       // width: 120,
@@ -124,36 +125,40 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span
-              onClick={async () => {
-                await self.props.finance.getCurrentDeposit(record.id);
-                self.setState({
-                  initStatus: self.props.finance.currentDeposit.status,
-                });
-                self.toggleDepositModal(record.id);
-              }}
-            >
-              补单
-            </span>
+            {permissions.includes("deposit_patch_order") && (
+              <span
+                onClick={async () => {
+                  await self.props.finance.getCurrentDeposit(record.id);
+                  self.setState({
+                    initStatus: self.props.finance.currentDeposit.status
+                  });
+                  self.toggleDepositModal(record.id);
+                }}
+              >
+                补单
+              </span>
+            )}
             <span className="common-list-table-operation-spliter"></span>
-            <Popconfirm
-              title="请问是否确定删除当前记录"
-              onConfirm={async () => {
-                const res = await self.$api.finance.deleteDeposit(record.id);
+            {permissions.includes("delete_deposit") && (
+              <Popconfirm
+                title="请问是否确定删除当前记录"
+                onConfirm={async () => {
+                  const res = await self.$api.finance.deleteDeposit(record.id);
 
-                if (res.status === 204) {
-                  self.getDataList(self.props.finance.filterDeposit);
-                } else {
-                  self.$msg.error(res.data.message);
-                }
-              }}
-              onCancel={() => {}}
-            >
-              <span>删除</span>
-            </Popconfirm>
+                  if (res.status === 204) {
+                    self.getDataList(self.props.finance.filterDeposit);
+                  } else {
+                    self.$msg.error(res.data.message);
+                  }
+                }}
+                onCancel={() => {}}
+              >
+                <span>删除</span>
+              </Popconfirm>
+            )}
           </div>
         );
-      },
+      }
     }
   ];
 
@@ -165,7 +170,7 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
-    },
+    }
   };
 
   return {
@@ -174,7 +179,7 @@ const config = self => {
       title: () => (
         <Button
           type="primary"
-          style={{ display: "none", }}
+          style={{ display: "none" }}
           onClick={() => {
             self.props.finance.setCurrentDeposit({}, true, false);
             self.toggleDepositModal();
@@ -183,7 +188,7 @@ const config = self => {
           <Icon type="plus" />
           添加
         </Button>
-      ),
+      )
     },
     searcher: {
       batchControl: {
@@ -192,12 +197,12 @@ const config = self => {
         options: [
           {
             title: "删除",
-            value: "delete",
+            value: "delete"
           }
         ],
         onBatch: value => {
           self.onBatch(value);
-        },
+        }
       },
       widgets: [
         [
@@ -211,7 +216,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           },
           {
             type: "Input",
@@ -223,7 +228,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           }
         ],
         {
@@ -236,7 +241,7 @@ const config = self => {
           },
           onPressEnter(evt) {
             self.onSearch();
-          },
+          }
         },
         {
           type: "Input",
@@ -248,31 +253,31 @@ const config = self => {
           },
           onPressEnter(evt) {
             self.onSearch();
-          },
+          }
         },
         {
           type: "RangePicker",
           label: "提交时间",
           placeholder: ["开始日期", "结束日期"],
-          showTime: { format: "HH:mm:ss", },
+          showTime: { format: "HH:mm:ss" },
           format: FORMAT_TIME,
           alias: [1, 7, 30],
           value: self.state.createDateRange || [],
           onChange(value) {
             self.onDateRangeChange("create", value);
-          },
+          }
         },
         {
           type: "RangePicker",
           label: "回执时间",
           placeholder: ["开始日期", "结束日期"],
-          showTime: { format: "HH:mm:ss", },
+          showTime: { format: "HH:mm:ss" },
           format: FORMAT_TIME,
           alias: [1, 7, 30],
           value: self.state.notifyDateRange || [],
           onChange(value) {
             self.onDateRangeChange("notify", value);
-          },
+          }
         }
       ],
       onSearch() {
@@ -280,26 +285,26 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      },
+      }
     },
     table: {
       rowKey: "id",
       // rowSelection,
       bordered: true,
       title: () => {
-        const { total_amount, } = self.props.finance.depositListMeta;
+        const { total_amount } = self.props.finance.depositListMeta;
 
         return (
-          <Row style={{ marginBottom: 10, fontSize: 14, }}>
+          <Row style={{ marginBottom: 10, fontSize: 14 }}>
             <Col span={3}>
-              <span style={{ fontWeight: 500, }}>充值总金额：</span>
-              <span style={{ color: "red", }}>
+              <span style={{ fontWeight: 500 }}>充值总金额：</span>
+              <span style={{ color: "red" }}>
                 {total_amount && total_amount.expect_total_amount}
               </span>
             </Col>
             <Col span={3}>
-              <span style={{ fontWeight: 500, }}>支付总金额：</span>
-              <span style={{ color: "red", }}>
+              <span style={{ fontWeight: 500 }}>支付总金额：</span>
+              <span style={{ color: "red" }}>
                 {total_amount && total_amount.actual_total_amount}
               </span>
             </Col>
@@ -312,7 +317,7 @@ const config = self => {
       onChange(pagination, filters, sorter) {
         const payload: any = {
           current_page: pagination.current,
-          page_size: pagination.pageSize,
+          page_size: pagination.pageSize
         };
 
         if (!utils.isEmpty(filters)) {
@@ -333,14 +338,14 @@ const config = self => {
 
         self.setState(
           {
-            currentPage: pagination.current,
+            currentPage: pagination.current
           },
           () => {
             self.getDataList(self.props.finance.filterDeposit);
           }
         );
-      },
-    },
+      }
+    }
   };
 };
 

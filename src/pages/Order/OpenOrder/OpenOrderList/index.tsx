@@ -95,8 +95,8 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
   private onReset = async () => {
     // @ts-ignore
     this.getDataList({
-      name: undefined,
       page: 1,
+      ...(utils.resetFilter(this.state.tempFilter)),
     });
     this.setState({
       tempFilter: {},

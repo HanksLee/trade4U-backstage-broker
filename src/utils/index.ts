@@ -187,9 +187,13 @@ function randomNum(minNum, maxNum) {
   }
 }
 
-// export const coordinate = {
-
-// };
+function resetFilter(filter) {
+  const resetedFilter = Object.assign({}, filter);
+  Object.keys(filter).forEach((name: string) => {
+    resetedFilter[name] = undefined;
+  });
+  return resetedFilter;
+}
 
 export default {
   setRootFontSizeFromClient,
@@ -209,4 +213,5 @@ export default {
   removeSpareLF,
   parsePrice,
   randomNum,
+  resetFilter,
 };
