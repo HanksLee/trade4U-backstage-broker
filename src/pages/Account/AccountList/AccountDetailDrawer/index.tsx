@@ -151,7 +151,7 @@ IAccountDetailDrawertate
                 symbolType.map((item, index) => {
                   return (
                     <div>
-                      <span>{`${item.symbol_type_name}交易手数:`}</span>
+                      <span>{`${item.symbol_type_name}交易数:`}</span>
                       <span>{Object.values(metaFund.trading_data)[index]}</span>
                     </div>
                   );

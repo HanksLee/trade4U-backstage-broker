@@ -260,8 +260,8 @@ const config = self => {
         ],
         {
           type: "Input",
-          label: "上级姓名",
-          placeholder: "请输入上级姓名",
+          label: "代理姓名",
+          placeholder: "请输入代理姓名",
           value: self.state.tempFilter.agent_name || undefined,
           onChange(evt) {
             self.onInputChanged("agent_name", evt.target.value);

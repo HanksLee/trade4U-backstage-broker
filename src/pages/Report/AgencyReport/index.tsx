@@ -19,6 +19,8 @@ interface ReportState {
   tempFilter: any;
   total: number;
   agencyStack: any[];
+  symbolType: any[];
+  commissionRuleColumns: any[];
 }
 
 /* eslint new-cap: "off" */
@@ -37,6 +39,8 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
     tempFilter: {},
     total: 0,
     agencyStack: [],
+    symbolType: [],
+    commissionRuleColumns: [],
   };
 
   async componentDidMount() {
@@ -48,6 +52,26 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
       page: filter.page || 1,
     });
   }
+
+  getSymbolType = async () => {
+    const res = await this.$api.product.getGenreList();
+    const columns = [];
+    res.data.results.forEach((item, index) => {
+      columns.push({
+        title: `${item.symbol_type_name}交易数`,
+        // width: 200,
+        render: (_, record) => {
+          let content = Object.values(record.trading_data);
+          let content_ary = content[index];
+          return content_ary;
+        },
+      });
+    });
+    this.setState({
+      commissionRuleColumns: columns,
+      symbolType: res.data.results,
+    });
+  };
 
   getDataList = async (filter?: any) => {
     const payload = filter
@@ -65,12 +89,17 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
       username: payload.username,
       phone: payload.phone,
     });
-    this.setState({
-      dataList: results,
-      totalData: total_data,
-      tableLoading: false,
-      total: count,
-    });
+    this.setState(
+      {
+        dataList: results,
+        totalData: total_data,
+        tableLoading: false,
+        total: count,
+      },
+      () => {
+        this.getSymbolType();
+      }
+    );
   };
 
   // @ts-ignore
@@ -116,7 +145,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
 
   pushAgencyStack = (username: string) => {
     this.handleAgencyStackChange(username);
-  }
+  };
 
   handleAgencyStackChange = (username: string, index?: number) => {
     this.getDataList({
@@ -132,7 +161,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
         agencyStack: this.state.agencyStack.filter((item, i) => i <= index),
       });
     }
-  }
+  };
 
   resetAgencyStack = () => {
     this.getDataList({
@@ -142,89 +171,76 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
     this.setState({
       agencyStack: [],
     });
-  }
+  };
 
   render() {
-    const { agencyStack, totalData, } = this.state;
+    const { agencyStack, totalData, symbolType, } = this.state;
     return (
       <div className="agency-report">
         <CommonHeader {...this.props} links={[]} title="代理团队报表" />
-        <Row gutter={8} style={{ margin: '10px', }}>
+        <Row gutter={8} style={{ margin: "10px", }}>
           <Col span={4}>
             <Card>
-              <Statistic
-                title="入金"
-                value={totalData.deposit}
-              />
+              <Statistic title="入金" value={totalData.deposit} />
             </Card>
           </Col>
           <Col span={4}>
             <Card>
-              <Statistic
-                title="出金"
-                value={totalData.net_withdraw}
-              />
+              <Statistic title="出金" value={totalData.net_withdraw} />
             </Card>
-          </Col><Col span={4}>
+          </Col>
+          <Col span={4}>
             <Card>
-              <Statistic
-                title="净入金"
-                value={totalData.net_deposit}
-              />
+              <Statistic title="净入金" value={totalData.net_deposit} />
             </Card>
-          </Col><Col span={4}>
+          </Col>
+          {/* <Col span={4}>
             <Card>
-              <Statistic
-                title="盈利笔数"
-                value={totalData.profitable_order}
-              />
+              <Statistic title="盈利笔数" value={totalData.profitable_order} />
             </Card>
-          </Col><Col span={4}>
+          </Col>
+          <Col span={4}>
             <Card>
-              <Statistic
-                title="亏损笔数"
-                value={totalData.loss_order}
-              />
+              <Statistic title="亏损笔数" value={totalData.loss_order} />
             </Card>
-          </Col><Col span={4}>
+          </Col> */}
+          {symbolType.map((item, index) => {
+            return (
+              <Col span={4}>
+                <Card>
+                  <Statistic
+                    title={`${item.symbol_type_name}交易数`}
+                    value={Object.values(totalData.trading_data)[index]}
+                  />
+                </Card>
+              </Col>
+            );
+          })}
+          <Col span={4}>
             <Card>
-              <Statistic
-                title="手续费"
-                value={totalData.fee}
-              />
+              <Statistic title="手续费" value={totalData.fee} />
             </Card>
           </Col>
         </Row>
-        <Row gutter={8} style={{ margin: '10px', }}>
+        <Row gutter={8} style={{ margin: "10px", }}>
           <Col span={4}>
             <Card>
-              <Statistic
-                title="库存费"
-                value={totalData.swaps}
-              />
-            </Card>
-          </Col><Col span={4}>
-            <Card>
-              <Statistic
-                title="盈亏"
-                value={totalData.profit}
-              />
+              <Statistic title="库存费" value={totalData.swaps} />
             </Card>
           </Col>
           <Col span={4}>
             <Card>
-              <Statistic
-                title="已返佣金"
-                value={totalData.commission}
-              />
+              <Statistic title="盈亏" value={totalData.profit} />
             </Card>
           </Col>
           <Col span={4}>
             <Card>
-              <Statistic
-                title="总佣金"
-                value={totalData.total_commission}
-              />
+              <Statistic title="已返佣金" value={totalData.commission} />
+            </Card>
+          </Col>
+          <Col span={4}>
+            <Card>
+              <Statistic title="总佣金" value={totalData.total_commission} />
             </Card>
           </Col>
           <Col span={4}>
@@ -237,24 +253,26 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
           </Col>
         </Row>
         <div className="agency-stack">
-          {
-            agencyStack.length > 0 && '当前层级：'
-          }
-          {
-            agencyStack.map((username, index) => {
-              return (
-                <>
-                  {index > 0 && ' / '}
-                  <a onClick={() => this.handleAgencyStackChange(username, index)}>{username}</a>
-                </>
-              );
-            })
-          }
-          {
-            agencyStack.length > 0 && (
-              <Icon type="close-circle" style={{ marginLeft: '20px', fontSize: '14px', }} onClick={this.resetAgencyStack} />
-            )
-          }
+          {agencyStack.length > 0 && "当前层级："}
+          {agencyStack.map((username, index) => {
+            return (
+              <>
+                {index > 0 && " / "}
+                <a
+                  onClick={() => this.handleAgencyStackChange(username, index)}
+                >
+                  {username}
+                </a>
+              </>
+            );
+          })}
+          {agencyStack.length > 0 && (
+            <Icon
+              type="close-circle"
+              style={{ marginLeft: "20px", fontSize: "14px", }}
+              onClick={this.resetAgencyStack}
+            />
+          )}
         </div>
         <CommonList {...this.props} config={listConfig(this)} />
       </div>

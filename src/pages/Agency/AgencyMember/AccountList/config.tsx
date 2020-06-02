@@ -135,16 +135,16 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            {
-              permissions.includes('edit_agent') && <span onClick={e => self.goToEditor(e, record.id)}>编辑</span>
-            }
+            {permissions.includes("edit_agent") && (
+              <span onClick={e => self.goToEditor(e, record.id)}>编辑</span>
+            )}
             <span className="common-list-table-operation-spliter"></span>
-            {
-              permissions.includes('jump_agent') && <span onClick={e => self.jumpToAgentAdmin(record.id)}>跳转</span>
-            }
+            {permissions.includes("jump_agent") && (
+              <span onClick={e => self.jumpToAgentAdmin(record.id)}>跳转</span>
+            )}
             <span className="common-list-table-operation-spliter"></span>
-            {
-              permissions.includes('agent_commission_settings') &&             <span
+            {permissions.includes("agent_commission_settings") && (
+              <span
                 onClick={e => {
                   const url = `/dashboard/agency/agent/rebate-editor?id=${
                     !utils.isEmpty(record) ? record.id : 0
@@ -152,12 +152,12 @@ const config = self => {
                   self.props.history.push(url);
                 }}
               >
-              返佣设置
+                返佣设置
               </span>
-            }
+            )}
             <span className="common-list-table-operation-spliter"></span>
-            {
-              permissions.includes('agent_distribute_customers') &&             <span
+            {permissions.includes("agent_distribute_customers") && (
+              <span
                 onClick={e => {
                   self.setState({
                     selectedRowKeys: [record.id],
@@ -165,12 +165,12 @@ const config = self => {
                   });
                 }}
               >
-              分配客户组
+                分配客户组
               </span>
-            }
+            )}
             <span className="common-list-table-operation-spliter"></span>
-            {
-              permissions.includes('agent_transfer') && <span
+            {permissions.includes("agent_transfer") && (
+              <span
                 onClick={e => {
                   self.setState({
                     isShowAgentModal: true,
@@ -178,19 +178,19 @@ const config = self => {
                   });
                 }}
               >
-              移交划转
+                移交划转
               </span>
-            }
+            )}
             <span className="common-list-table-operation-spliter"></span>
-            {
-              permissions.includes('delete_agent') && <Popconfirm
+            {permissions.includes("delete_agent") && (
+              <Popconfirm
                 title="请问是否确定删除代理商"
                 onConfirm={() => self.deleteAccount(record.id)}
                 onCancel={() => {}}
               >
                 <span>删除</span>
               </Popconfirm>
-            }
+            )}
           </div>
         );
       },
@@ -217,13 +217,11 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => {
-        return permissions.includes('add_agent')
-          ? (
-            <Button type="primary" onClick={() => self.goToEditor()}>
-              <Icon type="plus" /> 添加
-            </Button>
-          )
-          : null;
+        return permissions.includes("add_agent") ? (
+          <Button type="primary" onClick={() => self.goToEditor()}>
+            <Icon type="plus" /> 添加
+          </Button>
+        ) : null;
       },
     },
     searcher: {
@@ -269,8 +267,8 @@ const config = self => {
         ],
         {
           type: "Input",
-          label: "上级姓名",
-          placeholder: "请输入上级姓名",
+          label: "代理姓名",
+          placeholder: "请输入代理姓名",
           value: self.state.tempFilterAgent.agent_name || undefined,
           onChange(evt) {
             self.onInputChanged("agent_name", evt.target.value);

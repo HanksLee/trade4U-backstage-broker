@@ -32,6 +32,14 @@ const config = self => {
       },
     },
     {
+      title: "代理",
+      // width: 100,
+      dataIndex: "agent_name",
+      render: (text, record) => {
+        return text || "--";
+      },
+    },
+    {
       title: "相关订单号",
       // width: 100,
       dataIndex: "order_number",
@@ -199,8 +207,8 @@ const config = self => {
 
         {
           type: "Input",
-          label: "上级姓名",
-          placeholder: "请输入上级姓名",
+          label: "代理姓名",
+          placeholder: "请输入代理姓名",
           value: self.state.agent_name || undefined,
           onChange(evt) {
             self.onInputChanged("agent_name", evt.target.value);

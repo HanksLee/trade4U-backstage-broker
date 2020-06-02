@@ -54,7 +54,7 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
     const columns = [];
     res.data.results.forEach((item, index) => {
       columns.push({
-        title: `${item.symbol_type_name}交易手数`,
+        title: `${item.symbol_type_name}交易数`,
         // width: 200,
         render: (_, record) => {
           let content = Object.values(record.trading_data);
@@ -171,7 +171,7 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
               <Col span={3}>
                 <Card>
                   <Statistic
-                    title={`${item.symbol_type_name}交易手数`}
+                    title={`${item.symbol_type_name}交易数`}
                     value={Object.values(totalData.trading_data)[index]}
                   />
                 </Card>

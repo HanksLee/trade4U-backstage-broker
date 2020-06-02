@@ -90,6 +90,14 @@ const config = self => {
       },
     },
     {
+      title: "代理姓名",
+      width: 140,
+      dataIndex: "agent_name",
+      render: (text, record) => {
+        return text || "--";
+      },
+    },
+    {
       title: "审核状态",
       width: 100,
       dataIndex: "review_status",
@@ -218,21 +226,21 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            {
-              permissions.includes('withdraw_record') && <span
+            {permissions.includes("withdraw_record") && (
+              <span
                 onClick={() => {
                   self.props.finance.getCurrentWithdraw(record.id);
                   self.props.finance.setInitWithdrawStatus(record.remit_status);
                   self.toggleWithdrawModal();
                 }}
               >
-              划款登记
+                划款登记
               </span>
-            }
+            )}
 
             <span className="common-list-table-operation-spliter"></span>
-            {
-              permissions.includes('delete_withdraw') && <Popconfirm
+            {permissions.includes("delete_withdraw") && (
+              <Popconfirm
                 title="请问是否确定删除当前记录"
                 onConfirm={async () => {
                   const res = await self.$api.finance.deleteWithdraw(record.id);
@@ -247,7 +255,7 @@ const config = self => {
               >
                 <span>删除</span>
               </Popconfirm>
-            }
+            )}
           </div>
         );
       },
@@ -358,8 +366,8 @@ const config = self => {
         ],
         {
           type: "Input",
-          label: "上级姓名",
-          placeholder: "请输入上级姓名",
+          label: "代理姓名",
+          placeholder: "请输入代理姓名",
           value: self.state.agent_name || undefined,
           onChange(evt) {
             self.onInputChanged("agent_name", evt.target.value);

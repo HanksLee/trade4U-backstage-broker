@@ -22,7 +22,7 @@ interface IEditSMSChannelModalProps {
 
 interface IEditSMSChannelModalState {
   confirmLoading: boolean;
-  editorContent: string;
+  // editorContent: string;
   extra_params: string;
 }
 
@@ -36,7 +36,7 @@ IEditSMSChannelModalState
 > {
   state = {
     confirmLoading: false,
-    editorContent: "",
+    // editorContent: "",
     extra_params: "",
   };
 
@@ -57,9 +57,9 @@ IEditSMSChannelModalState
     }
   };
 
-  getEditorContent = val => {
-    this.setState({ editorContent: val, });
-  };
+  // getEditorContent = val => {
+  //   this.setState({ editorContent: val, });
+  // };
 
   extraParamsCheck = (rule, value, callback) => {
     let startWord = 0;
@@ -95,7 +95,7 @@ IEditSMSChannelModalState
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
         const { smsChannel, onOk, } = this.props;
-        const { editorContent, } = this.state;
+        // const { editorContent, } = this.state;
 
         const extra_params = {};
 
@@ -117,8 +117,12 @@ IEditSMSChannelModalState
           extra_params: JSON.stringify(extra_params),
         };
 
-        if (!utils.isEmpty(editorContent)) {
-          payload.description = editorContent;
+        // if (!utils.isEmpty(editorContent)) {
+        //   payload.description = editorContent;
+        // }
+
+        if (!utils.isEmpty(values.description)) {
+          payload.description = values.description;
         }
 
         this.setState({
@@ -168,7 +172,7 @@ IEditSMSChannelModalState
         onOk={this.handleSubmit}
         onCancel={onCancel}
         confirmLoading={confirmLoading}
-        width="70%"
+        // width="70%"
       >
         <Form className="editor-form">
           <FormItem label="类型" {...getFormItemLayout(3, 12)} required>
@@ -184,7 +188,7 @@ IEditSMSChannelModalState
             })(<Input placeholder="请输入API Key" />)}
           </FormItem>
           {!smsChannel && (
-            <FormItem label="是否启用" {...getFormItemLayout(3, 13)}>
+            <FormItem label="是否启用" {...getFormItemLayout(3, 12)}>
               {getFieldDecorator("status", {
                 initialValue: false,
                 valuePropName: "checked",
@@ -202,15 +206,16 @@ IEditSMSChannelModalState
               validateTrigger: "onBlur",
             })(<Input placeholder="请输入额外参数，如：abc:123;def:456;" />)}
           </FormItem>
-          <FormItem label="描述" {...getFormItemLayout(3, 19)}>
+          <FormItem label="描述" {...getFormItemLayout(3, 12)}>
             {getFieldDecorator("description", {
               initialValue: (smsChannel && smsChannel.description) || "",
               // rules: [{ required: true, message: "分類名稱不能為空" }]
             })(
-              <Editor
-                getEditorContent={this.getEditorContent}
-                setEditorContent={(smsChannel && smsChannel.description) || ""}
-              />
+              <Input placeholder="请输入描述" />
+              // <Editor
+              //   getEditorContent={this.getEditorContent}
+              //   setEditorContent={(smsChannel && smsChannel.description) || ""}
+              // />
             )}
           </FormItem>
         </Form>

@@ -17,17 +17,22 @@ const deleteProduct = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/broker/symbol/${id}`, config);
 
 const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/broker/symbol_type", config);
+  API.get("/broker/symbol_type?status=1", config);
 
-const getTransactionModeOptions = (config) => API.get('/constant/system_symbol_transaction_mode_choices', config);
+const getTransactionModeOptions = config =>
+  API.get("/constant/system_symbol_transaction_mode_choices", config);
 
-const getBgColorOptions = (config) => API.get('/constant/background_color_choices', config);
+const getBgColorOptions = config =>
+  API.get("/constant/background_color_choices", config);
 
-const getProfitOptioins = (config) => API.get('/constant/system_profit_currency_choices', config);
+const getProfitOptioins = config =>
+  API.get("/constant/system_profit_currency_choices", config);
 
-const getMarginCurrencyOptions = (config) => API.get('/constant/system_margin_currency_choices', config);
+const getMarginCurrencyOptions = config =>
+  API.get("/constant/system_margin_currency_choices", config);
 
-const getOrderModeOptions = (config) => API.get('/constant/system_symbol_order_mode_choices', config);
+const getOrderModeOptions = config =>
+  API.get("/constant/system_symbol_order_mode_choices", config);
 
 const getRuleList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/profit_rule", config);
