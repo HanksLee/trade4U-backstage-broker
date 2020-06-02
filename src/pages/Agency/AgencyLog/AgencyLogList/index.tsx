@@ -17,7 +17,7 @@ export interface ILogListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/agency/log", { exact: false })
+@WithRoute("/dashboard/agency/log", { exact: false, })
 @inject("common", "agency")
 @observer
 export default class LogList extends BaseReact<ILogListProps, ILogListState> {
@@ -32,13 +32,13 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
     order_number: undefined,
     agent_name: undefined,
     createDateRange: [],
-    transferDateRange: []
+    transferDateRange: [],
   };
 
   async componentDidMount() {
     // @todo 这里需要从 commonStore 中设置默认的分页
     const {
-      paginationConfig: { defaultPageSize, defaultCurrent }
+      paginationConfig: { defaultPageSize, defaultCurrent, },
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
@@ -53,16 +53,16 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   getDataList = (payload = {}) => {
     this.setState(
       {
-        tableLoading: true
+        tableLoading: true,
       },
       async () => {
         this.props.agency.setFilterLog({
-          ...payload
+          ...payload,
         });
         await this.props.agency.getLogList({
-          params: this.props.agency.filterLog
+          params: this.props.agency.filterLog,
         });
-        this.setState({ tableLoading: false });
+        this.setState({ tableLoading: false, });
       }
     );
   };
@@ -70,11 +70,11 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   resetPagination = async (page_size, current_page) => {
     this.props.agency.setFilterLog({
       page_size,
-      current_page
+      current_page,
     });
     this.setState(
       {
-        current_page
+        current_page,
       },
       async () => {
         const filter = this.props.agency.filterLog;
@@ -86,11 +86,11 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   // @ts-ignore
   private onSearch = async () => {
     this.props.agency.setFilterLog({
-      current_page: 1
+      current_page: 1,
     });
     this.setState(
       {
-        currentPage: 1
+        currentPage: 1,
       },
       () => {
         this.getDataList(this.props.agency.filterLog);
@@ -101,7 +101,7 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   private onReset = async () => {
     // @ts-ignore
     const filter: any = {
-      current_page: 1
+      current_page: 1,
     };
 
     this.props.agency.setFilterLog(filter, true);
@@ -113,7 +113,7 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
         phone: undefined,
         order_number: undefined,
         createDateRange: [],
-        transferDateRange: []
+        transferDateRange: [],
       },
       () => {
         this.getDataList(this.props.agency.filterLog);
@@ -135,20 +135,20 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   onDateRangeChange = (field, dateRange) => {
     this.props.agency.setFilterLog({
       [`${field}_start_time`]: dateRange[0].unix(),
-      [`${field}_end_time`]: dateRange[1].unix()
+      [`${field}_end_time`]: dateRange[1].unix(),
     });
 
     this.setState({
-      [`${field}DateRange`]: dateRange
+      [`${field}DateRange`]: dateRange,
     });
   };
 
   onInputChanged = (field, value) => {
     this.setState({
-      [field]: value
+      [field]: value,
     });
     this.props.agency.setFilterLog({
-      [field]: value ? value : undefined
+      [field]: value ? value : undefined,
     });
   };
 
@@ -156,9 +156,9 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   private onBatch = async value => {};
 
   render() {
-    const { match } = this.props;
+    const { match, } = this.props;
     const computedTitle = "返佣日志";
-    const { logModalVisible } = this.state;
+    const { logModalVisible, } = this.state;
 
     return (
       <div>

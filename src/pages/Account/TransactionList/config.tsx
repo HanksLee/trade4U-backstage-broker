@@ -8,23 +8,23 @@ const config = self => {
       title: "客户名称",
       dataIndex: "username",
       width: 150,
-      fixed: "left"
+      fixed: "left",
     },
     {
       title: "手机号",
       dataIndex: "phone",
-      width: 150
+      width: 150,
     },
     {
       title: "明细类型",
       dataIndex: "cause",
       ellipsis: true,
-      width: 150
+      width: 150,
     },
     {
       title: "原有余额",
       dataIndex: "before_balance",
-      width: 150
+      width: 150,
     },
     {
       title: "变动金额",
@@ -34,38 +34,38 @@ const config = self => {
         return text == 0 ? (
           0
         ) : record.in_or_out === 0 ? (
-          <span style={{ color: "red" }}>{`-${text}`}</span>
+          <span style={{ color: "red", }}>{`-${text}`}</span>
         ) : (
-          <span style={{ color: "green" }}>{`+${text}`}</span>
+          <span style={{ color: "green", }}>{`+${text}`}</span>
         );
-      }
+      },
     },
     {
       title: "现有余额",
       dataIndex: "after_balance",
-      width: 150
+      width: 150,
     },
     {
       title: "相关订单",
       dataIndex: "order_number",
-      width: 200
+      width: 200,
     },
     {
       title: "创建时间",
       dataIndex: "create_time",
       width: 200,
-      render: text => moment(text * 1000).format("YYYY-MM-DD: hh:mm:ss")
+      render: text => moment(text * 1000).format("YYYY-MM-DD: hh:mm:ss"),
     },
     {
       title: "ip",
       dataIndex: "ip",
-      width: 150
+      width: 150,
     },
     {
       title: "备注",
       dataIndex: "remarks",
       ellipsis: true,
-      width: 200
+      width: 200,
     }
   ];
 
@@ -78,9 +78,9 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
-        page: current
+        page: current,
       });
-    }
+    },
   };
 
   return {
@@ -98,7 +98,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           },
           {
             type: "Input",
@@ -111,7 +111,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           },
           {
             type: "Input",
@@ -124,7 +124,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           }
         ],
         {
@@ -137,7 +137,7 @@ const config = self => {
           },
           onPressEnter(evt) {
             self.onSearch();
-          }
+          },
         },
         [
           {
@@ -150,7 +150,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           },
           {
             type: "RangePicker",
@@ -167,7 +167,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           }
         ]
       ],
@@ -176,14 +176,14 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      }
+      },
     },
     table: {
       rowKey: "id",
       columns,
       dataSource: self.state.transactionList,
       pagination,
-      scroll: { x: 7 * 150 + 3 * 200 },
+      scroll: { x: 7 * 150 + 3 * 200, },
       onChange(pagination, filters) {
         const payload: any = {};
 
@@ -195,10 +195,10 @@ const config = self => {
 
         self.getDataList({
           page_size: pagination.pageSize,
-          page: pagination.current
+          page: pagination.current,
         });
-      }
-    }
+      },
+    },
   };
 };
 

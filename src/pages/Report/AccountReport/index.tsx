@@ -23,7 +23,7 @@ interface ReportState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/report/account", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/report/account"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/report/account"],
 })
 @inject("common", "accountReport")
 @observer
@@ -36,16 +36,16 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
     tempFilter: {},
     total: 0,
     symbolType: [],
-    commissionRuleColumns: []
+    commissionRuleColumns: [],
   };
 
   async componentDidMount() {
-    const { filter } = this.props.accountReport;
-    const { paginationConfig } = this.props.common;
+    const { filter, } = this.props.accountReport;
+    const { paginationConfig, } = this.props.common;
 
     this.getDataList({
       page_size: filter.page_size || paginationConfig.defaultPageSize,
-      page: filter.page || 1
+      page: filter.page || 1,
     });
   }
 
@@ -60,41 +60,41 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
           let content = Object.values(record.trading_data);
           let content_ary = content[index];
           return content_ary;
-        }
+        },
       });
     });
     this.setState({
       commissionRuleColumns: columns,
-      symbolType: res.data.results
+      symbolType: res.data.results,
     });
   };
 
   getDataList = async (filter?: any) => {
     const payload = filter
-      ? { ...this.props.accountReport.filter, ...filter }
+      ? { ...this.props.accountReport.filter, ...filter, }
       : this.props.accountReport.filter;
     this.setState({
-      tableLoading: true
+      tableLoading: true,
     });
 
-    const res = await this.$api.report.getAccountReport({ params: payload });
-    const { results, total_data, page_size, current_page, count } = res.data;
+    const res = await this.$api.report.getAccountReport({ params: payload, });
+    const { results, total_data, page_size, current_page, count, } = res.data;
     if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
-      this.getDataList({ ...payload, page: current_page - 1 });
+      this.getDataList({ ...payload, page: current_page - 1, });
     } else {
       this.props.accountReport.setFilter({
         page_size,
         page: current_page,
         username: payload.username,
-        phone: payload.username
+        phone: payload.username,
       });
       this.setState(
         {
           dataList: results,
           totalData: total_data,
           tableLoading: false,
-          total: count
+          total: count,
         },
         () => {
           this.getSymbolType();
@@ -107,7 +107,7 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
   private onSearch = async () => {
     const filter: any = {
       page: 1,
-      ...this.state.tempFilter
+      ...this.state.tempFilter,
     };
 
     this.getDataList(filter);
@@ -119,10 +119,10 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
     this.getDataList({
       username: undefined,
       phone: undefined,
-      page: 1
+      page: 1,
     });
     this.setState({
-      tempFilter: {}
+      tempFilter: {},
     });
   };
 
@@ -130,17 +130,17 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
     this.setState((prevState: ReportState) => ({
       tempFilter: {
         ...prevState.tempFilter,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
   render() {
-    const { totalData, symbolType } = this.state;
+    const { totalData, symbolType, } = this.state;
     return (
       <div className="account-report">
         <CommonHeader {...this.props} links={[]} title="用户报表" />
-        <Row gutter={8} style={{ margin: "10px" }}>
+        <Row gutter={8} style={{ margin: "10px", }}>
           <Col span={3}>
             <Card>
               <Statistic title="入金" value={totalData.deposit} />

@@ -28,8 +28,8 @@ interface IAccountDetailDrawertate {
 }
 
 export default class AccountDetailModal extends BaseReact<
-  IAccountDetailDrawerProps,
-  IAccountDetailDrawertate
+IAccountDetailDrawerProps,
+IAccountDetailDrawertate
 > {
   state: IAccountDetailDrawertate = {
     accountDetail: null,
@@ -38,7 +38,7 @@ export default class AccountDetailModal extends BaseReact<
     loginLogs: [],
     logLoading: false,
     logHasMore: true,
-    logPage: 1
+    logPage: 1,
   };
 
   componentDidMount() {
@@ -50,14 +50,14 @@ export default class AccountDetailModal extends BaseReact<
   getSymbolType = async () => {
     const res = await this.$api.product.getGenreList();
     this.setState({
-      symbolType: res.data.results
+      symbolType: res.data.results,
     });
   };
 
   getAccountDetail = async () => {
     const res = await this.$api.account.getAccountDetail(this.props.id);
     this.setState({
-      accountDetail: res.data
+      accountDetail: res.data,
     });
   };
 
@@ -65,7 +65,7 @@ export default class AccountDetailModal extends BaseReact<
     const res = await this.$api.account.getAccountMetaFund(this.props.id);
     this.setState(
       {
-        metaFund: res.data
+        metaFund: res.data,
       },
       () => {
         this.getSymbolType();
@@ -75,16 +75,16 @@ export default class AccountDetailModal extends BaseReact<
 
   getAccountLoginLog = async (page = 1) => {
     this.setState({
-      logLoading: true
+      logLoading: true,
     });
     const res = await this.$api.account.getAccountLoginLog(this.props.id, {
-      params: { page_size: 10, page }
+      params: { page_size: 10, page, },
     });
     this.setState({
       loginLogs: [...this.state.loginLogs, ...res.data.results],
       logLoading: false,
       logHasMore: !!res.data.next,
-      logPage: res.data.current_page
+      logPage: res.data.current_page,
     });
   };
 
@@ -100,7 +100,7 @@ export default class AccountDetailModal extends BaseReact<
       logLoading,
       logHasMore,
       loginLogs,
-      symbolType
+      symbolType,
     } = this.state;
 
     return (
@@ -111,11 +111,11 @@ export default class AccountDetailModal extends BaseReact<
         visible={true}
         onClose={props.onClose}
         width={900}
-        bodyStyle={{ padding: "20px" }}
+        bodyStyle={{ padding: "20px", }}
       >
-        <h3 style={{ marginBottom: "15px" }}>{props.name}</h3>
+        <h3 style={{ marginBottom: "15px", }}>{props.name}</h3>
         {metaFund && (
-          <div className="meta-fund" style={{ marginBottom: "25px" }}>
+          <div className="meta-fund" style={{ marginBottom: "25px", }}>
             <div>
               <div>
                 <span>资金余额:</span>
@@ -193,7 +193,7 @@ export default class AccountDetailModal extends BaseReact<
         )}
         <Row gutter={12}>
           <Col span={12}>
-            <Card size="small" title="个人资料" style={{ height: "280px" }}>
+            <Card size="small" title="个人资料" style={{ height: "280px", }}>
               {accountDetail && (
                 <div className="account-detail-list">
                   <p>
@@ -232,7 +232,7 @@ export default class AccountDetailModal extends BaseReact<
             <Card
               size="small"
               title="最近登录"
-              style={{ height: "280px", overflow: "scroll" }}
+              style={{ height: "280px", overflow: "scroll", }}
             >
               <InfiniteScroll
                 initialLoad={false}

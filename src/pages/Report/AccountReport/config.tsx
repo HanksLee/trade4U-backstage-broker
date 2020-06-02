@@ -5,27 +5,27 @@ const config = self => {
   const columns = [
     {
       title: "用户名",
-      dataIndex: "username"
+      dataIndex: "username",
     },
     {
       title: "手机号",
-      dataIndex: "phone"
+      dataIndex: "phone",
     },
     {
       title: "上级",
-      dataIndex: "agent_name"
+      dataIndex: "agent_name",
     },
     {
       title: "入金",
-      dataIndex: "deposit"
+      dataIndex: "deposit",
     },
     {
       title: "出金",
-      dataIndex: "net_withdraw"
+      dataIndex: "net_withdraw",
     },
     {
       title: "净入金",
-      dataIndex: "net_deposit"
+      dataIndex: "net_deposit",
     },
     // {
     //   title: "盈利笔数",
@@ -38,15 +38,15 @@ const config = self => {
     ...self.state.commissionRuleColumns,
     {
       title: "手续费",
-      dataIndex: "fee"
+      dataIndex: "fee",
     },
     {
       title: "库存费",
-      dataIndex: "swaps"
+      dataIndex: "swaps",
     },
     {
       title: "盈亏",
-      dataIndex: "profit"
+      dataIndex: "profit",
     }
   ];
 
@@ -59,9 +59,9 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
-        page: current
+        page: current,
       });
-    }
+    },
   };
 
   return {
@@ -79,7 +79,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           },
           {
             type: "Input",
@@ -92,7 +92,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           }
         ],
         {
@@ -105,7 +105,7 @@ const config = self => {
           },
           onPressEnter(evt) {
             self.onSearch();
-          }
+          },
         }
       ],
       onSearch() {
@@ -113,7 +113,7 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      }
+      },
     },
     table: {
       rowKey: "id",
@@ -131,10 +131,10 @@ const config = self => {
 
         self.getDataList({
           page_size: pagination.pageSize,
-          page: pagination.current
+          page: pagination.current,
         });
-      }
-    }
+      },
+    },
   };
 };
 

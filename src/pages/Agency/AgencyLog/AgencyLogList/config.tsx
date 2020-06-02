@@ -6,12 +6,12 @@ import moment from "moment";
 import { FORMAT_TIME } from "constant";
 
 const config = self => {
-  const { selectedRowKeys } = self.state;
+  const { selectedRowKeys, } = self.state;
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
-      self.setState({ selectedRowKeys: selectedRowKeys });
-    }
+      self.setState({ selectedRowKeys: selectedRowKeys, });
+    },
   };
 
   const columns = [
@@ -21,7 +21,7 @@ const config = self => {
       dataIndex: "username",
       render: (text, record) => {
         return text || "--";
-      }
+      },
     },
     {
       title: "客户手机",
@@ -29,7 +29,7 @@ const config = self => {
       dataIndex: "phone",
       render: (text, record) => {
         return text || "--";
-      }
+      },
     },
     {
       title: "交易订单号",
@@ -37,7 +37,7 @@ const config = self => {
       dataIndex: "order_number",
       render: (text, record) => {
         return text || "--";
-      }
+      },
     },
     {
       title: "金额",
@@ -45,7 +45,7 @@ const config = self => {
       dataIndex: "amount",
       render: (text, record) => {
         return text || "--";
-      }
+      },
     },
     {
       title: "结算状态",
@@ -56,19 +56,19 @@ const config = self => {
       render: (text, record) => {
         const statusType = {
           1: "hot",
-          0: "block"
+          0: "block",
         };
         const statusText = {
           1: "已结算",
-          0: "未结算"
+          0: "未结算",
         };
         const styleMap = {
           1: {
-            color: "red"
+            color: "red",
           },
           0: {
-            color: ""
-          }
+            color: "",
+          },
         };
 
         return (
@@ -81,7 +81,7 @@ const config = self => {
             }
           />
         );
-      }
+      },
     },
     {
       title: "交易量",
@@ -89,7 +89,7 @@ const config = self => {
       dataIndex: "trading_volume",
       render: (text, record) => {
         return text || "--";
-      }
+      },
     },
     {
       title: "盈亏",
@@ -97,7 +97,7 @@ const config = self => {
       dataIndex: "profit",
       render: (text, record) => {
         return text || "--";
-      }
+      },
     },
     {
       title: "创建时间",
@@ -105,7 +105,7 @@ const config = self => {
       dataIndex: "create_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
-      }
+      },
     },
     {
       title: "返佣时间",
@@ -113,7 +113,7 @@ const config = self => {
       dataIndex: "transfer_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
-      }
+      },
     }
   ];
 
@@ -129,7 +129,7 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
-    }
+    },
   };
 
   return {
@@ -137,7 +137,7 @@ const config = self => {
     addBtn: {
       title: () => (
         <Button
-          style={{ display: "none" }}
+          style={{ display: "none", }}
           type="primary"
           onClick={() => {
             self.props.agency.setCurrentLog({});
@@ -147,7 +147,7 @@ const config = self => {
           <Icon type="plus" />
           添加
         </Button>
-      )
+      ),
     },
     searcher: {
       batchControl: {
@@ -156,12 +156,12 @@ const config = self => {
         options: [
           {
             title: "删除",
-            value: "delete"
+            value: "delete",
           }
         ],
         onBatch: value => {
           self.onBatch(value);
-        }
+        },
       },
       widgets: [
         [
@@ -175,7 +175,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           },
           {
             type: "Input",
@@ -187,7 +187,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           },
           {
             type: "Input",
@@ -199,7 +199,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           }
         ],
 
@@ -213,31 +213,31 @@ const config = self => {
           },
           onPressEnter(evt) {
             self.onSearch();
-          }
+          },
         },
         {
           type: "RangePicker",
           label: "创建时间",
           placeholder: ["开始日期", "结束日期"],
-          showTime: { format: "HH:mm:ss" },
+          showTime: { format: "HH:mm:ss", },
           format: FORMAT_TIME,
           alias: [1, 7, 30],
           value: self.state.createDateRange || [],
           onChange(value) {
             self.onDateRangeChange("create", value);
-          }
+          },
         },
         {
           type: "RangePicker",
           label: "返佣时间",
           placeholder: ["开始日期", "结束日期"],
-          showTime: { format: "HH:mm:ss" },
+          showTime: { format: "HH:mm:ss", },
           format: FORMAT_TIME,
           alias: [1, 7, 30],
           value: self.state.transferDateRange || [],
           onChange(value) {
             self.onDateRangeChange("transfer", value);
-          }
+          },
         }
       ],
       onSearch() {
@@ -245,12 +245,12 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      }
+      },
     },
     table: {
       rowKey: "id",
       // rowSelection,
-      scroll: { x: columnsWidth },
+      scroll: { x: columnsWidth, },
       // tableLayout: 'fixed',
       columns,
       dataSource: self.props.agency.logList,
@@ -258,7 +258,7 @@ const config = self => {
       onChange(pagination, filters, sorter) {
         const payload: any = {
           current_page: pagination.current,
-          page_size: pagination.pageSize
+          page_size: pagination.pageSize,
         };
 
         if (!utils.isEmpty(filters)) {
@@ -279,14 +279,14 @@ const config = self => {
 
         self.setState(
           {
-            currentPage: pagination.current
+            currentPage: pagination.current,
           },
           () => {
             self.getDataList(self.props.agency.filterLog);
           }
         );
-      }
-    }
+      },
+    },
   };
 };
 
