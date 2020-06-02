@@ -1,82 +1,91 @@
 import * as React from "react";
 import utils from "utils";
 import moment from "moment";
-import { Row, Col } from 'antd';
+import { Row, Col } from "antd";
 
 const config = self => {
   const getOrder = () => {
-    return self.state.status === 'open' ? self.props.openOrder : self.props.closeOrder;
+    return self.state.status === "open"
+      ? self.props.openOrder
+      : self.props.closeOrder;
   };
 
   const columns: any = [
     {
-      title: '订单号',
-      dataIndex: 'order_number',
+      title: "订单号",
+      dataIndex: "order_number",
       render: (text, record) => {
-        return <a className="link" onClick={() => self.goToOrderDetail(record)}>{text}</a>;
-      },
+        return (
+          <a className="link" onClick={() => self.goToOrderDetail(record)}>
+            {text}
+          </a>
+        );
+      }
     },
     {
-      title: '用户名',
-      dataIndex: 'username',
+      title: "用户名",
+      dataIndex: "username"
     },
     {
-      title: '手机号',
-      dataIndex: 'phone',
+      title: "手机号",
+      dataIndex: "phone"
     },
     {
-      title: '产品名称',
-      dataIndex: 'symbol_name',
+      title: "产品名称",
+      dataIndex: "symbol_name"
     },
     {
-      title: '产品代码',
-      dataIndex: 'product_code',
+      title: "产品代码",
+      dataIndex: "product_code"
     },
     {
-      title: '开仓价',
-      dataIndex: 'open_price',
+      title: "开仓价",
+      dataIndex: "open_price"
     },
     {
-      title: '平仓价',
-      dataIndex: 'close_price',
+      title: "平仓价",
+      dataIndex: "close_price"
     },
     {
-      title: '交易手数',
-      dataIndex: 'lots',
+      title: "交易手数",
+      dataIndex: "lots"
     },
     {
-      title: '库存费',
-      dataIndex: 'swaps',
+      title: "库存费",
+      dataIndex: "swaps"
     },
     {
-      title: '税费',
-      dataIndex: 'taxes',
+      title: "税费",
+      dataIndex: "taxes"
     },
     {
-      title: '手续费',
-      dataIndex: 'fee',
+      title: "手续费",
+      dataIndex: "fee"
     },
     {
-      title: '盈亏',
-      dataIndex: 'profit',
+      title: "盈亏",
+      dataIndex: "profit"
     }
   ];
 
-  if (self.state.status === 'open') {
+  if (self.state.status === "open") {
     columns.push({
-      title: '创建时间',
-      dataIndex: 'create_time',
-      render: (text) => moment(text * 1000).format('YYYY-MM-DD hh:mm:ss'),
+      title: "创建时间",
+      dataIndex: "create_time",
+      render: text => moment(text * 1000).format("YYYY-MM-DD hh:mm:ss")
     });
   } else {
-    columns.push({
-      title: '平仓时间',
-      dataIndex: 'close_time',
-      render: (text) => moment(text * 1000).format('YYYY-MM-DD hh:mm:ss'),
-    }, {
-      title: '平仓原因',
-      dataIndex: 'close_reason',
-    });
+    columns.push(
+      {
+        title: "平仓时间",
+        dataIndex: "close_time",
+        render: text => moment(text * 1000).format("YYYY-MM-DD hh:mm:ss")
+      },
+      {
+        title: "平仓原因",
+        dataIndex: "close_reason"
+      }
+    );
   }
 
   const columnsWidth = columns.reduce(function(total, cur) {
@@ -92,9 +101,9 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
-        page: current,
+        page: current
       });
-    },
+    }
   };
 
   return {
@@ -111,7 +120,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           },
           {
             type: "Input",
@@ -124,7 +133,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           },
           {
             type: "Input",
@@ -137,9 +146,21 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           }
         ],
+        {
+          type: "Input",
+          label: "上级姓名",
+          placeholder: "请输入上级姓名",
+          value: self.state.tempFilter.agent_name || undefined,
+          onChange(evt) {
+            self.onInputChanged("agent_name", evt.target.value);
+          },
+          onPressEnter(evt) {
+            self.onSearch();
+          }
+        },
         [
           {
             type: "Input",
@@ -151,7 +172,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           },
           {
             type: "Input",
@@ -164,7 +185,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           },
           {
             type: "Input",
@@ -177,44 +198,45 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           }
         ],
         [
-          self.state.status === 'close' ?
-            {
-              type: "RangePicker",
-              label: "平仓时间",
-              placeholder: ["平仓起始时间", "平仓截止时间"],
-              format: ["YYYY-MM-DD", "YYYY-MM-DD"],
-              value: [
-                self.state.tempFilter.close_start_time,
-                self.state.tempFilter.close_end_time
-              ],
-              onChange(values) {
-                self.onInputChanged("close_start_time", values[0]);
-                self.onInputChanged("close_end_time", values[1]);
-              },
-              onPressEnter(evt) {
-                self.onSearch();
-              },
-            } : {
-              type: "RangePicker",
-              label: "创建时间",
-              placeholder: ["创建起始时间", "创建截止时间"],
-              format: ["YYYY-MM-DD", "YYYY-MM-DD"],
-              value: [
-                self.state.tempFilter.create_start_time,
-                self.state.tempFilter.create_end_time
-              ],
-              onChange(values) {
-                self.onInputChanged("create_start_time", values[0]);
-                self.onInputChanged("create_end_time", values[1]);
-              },
-              onPressEnter(evt) {
-                self.onSearch();
-              },
-            }
+          self.state.status === "close"
+            ? {
+                type: "RangePicker",
+                label: "平仓时间",
+                placeholder: ["平仓起始时间", "平仓截止时间"],
+                format: ["YYYY-MM-DD", "YYYY-MM-DD"],
+                value: [
+                  self.state.tempFilter.close_start_time,
+                  self.state.tempFilter.close_end_time
+                ],
+                onChange(values) {
+                  self.onInputChanged("close_start_time", values[0]);
+                  self.onInputChanged("close_end_time", values[1]);
+                },
+                onPressEnter(evt) {
+                  self.onSearch();
+                }
+              }
+            : {
+                type: "RangePicker",
+                label: "创建时间",
+                placeholder: ["创建起始时间", "创建截止时间"],
+                format: ["YYYY-MM-DD", "YYYY-MM-DD"],
+                value: [
+                  self.state.tempFilter.create_start_time,
+                  self.state.tempFilter.create_end_time
+                ],
+                onChange(values) {
+                  self.onInputChanged("create_start_time", values[0]);
+                  self.onInputChanged("create_end_time", values[1]);
+                },
+                onPressEnter(evt) {
+                  self.onSearch();
+                }
+              }
         ]
       ],
       onSearch() {
@@ -222,7 +244,7 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      },
+      }
     },
     table: {
       rowKey: "id",
@@ -230,31 +252,31 @@ const config = self => {
         const totalData = self.state.totalData;
 
         return (
-          <Row style={{ marginBottom: 10, fontSize: 14, }}>
+          <Row style={{ marginBottom: 10, fontSize: 14 }}>
             <Col span={4}>
-              <span style={{ fontWeight: 500, }}>盈亏：</span>
-              <span style={{ color: "red", }}>{totalData.profit}</span>
+              <span style={{ fontWeight: 500 }}>盈亏：</span>
+              <span style={{ color: "red" }}>{totalData.profit}</span>
             </Col>
             <Col span={4}>
-              <span style={{ fontWeight: 500, }}>交易手数：</span>
-              <span style={{ color: "red", }}>{totalData.lots}</span>
+              <span style={{ fontWeight: 500 }}>交易手数：</span>
+              <span style={{ color: "red" }}>{totalData.lots}</span>
             </Col>
             <Col span={4}>
-              <span style={{ fontWeight: 500, }}>手续费：</span>
-              <span style={{ color: "red", }}>{totalData.fee}</span>
+              <span style={{ fontWeight: 500 }}>手续费：</span>
+              <span style={{ color: "red" }}>{totalData.fee}</span>
             </Col>
             <Col span={4}>
-              <span style={{ fontWeight: 500, }}>库存费：</span>
-              <span style={{ color: "red", }}>{totalData.swaps}</span>
+              <span style={{ fontWeight: 500 }}>库存费：</span>
+              <span style={{ color: "red" }}>{totalData.swaps}</span>
             </Col>
             <Col span={4}>
-              <span style={{ fontWeight: 500, }}>税费：</span>
-              <span style={{ color: "red", }}>{totalData.taxes}</span>
+              <span style={{ fontWeight: 500 }}>税费：</span>
+              <span style={{ color: "red" }}>{totalData.taxes}</span>
             </Col>
           </Row>
         );
       },
-      scroll: { x: columnsWidth, },
+      scroll: { x: columnsWidth },
       bordered: true,
       columns,
       dataSource: self.state.orderList,
@@ -270,10 +292,10 @@ const config = self => {
 
         self.getDataList({
           page_size: pagination.pageSize,
-          page: pagination.current,
+          page: pagination.current
         });
-      },
-    },
+      }
+    }
   };
 };
 

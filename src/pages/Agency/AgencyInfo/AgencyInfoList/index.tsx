@@ -7,20 +7,23 @@ import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
-import utils from 'utils';
-import { Modal } from 'antd';
+import utils from "utils";
+import { Modal } from "antd";
 
-export interface IInfoListProps { }
+export interface IInfoListProps {}
 
 export interface IInfoListState {
   // filter: any;
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/agency/info", { exact: false, })
+@WithRoute("/dashboard/agency/info", { exact: false })
 @inject("common", "agency")
 @observer
-export default class InfoList extends BaseReact<IInfoListProps, IInfoListState> {
+export default class InfoList extends BaseReact<
+  IInfoListProps,
+  IInfoListState
+> {
   state = {
     filter: {},
     tableLoading: false,
@@ -29,15 +32,16 @@ export default class InfoList extends BaseReact<IInfoListProps, IInfoListState> 
     infoModalVisible: false,
     username: undefined,
     phone: undefined,
+    agent_name: undefined,
     order_number: undefined,
     ip: undefined,
-    createDateRange: [],
+    createDateRange: []
   };
 
   async componentDidMount() {
     // @todo 这里需要从 commonStore 中设置默认的分页
     const {
-      paginationConfig: { defaultPageSize, defaultCurrent, },
+      paginationConfig: { defaultPageSize, defaultCurrent }
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
@@ -52,16 +56,16 @@ export default class InfoList extends BaseReact<IInfoListProps, IInfoListState> 
   getDataList = (payload = {}) => {
     this.setState(
       {
-        tableLoading: true,
+        tableLoading: true
       },
       async () => {
         this.props.agency.setFilterInfo({
-          ...payload,
+          ...payload
         });
         await this.props.agency.getInfoList({
-          params: this.props.agency.filterInfo,
+          params: this.props.agency.filterInfo
         });
-        this.setState({ tableLoading: false, });
+        this.setState({ tableLoading: false });
       }
     );
   };
@@ -69,11 +73,11 @@ export default class InfoList extends BaseReact<IInfoListProps, IInfoListState> 
   resetPagination = async (page_size, current_page) => {
     this.props.agency.setFilterInfo({
       page_size,
-      current_page,
+      current_page
     });
     this.setState(
       {
-        current_page,
+        current_page
       },
       async () => {
         const filter = this.props.agency.filterInfo;
@@ -85,11 +89,11 @@ export default class InfoList extends BaseReact<IInfoListProps, IInfoListState> 
   // @ts-ignore
   private onSearch = async () => {
     this.props.agency.setFilterInfo({
-      current_page: 1,
+      current_page: 1
     });
     this.setState(
       {
-        currentPage: 1,
+        currentPage: 1
       },
       () => {
         this.getDataList(this.props.agency.filterInfo);
@@ -100,7 +104,7 @@ export default class InfoList extends BaseReact<IInfoListProps, IInfoListState> 
   private onReset = async () => {
     // @ts-ignore
     const filter: any = {
-      current_page: 1,
+      current_page: 1
     };
 
     this.props.agency.setFilterInfo(filter, true);
@@ -112,7 +116,7 @@ export default class InfoList extends BaseReact<IInfoListProps, IInfoListState> 
         phone: undefined,
         order_number: undefined,
         ip: undefined,
-        DateRange: [],
+        DateRange: []
       },
       () => {
         this.getDataList(this.props.agency.filterInfo);
@@ -121,9 +125,11 @@ export default class InfoList extends BaseReact<IInfoListProps, IInfoListState> 
   };
 
   goToEditor = (record: any): void => {
-    const url = `/dashboard/agency/info/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
+    const url = `/dashboard/agency/info/editor?id=${
+      !utils.isEmpty(record) ? record.id : 0
+    }`;
     this.props.history.push(url);
-  }
+  };
 
   renderMenu = (record): JSX.Element => {
     return null;
@@ -131,31 +137,30 @@ export default class InfoList extends BaseReact<IInfoListProps, IInfoListState> 
 
   onDateRangeChange = (field, dateRange) => {
     this.props.agency.setFilterInfo({
-      [`${field ? field + '_' : ''}start_time`]: dateRange[0].unix(),
-      [`${field ? field + '_' : ''}end_time`]: dateRange[1].unix(),
+      [`${field ? field + "_" : ""}start_time`]: dateRange[0].unix(),
+      [`${field ? field + "_" : ""}end_time`]: dateRange[1].unix()
     });
 
     this.setState({
-      [`${field}DateRange`]: dateRange,
+      [`${field}DateRange`]: dateRange
     });
-  }
+  };
 
   onInputChanged = (field, value) => {
     this.setState({
-      [field]: value,
+      [field]: value
     });
     this.props.agency.setFilterInfo({
-      [field]: value ? value : undefined,
+      [field]: value ? value : undefined
     });
-  }
-
+  };
 
   // @ts-ignore
-  private onBatch = async value => { };
+  private onBatch = async value => {};
 
   render() {
-    const { match, } = this.props;
-    const computedTitle = '代理明细';
+    const { match } = this.props;
+    const computedTitle = "代理明细";
 
     return (
       <div>

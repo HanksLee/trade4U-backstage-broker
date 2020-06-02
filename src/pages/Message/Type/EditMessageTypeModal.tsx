@@ -9,8 +9,8 @@ import Editor from "components/Editor";
 
 const FormItem = Form.Item;
 const getFormItemLayout = (label, wrapper, offset?) => ({
-  labelCol: { span: label, offset },
-  wrapperCol: { span: wrapper }
+  labelCol: { span: label, offset, },
+  wrapperCol: { span: wrapper, },
 });
 
 interface IEditMessageTypeModalProps {
@@ -31,12 +31,12 @@ interface IEditMessageTypeModalState {
 @inject("common")
 @observer
 export default class EditMessageTypeModal extends BaseReact<
-  IEditMessageTypeModalProps,
-  IEditMessageTypeModalState
+IEditMessageTypeModalProps,
+IEditMessageTypeModalState
 > {
   state = {
     confirmLoading: false,
-    editorContent: ""
+    editorContent: "",
   };
 
   componentDidMount() {
@@ -54,24 +54,24 @@ export default class EditMessageTypeModal extends BaseReact<
       });
     }
     this.setState({
-      typeTitle: tempArray
+      typeTitle: tempArray,
     });
   };
 
   getEditorContent = val => {
-    this.setState({ editorContent: val });
+    this.setState({ editorContent: val, });
   };
 
   handleSubmit = async evt => {
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const { messageType, onOk, brokerId } = this.props;
-        const { editorContent } = this.state;
+        const { messageType, onOk, brokerId, } = this.props;
+        const { editorContent, } = this.state;
 
         let payload: any = {
           broker: brokerId,
           key: values.key,
-          title: values.title
+          title: values.title,
         };
 
         // if (typeTitle.indexOf(values.title.join()) > -1) {
@@ -86,7 +86,7 @@ export default class EditMessageTypeModal extends BaseReact<
         }
 
         this.setState({
-          confirmLoading: true
+          confirmLoading: true,
         });
 
         if (!messageType) {
@@ -97,7 +97,7 @@ export default class EditMessageTypeModal extends BaseReact<
             },
             () => {
               this.setState({
-                confirmLoading: false
+                confirmLoading: false,
               });
             }
           );
@@ -109,7 +109,7 @@ export default class EditMessageTypeModal extends BaseReact<
             },
             () => {
               this.setState({
-                confirmLoading: false
+                confirmLoading: false,
               });
             }
           );
@@ -119,8 +119,8 @@ export default class EditMessageTypeModal extends BaseReact<
   };
 
   render() {
-    const { form, messageType, onCancel } = this.props;
-    const { confirmLoading } = this.state;
+    const { form, messageType, onCancel, } = this.props;
+    const { confirmLoading, } = this.state;
     const getFieldDecorator = form.getFieldDecorator;
     // const { TextArea } = Input;
 
@@ -137,18 +137,18 @@ export default class EditMessageTypeModal extends BaseReact<
           <FormItem label="所属key" {...getFormItemLayout(3, 8)} required>
             {getFieldDecorator("key", {
               initialValue: (messageType && messageType.key) || "",
-              rules: [{ required: true, message: "所属key不能為空" }]
+              rules: [{ required: true, message: "所属key不能為空", }],
             })(<Input placeholder="请输入所属key" />)}
           </FormItem>
           <FormItem label="名称" {...getFormItemLayout(3, 8)} required>
             {getFieldDecorator("title", {
               initialValue: (messageType && messageType.title) || "",
-              rules: [{ required: true, message: "名称不能為空" }]
+              rules: [{ required: true, message: "名称不能為空", }],
             })(<Input placeholder="请输入名称" />)}
           </FormItem>
           <FormItem label="描述" {...getFormItemLayout(3, 19)}>
             {getFieldDecorator("description", {
-              initialValue: (messageType && messageType.description) || ""
+              initialValue: (messageType && messageType.description) || "",
               // rules: [{ required: true, message: "分類名稱不能為空" }]
             })(
               <Editor

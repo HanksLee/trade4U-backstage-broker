@@ -6,12 +6,12 @@ import moment from "moment";
 import { FORMAT_TIME } from "constant";
 
 const config = self => {
-  const { selectedRowKeys, } = self.state;
+  const { selectedRowKeys } = self.state;
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
-      self.setState({ selectedRowKeys: selectedRowKeys, });
-    },
+      self.setState({ selectedRowKeys: selectedRowKeys });
+    }
   };
 
   const columns = [
@@ -22,7 +22,7 @@ const config = self => {
       render: (text, record) => {
         return (text && text.username) || "--";
       },
-      fixed: "left",
+      fixed: "left"
     },
     {
       title: "省份",
@@ -30,7 +30,7 @@ const config = self => {
       dataIndex: "province",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "城市",
@@ -38,7 +38,7 @@ const config = self => {
       dataIndex: "city",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "银行卡号",
@@ -46,7 +46,7 @@ const config = self => {
       dataIndex: "card_number",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "开户行",
@@ -54,7 +54,7 @@ const config = self => {
       dataIndex: "bank",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "支行名称",
@@ -62,7 +62,7 @@ const config = self => {
       dataIndex: "sub_branch",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "申请时间",
@@ -70,7 +70,7 @@ const config = self => {
       dataIndex: "create_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
-      },
+      }
     },
     {
       title: "预计出金",
@@ -78,7 +78,7 @@ const config = self => {
       dataIndex: "expect_amount",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "实际出金",
@@ -86,7 +86,7 @@ const config = self => {
       dataIndex: "actual_amount",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "审核状态",
@@ -98,23 +98,23 @@ const config = self => {
         const statusType = {
           2: "hot",
           1: "normal",
-          0: "block",
+          0: "block"
         };
         const statusText = {
           2: "审核不通过",
           1: "审核成功",
-          0: "待审核",
+          0: "待审核"
         };
         const styleMap = {
           2: {
-            color: "red",
+            color: "red"
           },
           1: {
-            color: "#1890ff",
+            color: "#1890ff"
           },
           0: {
-            color: "",
-          },
+            color: ""
+          }
         };
 
         return (
@@ -127,7 +127,7 @@ const config = self => {
             }
           />
         );
-      },
+      }
     },
     {
       title: "审核时间",
@@ -135,7 +135,7 @@ const config = self => {
       dataIndex: "review_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
-      },
+      }
     },
     {
       title: "审核人",
@@ -143,7 +143,7 @@ const config = self => {
       dataIndex: "reviewer",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "划款状态",
@@ -153,24 +153,24 @@ const config = self => {
         const statusType = {
           2: "hot",
           1: "normal",
-          0: "block",
+          0: "block"
         };
         const statusText = {
           2: "划款失败",
           1: "划款成功",
-          0: "待划款",
+          0: "待划款"
         };
 
         const styleMap = {
           2: {
-            color: "red",
+            color: "red"
           },
           1: {
-            color: "#1890ff",
+            color: "#1890ff"
           },
           0: {
-            color: "",
-          },
+            color: ""
+          }
         };
 
         return (
@@ -183,7 +183,7 @@ const config = self => {
             }
           />
         );
-      },
+      }
     },
     {
       title: "划款人",
@@ -191,7 +191,7 @@ const config = self => {
       dataIndex: "remitter",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "划款单号",
@@ -199,7 +199,7 @@ const config = self => {
       dataIndex: "remit_number",
       render: (text, record) => {
         return text || "--";
-      },
+      }
     },
     {
       title: "划款时间",
@@ -207,7 +207,7 @@ const config = self => {
       dataIndex: "remit_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
-      },
+      }
     },
     {
       // width: 120,
@@ -244,7 +244,7 @@ const config = self => {
             </Popconfirm>
           </div>
         );
-      },
+      }
     }
   ];
 
@@ -260,7 +260,7 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
-    },
+    }
   };
 
   return {
@@ -268,7 +268,7 @@ const config = self => {
     addBtn: {
       title: () => (
         <Button
-          style={{ display: "none", }}
+          style={{ display: "none" }}
           type="primary"
           onClick={() => {
             self.props.finance.setCurrentWithdraw({});
@@ -278,7 +278,7 @@ const config = self => {
           <Icon type="plus" />
           添加
         </Button>
-      ),
+      )
     },
     // tableHeader: () => {
     //   const {
@@ -304,12 +304,12 @@ const config = self => {
         options: [
           {
             title: "删除",
-            value: "delete",
+            value: "delete"
           }
         ],
         onBatch: value => {
           self.onBatch(value);
-        },
+        }
       },
       widgets: [
         [
@@ -323,7 +323,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           },
           {
             type: "Input",
@@ -335,7 +335,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           },
           {
             type: "Input",
@@ -347,9 +347,21 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           }
         ],
+        {
+          type: "Input",
+          label: "上级姓名",
+          placeholder: "请输入上级姓名",
+          value: self.state.agent_name || undefined,
+          onChange(evt) {
+            self.onInputChanged("agent_name", evt.target.value);
+          },
+          onPressEnter(evt) {
+            self.onSearch();
+          }
+        },
         [
           {
             type: "Select",
@@ -364,23 +376,23 @@ const config = self => {
               data: [
                 {
                   id: 0,
-                  name: "待审核",
+                  name: "待审核"
                 },
                 {
                   id: 1,
-                  name: "审核成功",
+                  name: "审核成功"
                 },
                 {
                   id: 2,
-                  name: "审核不通过",
+                  name: "审核不通过"
                 }
-              ],
+              ]
             },
             onChange(val, elem) {
               self.onOptionSelect("review", val, elem);
             },
             onSelect(val, elem) {},
-            onBlur() {},
+            onBlur() {}
           },
           {
             type: "Select",
@@ -395,48 +407,48 @@ const config = self => {
               data: [
                 {
                   id: 0,
-                  name: "待划款",
+                  name: "待划款"
                 },
                 {
                   id: 1,
-                  name: "划款成功",
+                  name: "划款成功"
                 },
                 {
                   id: 2,
-                  name: "划款失败",
+                  name: "划款失败"
                 }
-              ],
+              ]
             },
             onChange(val, elem) {
               self.onOptionSelect("remit", val, elem);
             },
             onSelect(val, elem) {},
-            onBlur() {},
+            onBlur() {}
           }
         ],
         {
           type: "RangePicker",
           label: "审核时间",
           placeholder: ["开始日期", "结束日期"],
-          showTime: { format: "HH:mm:ss", },
+          showTime: { format: "HH:mm:ss" },
           format: FORMAT_TIME,
           alias: [1, 7, 30],
           value: self.state.reviewDateRange || [],
           onChange(value) {
             self.onDateRangeChange("review", value);
-          },
+          }
         },
         {
           type: "RangePicker",
           label: "划款时间",
           placeholder: ["开始日期", "结束日期"],
-          showTime: { format: "HH:mm:ss", },
+          showTime: { format: "HH:mm:ss" },
           format: FORMAT_TIME,
           alias: [1, 7, 30],
           value: self.state.remitDateRange || [],
           onChange(value) {
             self.onDateRangeChange("remit", value);
-          },
+          }
         }
       ],
       onSearch() {
@@ -444,32 +456,32 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      },
+      }
     },
     table: {
       rowKey: "id",
       // rowSelection,
       title: () => {
-        const { total_amount, } = self.props.finance.withdrawListMeta;
+        const { total_amount } = self.props.finance.withdrawListMeta;
 
         return (
-          <Row style={{ marginBottom: 10, fontSize: 14, }}>
+          <Row style={{ marginBottom: 10, fontSize: 14 }}>
             <Col span={3}>
-              <span style={{ fontWeight: 500, }}>充值总金额：</span>
-              <span style={{ color: "red", }}>
+              <span style={{ fontWeight: 500 }}>充值总金额：</span>
+              <span style={{ color: "red" }}>
                 {total_amount && total_amount.expect_total_amount}
               </span>
             </Col>
             <Col span={3}>
-              <span style={{ fontWeight: 500, }}>支付总金额：</span>
-              <span style={{ color: "red", }}>
+              <span style={{ fontWeight: 500 }}>支付总金额：</span>
+              <span style={{ color: "red" }}>
                 {total_amount && total_amount.actual_total_amount}
               </span>
             </Col>
           </Row>
         );
       },
-      scroll: { x: columnsWidth, },
+      scroll: { x: columnsWidth },
       // tableLayout: 'fixed',
       bordered: true,
       columns,
@@ -478,7 +490,7 @@ const config = self => {
       onChange(pagination, filters, sorter) {
         const payload: any = {
           current_page: pagination.current,
-          page_size: pagination.pageSize,
+          page_size: pagination.pageSize
         };
 
         if (!utils.isEmpty(filters)) {
@@ -499,14 +511,14 @@ const config = self => {
 
         self.setState(
           {
-            currentPage: pagination.current,
+            currentPage: pagination.current
           },
           () => {
             self.getDataList(self.props.finance.filterWithdraw);
           }
         );
-      },
-    },
+      }
+    }
   };
 };
 

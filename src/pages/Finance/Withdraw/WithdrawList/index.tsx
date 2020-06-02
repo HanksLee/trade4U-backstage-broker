@@ -4,24 +4,27 @@ import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import WithdrawEdtior from 'pages/Finance/Withdraw/WithdrawEditor';
+import WithdrawEdtior from "pages/Finance/Withdraw/WithdrawEditor";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
-import utils from 'utils';
-import { Modal } from 'antd';
+import utils from "utils";
+import { Modal } from "antd";
 
-export interface IWithdrawListProps { }
+export interface IWithdrawListProps {}
 
 export interface IWithdrawListState {
   // filter: any;
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/finance/withdraw", { exact: false, })
+@WithRoute("/dashboard/finance/withdraw", { exact: false })
 @inject("common", "finance")
 @observer
-export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdrawListState> {
+export default class WithdrawList extends BaseReact<
+  IWithdrawListProps,
+  IWithdrawListState
+> {
   private $withdrawEditor = null;
   state = {
     filter: {},
@@ -32,16 +35,17 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     user__username: undefined,
     province: undefined,
     city: undefined,
+    agent_name: undefined,
     reviewStatus: undefined,
     remitStatus: undefined,
     reviewDateRange: [],
-    remitDateRange: [],
+    remitDateRange: []
   };
 
   async componentDidMount() {
     // @todo 这里需要从 commonStore 中设置默认的分页
     const {
-      paginationConfig: { defaultPageSize, defaultCurrent, },
+      paginationConfig: { defaultPageSize, defaultCurrent }
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
@@ -56,38 +60,38 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
   getDataList = (payload = {}) => {
     this.setState(
       {
-        tableLoading: true,
+        tableLoading: true
       },
       async () => {
         this.props.finance.setFilterWithdraw({
-          ...payload,
+          ...payload
         });
         await this.props.finance.getWithdrawList({
-          params: this.props.finance.filterWithdraw,
+          params: this.props.finance.filterWithdraw
         });
-        this.setState({ tableLoading: false, });
+        this.setState({ tableLoading: false });
       }
     );
   };
 
   toggleWithdrawModal = async (id?) => {
     this.setState({
-      withdrawModalVisible: !this.state.withdrawModalVisible,
+      withdrawModalVisible: !this.state.withdrawModalVisible
     });
-  }
+  };
 
   onModalConfirm = async () => {
-    const { currentWithdraw, } = this.props.finance;
+    const { currentWithdraw } = this.props.finance;
 
     let res;
 
     if (currentWithdraw.remit_status != 2) {
       if (!currentWithdraw.remit_number) {
-        return this.$msg.warn('请输入划款单号');
+        return this.$msg.warn("请输入划款单号");
       }
 
       if (!currentWithdraw.actual_amount) {
-        return this.$msg.warn('请输入实付金额');
+        return this.$msg.warn("请输入实付金额");
       }
     }
 
@@ -95,7 +99,7 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
       remit_number: currentWithdraw.remit_number,
       actual_amount: currentWithdraw.actual_amount,
       remarks: currentWithdraw.remarks,
-      remit_status: currentWithdraw.remit_status,
+      remit_status: currentWithdraw.remit_status
     };
 
     if (currentWithdraw.id) {
@@ -108,29 +112,31 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
     const statusCode = currentWithdraw.id ? 200 : 201;
 
     if (res.status == statusCode) {
-      this.$msg.success(!currentWithdraw.id ? '利润规则添加成功' : '利润规则编辑成功');
+      this.$msg.success(
+        !currentWithdraw.id ? "利润规则添加成功" : "利润规则编辑成功"
+      );
       this.toggleWithdrawModal();
       this.getDataList(this.props.finance.filterWithdraw);
     } else {
       this.$msg.error(res.data.msg);
     }
-  }
+  };
 
   onModalCancel = () => {
     this.setState({
-      withdrawModalVisible: false,
+      withdrawModalVisible: false
     });
     this.props.finance.setCurrentWithdraw({}, true, false);
-  }
+  };
 
   resetPagination = async (page_size, current_page) => {
     this.props.finance.setFilterWithdraw({
       page_size,
-      current_page,
+      current_page
     });
     this.setState(
       {
-        current_page,
+        current_page
       },
       async () => {
         const filter = this.props.finance.filterWithdraw;
@@ -142,11 +148,11 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
   // @ts-ignore
   private onSearch = async () => {
     this.props.finance.setFilterWithdraw({
-      current_page: 1,
+      current_page: 1
     });
     this.setState(
       {
-        currentPage: 1,
+        currentPage: 1
       },
       () => {
         this.getDataList(this.props.finance.filterWithdraw);
@@ -157,7 +163,7 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
   private onReset = async () => {
     // @ts-ignore
     const filter: any = {
-      current_page: 1,
+      current_page: 1
     };
 
     this.props.finance.setFilterWithdraw(filter, true);
@@ -171,7 +177,7 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
         reviewStatus: undefined,
         remitStatus: undefined,
         reviewDateRange: [],
-        remitDateRange: [],
+        remitDateRange: []
       },
       () => {
         this.getDataList(this.props.finance.filterWithdraw);
@@ -180,9 +186,11 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
   };
 
   goToEditor = (record: any): void => {
-    const url = `/dashboard/finance/withdraw/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
+    const url = `/dashboard/finance/withdraw/editor?id=${
+      !utils.isEmpty(record) ? record.id : 0
+    }`;
     this.props.history.push(url);
-  }
+  };
 
   renderMenu = (record): JSX.Element => {
     return null;
@@ -191,43 +199,46 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
   onDateRangeChange = (field, dateRange) => {
     this.props.finance.setFilterWithdraw({
       [`${field}_time__start`]: dateRange[0].unix(),
-      [`${field}_time__end`]: dateRange[1].unix(),
+      [`${field}_time__end`]: dateRange[1].unix()
     });
 
     this.setState({
-      [`${field}DateRange`]: dateRange,
+      [`${field}DateRange`]: dateRange
     });
-  }
+  };
 
   onInputChanged = (field, value) => {
     this.setState({
-      [field]: value,
+      [field]: value
     });
     this.props.finance.setFilterWithdraw({
-      [field]: value ? value : undefined,
+      [field]: value ? value : undefined
     });
-  }
+  };
 
   onOptionSelect = (field, value, elem) => {
-    this.setState({
-      [`${field}Status`]: value,
-    }, () => {
-      this.props.finance.setFilterWithdraw({
-        [`${field}_status`]: value,
-      });
+    this.setState(
+      {
+        [`${field}Status`]: value
+      },
+      () => {
+        this.props.finance.setFilterWithdraw({
+          [`${field}_status`]: value
+        });
 
-      this.getDataList(this.props.finance.filterWithdraw);
-    });
-  }
+        this.getDataList(this.props.finance.filterWithdraw);
+      }
+    );
+  };
 
   // @ts-ignore
-  private onBatch = async value => { };
+  private onBatch = async value => {};
 
   render() {
-    const { match, } = this.props;
-    const computedTitle = '出金管理';
-    const { withdrawModalVisible, } = this.state;
-    const { currentWithdraw, } = this.props.finance;
+    const { match } = this.props;
+    const computedTitle = "出金管理";
+    const { withdrawModalVisible } = this.state;
+    const { currentWithdraw } = this.props.finance;
 
     return (
       <div>
@@ -236,21 +247,17 @@ export default class WithdrawList extends BaseReact<IWithdrawListProps, IWithdra
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
-        {
-          withdrawModalVisible && (
-            <Modal
-              width={720}
-              visible={withdrawModalVisible}
-              title={
-                utils.isEmpty(currentWithdraw.id) ? '添加出金' : '编辑出金'
-              }
-              onOk={this.onModalConfirm}
-              onCancel={this.onModalCancel}
-            >
-              <WithdrawEdtior onRef={ref => this.$withdrawEditor = ref} />
-            </Modal>
-          )
-        }
+        {withdrawModalVisible && (
+          <Modal
+            width={720}
+            visible={withdrawModalVisible}
+            title={utils.isEmpty(currentWithdraw.id) ? "添加出金" : "编辑出金"}
+            onOk={this.onModalConfirm}
+            onCancel={this.onModalCancel}
+          >
+            <WithdrawEdtior onRef={ref => (this.$withdrawEditor = ref)} />
+          </Modal>
+        )}
       </div>
     );
   }

@@ -4,11 +4,11 @@
 
   > div:not(:first-child) {
     padding-left: 20px;
-    border-left: 1px solid rgba(0, 0, 0, .1);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
   }
 
   > div div span:first-child {
-    width: 80px;
+    width: 90px;
     display: inline-block;
   }
 }

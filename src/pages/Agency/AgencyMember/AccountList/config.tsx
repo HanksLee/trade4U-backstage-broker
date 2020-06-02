@@ -5,13 +5,13 @@ import { Button, Checkbox, Icon, Popconfirm, Select } from "antd";
 const Option = Select.Option;
 
 const config = self => {
-  const { selectedRowKeys, } = self.state;
+  const { selectedRowKeys } = self.state;
 
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
-      self.setState({ selectedRowKeys: selectedRowKeys, });
-    },
+      self.setState({ selectedRowKeys: selectedRowKeys });
+    }
   };
 
   const columns = [
@@ -20,28 +20,28 @@ const config = self => {
       width: 150,
       render: (_, record) => {
         return record.last_name + record.first_name;
-      },
+      }
     },
     {
       title: "手机",
       width: 150,
-      dataIndex: "phone",
+      dataIndex: "phone"
     },
     {
       title: "代理",
       width: 150,
       dataIndex: "agent_name",
-      ellipsis: true, // 必须保留
+      ellipsis: true // 必须保留
     },
     {
       title: "邮箱",
       width: 150,
-      dataIndex: "email",
+      dataIndex: "email"
     },
     {
       title: "分组",
       width: 150,
-      dataIndex: "group_name",
+      dataIndex: "group_name"
     },
     {
       title: "只读",
@@ -61,7 +61,7 @@ const config = self => {
           );
         };
         return <Checkbox checked={text} onChange={handleChange} />;
-      },
+      }
     },
     {
       title: "禁用",
@@ -81,7 +81,7 @@ const config = self => {
           );
         };
         return <Checkbox checked={text} onChange={handleChange} />;
-      },
+      }
     },
     {
       title: "余额",
@@ -96,7 +96,7 @@ const config = self => {
             {text} <Icon type="edit" onClick={handleClick} />
           </>
         );
-      },
+      }
     },
     {
       title: "审核状态",
@@ -116,8 +116,8 @@ const config = self => {
         return (
           <Select
             labelInValue
-            value={{ key: text, }}
-            style={{ width: "120px", }}
+            value={{ key: text }}
+            style={{ width: "120px" }}
             onChange={handleChange}
           >
             <Option value={0}>未审核</Option>
@@ -126,7 +126,7 @@ const config = self => {
             <Option value={3}>审核拒绝</Option>
           </Select>
         );
-      },
+      }
     },
     {
       title: "操作",
@@ -154,7 +154,7 @@ const config = self => {
               onClick={e => {
                 self.setState({
                   selectedRowKeys: [record.id],
-                  isShowCustomModal: true,
+                  isShowCustomModal: true
                 });
               }}
             >
@@ -165,7 +165,7 @@ const config = self => {
               onClick={e => {
                 self.setState({
                   isShowAgentModal: true,
-                  currentAgent: record,
+                  currentAgent: record
                 });
               }}
             >
@@ -181,7 +181,7 @@ const config = self => {
             </Popconfirm>
           </div>
         );
-      },
+      }
     }
   ];
 
@@ -194,9 +194,9 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
-        current_page: current,
+        current_page: current
       });
-    },
+    }
   };
 
   return {
@@ -206,7 +206,7 @@ const config = self => {
         <Button type="primary" onClick={() => self.goToEditor()}>
           <Icon type="plus" /> 添加
         </Button>
-      ),
+      )
     },
     searcher: {
       batchControl: {
@@ -215,12 +215,12 @@ const config = self => {
         options: [
           {
             title: "划转客户组",
-            value: "custom_group",
+            value: "custom_group"
           }
         ],
         onBatch: value => {
           self.onBatch(value);
-        },
+        }
       },
       widgets: [
         [
@@ -234,7 +234,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           },
           {
             type: "Input",
@@ -246,9 +246,21 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           }
         ],
+        {
+          type: "Input",
+          label: "上级姓名",
+          placeholder: "请输入上级姓名",
+          value: self.state.tempFilterAgent.agent_name || undefined,
+          onChange(evt) {
+            self.onInputChanged("agent_name", evt.target.value);
+          },
+          onPressEnter(evt) {
+            self.onSearch();
+          }
+        },
         {
           type: "RangePicker",
           label: "创建时间",
@@ -264,7 +276,7 @@ const config = self => {
           },
           onPressEnter(evt) {
             self.onSearch();
-          },
+          }
         }
       ],
       onSearch() {
@@ -272,7 +284,7 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      },
+      }
     },
     table: {
       rowKey: "id",
@@ -280,7 +292,7 @@ const config = self => {
       columns,
       dataSource: self.state.accountList,
       pagination,
-      scroll: { x: 9 * 150, },
+      scroll: { x: 9 * 150 },
       onChange(pagination, filterAgents) {
         const payload: any = {};
 
@@ -292,10 +304,10 @@ const config = self => {
 
         self.getDataList({
           page_size: pagination.pageSize,
-          page: pagination.current,
+          page: pagination.current
         });
-      },
-    },
+      }
+    }
   };
 };
 
