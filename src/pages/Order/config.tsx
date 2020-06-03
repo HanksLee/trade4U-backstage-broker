@@ -72,14 +72,14 @@ const config = self => {
     columns.push({
       title: "创建时间",
       dataIndex: "create_time",
-      render: text => moment(text * 1000).format("YYYY-MM-DD hh:mm:ss"),
+      render: text => moment(text * 1000).format("YYYY-MM-DD HH:mm:ss"),
     });
   } else {
     columns.push(
       {
         title: "平仓时间",
         dataIndex: "close_time",
-        render: text => moment(text * 1000).format("YYYY-MM-DD hh:mm:ss"),
+        render: text => moment(text * 1000).format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         title: "平仓原因",

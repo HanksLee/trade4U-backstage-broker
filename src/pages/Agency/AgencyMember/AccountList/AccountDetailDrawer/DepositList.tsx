@@ -80,7 +80,7 @@ export default class DetailTabsModal extends BaseReact<IDepositListProps, IDepos
                   <List.Item key={item.id}>
                     <div>{item.expect_amount}</div>
                     <div>{item.status === 1 ? '已支付' : '未支付'}</div>
-                    <div>{moment(item.create_time * 1000).format('YYYY-MM-DD hh:mm:ss')}</div>
+                    <div>{moment(item.create_time * 1000).format('YYYY-MM-DD HH:mm:ss')}</div>
                   </List.Item>
                 );
               })

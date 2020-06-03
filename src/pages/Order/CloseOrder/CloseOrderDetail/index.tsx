@@ -78,12 +78,12 @@ export default class CloseOrderDetail extends BaseReact<{}> {
                   <div><span>产品杠杆</span> {orderDetail.leverage}</div>
                   <div><span>止损</span> {orderDetail.stop_loss}</div>
                   <div><span>税金</span> {orderDetail.taxes}</div>
-                  <div><span>平仓时间</span> {moment(orderDetail.close_time * 1000).format('YYYY-MM-DD hh:mm:ss')}</div>
+                  <div><span>平仓时间</span> {moment(orderDetail.close_time * 1000).format('YYYY-MM-DD HH:mm:ss')}</div>
                 </div>
                 <div>
                   <div><span>交易方向</span> {orderDetail.action}</div>
                   <div><span>开仓价</span> {orderDetail.open_price}</div>
-                  <div><span>开仓时间</span> {moment(orderDetail.create_time * 1000).format('YYYY-MM-DD hh:mm:ss')}</div>
+                  <div><span>开仓时间</span> {moment(orderDetail.create_time * 1000).format('YYYY-MM-DD HH:mm:ss')}</div>
                   <div><span>手续费</span> {orderDetail.fee}</div>
                   <div><span>当前价格</span> {orderDetail.new_price}</div>
                   <div><span>平仓理由</span> {orderDetail.close_reason}</div>
@@ -120,7 +120,7 @@ export default class CloseOrderDetail extends BaseReact<{}> {
       {
         title: '创建时间',
         dataIndex: 'create_time',
-        render: (text) => moment(text * 1000).format('YYYY-MM-DD hh:mm:ss'),
+        render: (text) => moment(text * 1000).format('YYYY-MM-DD HH:mm:ss'),
       }
     ];
     return columns;
