@@ -15,11 +15,11 @@ export interface IUserDropdownState {
 @inject("common")
 @observer
 export default class UserDropdown extends BaseReact<
-  IUserDropdownProps,
-  IUserDropdownState
+IUserDropdownProps,
+IUserDropdownState
 > {
   state = {
-    logo: ""
+    logo: "",
   };
 
   private logout = async (): Promise<any> => {
@@ -44,7 +44,7 @@ export default class UserDropdown extends BaseReact<
   };
 
   render() {
-    const { userInfo } = this.props.common;
+    const { userInfo, } = this.props.common;
 
     return (
       <div className="user-dropdown">
