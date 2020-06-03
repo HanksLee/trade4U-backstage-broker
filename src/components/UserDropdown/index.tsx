@@ -15,21 +15,22 @@ export interface IUserDropdownState {
 @inject("common")
 @observer
 export default class UserDropdown extends BaseReact<
-IUserDropdownProps,
-IUserDropdownState
+  IUserDropdownProps,
+  IUserDropdownState
 > {
   state = {
-    logo: "",
+    logo: ""
   };
 
   private logout = async (): Promise<any> => {
-    localStorage.removeItem('MOON_ADMIN_MAIN');
+    localStorage.removeItem("MOON_ADMIN_BROKER_TOKEN");
 
     setTimeout(() => {
-      (window as any).location.href = process.env.NODE_ENV === "production"
-        ? "/login"
-        : window.location.origin + "/#/login";
-    }, 1000);
+      (window as any).location.href =
+        process.env.NODE_ENV === "production"
+          ? "/login"
+          : window.location.origin + "/#/login";
+    }, 500);
   };
 
   renderMenu = () => {
@@ -43,7 +44,7 @@ IUserDropdownState
   };
 
   render() {
-    const { userInfo, } = this.props.common;
+    const { userInfo } = this.props.common;
 
     return (
       <div className="user-dropdown">

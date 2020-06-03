@@ -8,8 +8,8 @@ import { inject, observer } from "mobx-react";
 
 const FormItem = Form.Item;
 const getFormItemLayout = (label, wrapper, offset?) => ({
-  labelCol: { span: label, offset, },
-  wrapperCol: { span: wrapper, },
+  labelCol: { span: label, offset },
+  wrapperCol: { span: wrapper }
 });
 
 interface IEditUserModalProps {
@@ -33,8 +33,8 @@ interface IEditUserModalState {
 @inject("common")
 @observer
 export default class EditUserModal extends BaseReact<
-IEditUserModalProps,
-IEditUserModalState
+  IEditUserModalProps,
+  IEditUserModalState
 > {
   state = {
     confirmLoading: false,
@@ -43,7 +43,7 @@ IEditUserModalState
     defaultRole: [],
     passwordLabel: "",
     checkPasswordLabel: "",
-    pwdRequired: true,
+    pwdRequired: true
   };
 
   componentDidMount() {
@@ -52,20 +52,20 @@ IEditUserModalState
   }
 
   checkUserState() {
-    const { user, } = this.props;
+    const { user } = this.props;
     if (!user) {
       this.setState({
         writable: false,
         passwordLabel: "密码",
         checkPasswordLabel: "确认密码",
-        pwdRequired: true,
+        pwdRequired: true
       });
     } else {
       this.setState({
         writable: true,
         passwordLabel: "新密码",
         checkPasswordLabel: "确认新密码",
-        pwdRequired: false,
+        pwdRequired: false
       });
     }
   }
@@ -74,21 +74,21 @@ IEditUserModalState
     const rolesTempArray = [];
     const res = await this.$api.role.getRoleList();
     for await (let obj of res.data.results) {
-      rolesTempArray.push({ value: String(obj.id), label: obj.name, });
+      rolesTempArray.push({ value: String(obj.id), label: obj.name });
     }
     this.setState({
       roleList: rolesTempArray,
-      defaultRole: [String(rolesTempArray[0].value)],
+      defaultRole: [String(rolesTempArray[0].value)]
     });
   };
 
   handleSubmit = async evt => {
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const { user, onOk, } = this.props;
+        const { user, onOk } = this.props;
 
         let payload: any = {
-          role: Number(values.role),
+          role: Number(values.role)
         };
 
         if (!utils.isEmpty(values.password)) {
@@ -96,12 +96,12 @@ IEditUserModalState
         }
 
         this.setState({
-          confirmLoading: true,
+          confirmLoading: true
         });
 
         if (!user) {
           payload.username = values.name;
-          payload.status = values.status;
+          payload.status = values.status.toString();
           this.$api.manager.addManager(payload).then(
             () => {
               this.$msg.success("用户创建成功");
@@ -109,7 +109,7 @@ IEditUserModalState
             },
             () => {
               this.setState({
-                confirmLoading: false,
+                confirmLoading: false
               });
             }
           );
@@ -121,7 +121,7 @@ IEditUserModalState
             },
             () => {
               this.setState({
-                confirmLoading: false,
+                confirmLoading: false
               });
             }
           );
@@ -131,7 +131,7 @@ IEditUserModalState
   };
 
   render() {
-    const { form, user, onCancel, } = this.props;
+    const { form, user, onCancel } = this.props;
     const {
       confirmLoading,
       writable,
@@ -139,7 +139,7 @@ IEditUserModalState
       passwordLabel,
       checkPasswordLabel,
       pwdRequired,
-      defaultRole,
+      defaultRole
     } = this.state;
     const getFieldDecorator = form.getFieldDecorator;
 
@@ -156,12 +156,12 @@ IEditUserModalState
             {getFieldDecorator("name", {
               initialValue: user && user.username,
               rules: [
-                { required: true, message: "用户名不能为空", },
+                { required: true, message: "用户名不能为空" },
                 {
                   pattern: new RegExp("^\\w+$", "g"),
-                  message: "用户名必须为字母或者数字",
+                  message: "用户名必须为字母或者数字"
                 }
-              ],
+              ]
             })(<Input placeholder="请输入用户名" disabled={writable} />)}
           </FormItem>
           <FormItem
@@ -172,12 +172,12 @@ IEditUserModalState
             {getFieldDecorator("password", {
               initialValue: "",
               rules: [
-                { required: pwdRequired, message: "密码不能为空值", },
+                { required: pwdRequired, message: "密码不能为空值" },
                 {
                   pattern: new RegExp("^\\w+$", "g"),
-                  message: "密码必须为字母或者数字",
+                  message: "密码必须为字母或者数字"
                 }
-              ],
+              ]
             })(<Input.Password placeholder="请输入密码" />)}
           </FormItem>
           <FormItem
@@ -189,7 +189,7 @@ IEditUserModalState
               dependencies: ["password"],
               initialValue: "",
               rules: [
-                { required: pwdRequired, message: "密码不能为空值", },
+                { required: pwdRequired, message: "密码不能为空值" },
                 {
                   validator: (rule, value, callback) => {
                     const form = this.props.form;
@@ -198,32 +198,32 @@ IEditUserModalState
                     } else {
                       callback();
                     }
-                  },
+                  }
                 }
-              ],
+              ]
             })(<Input.Password placeholder="请再次输入密码" />)}
           </FormItem>
           <FormItem label="角色" {...getFormItemLayout(5, 13)} required>
             {getFieldDecorator("role", {
               initialValue: (user && [String(user.role)]) || defaultRole,
-              rules: [{ required: true, message: "角色不能为空值", }],
+              rules: [{ required: true, message: "角色不能为空值" }]
             })(<Cascader options={roleList} />)}
           </FormItem>
           {!user && (
             <FormItem label="状态" {...getFormItemLayout(5, 13)} required>
               {getFieldDecorator("status", {
                 initialValue: (user && [String(user.status)]) || ["1"],
-                rules: [{ required: true, message: "状态不能为空值", }],
+                rules: [{ required: true, message: "状态不能为空值" }]
               })(
                 <Cascader
                   options={[
                     {
                       value: "1",
-                      label: "启用",
+                      label: "启用"
                     },
                     {
                       value: "0",
-                      label: "禁用",
+                      label: "禁用"
                     }
                   ]}
                 />
