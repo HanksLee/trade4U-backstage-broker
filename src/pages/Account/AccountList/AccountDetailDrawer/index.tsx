@@ -249,7 +249,7 @@ IAccountDetailDrawertate
                       <div>{item.ip}</div>
                       <div>
                         {moment(item.create_time * 1000).format(
-                          "YYYY-MM-DD hh:mm:ss"
+                          "YYYY-MM-DD HH:mm:ss"
                         )}
                       </div>
                     </List.Item>
