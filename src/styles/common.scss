@@ -172,6 +172,10 @@ img.emoji {
   }
 }
 
+// .ant-modal {
+//   width: 80% !important;
+// }
+
 .ant-modal.blank-transparent-bg {
   .ant-modal-content {
     background-color: #666;
@@ -192,5 +196,12 @@ img.emoji {
 }
 
 .ant-form-item {
-  margin-bottom: 18px;
+  // margin-bottom: 18px;
+}
+
+.absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

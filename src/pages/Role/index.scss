@@ -1,0 +1,19 @@
+.role-permission-table {
+  .ant-table-thead tr th {
+    text-align: center;
+  }
+
+  .select-all-permission-row {
+    background-color: rgba(0, 0, 0, .1);
+    padding: 5px 8px;
+  }
+
+  .select-permission-row {
+    padding: 10px 8px;
+  }
+}
+
+.role-permission-column:not(th) {
+  padding: 0 !important;
+  vertical-align: top;
+}

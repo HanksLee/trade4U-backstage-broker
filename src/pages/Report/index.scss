@@ -1,0 +1,22 @@
+.account-report {
+  .ant-card-body {
+    padding: 12px;
+  }
+  .ant-statistic-content {
+    font-size: 18px;
+  }
+}
+
+.agency-report {
+  .agency-stack {
+    margin: 10px 16px; 
+
+    a {
+      color: $primary-color;
+    }
+  }
+
+  .link {
+    color: $primary-color;
+  }
+}

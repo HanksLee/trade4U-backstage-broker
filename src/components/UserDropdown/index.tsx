@@ -1,10 +1,8 @@
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { Menu, Dropdown, Icon } from "antd";
-import Cookies from "js-cookie";
 import "./index.scss";
 import { inject, observer } from "mobx-react";
-import utils from 'utils';
 
 export interface IUserDropdownProps {
   onBtnClick?(): void;
@@ -25,13 +23,14 @@ IUserDropdownState
   };
 
   private logout = async (): Promise<any> => {
-    localStorage.removeItem('MOON_ADMIN_MAIN');
+    localStorage.removeItem("MOON_ADMIN_BROKER_TOKEN");
 
     setTimeout(() => {
-      (window as any).location.href = process.env.NODE_ENV === "production"
-        ? "/login"
-        : window.location.origin + "/#/login";
-    }, 1000);
+      (window as any).location.href =
+        process.env.NODE_ENV === "production"
+          ? "/login"
+          : window.location.origin + "/#/login";
+    }, 500);
   };
 
   renderMenu = () => {

@@ -1,0 +1,116 @@
+import * as React from "react";
+// import utils from "utils";
+import { BaseReact } from "components/BaseReact";
+import { Form, Input, Modal, Cascader } from "antd";
+import { inject, observer } from "mobx-react";
+// import { stringify } from "querystring";
+// import Password from "antd/lib/input/Password";
+
+const FormItem = Form.Item;
+const getFormItemLayout = (label, wrapper, offset?) => ({
+  labelCol: { span: label, offset, },
+  wrapperCol: { span: wrapper, },
+});
+
+interface IEditUserVerifyModalProps {
+  userVerify: any;
+  onOk: () => void;
+  onCancel: () => void;
+}
+
+interface IEditUserVerifyModalState {
+  roleList: any[];
+  defaultRole: any[];
+  confirmLoading: boolean;
+}
+
+// @ts-ignore
+@Form.create()
+@inject("common")
+@observer
+export default class EditUserVerifyModal extends BaseReact<
+IEditUserVerifyModalProps,
+IEditUserVerifyModalState
+> {
+  state = {
+    confirmLoading: false,
+    roleList: [],
+    defaultRole: [],
+  };
+
+  componentDidMount() {}
+
+  handleSubmit = async evt => {
+    this.props.form.validateFields(async (err, values) => {
+      if (!err) {
+        const { userVerify, onOk, } = this.props;
+
+        let payload: any = {
+          reason: values.reason,
+          inspect_status: Number(values.inspect_status),
+        };
+        this.setState({
+          confirmLoading: true,
+        });
+
+        this.$api.verify.updateVerify(userVerify.id, payload).then(
+          () => {
+            this.$msg.success("开户审批更新成功");
+            onOk();
+          },
+          () => {
+            this.setState({
+              confirmLoading: false,
+            });
+          }
+        );
+      }
+    });
+  };
+
+  render() {
+    const { form, userVerify, onCancel, } = this.props;
+    const { confirmLoading, } = this.state;
+    const getFieldDecorator = form.getFieldDecorator;
+
+    return (
+      <Modal
+        visible={true}
+        title={"开户审批编辑"}
+        onOk={this.handleSubmit}
+        onCancel={onCancel}
+        confirmLoading={confirmLoading}
+      >
+        <Form className="editor-form">
+          <FormItem label="审核原因" {...getFormItemLayout(5, 13)} required>
+            {getFieldDecorator("reason", {
+              initialValue: (userVerify && userVerify.reason) || "",
+              rules: [{ required: true, message: "审核原因不能为空", }],
+            })(<Input placeholder="请输入审核原因" />)}
+          </FormItem>
+          {userVerify && (
+            <FormItem label="审核状态" {...getFormItemLayout(5, 13)} required>
+              {getFieldDecorator("inspect_status", {
+                initialValue: ["2"],
+                rules: [{ required: true, message: "状态不能为空值", }],
+              })(
+                <Cascader
+                  options={[
+                    {
+                      value: "2",
+                      label: "审核通过",
+                    },
+                    {
+                      value: "3",
+                      label: "审核失败",
+                    }
+                  ]}
+                />
+              )}
+            </FormItem>
+          )}
+        </Form>
+      </Modal>
+    );
+  }
+}

@@ -73,3 +73,7 @@ img {
   left: 50% !important;
   transform: translate(-50%) !important;
 }
+
+.ant-table-scroll {
+  overflow-x: unset !important;
+}

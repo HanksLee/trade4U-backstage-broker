@@ -39,7 +39,7 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
   };
 
   async componentDidMount() {
-    const token = utils.getLStorage('MOON_ADMIN_MAIN_TOKEN');
+    const token = utils.getLStorage('MOON_ADMIN_BROKER_TOKEN');
     if (token) {
       this.props.history.push('/dashboard');
     }
@@ -69,7 +69,7 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
         const res = await this.$api.common.login(values);
         if (res.status == 201) {
           const token = res.data.token;
-          utils.setLStorage('MOON_ADMIN_MAIN_TOKEN', token);
+          utils.setLStorage('MOON_ADMIN_BROKER_TOKEN', token);
 
           this.props.history.push('/dashboard');
         } else {

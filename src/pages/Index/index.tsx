@@ -1,15 +1,14 @@
-import * as React from 'react';
-import { BaseReact } from 'components/BaseReact';
-import { withRouter } from 'react-router-dom';
-import AppRouter from '../../router';
-import { Layout, Menu, Icon } from 'antd';
-import UserDropdown from 'components/UserDropdown';
-import { PAGE_ROUTES } from 'constant';
-import union from 'lodash/union';
-import './index.scss';
-import { inject, observer } from 'mobx-react';
+import * as React from "react";
+import { BaseReact } from "components/BaseReact";
+import { withRouter } from "react-router-dom";
+import AppRouter from "../../router";
+import { Layout, Menu, Icon, Spin } from "antd";
+import UserDropdown from "components/UserDropdown";
+import union from "lodash/union";
+import "./index.scss";
+import { inject, observer } from "mobx-react";
+import { PAGE_PERMISSION_MAP } from "constant";
 
-const logo = 'https://cdn.pixabay.com/photo/2017/01/11/08/31/icon-1971130__480.png';
 const { Header, Sider, Content, } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -21,6 +20,7 @@ export interface IIndexState {
   selectedKeys: string[];
   openKeys: string[];
   showContainer: boolean;
+  title: string;
 }
 
 // 用于计算出侧边栏的展开路径的数组
@@ -64,20 +64,23 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
     openKeys: [],
     selectedKeys: [],
     showContainer: true,
+    title: "",
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const {
       location: { pathname, },
-      // common: {},
+      common: { sidebar, },
     } = nextProps;
+
+    if (!sidebar) return null;
 
     const pathLevel = union(
       prevState.openKeys,
       computedPathLevel(pathname)
     ).sort((a, b) => b.length - a.length);
 
-    const pathlist = exactFromSidebarPath(PAGE_ROUTES);
+    const pathlist = exactFromSidebarPath(sidebar);
     let selectedKeys = [];
     pathlist.forEach(item => {
       if (
@@ -97,7 +100,12 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
     };
   }
 
-  componentDidMount() {}
+  async componentDidMount() {
+    const res = await this.$api.role.getMenus();
+    this.props.common.setPermissions(res.data.permission);
+    this.props.common.setSidebar(res.data.menu);
+    this.getTitle();
+  }
 
   toggle = () => {
     this.setState({
@@ -120,7 +128,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
   renderMenu = (): JSX.Element => {
     const { selectedKeys, openKeys, } = this.state;
-    const { computedSidebar, } = this.props.common;
+    const { sidebar, } = this.props.common;
 
     return (
       <Menu
@@ -131,15 +139,19 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
         onClick={this.onMenuItemClick}
         selectedKeys={selectedKeys}
       >
-        {computedSidebar.map(route => this.renderMenuItem(route))}
+        {sidebar.map(route => this.renderMenuItem(route))}
       </Menu>
     );
   };
 
   renderMenuItem = (route: any): JSX.Element => {
+    const { permissions, } = this.props.common;
+    if (permissions.indexOf(PAGE_PERMISSION_MAP[route.path]) === -1)
+      return null;
+
     if (route.children && route.children.length > 0) {
       return (
-        <SubMenu key={route.path} title={route.title}>
+        <SubMenu key={route.path} title={route.name}>
           {route.children.map(subRoute => this.renderMenuItem(subRoute))}
         </SubMenu>
       );
@@ -147,25 +159,42 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
     return (
       <MenuItem key={route.path}>
-        {/* <Icon type="user" /> */}
         <span>
-          <a>{route.title}</a>
+          <a>{route.name}</a>
         </span>
       </MenuItem>
     );
   };
 
+  getTitle = async () => {
+    const resDealer = await this.$api.system.getBrokerDealerList();
+    const { name, } = resDealer.data;
+    if (name !== "") {
+      this.setState({ title: `${name}后台`, });
+      document.title = name;
+    } else {
+      this.setState({ title: "WeTrade券商后台", });
+    }
+  };
+
   render() {
-    const { collapsed, showContainer, } = this.state;
-    const { location, } = this.props;
+    const { collapsed, showContainer, title, } = this.state;
+    const { location, common, } = this.props;
+
+    // 还未加载到菜单数据
+    if (!common.sidebar) {
+      return (
+        <Layout className="layout">
+          <Spin className="absolute-center" />
+        </Layout>
+      );
+    }
 
     return (
       <Layout className="layout">
         {showContainer && (
           <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
-            <div className="logo">
-              {!collapsed && <span>Wetrade 券商后台</span>}
-            </div>
+            <div className="logo">{!collapsed && <span>{title}</span>}</div>
             {this.renderMenu()}
           </Sider>
         )}

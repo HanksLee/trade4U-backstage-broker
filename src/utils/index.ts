@@ -1,7 +1,6 @@
 import gt from "utils/gettext";
 import locales from "locales";
 import isEmpty from "lodash/isEmpty";
-import { PAGE_ROUTES } from "constant";
 import PromiseFileReader from "promise-file-reader";
 import commonAPI from "services/common";
 import NProgress from "nprogress";
@@ -49,7 +48,7 @@ function initI18n(lang: string) {
   gt.init(locales);
 }
 
-function getPageBreadcrumb(url) {
+function getPageBreadcrumb(pathList, url) {
   const breadcrumbs = [];
 
   function getBreadcrumb(pathList) {
@@ -57,12 +56,11 @@ function getPageBreadcrumb(url) {
     breadcrumbs.push(matched);
 
     if (!isEmpty(matched && matched.children)) {
-      pathList = matched.children;
-      getBreadcrumb(pathList);
+      getBreadcrumb(matched.children);
     }
   }
 
-  getBreadcrumb(PAGE_ROUTES);
+  getBreadcrumb(pathList);
 
   return breadcrumbs;
 }
@@ -189,9 +187,13 @@ function randomNum(minNum, maxNum) {
   }
 }
 
-// export const coordinate = {
-
-// };
+function resetFilter(filter) {
+  const resetedFilter = Object.assign({}, filter);
+  Object.keys(filter).forEach((name: string) => {
+    resetedFilter[name] = undefined;
+  });
+  return resetedFilter;
+}
 
 export default {
   setRootFontSizeFromClient,
@@ -211,4 +213,5 @@ export default {
   removeSpareLF,
   parsePrice,
   randomNum,
+  resetFilter,
 };

@@ -1,0 +1,26 @@
+.meta-fund {
+  display: flex;
+  justify-content: space-between;
+
+  > div:not(:first-child) {
+    padding-left: 20px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  > div div span:first-child {
+    width: 90px;
+    display: inline-block;
+  }
+}
+
+.account-detail-list {
+  p {
+    height: 30px;
+    line-height: 30px;
+  }
+
+  span {
+    display: inline-block;
+    width: 100px;
+  }
+}
