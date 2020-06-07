@@ -5,7 +5,7 @@ const
   isProd = process.env.NODE_ENV === 'production';
 
 // const STATIC_URL = 'https://joyrun-web-cdn.thejoyrun.com/neo/';
-const STATIC_URL = '/asstets/';
+const STATIC_URL = '/';
 
 /**
  * @warning baseConfig cannot be delete, use for dubo-cli to create new page or component
