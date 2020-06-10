@@ -1,16 +1,17 @@
 import utils from "utils";
 import * as React from "react";
 import { Button, Checkbox, Icon, Popconfirm, Select } from "antd";
+import moment from "moment";
 
 const Option = Select.Option;
 
 const config = self => {
-  const { selectedRowKeys, } = self.state;
+  const { selectedRowKeys } = self.state;
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
-      self.setState({ selectedRowKeys: selectedRowKeys, });
-    },
+      self.setState({ selectedRowKeys: selectedRowKeys });
+    }
   };
   const permissions = self.props.common.permissions;
 
@@ -20,28 +21,34 @@ const config = self => {
       width: 150,
       render: (_, record) => {
         return record.last_name + record.first_name;
-      },
+      }
     },
     {
       title: "手机",
       width: 150,
-      dataIndex: "phone",
+      dataIndex: "phone"
     },
     {
       title: "代理",
       width: 150,
       dataIndex: "agent_name",
-      ellipsis: true, // 必须保留
+      ellipsis: true // 必须保留
     },
     {
       title: "邮箱",
-      width: 150,
-      dataIndex: "email",
+      width: 200,
+      dataIndex: "email"
     },
     {
       title: "客户组",
       width: 150,
-      dataIndex: "group_name",
+      dataIndex: "group_name"
+    },
+    {
+      title: "创建时间",
+      width: 200,
+      dataIndex: "create_time",
+      render: text => moment(text * 1000).format("YYYY-MM-DD")
     }
   ];
 
@@ -70,7 +77,7 @@ const config = self => {
             onChange={handleChange}
           />
         );
-      },
+      }
     });
   }
 
@@ -93,7 +100,7 @@ const config = self => {
           );
         };
         return <Checkbox checked={text} onChange={handleChange} />;
-      },
+      }
     });
   }
 
@@ -114,7 +121,7 @@ const config = self => {
             )}
           </>
         );
-      },
+      }
     },
     {
       title: "审核状态",
@@ -135,8 +142,8 @@ const config = self => {
         return (
           <Select
             labelInValue
-            value={{ key: text, }}
-            style={{ width: "120px", }}
+            value={{ key: text }}
+            style={{ width: "120px" }}
             onChange={handleChange}
             disabled={permissions.indexOf("change_account") === -1}
           >
@@ -146,7 +153,7 @@ const config = self => {
             <Option value={3}>审核拒绝</Option>
           </Select>
         );
-      },
+      }
     },
     {
       title: "操作",
@@ -186,7 +193,7 @@ const config = self => {
             )}
           </div>
         );
-      },
+      }
     }
   ];
 
@@ -201,9 +208,9 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
-        page: current,
+        page: current
       });
-    },
+    }
   };
 
   return {
@@ -215,7 +222,7 @@ const config = self => {
             <Icon type="plus" /> 添加
           </Button>
         ) : null;
-      },
+      }
     },
     searcher: {
       batchControl: {
@@ -224,12 +231,12 @@ const config = self => {
         options: [
           {
             title: "划转客户组",
-            value: "group",
+            value: "group"
           }
         ],
         onBatch: value => {
           self.onBatch(value);
-        },
+        }
       },
       widgets: [
         [
@@ -243,7 +250,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           },
           {
             type: "Input",
@@ -255,7 +262,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            },
+            }
           }
         ],
         {
@@ -268,8 +275,41 @@ const config = self => {
           },
           onPressEnter(evt) {
             self.onSearch();
-          },
+          }
         },
+        [
+          {
+            type: "Select",
+            label: "审核状态",
+            placeholder: "请选择审核状态",
+            // width: 200,
+            value: self.state.tempFilter.reviewStatus,
+            option: {
+              key: "id",
+              value: "id",
+              title: "name",
+              data: [
+                {
+                  id: 0,
+                  name: "待审核"
+                },
+                {
+                  id: 1,
+                  name: "审核成功"
+                },
+                {
+                  id: 2,
+                  name: "审核不通过"
+                }
+              ]
+            },
+            onChange(val, elem) {
+              self.onOptionSelect("review", val, elem);
+            },
+            onSelect(val, elem) {},
+            onBlur() {}
+          }
+        ],
         {
           type: "RangePicker",
           label: "创建时间",
@@ -281,11 +321,18 @@ const config = self => {
           ],
           onChange(values) {
             self.onInputChanged("start_time", values[0]);
-            self.onInputChanged("end_time", values[1]);
+            if (values[1]) {
+              self.onInputChanged("end_time", values[1]);
+            }
           },
           onPressEnter(evt) {
             self.onSearch();
           },
+          disabledDate(current) {
+            // console.log(current);
+            return self.disabledDate(current);
+            // return current && current < moment().endOf("day");
+          }
         }
       ],
       onSearch() {
@@ -293,7 +340,7 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      },
+      }
     },
     table: {
       rowKey: "id",
@@ -301,7 +348,7 @@ const config = self => {
       columns,
       dataSource: self.state.accountList,
       pagination,
-      scroll: { x: 9 * 150, },
+      scroll: { x: 9 * 150 },
       onChange(pagination, filters) {
         const payload: any = {};
 
@@ -313,10 +360,10 @@ const config = self => {
 
         self.getDataList({
           page_size: pagination.pageSize,
-          page: pagination.current,
+          page: pagination.current
         });
-      },
-    },
+      }
+    }
   };
 };
 
