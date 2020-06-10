@@ -54,4 +54,4 @@ deploy_prod_job:
     - chmod 700 id_rsa
     - mkdir "${HOME}/.ssh"
     - echo "${PROD_SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
-    - rsync -hrvz --delete -e "ssh -i id_rsa" dist/prod/* root@47.52.157.137:/www/wwwroot/desktop.trading8a.com
+    - rsync -hrvz --delete -e "ssh -i id_rsa" dist/prod/* root@47.52.157.137:/www/wwwroot/broker.trading8a.com
