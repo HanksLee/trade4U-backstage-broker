@@ -14,12 +14,12 @@ export default class CloseOrderDetail extends BaseReact<{}> {
     orderDetail: null,
     formula: null,
     transactionChoices: [],
-    currentTransactionChoice: null
+    currentTransactionChoice: null,
   };
 
   constructor(props) {
     super(props);
-    const { location } = this.props;
+    const { location, } = this.props;
     const search = this.$qs.parse(location.search);
     this.orderNumber = search.id;
   }
@@ -32,7 +32,7 @@ export default class CloseOrderDetail extends BaseReact<{}> {
   getCloseOrderDetail = async () => {
     const res = await this.$api.order.getCloseOrderDetail(this.orderNumber);
     this.setState({
-      orderDetail: res.data
+      orderDetail: res.data,
     });
   };
 
@@ -43,7 +43,7 @@ export default class CloseOrderDetail extends BaseReact<{}> {
     const data = res.data.data;
     this.setState({
       transactionChoices: data,
-      currentTransactionChoice: data[0].field || null
+      currentTransactionChoice: data[0].field || null,
     });
 
     if (data[0]) {
@@ -54,16 +54,16 @@ export default class CloseOrderDetail extends BaseReact<{}> {
   getOrderFormula = async (cause: string) => {
     const res = await this.$api.order.getOrderFormula(this.orderNumber, {
       params: {
-        cause
-      }
+        cause,
+      },
     });
     this.setState({
-      formula: res.data
+      formula: res.data,
     });
   };
 
   renderOrderDetail = () => {
-    const { orderDetail } = this.state;
+    const { orderDetail, } = this.state;
 
     if (!orderDetail) return null;
 
@@ -155,14 +155,14 @@ export default class CloseOrderDetail extends BaseReact<{}> {
       {
         title: "公式",
         dataIndex: "description",
-        render: (text, { amount }) => {
+        render: (text, { amount, }) => {
           return `${text}=${amount}`;
-        }
+        },
       },
       {
         title: "创建时间",
         dataIndex: "create_time",
-        render: text => moment(text * 1000).format("YYYY-MM-DD HH:mm:ss")
+        render: text => moment(text * 1000).format("YYYY-MM-DD HH:mm:ss"),
       }
     ];
     return columns;
@@ -170,7 +170,7 @@ export default class CloseOrderDetail extends BaseReact<{}> {
 
   changeTransactionChoice = e => {
     this.setState({
-      currentTransactionChoice: e.key
+      currentTransactionChoice: e.key,
     });
     this.getOrderFormula(e.key);
   };
@@ -179,18 +179,18 @@ export default class CloseOrderDetail extends BaseReact<{}> {
     const {
       currentTransactionChoice,
       transactionChoices,
-      formula
+      formula,
     } = this.state;
     return (
       <div className="editor food-card-editor">
         <section className="editor-content panel-block">
-          <Button onClick={this.goBack} style={{ marginBottom: "10px" }}>
+          <Button onClick={this.goBack} style={{ marginBottom: "10px", }}>
             返回
           </Button>
           {this.renderOrderDetail()}
           <Menu
             selectedKeys={[currentTransactionChoice]}
-            style={{ marginTop: "20px" }}
+            style={{ marginTop: "20px", }}
             mode="horizontal"
             onClick={this.changeTransactionChoice}
           >

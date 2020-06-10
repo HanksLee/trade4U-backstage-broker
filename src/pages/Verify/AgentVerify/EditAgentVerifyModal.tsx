@@ -8,8 +8,8 @@ import { inject, observer } from "mobx-react";
 
 const FormItem = Form.Item;
 const getFormItemLayout = (label, wrapper, offset?) => ({
-  labelCol: { span: label, offset },
-  wrapperCol: { span: wrapper }
+  labelCol: { span: label, offset, },
+  wrapperCol: { span: wrapper, },
 });
 
 interface IEditAgentVerifyModalProps {
@@ -29,13 +29,13 @@ interface IEditAgentVerifyModalState {
 @inject("common")
 @observer
 export default class EditAgentVerifyModal extends BaseReact<
-  IEditAgentVerifyModalProps,
-  IEditAgentVerifyModalState
+IEditAgentVerifyModalProps,
+IEditAgentVerifyModalState
 > {
   state = {
     confirmLoading: false,
     roleList: [],
-    defaultRole: []
+    defaultRole: [],
   };
 
   componentDidMount() {}
@@ -43,15 +43,15 @@ export default class EditAgentVerifyModal extends BaseReact<
   handleSubmit = async evt => {
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const { agentVerify, onOk } = this.props;
+        const { agentVerify, onOk, } = this.props;
 
         let payload: any = {
           reason: values.reason,
           inspect_status: Number(values.inspect_status),
-          remarks: values.remarks
+          remarks: values.remarks,
         };
         this.setState({
-          confirmLoading: true
+          confirmLoading: true,
         });
 
         this.$api.verify.updateVerify(agentVerify.id, payload).then(
@@ -61,7 +61,7 @@ export default class EditAgentVerifyModal extends BaseReact<
           },
           () => {
             this.setState({
-              confirmLoading: false
+              confirmLoading: false,
             });
           }
         );
@@ -70,8 +70,8 @@ export default class EditAgentVerifyModal extends BaseReact<
   };
 
   render() {
-    const { form, agentVerify, onCancel } = this.props;
-    const { confirmLoading } = this.state;
+    const { form, agentVerify, onCancel, } = this.props;
+    const { confirmLoading, } = this.state;
     const getFieldDecorator = form.getFieldDecorator;
 
     return (
@@ -86,24 +86,24 @@ export default class EditAgentVerifyModal extends BaseReact<
           <FormItem label="审核原因" {...getFormItemLayout(5, 13)} required>
             {getFieldDecorator("reason", {
               initialValue: (agentVerify && agentVerify.reason) || "",
-              rules: [{ required: true, message: "审核原因不能为空" }]
+              rules: [{ required: true, message: "审核原因不能为空", }],
             })(<Input placeholder="请输入审核原因" />)}
           </FormItem>
           {agentVerify && (
             <FormItem label="审核状态" {...getFormItemLayout(5, 13)} required>
               {getFieldDecorator("inspect_status", {
                 initialValue: ["2"],
-                rules: [{ required: true, message: "状态不能为空值" }]
+                rules: [{ required: true, message: "状态不能为空值", }],
               })(
                 <Cascader
                   options={[
                     {
                       value: "2",
-                      label: "审核通过"
+                      label: "审核通过",
                     },
                     {
                       value: "3",
-                      label: "审核失败"
+                      label: "审核失败",
                     }
                   ]}
                 />
@@ -112,7 +112,7 @@ export default class EditAgentVerifyModal extends BaseReact<
           )}
           <FormItem label="备注" {...getFormItemLayout(5, 13)}>
             {getFieldDecorator("remarks", {
-              initialValue: (agentVerify && agentVerify.remarks) || ""
+              initialValue: (agentVerify && agentVerify.remarks) || "",
               // rules: [{ required: true, message: "备注不能为空", }],
             })(<Input placeholder="请输入备注" />)}
           </FormItem>

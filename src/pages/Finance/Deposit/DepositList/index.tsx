@@ -18,12 +18,12 @@ export interface IDepositListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/finance/deposit", { exact: false })
+@WithRoute("/dashboard/finance/deposit", { exact: false, })
 @inject("common", "finance")
 @observer
 export default class DepositList extends BaseReact<
-  IDepositListProps,
-  IDepositListState
+IDepositListProps,
+IDepositListState
 > {
   private $depositEditor = null;
   state = {
@@ -39,13 +39,13 @@ export default class DepositList extends BaseReact<
     agent_name: undefined,
     createDateRange: [],
     notifyDateRange: [],
-    initStatus: 0 // 订单状态
+    initStatus: 0, // 订单状态
   };
 
   async componentDidMount() {
     // @todo 这里需要从 commonStore 中设置默认的分页
     const {
-      paginationConfig: { defaultPageSize, defaultCurrent }
+      paginationConfig: { defaultPageSize, defaultCurrent, },
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
@@ -63,7 +63,7 @@ export default class DepositList extends BaseReact<
 
     if (res.data.status == 200) {
       this.setState({
-        scopeOptions: res.data.list
+        scopeOptions: res.data.list,
       });
     }
   };
@@ -71,37 +71,37 @@ export default class DepositList extends BaseReact<
   getDataList = (payload = {}) => {
     this.setState(
       {
-        tableLoading: true
+        tableLoading: true,
       },
       async () => {
         this.props.finance.setFilterDeposit({
-          ...payload
+          ...payload,
         });
         await this.props.finance.getDepositList({
-          params: this.props.finance.filterDeposit
+          params: this.props.finance.filterDeposit,
         });
-        this.setState({ tableLoading: false });
+        this.setState({ tableLoading: false, });
       }
     );
   };
 
   onInputChanged = (field, value) => {
     this.setState({
-      [field]: value
+      [field]: value,
     });
     this.props.finance.setFilterDeposit({
-      [field]: value ? value : undefined
+      [field]: value ? value : undefined,
     });
   };
 
   toggleDepositModal = async (id?) => {
     this.setState({
-      depositModalVisible: !this.state.depositModalVisible
+      depositModalVisible: !this.state.depositModalVisible,
     });
   };
 
   onModalConfirm = async () => {
-    const { currentDeposit } = this.props.finance;
+    const { currentDeposit, } = this.props.finance;
 
     let res;
     if (currentDeposit.status == null) {
@@ -111,7 +111,7 @@ export default class DepositList extends BaseReact<
     let payload: any = {
       order_number: currentDeposit.order_number,
       status: currentDeposit.status,
-      remarks: currentDeposit.remarks
+      remarks: currentDeposit.remarks,
     };
 
     if (currentDeposit.id) {
@@ -136,7 +136,7 @@ export default class DepositList extends BaseReact<
 
   onModalCancel = () => {
     this.setState({
-      depositModalVisible: false
+      depositModalVisible: false,
     });
     this.props.finance.setCurrentDeposit({}, true, false);
   };
@@ -144,22 +144,22 @@ export default class DepositList extends BaseReact<
   onDateRangeChange = (field, dateRange) => {
     this.props.finance.setFilterDeposit({
       [`${field}_time__start`]: dateRange[0].unix(),
-      [`${field}_time__end`]: dateRange[1].unix()
+      [`${field}_time__end`]: dateRange[1].unix(),
     });
 
     this.setState({
-      [`${field}DateRange`]: dateRange
+      [`${field}DateRange`]: dateRange,
     });
   };
 
   resetPagination = async (page_size, current_page) => {
     this.props.finance.setFilterDeposit({
       page_size,
-      current_page
+      current_page,
     });
     this.setState(
       {
-        current_page
+        current_page,
       },
       async () => {
         const filter = this.props.finance.filterDeposit;
@@ -171,11 +171,11 @@ export default class DepositList extends BaseReact<
   // @ts-ignore
   private onSearch = async () => {
     this.props.finance.setFilterDeposit({
-      current_page: 1
+      current_page: 1,
     });
     this.setState(
       {
-        currentPage: 1
+        currentPage: 1,
       },
       () => {
         this.getDataList(this.props.finance.filterDeposit);
@@ -187,7 +187,7 @@ export default class DepositList extends BaseReact<
     // @ts-ignore
     const filter: any = {
       current_page: 1,
-      page_size: this.props.finance.filterDeposit.page_size
+      page_size: this.props.finance.filterDeposit.page_size,
     };
 
     this.props.finance.setFilterDeposit(filter, true);
@@ -199,7 +199,7 @@ export default class DepositList extends BaseReact<
         expect_amount: undefined,
         order_number: undefined,
         createDateRange: [],
-        notifyDateRange: []
+        notifyDateRange: [],
       },
       () => {
         this.getDataList(this.props.finance.filterDeposit);
@@ -222,10 +222,10 @@ export default class DepositList extends BaseReact<
   private onBatch = async value => {};
 
   render() {
-    const { match } = this.props;
+    const { match, } = this.props;
     const computedTitle = "入金管理";
-    const { depositModalVisible, initStatus } = this.state;
-    const { currentDeposit } = this.props.finance;
+    const { depositModalVisible, initStatus, } = this.state;
+    const { currentDeposit, } = this.props.finance;
 
     return (
       <div>

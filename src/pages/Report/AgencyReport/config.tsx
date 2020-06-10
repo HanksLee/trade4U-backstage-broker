@@ -19,37 +19,37 @@ const config = self => {
         } else {
           return <span>{text}</span>;
         }
-      }
+      },
     },
     {
       title: "手机号",
       dataIndex: "phone",
-      width: 150
+      width: 150,
     },
     {
       title: "下级客户数",
       dataIndex: "account_count",
-      width: 150
+      width: 150,
     },
     {
       title: "下级代理数",
       dataIndex: "agent_count",
-      width: 150
+      width: 150,
     },
     {
       title: "入金",
       dataIndex: "deposit",
-      width: 200
+      width: 200,
     },
     {
       title: "出金",
       dataIndex: "net_withdraw",
-      width: 200
+      width: 200,
     },
     {
       title: "净入金",
       dataIndex: "net_deposit",
-      width: 200
+      width: 200,
     },
     // {
     //   title: '盈利笔数',
@@ -63,32 +63,32 @@ const config = self => {
     {
       title: "手续费",
       dataIndex: "fee",
-      width: 150
+      width: 150,
     },
     {
       title: "库存费",
       dataIndex: "swaps",
-      width: 150
+      width: 150,
     },
     {
       title: "盈亏",
       dataIndex: "profit",
-      width: 200
+      width: 200,
     },
     {
       title: "已返佣金",
       dataIndex: "commission",
-      width: 200
+      width: 200,
     },
     {
       title: "总佣金",
       dataIndex: "total_commission",
-      width: 200
+      width: 200,
     },
     {
       title: "已提款佣金",
       dataIndex: "net_withdraw_commission",
-      width: 200
+      width: 200,
     }
   ];
 
@@ -101,9 +101,9 @@ const config = self => {
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
-        page: current
+        page: current,
       });
-    }
+    },
   };
 
   return {
@@ -121,7 +121,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           },
           {
             type: "Input",
@@ -134,7 +134,7 @@ const config = self => {
             },
             onPressEnter(evt) {
               self.onSearch();
-            }
+            },
           }
         ]
       ],
@@ -143,7 +143,7 @@ const config = self => {
       },
       onReset() {
         self.onReset();
-      }
+      },
     },
     table: {
       rowKey: "id",
@@ -161,10 +161,10 @@ const config = self => {
 
         self.getDataList({
           page_size: pagination.pageSize,
-          page: pagination.current
+          page: pagination.current,
         });
-      }
-    }
+      },
+    },
   };
 };
 

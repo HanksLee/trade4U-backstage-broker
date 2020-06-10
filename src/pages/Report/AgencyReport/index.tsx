@@ -26,7 +26,7 @@ interface ReportState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/report/agency", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/report/agency"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/report/agency"],
 })
 @inject("common", "agencyReport")
 @observer
@@ -40,18 +40,18 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
     total: 0,
     agencyStack: [],
     symbolType: [],
-    commissionRuleColumns: []
+    commissionRuleColumns: [],
   };
 
   async componentDidMount() {
-    const { filter } = this.props.agencyReport;
-    const { paginationConfig } = this.props.common;
+    const { filter, } = this.props.agencyReport;
+    const { paginationConfig, } = this.props.common;
 
     this.getDataList({
       page_size: filter.page_size || paginationConfig.defaultPageSize,
       page: filter.page || 1,
       username: undefined,
-      phone: undefined
+      phone: undefined,
     });
   }
 
@@ -66,37 +66,37 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
           let content = Object.values(record.trading_data);
           let content_ary = content[index];
           return content_ary;
-        }
+        },
       });
     });
     this.setState({
       commissionRuleColumns: columns,
-      symbolType: res.data.results
+      symbolType: res.data.results,
     });
   };
 
   getDataList = async (filter?: any) => {
     const payload = filter
-      ? { ...this.props.agencyReport.filter, ...filter }
+      ? { ...this.props.agencyReport.filter, ...filter, }
       : this.props.agencyReport.filter;
     this.setState({
-      tableLoading: true
+      tableLoading: true,
     });
 
-    const res = await this.$api.report.getAgencyReport({ params: payload });
-    const { results, total_data, page_size, current_page, count } = res.data;
+    const res = await this.$api.report.getAgencyReport({ params: payload, });
+    const { results, total_data, page_size, current_page, count, } = res.data;
     this.props.agencyReport.setFilter({
       page_size,
       page: current_page,
       username: payload.username,
-      phone: payload.phone
+      phone: payload.phone,
     });
     this.setState(
       {
         dataList: results,
         totalData: total_data,
         tableLoading: false,
-        total: count
+        total: count,
       },
       () => {
         this.getSymbolType();
@@ -108,7 +108,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
   private onSearch = async () => {
     const filter: any = {
       page: 1,
-      ...this.state.tempFilter
+      ...this.state.tempFilter,
     };
 
     if (filter.start_time) {
@@ -128,14 +128,14 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
     this.setState(
       {
         tempFilter: {},
-        agencyStack: []
+        agencyStack: [],
       },
       () => {
         this.getDataList({
           username: undefined,
           phone: undefined,
           page: 1,
-          agencyStack: []
+          agencyStack: [],
         });
       }
     );
@@ -145,8 +145,8 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
     this.setState((prevState: ReportState) => ({
       tempFilter: {
         ...prevState.tempFilter,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
@@ -157,15 +157,15 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
   handleAgencyStackChange = (username: string, index?: number) => {
     this.getDataList({
       username,
-      page: 1
+      page: 1,
     });
     if (index === undefined) {
       this.setState({
-        agencyStack: [...this.state.agencyStack, username]
+        agencyStack: [...this.state.agencyStack, username],
       });
     } else {
       this.setState({
-        agencyStack: this.state.agencyStack.filter((item, i) => i <= index)
+        agencyStack: this.state.agencyStack.filter((item, i) => i <= index),
       });
     }
   };
@@ -173,23 +173,23 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
   resetAgencyStack = () => {
     this.setState(
       {
-        agencyStack: []
+        agencyStack: [],
       },
       () => {
         this.getDataList({
           username: undefined,
-          page: 1
+          page: 1,
         });
       }
     );
   };
 
   render() {
-    const { agencyStack, totalData, symbolType } = this.state;
+    const { agencyStack, totalData, symbolType, } = this.state;
     return (
       <div className="agency-report">
         <CommonHeader {...this.props} links={[]} title="代理团队报表" />
-        <Row gutter={8} style={{ margin: "10px" }}>
+        <Row gutter={8} style={{ margin: "10px", }}>
           <Col span={4}>
             <Card>
               <Statistic title="入金" value={totalData.deposit} />
@@ -233,7 +233,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
             </Card>
           </Col>
         </Row>
-        <Row gutter={8} style={{ margin: "10px" }}>
+        <Row gutter={8} style={{ margin: "10px", }}>
           <Col span={4}>
             <Card>
               <Statistic title="库存费" value={totalData.swaps} />
@@ -280,7 +280,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
           {agencyStack.length > 0 && (
             <Icon
               type="close-circle"
-              style={{ marginLeft: "20px", fontSize: "14px" }}
+              style={{ marginLeft: "20px", fontSize: "14px", }}
               onClick={this.resetAgencyStack}
             />
           )}

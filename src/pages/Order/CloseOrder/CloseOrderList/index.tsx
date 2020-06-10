@@ -25,13 +25,13 @@ export interface CloseOrderListState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/order/close", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/order/close"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/order/close"],
 })
 @inject("common", "closeOrder")
 @observer
 export default class CloseOrderList extends BaseReact<
-  CloseOrderListProps,
-  CloseOrderListState
+CloseOrderListProps,
+CloseOrderListState
 > {
   state = {
     status: "close",
@@ -39,18 +39,18 @@ export default class CloseOrderList extends BaseReact<
     totalData: {},
     tableLoading: false,
     tempFilter: {},
-    total: 0
+    total: 0,
   };
 
   async componentDidMount() {
-    const { filter } = this.props.closeOrder;
-    const { paginationConfig } = this.props.common;
-    const { tempFilter } = this.state;
+    const { filter, } = this.props.closeOrder;
+    const { paginationConfig, } = this.props.common;
+    const { tempFilter, } = this.state;
 
     this.getDataList({
       ...utils.resetFilter(filter),
       page_size: filter.page_size || paginationConfig.defaultPageSize,
-      page: filter.page || 1
+      page: filter.page || 1,
     });
   }
 
@@ -62,23 +62,23 @@ export default class CloseOrderList extends BaseReact<
 
   getDataList = async (filter?: any) => {
     const payload = filter
-      ? { ...this.props.closeOrder.filter, ...filter }
+      ? { ...this.props.closeOrder.filter, ...filter, }
       : this.props.closeOrder.filter;
     this.setState({
-      tableLoading: true
+      tableLoading: true,
     });
-    const res = await this.$api.order.getCloseOrderList({ params: payload });
-    const { results, total_data, page_size, current_page, count } = res.data;
+    const res = await this.$api.order.getCloseOrderList({ params: payload, });
+    const { results, total_data, page_size, current_page, count, } = res.data;
     this.props.closeOrder.setFilter({
       page_size,
       page: current_page,
-      ...payload
+      ...payload,
     });
     this.setState({
       orderList: results,
       totalData: total_data,
       tableLoading: false,
-      total: count
+      total: count,
     });
   };
 
@@ -86,7 +86,7 @@ export default class CloseOrderList extends BaseReact<
   private onSearch = async () => {
     const filter: any = {
       page: 1,
-      ...this.state.tempFilter
+      ...this.state.tempFilter,
     };
 
     if (filter.close_start_time) {
@@ -105,10 +105,10 @@ export default class CloseOrderList extends BaseReact<
     // @ts-ignore
     this.getDataList({
       page: 1,
-      ...utils.resetFilter(this.state.tempFilter)
+      ...utils.resetFilter(this.state.tempFilter),
     });
     this.setState({
-      tempFilter: {}
+      tempFilter: {},
     });
   };
 
@@ -116,8 +116,8 @@ export default class CloseOrderList extends BaseReact<
     this.setState((prevState: CloseOrderListState) => ({
       tempFilter: {
         ...prevState.tempFilter,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
@@ -133,7 +133,7 @@ export default class CloseOrderList extends BaseReact<
   };
 
   render() {
-    const { match } = this.props;
+    const { match, } = this.props;
     const computedTitle = "结算订单管理";
 
     return (
