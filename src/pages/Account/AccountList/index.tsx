@@ -57,7 +57,7 @@ interface AccountListState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/account/account", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/account/account"]
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/account/account"],
 })
 @inject("common", "account")
 @observer
@@ -72,16 +72,16 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     isShowDetailDrawer: false,
     isShowBalanceModal: false,
     isShowTransferAgentModal: false,
-    isShowTransferGroupModal: false
+    isShowTransferGroupModal: false,
   };
 
   async componentDidMount() {
-    const { filter } = this.props.account;
-    const { paginationConfig } = this.props.common;
+    const { filter, } = this.props.account;
+    const { paginationConfig, } = this.props.common;
 
     this.getDataList({
       page_size: filter.page_size || paginationConfig.defaultPageSize,
-      page: filter.page || 1
+      page: filter.page || 1,
     });
   }
 
@@ -93,27 +93,27 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
 
   getDataList = async (filter?: any) => {
     const payload = filter
-      ? { ...this.props.account.filter, ...filter }
+      ? { ...this.props.account.filter, ...filter, }
       : this.props.account.filter;
     this.setState({
-      tableLoading: true
+      tableLoading: true,
     });
 
-    const res = await this.$api.account.getAccountList({ params: payload });
-    const { results, page_size, current_page, count } = res.data;
+    const res = await this.$api.account.getAccountList({ params: payload, });
+    const { results, page_size, current_page, count, } = res.data;
     if (res.data.results.length === 0 && res.data.current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
-      this.getDataList({ ...payload, page: current_page - 1 });
+      this.getDataList({ ...payload, page: current_page - 1, });
     } else {
       this.props.account.setFilter({
         page_size,
         page: current_page,
-        name: payload.name
+        name: payload.name,
       });
       this.setState({
         accountList: results,
         tableLoading: false,
-        total: count
+        total: count,
       });
     }
   };
@@ -122,7 +122,7 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   private onSearch = async () => {
     const filter: any = {
       page: 1,
-      ...this.state.tempFilter
+      ...this.state.tempFilter,
     };
 
     if (filter.start_time) {
@@ -141,10 +141,10 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     // @ts-ignore
     this.getDataList({
       name: undefined,
-      page: 1
+      page: 1,
     });
     this.setState({
-      tempFilter: {}
+      tempFilter: {},
     });
   };
 
@@ -152,8 +152,8 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     this.setState((prevState: AccountListState) => ({
       tempFilter: {
         ...prevState.tempFilter,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
@@ -173,8 +173,8 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     this.setState((prevState: AccountListState) => ({
       tempFilter: {
         ...prevState.tempFilter,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
@@ -186,14 +186,14 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   viewDetail = (e: any, record: Account) => {
     this.setState({
       currentAccount: record,
-      isShowDetailDrawer: true
+      isShowDetailDrawer: true,
     });
   };
 
   hideDetailDrawer = () => {
     this.setState({
       currentAccount: null,
-      isShowDetailDrawer: false
+      isShowDetailDrawer: false,
     });
   };
 
@@ -218,17 +218,17 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
       cancelText: "取消",
       onOk: async () => {
         await this.$api.account.updateAccount(id, {
-          [key]: value
+          [key]: value,
         });
         this.getDataList();
-      }
+      },
     });
   };
 
   handleChangeBalance = (record: Account) => {
     this.setState({
       currentAccount: record,
-      isShowBalanceModal: true
+      isShowBalanceModal: true,
     });
   };
 
@@ -240,14 +240,14 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   hideEditBalanceModal = () => {
     this.setState({
       currentAccount: null,
-      isShowBalanceModal: false
+      isShowBalanceModal: false,
     });
   };
 
   handleTransferAgent = (e: any, record: Account) => {
     this.setState({
       currentAccount: record,
-      isShowTransferAgentModal: true
+      isShowTransferAgentModal: true,
     });
   };
 
@@ -259,7 +259,7 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   hideTransferAgentModal = () => {
     this.setState({
       currentAccount: null,
-      isShowTransferAgentModal: false
+      isShowTransferAgentModal: false,
     });
   };
 
@@ -271,26 +271,26 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   hideTransferGroupModal = () => {
     this.setState({
       isShowTransferGroupModal: false,
-      selectedRowKeys: []
+      selectedRowKeys: [],
     });
   };
 
   onBatch = async value => {
     if (value == "group") {
       this.setState({
-        isShowTransferGroupModal: true
+        isShowTransferGroupModal: true,
       });
     }
   };
 
   render() {
-    const { match } = this.props;
+    const { match, } = this.props;
     const {
       isShowDetailDrawer,
       isShowBalanceModal,
       currentAccount,
       isShowTransferAgentModal,
-      isShowTransferGroupModal
+      isShowTransferGroupModal,
     } = this.state;
     return (
       <div>
