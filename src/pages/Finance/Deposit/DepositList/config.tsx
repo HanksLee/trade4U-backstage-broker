@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm, Row, Col } from "antd";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import utils from "utils";
 import moment from "moment";
 import { FORMAT_TIME } from "constant";
@@ -26,9 +27,8 @@ const config = self => {
     },
     {
       title: "手机号",
-      dataIndex: "user_display",
       width: 150,
-      render: (text, record) => text.phone || "--",
+      render: (text, record) => record.user_display.phone || "--",
     },
     {
       title: "代理",
@@ -210,6 +210,19 @@ const config = self => {
         </Button>
       ),
     },
+    exportExcelBtn: {
+      showExportExcelBtn: self.state.exportExcelBtnStatus,
+      title: () => (
+        <ReactHTMLTableToExcel
+          // id="test-table-xls-button"
+          className="ant-btn ant-btn-primary"
+          table="table-to-xls"
+          filename={self.state.excelFileName}
+          sheet={self.state.excelFileName}
+          buttonText="导出excel"
+        />
+      ),
+    },
     searcher: {
       batchControl: {
         placeholder: "请选择",
@@ -321,6 +334,7 @@ const config = self => {
     },
     table: {
       rowKey: "id",
+      ref: self.exportExcel,
       // rowSelection,
       bordered: true,
       title: () => {

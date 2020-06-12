@@ -1,4 +1,5 @@
 import * as React from "react";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import utils from "utils";
 import moment from "moment";
 import { Row, Col } from "antd";
@@ -135,6 +136,19 @@ const config = self => {
   };
 
   return {
+    exportExcelBtn: {
+      showExportExcelBtn: self.state.exportExcelBtnStatus,
+      title: () => (
+        <ReactHTMLTableToExcel
+          // id="test-table-xls-button"
+          className="ant-btn ant-btn-primary"
+          table="table-to-xls"
+          filename={self.state.excelFileName}
+          sheet={self.state.excelFileName}
+          buttonText="导出excel"
+        />
+      ),
+    },
     searcher: {
       widgets: [
         [
@@ -276,6 +290,7 @@ const config = self => {
     },
     table: {
       rowKey: "id",
+      ref: self.exportExcel,
       title: () => {
         const totalData = self.state.totalData;
 

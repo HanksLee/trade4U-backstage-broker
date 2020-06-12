@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm, Checkbox } from "antd";
 import utils from "utils";
-import { WeeklyOrder } from 'constant';
-import moment from 'moment';
+import { WeeklyOrder } from "constant";
+import moment from "moment";
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
@@ -25,7 +25,7 @@ const config = self => {
       title: "品种名称",
       dataIndex: "name",
       render: (text, record) => {
-        return text || '--';
+        return text || "--";
       },
     },
     {
@@ -33,7 +33,7 @@ const config = self => {
       title: "品种类型",
       dataIndex: "type_display",
       render: (text, record) => {
-        return text || '--';
+        return text || "--";
       },
     },
     {
@@ -41,14 +41,14 @@ const config = self => {
       title: "行情产品",
       dataIndex: "product_display",
       render: (text, record) => {
-        return text.name || '--';
+        return text.name || "--";
       },
     },
     {
       width: 100,
-      title: '产品编码',
+      title: "产品编码",
       render: (text, record) => {
-        return record.product_display && record.product_display.code || '--';
+        return (record.product_display && record.product_display.code) || "--";
       },
     },
     {
@@ -56,7 +56,7 @@ const config = self => {
       title: "小数位",
       dataIndex: "decimals_place",
       render: (text, record) => {
-        return text || '--';
+        return text || "--";
       },
     },
     {
@@ -64,7 +64,7 @@ const config = self => {
       title: "合约大小",
       dataIndex: "contract_size",
       render: (text, record) => {
-        return text || '--';
+        return text || "--";
       },
     },
     {
@@ -72,20 +72,20 @@ const config = self => {
       title: "点差",
       dataIndex: "spread",
       render: (text, record) => {
-        return text || '--';
+        return text || "--";
       },
     },
     {
       width: 100,
-      title: '点差模式',
-      dataIndex: 'spread_mode_display',
+      title: "点差模式",
+      dataIndex: "spread_mode_display",
     },
     {
       title: "启用",
       width: 200,
       dataIndex: "status",
       render: (text, record) => {
-        const handleChange = async (e) => {
+        const handleChange = async e => {
           const res = await self.$api.product.updateProduct(record.id, {
             status: text == 0 ? 1 : 0,
           });
@@ -105,30 +105,34 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            {
-              permissions.includes('edit_product') && <span onClick={() => {
-                self.goToEditor(record);
-              }}>编辑</span>
-            }
+            {permissions.includes("edit_product") && (
+              <span
+                onClick={() => {
+                  self.goToEditor(record);
+                }}
+              >
+                编辑
+              </span>
+            )}
             <span className="common-list-table-operation-spliter"></span>
-            {
-              permissions.includes('delete_product') && <Popconfirm
+            {permissions.includes("delete_product") && (
+              <Popconfirm
                 title="请问是否确定删除当前规则"
                 onConfirm={async () => {
                   const res = await self.$api.product.deleteProduct(record.id);
 
                   if (res.status === 204) {
-                    self.$msg.success('当期记录删除成功');
+                    self.$msg.success("当期记录删除成功");
                     self.getDataList(self.state.filter);
                   } else {
                     self.$msg.error(res.data.message);
                   }
                 }}
-                onCancel={() => { }}
+                onCancel={() => {}}
               >
                 <span>删除</span>
               </Popconfirm>
-            }
+            )}
           </div>
         );
       },
@@ -139,7 +143,7 @@ const config = self => {
     ...self.props.common.paginationConfig,
     total: self.props.product.productListMeta.total,
     current: self.state.currentPage,
-    onChange: (current, pageSize) => { },
+    onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
@@ -150,9 +154,16 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => (
-        <Button type='primary' style={{ display: 'none', }} onClick={() => {
-          self.goToEditor({});
-        }}><Icon type="plus" />添加</Button>
+        <Button
+          type="primary"
+          style={{ display: "none", }}
+          onClick={() => {
+            self.goToEditor({});
+          }}
+        >
+          <Icon type="plus" />
+          添加
+        </Button>
       ),
     },
     searcher: {
@@ -171,69 +182,71 @@ const config = self => {
         },
       },
       widgets: [
-        [{
-          type: 'Input',
-          label: '品种名称',
-          placeholder: '请输入品种名称',
-          value: self.state.name || undefined,
-          onChange(evt) {
-            self.onInputChanged('name', evt.target.value);
-          },
-          onPressEnter(evt) {
-            self.onSearch();
-          },
-        },
-        {
-          type: 'Select',
-          label: '品种类型',
-          showSearch: false,
-          placeholder: '请选择品种类型',
-          allowClear: false,
-          width: 150,
-          value: self.state.type__name,
-          option: {
-            key: 'id',
-            value: 'name',
-            title: 'name',
-            data: self.state.typeOptions || [],
-          },
-          onSelect(val, elem) {
-            self.onTypeSelected(val, elem);
-          },
-        }],
         [
           {
-            type: 'Input',
-            label: '产品编码',
-            placeholder: '请输入产品编码',
-            value: self.state.product__code || undefined,
+            type: "Input",
+            label: "品种名称",
+            placeholder: "请输入品种名称",
+            value: self.state.name || undefined,
             onChange(evt) {
-              self.onInputChanged('product__code', evt.target.value);
+              self.onInputChanged("name", evt.target.value);
             },
             onPressEnter(evt) {
               self.onSearch();
             },
           },
           {
-            type: 'Select',
-            label: '状态',
+            type: "Select",
+            label: "品种类型",
             showSearch: false,
-            placeholder: '请选择状态',
+            placeholder: "请选择品种类型",
+            allowClear: false,
+            width: 150,
+            value: self.state.type__name,
+            option: {
+              key: "id",
+              value: "name",
+              title: "name",
+              data: self.state.typeOptions || [],
+            },
+            onSelect(val, elem) {
+              self.onTypeSelected(val, elem);
+            },
+          }
+        ],
+        [
+          {
+            type: "Input",
+            label: "产品编码",
+            placeholder: "请输入产品编码",
+            value: self.state.product__code || undefined,
+            onChange(evt) {
+              self.onInputChanged("product__code", evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
+          {
+            type: "Select",
+            label: "状态",
+            showSearch: false,
+            placeholder: "请选择状态",
             allowClear: false,
             width: 150,
             value: self.state.status,
             option: {
-              key: 'id',
-              value: 'id',
-              title: 'name',
-              data:  [
+              key: "id",
+              value: "id",
+              title: "name",
+              data: [
                 {
                   id: 0,
-                  name: '禁用',
+                  name: "禁用",
                 },
                 {
                   id: 1,
-                  name: '启用',
+                  name: "启用",
                 }
               ],
             },
@@ -253,15 +266,15 @@ const config = self => {
     table: {
       rowKey: "id",
       // rowSelection,
-      tableLayout: 'fixed',
+      tableLayout: "fixed",
       columns,
       dataSource: self.props.product.productList,
       pagination,
       scroll: { x: (columns.length - 1) * 100 + 240, },
       onChange(pagination, filters, sorter) {
         const payload: any = {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
+          page: pagination.current,
+          page_size: pagination.pageSize,
         };
 
         if (!utils.isEmpty(filters)) {

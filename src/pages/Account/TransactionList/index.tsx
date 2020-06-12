@@ -3,8 +3,10 @@ import CommonList from "components/CommonList";
 import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
+import ReactDOM from "react-dom";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
+import utils from "utils";
 import { PAGE_PERMISSION_MAP } from "constant";
 
 export interface Transaction {
@@ -26,6 +28,8 @@ interface TransactionListState {
   selectedRowKeys: string[];
   tempFilter: any;
   total: number;
+  exportExcelBtnStatus: boolean;
+  excelFileName: string;
 }
 
 /* eslint new-cap: "off" */
@@ -39,12 +43,15 @@ export default class TransactionList extends BaseReact<
 {},
 TransactionListState
 > {
+  exportExcel = React.createRef();
   state = {
     transactionList: [],
     tableLoading: false,
     selectedRowKeys: [],
     tempFilter: {},
     total: 0,
+    exportExcelBtnStatus: false,
+    excelFileName: "历史明细",
   };
 
   async componentDidMount() {
@@ -52,6 +59,7 @@ TransactionListState
     const { paginationConfig, } = this.props.common;
 
     this.getDataList({
+      ...utils.resetFilter(filter),
       page_size: filter.page_size || paginationConfig.defaultPageSize,
       page: filter.page || 1,
     });
@@ -99,6 +107,8 @@ TransactionListState
       filter.end_time = filter.end_time.unix();
     }
 
+    this.comfirmSearchParams();
+    this.setTableAttrToExportExcel();
     this.getDataList(filter);
   };
 
@@ -106,8 +116,8 @@ TransactionListState
   private onReset = async () => {
     // @ts-ignore
     this.getDataList({
-      name: undefined,
       page: 1,
+      ...utils.resetFilter(this.state.tempFilter),
     });
     this.setState({
       tempFilter: {},
@@ -121,6 +131,33 @@ TransactionListState
         [field]: value,
       },
     }));
+  };
+
+  comfirmSearchParams = () => {
+    const { tempFilter, } = this.state;
+
+    if (!utils.isEmpty(tempFilter)) {
+      let isNull = false;
+      for (let item in tempFilter) {
+        if (utils.isEmpty(tempFilter[item])) {
+          isNull = true;
+          break;
+        }
+      }
+      if (!isNull) {
+        this.setState({ exportExcelBtnStatus: true, });
+      } else {
+        this.setState({ exportExcelBtnStatus: false, });
+      }
+    } else {
+      this.setState({ exportExcelBtnStatus: false, });
+    }
+  };
+
+  setTableAttrToExportExcel = () => {
+    const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
+    const table = tableCon.querySelector("table"); //获取table
+    table.setAttribute("id", "table-to-xls"); //给该table设置属性
   };
 
   render() {

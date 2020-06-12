@@ -1,24 +1,25 @@
-import AddGroupModal from '../AddGroupModal';
-import CommonHeader from 'components/CommonHeader';
-import CommonList from 'components/CommonList';
-import GroupSymbolList from '../GroupSymbolList';
-import listConfig from './config';
-import EditGroupModal from '../EditGroupModal';
-import WithRoute from 'components/WithRoute';
+import AddGroupModal from "../AddGroupModal";
+import CommonHeader from "components/CommonHeader";
+import CommonList from "components/CommonList";
+import GroupSymbolList from "../GroupSymbolList";
+import listConfig from "./config";
+import EditGroupModal from "../EditGroupModal";
+import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import { PAGE_PERMISSION_MAP } from "constant";
+import utils from "utils";
 
 interface Group {
   id: string;
   name: string;
   status: number;
   is_default: number;
-  margin_call:	number;
+  margin_call: number;
   stop_out_level: number;
-  symbol_type?:	string[];
+  symbol_type?: string[];
 }
 
 interface GroupListState {
@@ -30,10 +31,13 @@ interface GroupListState {
   isShowEditGroupModal: boolean;
   tempFilter: any;
   total: number;
-};
+}
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/group", { exact: false, permissionCode: PAGE_PERMISSION_MAP["/dashboard/group"], })
+@WithRoute("/dashboard/group", {
+  exact: false,
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/group"],
+})
 @inject("common", "group")
 @observer
 export default class GroupList extends BaseReact<{}, GroupListState> {
@@ -49,8 +53,10 @@ export default class GroupList extends BaseReact<{}, GroupListState> {
   };
 
   async componentDidMount() {
+    const { filter, } = this.props.group;
     const { paginationConfig, } = this.props.common;
     this.getDataList({
+      ...utils.resetFilter(filter),
       page_size: paginationConfig.defaultPageSize,
       page: 1,
     });
@@ -63,14 +69,16 @@ export default class GroupList extends BaseReact<{}, GroupListState> {
   }
 
   getDataList = async (filter?: any) => {
-    const payload = filter ? { ...this.props.group.filter, ...filter, } : this.props.group.filter;
+    const payload = filter
+      ? { ...this.props.group.filter, ...filter, }
+      : this.props.group.filter;
     this.setState({
       tableLoading: true,
     });
-    
+
     const res = await this.$api.group.getGroupList({ params: payload, });
     const { results, page_size, current_page, count, } = res.data;
-    if ((results.length === 0) && current_page !== 1) {
+    if (results.length === 0 && current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
       this.getDataList({ ...payload, page: current_page - 1, });
     } else {
@@ -100,9 +108,8 @@ export default class GroupList extends BaseReact<{}, GroupListState> {
   private onReset = async () => {
     // @ts-ignore
     this.getDataList({
-      name: undefined,
-      status: undefined,
       page: 1,
+      ...utils.resetFilter(this.state.tempFilter),
     });
     this.setState({
       tempFilter: {},
@@ -110,56 +117,54 @@ export default class GroupList extends BaseReact<{}, GroupListState> {
   };
 
   onInputChanged = (field, value) => {
-    this.setState((prevState: GroupListState) => (
-      {
-        tempFilter: {
-          ...prevState.tempFilter,
-          [field]: value,
-        },
-      }
-    ));
-  }
+    this.setState((prevState: GroupListState) => ({
+      tempFilter: {
+        ...prevState.tempFilter,
+        [field]: value,
+      },
+    }));
+  };
 
   showAddGroupModal = (): void => {
     this.setState({
       isShowAddGroupModal: true,
     });
-  }
+  };
 
   hideAddGroupModal = () => {
     this.setState({
       isShowAddGroupModal: false,
     });
-  }
+  };
 
   handleAddGroup = () => {
     this.hideAddGroupModal();
     this.getDataList();
-  }
+  };
 
   showEditGroupModal = (record?: any): void => {
     this.setState({
       currentGroup: record ? record : null,
       isShowEditGroupModal: true,
     });
-  }
+  };
 
   hideEditGroupModal = () => {
     this.setState({
       currentGroup: null,
       isShowEditGroupModal: false,
     });
-  }
+  };
 
   handleEditGroup = () => {
     this.hideEditGroupModal();
     this.getDataList();
-  }
+  };
 
-  goToGroupSymbolList = (record) => {
+  goToGroupSymbolList = record => {
     const url = `/dashboard/group/symbol?id=${record.id}`;
     this.props.history.push(url);
-  }
+  };
 
   deleteGroup = async (id: string) => {
     const res = await this.$api.group.deleteGroup(id);
@@ -168,11 +173,15 @@ export default class GroupList extends BaseReact<{}, GroupListState> {
     } else {
       this.$msg.error(res.data.message);
     }
-  }
+  };
 
   render() {
     const { match, } = this.props;
-    const { currentGroup, isShowAddGroupModal, isShowEditGroupModal, } = this.state;
+    const {
+      currentGroup,
+      isShowAddGroupModal,
+      isShowEditGroupModal,
+    } = this.state;
     return (
       <div>
         <CommonHeader {...this.props} links={[]} title="客户组管理" />
@@ -180,26 +189,25 @@ export default class GroupList extends BaseReact<{}, GroupListState> {
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
-        <Route path={`${match.url}/symbol`} render={props => (
-          <GroupSymbolList getGroupList={this.getDataList} {...props} />
-        )} />
-        {
-          isShowAddGroupModal && (
-            <AddGroupModal
-              onOk={this.handleAddGroup}
-              onCancel={this.hideAddGroupModal}
-            />
-          )
-        }
-        {
-          isShowEditGroupModal && (
-            <EditGroupModal
-              group={currentGroup}
-              onOk={this.handleEditGroup}
-              onCancel={this.hideEditGroupModal}
-            />
-          )
-        }
+        <Route
+          path={`${match.url}/symbol`}
+          render={props => (
+            <GroupSymbolList getGroupList={this.getDataList} {...props} />
+          )}
+        />
+        {isShowAddGroupModal && (
+          <AddGroupModal
+            onOk={this.handleAddGroup}
+            onCancel={this.hideAddGroupModal}
+          />
+        )}
+        {isShowEditGroupModal && (
+          <EditGroupModal
+            group={currentGroup}
+            onOk={this.handleEditGroup}
+            onCancel={this.hideEditGroupModal}
+          />
+        )}
       </div>
     );
   }

@@ -247,7 +247,7 @@ const config = self => {
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {
-          current_page: pagination.current,
+          page: pagination.current,
           page_size: pagination.pageSize,
         };
 

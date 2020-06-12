@@ -1,20 +1,20 @@
-import AccountDetailDrawer from './AccountDetailDrawer';
-import AccountEditor from './AccountEditor';
-import RebateSettingsEditor from './RebateSettingsEditor';
-import CommonHeader from 'components/CommonHeader';
-import CommonList from 'components/CommonList';
-import EditBalanceModal from './EditBalanceModal';
-import TransferCustomModal from './TransferCustomModal';
-import TransferAgentModal from './TransferAgentModal';
-
-import listConfig from './config';
-import WithRoute from 'components/WithRoute';
-import * as React from 'react';
-import { BaseReact } from 'components/BaseReact';
-import { Modal } from 'antd';
-import { inject, observer } from 'mobx-react';
-import { Route } from 'react-router-dom';
-import { PAGE_PERMISSION_MAP } from 'constant';
+import AccountDetailDrawer from "./AccountDetailDrawer";
+import AccountEditor from "./AccountEditor";
+import RebateSettingsEditor from "./RebateSettingsEditor";
+import CommonHeader from "components/CommonHeader";
+import CommonList from "components/CommonList";
+import EditBalanceModal from "./EditBalanceModal";
+import TransferCustomModal from "./TransferCustomModal";
+import TransferAgentModal from "./TransferAgentModal";
+import listConfig from "./config";
+import WithRoute from "components/WithRoute";
+import * as React from "react";
+import { BaseReact } from "components/BaseReact";
+import { Modal } from "antd";
+import { inject, observer } from "mobx-react";
+import { Route } from "react-router-dom";
+import { PAGE_PERMISSION_MAP } from "constant";
+import utils from "utils";
 
 export interface Account {
   id: number;
@@ -56,10 +56,13 @@ interface AccountListState {
   isShowBalanceModal: boolean;
   isShowCustomModal: boolean;
   isShowAgentModal: boolean;
-};
+}
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/agency/agent", { exact: false, permissionCode: PAGE_PERMISSION_MAP['/dashboard/agency/agent'], })
+@WithRoute("/dashboard/agency/agent", {
+  exact: false,
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/agency/agent"],
+})
 @inject("common", "agency")
 @observer
 export default class AccountList extends BaseReact<{}, AccountListState> {
@@ -82,6 +85,7 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     const { paginationConfig, } = this.props.common;
 
     this.getDataList({
+      ...utils.resetFilter(filterAgent),
       page_size: filterAgent.page_size || paginationConfig.defaultPageSize,
       page: filterAgent.page || 1,
     });
@@ -94,14 +98,16 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   }
 
   getDataList = async (filterAgent?: any) => {
-    const payload = filterAgent ? { ...this.props.agency.filterAgent, ...filterAgent, } : this.props.agency.filterAgent;
+    const payload = filterAgent
+      ? { ...this.props.agency.filterAgent, ...filterAgent, }
+      : this.props.agency.filterAgent;
     this.setState({
       tableLoading: true,
     });
 
     const res = await this.$api.agency.getAccountList({ params: payload, });
     const { results, page_size, current_page, count, } = res.data;
-    if ((res.data.results.length === 0) && res.data.current_page !== 1) {
+    if (res.data.results.length === 0 && res.data.current_page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
       this.getDataList({ ...payload, page: current_page - 1, });
     } else {
@@ -140,8 +146,8 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   private onReset = async () => {
     // @ts-ignore
     this.getDataList({
-      name: undefined,
       page: 1,
+      ...utils.resetFilter(this.state.tempFilterAgent),
     });
     this.setState({
       tempFilterAgent: {},
@@ -149,41 +155,39 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   };
 
   onInputChanged = (field, value) => {
-    this.setState((prevState: AccountListState) => (
-      {
-        tempFilterAgent: {
-          ...prevState.tempFilterAgent,
-          [field]: value,
-        },
-      }
-    ));
-  }
+    this.setState((prevState: AccountListState) => ({
+      tempFilterAgent: {
+        ...prevState.tempFilterAgent,
+        [field]: value,
+      },
+    }));
+  };
 
   goToEditor = (e: any, id?: number) => {
     const url = `/dashboard/agency/agent/editor?id=${id ? id : 0}`;
     this.props.history.push(url);
-  }
+  };
 
   viewDetail = (e: any, record: Account) => {
     this.setState({
       currentAccount: record,
       isShowDetailDrawer: true,
     });
-  }
+  };
 
   hideDetailDrawer = () => {
     this.setState({
       currentAccount: null,
       isShowDetailDrawer: false,
     });
-  }
+  };
 
   jumpToAgentAdmin = async (id: number) => {
     const res = await this.$api.agency.getJumpUrl(id);
     if (res.status === 200) {
-      (window as any).open(res.data.url, '_blank');
+      (window as any).open(res.data.url, "_blank");
     }
-  }
+  };
 
   deleteAccount = async (id: string) => {
     const res = await this.$api.agency.deleteAccount(id);
@@ -192,13 +196,18 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     } else {
       this.$msg.error(res.data.message);
     }
-  }
+  };
 
-  updateAccountDetailField = (id: number, key: string, value: string, title: string) => {
+  updateAccountDetailField = (
+    id: number,
+    key: string,
+    value: string,
+    title: string
+  ) => {
     Modal.confirm({
       title: title,
-      okText: '确认',
-      cancelText: '取消',
+      okText: "确认",
+      cancelText: "取消",
       onOk: async () => {
         await this.$api.agency.updateAccount(id, {
           [key]: value,
@@ -206,61 +215,68 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
         this.getDataList();
       },
     });
-  }
+  };
 
   handleChangeBalance = (record: Account) => {
     this.setState({
       currentAccount: record,
       isShowBalanceModal: true,
     });
-  }
+  };
 
   saveBalance = () => {
     this.hideEditBalanceModal();
     this.getDataList();
-  }
+  };
 
   hideEditBalanceModal = () => {
     this.setState({
       currentAccount: null,
       isShowBalanceModal: false,
     });
-  }
+  };
 
   saveCustom = () => {
     this.hideCustomModal();
     this.getDataList();
-  }
+  };
 
   hideCustomModal = () => {
     this.setState({
       isShowCustomModal: false,
     });
-  }
+  };
 
   saveAgent = () => {
     this.hideAgentModal();
     this.getDataList();
-  }
+  };
 
   hideAgentModal = () => {
     this.setState({
       currentAgent: null,
       isShowAgentModal: false,
     });
-  }
+  };
 
-  onBatch = async (value) => {
-    if (value == 'custom_group') {
+  onBatch = async value => {
+    if (value == "custom_group") {
       this.setState({
         isShowCustomModal: true,
       });
     }
-  }
+  };
 
   render() {
     const { match, } = this.props;
-    const { isShowDetailDrawer, isShowBalanceModal, currentAccount, isShowCustomModal, isShowAgentModal, currentAgent, } = this.state;
+    const {
+      isShowDetailDrawer,
+      isShowBalanceModal,
+      currentAccount,
+      isShowCustomModal,
+      isShowAgentModal,
+      currentAgent,
+    } = this.state;
     return (
       <div>
         <CommonHeader {...this.props} links={[]} title="代理商列表" />
@@ -268,52 +284,48 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
-        <Route path={`${match.url}/editor`} render={props => (
-          <AccountEditor {...props} getAccountList={this.getDataList} />
-        )} />
-        <Route path={`${match.url}/rebate-editor`} render={props => (
-          <RebateSettingsEditor {...props} />
-        )} />
-        {
-          isShowDetailDrawer && (
-            <AccountDetailDrawer
-              id={currentAccount.id}
-              name={currentAccount.last_name + currentAccount.first_name}
-              onClose={this.hideDetailDrawer}
-            />
-          )
-        }
-        {
-          isShowBalanceModal && currentAccount && (
-            <EditBalanceModal
-              id={currentAccount.id}
-              username={currentAccount.first_name + currentAccount.last_name}
-              phone={currentAccount.phone}
-              balance={currentAccount.balance}
-              onOk={this.saveBalance}
-              onCancel={this.hideEditBalanceModal}
-            />
-          )
-        }
-        {
-          isShowCustomModal && (
-            <TransferCustomModal
-              agents={this.state.selectedRowKeys}
-              onOk={this.saveCustom}
-              onCancel={this.hideCustomModal}
-            />
-          )
-        }
-        {
-          isShowAgentModal && (
-            <TransferAgentModal
-              currentAgent={currentAgent}
-              agents={this.state.selectedRowKeys}
-              onOk={this.saveAgent}
-              onCancel={this.hideAgentModal}
-            />
-          )
-        }
+        <Route
+          path={`${match.url}/editor`}
+          render={props => (
+            <AccountEditor {...props} getAccountList={this.getDataList} />
+          )}
+        />
+        <Route
+          path={`${match.url}/rebate-editor`}
+          render={props => <RebateSettingsEditor {...props} />}
+        />
+        {isShowDetailDrawer && (
+          <AccountDetailDrawer
+            id={currentAccount.id}
+            name={currentAccount.last_name + currentAccount.first_name}
+            onClose={this.hideDetailDrawer}
+          />
+        )}
+        {isShowBalanceModal && currentAccount && (
+          <EditBalanceModal
+            id={currentAccount.id}
+            username={currentAccount.first_name + currentAccount.last_name}
+            phone={currentAccount.phone}
+            balance={currentAccount.balance}
+            onOk={this.saveBalance}
+            onCancel={this.hideEditBalanceModal}
+          />
+        )}
+        {isShowCustomModal && (
+          <TransferCustomModal
+            agents={this.state.selectedRowKeys}
+            onOk={this.saveCustom}
+            onCancel={this.hideCustomModal}
+          />
+        )}
+        {isShowAgentModal && (
+          <TransferAgentModal
+            currentAgent={currentAgent}
+            agents={this.state.selectedRowKeys}
+            onOk={this.saveAgent}
+            onCancel={this.hideAgentModal}
+          />
+        )}
       </div>
     );
   }

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm, Row, Col } from "antd";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import utils from "utils";
 import StatusText from "components/StatusText";
 import moment from "moment";
@@ -27,9 +28,8 @@ const config = self => {
     },
     {
       title: "手机号",
-      dataIndex: "user_display",
       width: 150,
-      render: (text, record) => text.phone || "--",
+      render: (text, record) => record.user_display.phone || "--",
     },
     {
       title: "省份",
@@ -285,19 +285,32 @@ const config = self => {
 
   return {
     // 是否显示增加按钮
-    addBtn: {
+    // addBtn: {
+    //   title: () => (
+    //     <Button
+    //       // style={{ display: "none", }}
+    //       type="primary"
+    //       onClick={() => {
+    //         self.props.finance.setCurrentWithdraw({});
+    //         self.toggleWithdrawModal();
+    //       }}
+    //     >
+    //       <Icon type="plus" />
+    //       添加
+    //     </Button>
+    //   )
+    // },
+    exportExcelBtn: {
+      showExportExcelBtn: self.state.exportExcelBtnStatus,
       title: () => (
-        <Button
-          style={{ display: "none", }}
-          type="primary"
-          onClick={() => {
-            self.props.finance.setCurrentWithdraw({});
-            self.toggleWithdrawModal();
-          }}
-        >
-          <Icon type="plus" />
-          添加
-        </Button>
+        <ReactHTMLTableToExcel
+          // id="test-table-xls-button"
+          className="ant-btn ant-btn-primary"
+          table="table-to-xls"
+          filename={self.state.excelFileName}
+          sheet={self.state.excelFileName}
+          buttonText="导出excel"
+        />
       ),
     },
     // tableHeader: () => {
@@ -494,6 +507,7 @@ const config = self => {
     },
     table: {
       rowKey: "id",
+      ref: self.exportExcel,
       // rowSelection,
       title: () => {
         const { total_amount, } = self.props.finance.withdrawListMeta;

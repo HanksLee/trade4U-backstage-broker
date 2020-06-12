@@ -44,6 +44,7 @@ IEditCommissionVerifyModalState
         let payload: any = {
           username: values.username,
           review_status: Number(values.review_status),
+          remarks: values.remarks,
         };
         this.setState({
           confirmLoading: true,
@@ -114,6 +115,12 @@ IEditCommissionVerifyModalState
               )}
             </FormItem>
           )}
+          <FormItem label="备注" {...getFormItemLayout(5, 13)}>
+            {getFieldDecorator("remarks", {
+              initialValue: (commissionVerify && commissionVerify.remarks) || "",
+              // rules: [{ required: true, message: "备注不能为空", }],
+            })(<Input placeholder="请输入备注" />)}
+          </FormItem>
         </Form>
       </Modal>
     );

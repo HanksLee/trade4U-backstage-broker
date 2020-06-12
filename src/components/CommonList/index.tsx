@@ -386,6 +386,24 @@ export default class CommonList extends React.Component<any, any> {
     );
   };
 
+  renderExportExcelBtn = () => {
+    const { exportExcelBtn, } = this.props.config;
+    const ExportExcelTitle = exportExcelBtn && exportExcelBtn.title;
+
+    return (
+      exportExcelBtn && (
+        <section
+          className="common-list-exportExcelBtn"
+          style={exportExcelBtn.style}
+        >
+          {typeof exportExcelBtn.title === "function"
+            ? exportExcelBtn.showExportExcelBtn && <ExportExcelTitle />
+            : exportExcelBtn.showExportExcelBtn && exportExcelBtn.title}
+        </section>
+      )
+    );
+  };
+
   renderTableHeader = () => {
     const { tableHeader, } = this.props.config;
     const TableHeader = tableHeader;
@@ -400,6 +418,7 @@ export default class CommonList extends React.Component<any, any> {
   renderTable = () => {
     const {
       rowKey,
+      ref,
       rowSelection,
       columns,
       dataSource,
@@ -413,6 +432,7 @@ export default class CommonList extends React.Component<any, any> {
     return (
       <section className="common-list-table">
         <Table
+          ref={ref || ""}
           title={title || ""}
           locale={locale}
           bordered={bordered}
@@ -484,6 +504,7 @@ export default class CommonList extends React.Component<any, any> {
       <div className="common-list">
         {this.renderSearcher()}
         {this.renderAddBtn()}
+        {this.renderExportExcelBtn()}
         {this.renderTableHeader()}
         {config.table && this.renderTable()}
         {config.cards && this.renderCards()}

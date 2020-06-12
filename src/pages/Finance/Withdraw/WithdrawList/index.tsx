@@ -3,6 +3,7 @@ import CommonList from "components/CommonList";
 import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
+import ReactDOM from "react-dom";
 import { BaseReact } from "components/BaseReact";
 import WithdrawEdtior from "pages/Finance/Withdraw/WithdrawEditor";
 import { inject, observer } from "mobx-react";
@@ -18,14 +19,16 @@ export interface IWithdrawListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/finance/withdraw", { exact: false, })
+@WithRoute("/dashboard/finance/withdraw", { exact: false })
 @inject("common", "finance")
 @observer
 export default class WithdrawList extends BaseReact<
-IWithdrawListProps,
-IWithdrawListState
+  IWithdrawListProps,
+  IWithdrawListState
 > {
   private $withdrawEditor = null;
+  exportExcel = React.createRef();
+
   state = {
     filter: {},
     tableLoading: false,
@@ -41,12 +44,14 @@ IWithdrawListState
     remitStatus: undefined,
     reviewDateRange: [],
     remitDateRange: [],
+    exportExcelBtnStatus: false,
+    excelFileName: "出金管理"
   };
 
   async componentDidMount() {
     // @todo 这里需要从 commonStore 中设置默认的分页
     const {
-      paginationConfig: { defaultPageSize, defaultCurrent, },
+      paginationConfig: { defaultPageSize, defaultCurrent }
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
@@ -61,28 +66,28 @@ IWithdrawListState
   getDataList = (payload = {}) => {
     this.setState(
       {
-        tableLoading: true,
+        tableLoading: true
       },
       async () => {
         this.props.finance.setFilterWithdraw({
-          ...payload,
+          ...payload
         });
         await this.props.finance.getWithdrawList({
-          params: this.props.finance.filterWithdraw,
+          params: this.props.finance.filterWithdraw
         });
-        this.setState({ tableLoading: false, });
+        this.setState({ tableLoading: false });
       }
     );
   };
 
   toggleWithdrawModal = async (id?) => {
     this.setState({
-      withdrawModalVisible: !this.state.withdrawModalVisible,
+      withdrawModalVisible: !this.state.withdrawModalVisible
     });
   };
 
   onModalConfirm = async () => {
-    const { currentWithdraw, } = this.props.finance;
+    const { currentWithdraw } = this.props.finance;
 
     let res;
 
@@ -100,7 +105,7 @@ IWithdrawListState
       remit_number: currentWithdraw.remit_number,
       actual_amount: currentWithdraw.actual_amount,
       remarks: currentWithdraw.remarks,
-      remit_status: currentWithdraw.remit_status,
+      remit_status: currentWithdraw.remit_status
     };
 
     if (currentWithdraw.id) {
@@ -125,7 +130,7 @@ IWithdrawListState
 
   onModalCancel = () => {
     this.setState({
-      withdrawModalVisible: false,
+      withdrawModalVisible: false
     });
     this.props.finance.setCurrentWithdraw({}, true, false);
   };
@@ -134,10 +139,19 @@ IWithdrawListState
     this.props.finance.setFilterWithdraw({
       page_size,
       current_page,
+      user__username: undefined,
+      phone: undefined,
+      province: undefined,
+      city: undefined,
+      agent_name: undefined,
+      reviewStatus: undefined,
+      remitStatus: undefined,
+      reviewDateRange: [],
+      remitDateRange: []
     });
     this.setState(
       {
-        current_page,
+        current_page
       },
       async () => {
         const filter = this.props.finance.filterWithdraw;
@@ -149,13 +163,15 @@ IWithdrawListState
   // @ts-ignore
   private onSearch = async () => {
     this.props.finance.setFilterWithdraw({
-      current_page: 1,
+      current_page: 1
     });
     this.setState(
       {
-        currentPage: 1,
+        currentPage: 1
       },
       () => {
+        this.comfirmSearchParams();
+        this.setTableAttrToExportExcel();
         this.getDataList(this.props.finance.filterWithdraw);
       }
     );
@@ -164,7 +180,7 @@ IWithdrawListState
   private onReset = async () => {
     // @ts-ignore
     const filter: any = {
-      current_page: 1,
+      current_page: 1
     };
 
     this.props.finance.setFilterWithdraw(filter, true);
@@ -173,14 +189,17 @@ IWithdrawListState
       {
         currentPage: 1,
         user__username: undefined,
+        phone: undefined,
         province: undefined,
         city: undefined,
+        agent_name: undefined,
         reviewStatus: undefined,
         remitStatus: undefined,
         reviewDateRange: [],
-        remitDateRange: [],
+        remitDateRange: []
       },
       () => {
+        this.comfirmSearchParams();
         this.getDataList(this.props.finance.filterWithdraw);
       }
     );
@@ -200,31 +219,31 @@ IWithdrawListState
   onDateRangeChange = (field, dateRange) => {
     this.props.finance.setFilterWithdraw({
       [`${field}_time__start`]: dateRange[0].unix(),
-      [`${field}_time__end`]: dateRange[1].unix(),
+      [`${field}_time__end`]: dateRange[1].unix()
     });
 
     this.setState({
-      [`${field}DateRange`]: dateRange,
+      [`${field}DateRange`]: dateRange
     });
   };
 
   onInputChanged = (field, value) => {
     this.setState({
-      [field]: value,
+      [field]: value
     });
     this.props.finance.setFilterWithdraw({
-      [field]: value ? value : undefined,
+      [field]: value ? value : undefined
     });
   };
 
   onOptionSelect = (field, value, elem) => {
     this.setState(
       {
-        [`${field}Status`]: value,
+        [`${field}Status`]: value
       },
       () => {
         this.props.finance.setFilterWithdraw({
-          [`${field}_status`]: value,
+          [`${field}_status`]: value
         });
 
         this.getDataList(this.props.finance.filterWithdraw);
@@ -232,14 +251,50 @@ IWithdrawListState
     );
   };
 
+  comfirmSearchParams = () => {
+    const {
+      user__username,
+      phone,
+      province,
+      city,
+      agent_name,
+      reviewStatus,
+      remitStatus,
+      reviewDateRange,
+      remitDateRange
+    } = this.state;
+
+    if (
+      !utils.isEmpty(user__username) ||
+      !utils.isEmpty(phone) ||
+      !utils.isEmpty(province) ||
+      !utils.isEmpty(city) ||
+      !utils.isEmpty(agent_name) ||
+      !utils.isEmpty(reviewStatus) ||
+      !utils.isEmpty(remitStatus) ||
+      !utils.isEmpty(reviewDateRange) ||
+      !utils.isEmpty(remitDateRange)
+    ) {
+      this.setState({ exportExcelBtnStatus: true });
+    } else {
+      this.setState({ exportExcelBtnStatus: false });
+    }
+  };
+
+  setTableAttrToExportExcel = () => {
+    const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
+    const table = tableCon.querySelector("table"); //获取table
+    table.setAttribute("id", "table-to-xls"); //给该table设置属性
+  };
+
   // @ts-ignore
   private onBatch = async value => {};
 
   render() {
-    const { match, } = this.props;
+    const { match } = this.props;
     const computedTitle = "出金管理";
-    const { withdrawModalVisible, } = this.state;
-    const { currentWithdraw, } = this.props.finance;
+    const { withdrawModalVisible } = this.state;
+    const { currentWithdraw } = this.props.finance;
 
     return (
       <div>

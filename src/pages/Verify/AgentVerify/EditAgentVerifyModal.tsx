@@ -48,7 +48,6 @@ IEditAgentVerifyModalState
         let payload: any = {
           reason: values.reason,
           inspect_status: Number(values.inspect_status),
-          remarks: values.remarks,
         };
         this.setState({
           confirmLoading: true,
@@ -110,12 +109,6 @@ IEditAgentVerifyModalState
               )}
             </FormItem>
           )}
-          <FormItem label="备注" {...getFormItemLayout(5, 13)}>
-            {getFieldDecorator("remarks", {
-              initialValue: (agentVerify && agentVerify.remarks) || "",
-              // rules: [{ required: true, message: "备注不能为空", }],
-            })(<Input placeholder="请输入备注" />)}
-          </FormItem>
         </Form>
       </Modal>
     );
