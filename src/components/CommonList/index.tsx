@@ -148,6 +148,7 @@ const widgetMap = {
       value,
       showTime,
       format,
+      disabledDate,
     } = config;
     return (
       <>
@@ -159,7 +160,8 @@ const widgetMap = {
             format={format}
             placeholder={placeholder}
             value={value}
-            onChange={onChange}
+            onCalendarChange={onChange}
+            disabledDate={disabledDate}
           />
           <span className="common-list-control-date-alias">
             {!utils.isEmpty(alias) &&
@@ -277,8 +279,7 @@ export default class CommonList extends React.Component<any, any> {
                 <Button onClick={searcher.onReset}>重置</Button>
               </>
             )}
-            {searcher.collapseControl &&
-              searcher.collapseControl.showMoreBtn && (
+            {searcher.collapseControl && searcher.collapseControl.showMoreBtn && (
               <span className="common-list-serach-more">
                 <a onClick={this.toggleCollapse}>
                   {collapse ? "更多" : "收起"}{" "}
@@ -385,6 +386,24 @@ export default class CommonList extends React.Component<any, any> {
     );
   };
 
+  renderExportExcelBtn = () => {
+    const { exportExcelBtn, } = this.props.config;
+    const ExportExcelTitle = exportExcelBtn && exportExcelBtn.title;
+
+    return (
+      exportExcelBtn && (
+        <section
+          className="common-list-exportExcelBtn"
+          style={exportExcelBtn.style}
+        >
+          {typeof exportExcelBtn.title === "function"
+            ? exportExcelBtn.showExportExcelBtn && <ExportExcelTitle />
+            : exportExcelBtn.showExportExcelBtn && exportExcelBtn.title}
+        </section>
+      )
+    );
+  };
+
   renderTableHeader = () => {
     const { tableHeader, } = this.props.config;
     const TableHeader = tableHeader;
@@ -399,6 +418,7 @@ export default class CommonList extends React.Component<any, any> {
   renderTable = () => {
     const {
       rowKey,
+      ref,
       rowSelection,
       columns,
       dataSource,
@@ -412,10 +432,11 @@ export default class CommonList extends React.Component<any, any> {
     return (
       <section className="common-list-table">
         <Table
-          title={title || ''}
+          ref={ref || ""}
+          title={title || ""}
           locale={locale}
           bordered={bordered}
-          rowKey={rowKey || 'id'}
+          rowKey={rowKey || "id"}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={dataSource}
@@ -483,6 +504,7 @@ export default class CommonList extends React.Component<any, any> {
       <div className="common-list">
         {this.renderSearcher()}
         {this.renderAddBtn()}
+        {this.renderExportExcelBtn()}
         {this.renderTableHeader()}
         {config.table && this.renderTable()}
         {config.cards && this.renderCards()}

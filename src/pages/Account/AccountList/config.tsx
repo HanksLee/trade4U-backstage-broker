@@ -1,6 +1,8 @@
 import utils from "utils";
 import * as React from "react";
 import { Button, Checkbox, Icon, Popconfirm, Select } from "antd";
+import moment from "moment";
+import { FORMAT_TIME } from "constant";
 
 const Option = Select.Option;
 
@@ -35,7 +37,7 @@ const config = self => {
     },
     {
       title: "邮箱",
-      width: 150,
+      width: 200,
       dataIndex: "email",
     },
     {
@@ -146,6 +148,30 @@ const config = self => {
             <Option value={3}>审核拒绝</Option>
           </Select>
         );
+      },
+    },
+    {
+      title: "审核人",
+      width: 120,
+      dataIndex: "inspect_person_name",
+      render: (text, record) => {
+        return text || "--";
+      },
+    },
+    {
+      title: "审核时间",
+      width: 200,
+      dataIndex: "inspect_time",
+      render: (text, record) => {
+        return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
+      },
+    },
+    {
+      title: "审核原因",
+      width: 200,
+      dataIndex: "reason",
+      render: (text, record) => {
+        return text || "--";
       },
     },
     {
@@ -270,6 +296,43 @@ const config = self => {
             self.onSearch();
           },
         },
+        [
+          {
+            type: "Select",
+            label: "审核状态",
+            placeholder: "请选择审核状态",
+            // width: 200,
+            value: self.state.tempFilter.inspect_status,
+            option: {
+              key: "id",
+              value: "id",
+              title: "name",
+              data: [
+                {
+                  id: 0,
+                  name: "未审核",
+                },
+                {
+                  id: 1,
+                  name: "待审核",
+                },
+                {
+                  id: 2,
+                  name: "审核成功",
+                },
+                {
+                  id: 3,
+                  name: "审核不通过",
+                }
+              ],
+            },
+            onChange(val, elem) {
+              self.onOptionSelect("inspect_status", val, elem);
+            },
+            onSelect(val, elem) {},
+            onBlur() {},
+          }
+        ],
         {
           type: "RangePicker",
           label: "创建时间",
@@ -281,10 +344,15 @@ const config = self => {
           ],
           onChange(values) {
             self.onInputChanged("start_time", values[0]);
-            self.onInputChanged("end_time", values[1]);
+            if (values[1]) {
+              self.onInputChanged("end_time", values[1]);
+            }
           },
           onPressEnter(evt) {
             self.onSearch();
+          },
+          disabledDate(current) {
+            return self.disabledDate(current);
           },
         }
       ],

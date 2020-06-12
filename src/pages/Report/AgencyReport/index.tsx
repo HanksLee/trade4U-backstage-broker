@@ -50,6 +50,8 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
     this.getDataList({
       page_size: filter.page_size || paginationConfig.defaultPageSize,
       page: filter.page || 1,
+      username: undefined,
+      phone: undefined,
     });
   }
 
@@ -59,7 +61,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
     res.data.results.forEach((item, index) => {
       columns.push({
         title: `${item.symbol_type_name}交易数`,
-        // width: 200,
+        width: 200,
         render: (_, record) => {
           let content = Object.values(record.trading_data);
           let content_ary = content[index];
@@ -123,15 +125,20 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    this.getDataList({
-      username: undefined,
-      phone: undefined,
-      page: 1,
-      agencyStack: [],
-    });
-    this.setState({
-      tempFilter: {},
-    });
+    this.setState(
+      {
+        tempFilter: {},
+        agencyStack: [],
+      },
+      () => {
+        this.getDataList({
+          username: undefined,
+          phone: undefined,
+          page: 1,
+          agencyStack: [],
+        });
+      }
+    );
   };
 
   onInputChanged = (field, value) => {
@@ -164,13 +171,17 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
   };
 
   resetAgencyStack = () => {
-    this.getDataList({
-      username: undefined,
-      page: 1,
-    });
-    this.setState({
-      agencyStack: [],
-    });
+    this.setState(
+      {
+        agencyStack: [],
+      },
+      () => {
+        this.getDataList({
+          username: undefined,
+          page: 1,
+        });
+      }
+    );
   };
 
   render() {

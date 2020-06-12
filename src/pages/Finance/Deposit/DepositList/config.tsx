@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm, Row, Col } from "antd";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import utils from "utils";
 import moment from "moment";
 import { FORMAT_TIME } from "constant";
@@ -19,10 +20,19 @@ const config = self => {
     {
       title: "姓名",
       dataIndex: "user_display",
+      width: 100,
+      fixed: "left",
+      ellipsis: true,
       render: (text, record) => text.username || "--",
     },
     {
+      title: "手机号",
+      width: 150,
+      render: (text, record) => record.user_display.phone || "--",
+    },
+    {
       title: "代理",
+      width: 100,
       dataIndex: "agent_name",
       render: (text, record) => {
         return text || "--";
@@ -30,12 +40,14 @@ const config = self => {
     },
     {
       title: "通道名称",
+      width: 100,
       render: (text, record) => {
         return (record.payment_display && record.payment_display.name) || "--";
       },
     },
     {
       title: "收款商户",
+      width: 100,
       render: (text, record) => {
         return (
           (record.payment_display && record.payment_display.merchant) || "--"
@@ -44,6 +56,7 @@ const config = self => {
     },
     {
       title: "充值金额",
+      width: 150,
       dataIndex: "expect_amount",
       render: (text, record) => {
         return text || "--";
@@ -51,6 +64,7 @@ const config = self => {
     },
     {
       title: "支付金额",
+      width: 150,
       dataIndex: "actual_amount",
       render: (text, record) => {
         return text || "--";
@@ -58,6 +72,7 @@ const config = self => {
     },
     {
       title: "支付状态",
+      width: 100,
       dataIndex: "status",
       render: (text, record) => {
         const statusType = {
@@ -93,6 +108,7 @@ const config = self => {
     },
     {
       title: "支付单号",
+      width: 220,
       dataIndex: "order_number",
       render: (text, record) => {
         return text || "--";
@@ -100,6 +116,7 @@ const config = self => {
     },
     {
       title: "提交时间",
+      width: 200,
       dataIndex: "create_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
@@ -107,6 +124,7 @@ const config = self => {
     },
     {
       title: "回执时间",
+      width: 200,
       dataIndex: "notify_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
@@ -114,13 +132,15 @@ const config = self => {
     },
     {
       title: "回执单号",
+      width: 220,
       dataIndex: "notify_ordernumber",
       render: (text, record) => {
         return text || "--";
       },
     },
     {
-      // width: 120,
+      width: 120,
+      fixed: "right",
       title: "操作",
       render: (text, record) => {
         return (
@@ -190,6 +210,19 @@ const config = self => {
         </Button>
       ),
     },
+    exportExcelBtn: {
+      showExportExcelBtn: self.state.exportExcelBtnStatus,
+      title: () => (
+        <ReactHTMLTableToExcel
+          // id="test-table-xls-button"
+          className="ant-btn ant-btn-primary"
+          table="table-to-xls"
+          filename={self.state.excelFileName}
+          sheet={self.state.excelFileName}
+          buttonText="导出excel"
+        />
+      ),
+    },
     searcher: {
       batchControl: {
         placeholder: "请选择",
@@ -225,6 +258,18 @@ const config = self => {
             value: self.state.expect_amount || undefined,
             onChange(evt) {
               self.onInputChanged("expect_amount", evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
+          {
+            type: "Input",
+            label: "手机号",
+            placeholder: "请输入手机号",
+            value: self.state.phone || undefined,
+            onChange(evt) {
+              self.onInputChanged("phone", evt.target.value);
             },
             onPressEnter(evt) {
               self.onSearch();
@@ -289,6 +334,7 @@ const config = self => {
     },
     table: {
       rowKey: "id",
+      ref: self.exportExcel,
       // rowSelection,
       bordered: true,
       title: () => {
@@ -296,13 +342,13 @@ const config = self => {
 
         return (
           <Row style={{ marginBottom: 10, fontSize: 14, }}>
-            <Col span={3}>
+            <Col span={4}>
               <span style={{ fontWeight: 500, }}>充值总金额：</span>
               <span style={{ color: "red", }}>
                 {total_amount && total_amount.expect_total_amount}
               </span>
             </Col>
-            <Col span={3}>
+            <Col span={4}>
               <span style={{ fontWeight: 500, }}>支付总金额：</span>
               <span style={{ color: "red", }}>
                 {total_amount && total_amount.actual_total_amount}

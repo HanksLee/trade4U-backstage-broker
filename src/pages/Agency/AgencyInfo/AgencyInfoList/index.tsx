@@ -73,7 +73,13 @@ IInfoListState
   resetPagination = async (page_size, current_page) => {
     this.props.agency.setFilterInfo({
       page_size,
-      current_page,
+      page: current_page,
+      username: undefined,
+      phone: undefined,
+      order_number: undefined,
+      agent_name: undefined,
+      ip: undefined,
+      DateRange: [],
     });
     this.setState(
       {
@@ -115,6 +121,7 @@ IInfoListState
         username: undefined,
         phone: undefined,
         order_number: undefined,
+        agent_name: undefined,
         ip: undefined,
         DateRange: [],
       },

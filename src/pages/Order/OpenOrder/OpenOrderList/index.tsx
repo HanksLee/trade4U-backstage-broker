@@ -4,11 +4,12 @@ import listConfig from "../../config";
 import OpenOrderDetail from "../OpenOrderDetail";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
+import ReactDOM from "react-dom";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import utils from "utils";
-import { PAGE_PERMISSION_MAP } from 'constant';
+import { PAGE_PERMISSION_MAP } from "constant";
 import "./index.scss";
 
 export interface OpenOrderListProps {}
@@ -20,20 +21,31 @@ export interface OpenOrderListState {
   tableLoading: boolean;
   tempFilter: any;
   total: number;
+  exportExcelBtnStatus: boolean;
+  excelFileName: string;
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/order/open", { exact: false, permissionCode: PAGE_PERMISSION_MAP['/dashboard/order/open'], })
+@WithRoute("/dashboard/order/open", {
+  exact: false,
+  permissionCode: PAGE_PERMISSION_MAP["/dashboard/order/open"],
+})
 @inject("common", "openOrder")
 @observer
-export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrderListState> {
+export default class OpenOrderList extends BaseReact<
+OpenOrderListProps,
+OpenOrderListState
+> {
+  exportExcel = React.createRef();
   state = {
-    status: 'open',
+    status: "open",
     orderList: [],
     totalData: {},
     tableLoading: false,
     tempFilter: {},
     total: 0,
+    exportExcelBtnStatus: false,
+    excelFileName: "持仓订单管理",
   };
 
   async componentDidMount() {
@@ -41,6 +53,7 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
     const { paginationConfig, } = this.props.common;
 
     this.getDataList({
+      ...utils.resetFilter(filter),
       page_size: filter.page_size || paginationConfig.defaultPageSize,
       page: filter.page || 1,
     });
@@ -53,11 +66,13 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
   }
 
   getDataList = async (filter?: any) => {
-    const payload = filter ? { ...this.props.openOrder.filter, ...filter, } : this.props.openOrder.filter;
+    const payload = filter
+      ? { ...this.props.openOrder.filter, ...filter, }
+      : this.props.openOrder.filter;
     this.setState({
       tableLoading: true,
     });
-    
+
     const res = await this.$api.order.getOpenOrderList({ params: payload, });
     const { results, total_data, page_size, current_page, count, } = res.data;
     this.props.openOrder.setFilter({
@@ -88,6 +103,8 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
       filter.create_end_time = filter.create_end_time.unix();
     }
 
+    this.comfirmSearchParams();
+    this.setTableAttrToExportExcel();
     this.getDataList(filter);
   };
 
@@ -96,23 +113,26 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
     // @ts-ignore
     this.getDataList({
       page: 1,
-      ...(utils.resetFilter(this.state.tempFilter)),
+      ...utils.resetFilter(this.state.tempFilter),
     });
-    this.setState({
-      tempFilter: {},
-    });
+    this.setState(
+      {
+        tempFilter: {},
+      },
+      () => {
+        this.comfirmSearchParams();
+      }
+    );
   };
 
   onInputChanged = (field, value) => {
-    this.setState((prevState: OpenOrderListState) => (
-      {
-        tempFilter: {
-          ...prevState.tempFilter,
-          [field]: value,
-        },
-      }
-    ));
-  }
+    this.setState((prevState: OpenOrderListState) => ({
+      tempFilter: {
+        ...prevState.tempFilter,
+        [field]: value,
+      },
+    }));
+  };
 
   goToOrderDetail = (record: any): void => {
     const url = `/dashboard/order/open/detail?id=${
@@ -123,6 +143,33 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
 
   renderMenu = (record): JSX.Element => {
     return null;
+  };
+
+  comfirmSearchParams = () => {
+    const { tempFilter, } = this.state;
+
+    if (!utils.isEmpty(tempFilter)) {
+      let isNull = false;
+      for (let item in tempFilter) {
+        if (utils.isEmpty(tempFilter[item])) {
+          isNull = true;
+          break;
+        }
+      }
+      if (!isNull) {
+        this.setState({ exportExcelBtnStatus: true, });
+      } else {
+        this.setState({ exportExcelBtnStatus: false, });
+      }
+    } else {
+      this.setState({ exportExcelBtnStatus: false, });
+    }
+  };
+
+  setTableAttrToExportExcel = () => {
+    const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
+    const table = tableCon.querySelector("table"); //获取table
+    table.setAttribute("id", "table-to-xls"); //给该table设置属性
   };
 
   // @ts-ignore
@@ -139,9 +186,12 @@ export default class OpenOrderList extends BaseReact<OpenOrderListProps, OpenOrd
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
-        <Route path={`${match.url}/detail`} render={props => (
-          <OpenOrderDetail {...props} getDataList={this.getDataList} />
-        )} />
+        <Route
+          path={`${match.url}/detail`}
+          render={props => (
+            <OpenOrderDetail {...props} getDataList={this.getDataList} />
+          )}
+        />
       </div>
     );
   }

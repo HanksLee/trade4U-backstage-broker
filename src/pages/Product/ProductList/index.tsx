@@ -4,13 +4,13 @@ import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import ProductEdtior from 'pages/Product/ProductEditor';
+import ProductEdtior from "pages/Product/ProductEditor";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
-import utils from 'utils';
+import utils from "utils";
 
-export interface IProductListProps { }
+export interface IProductListProps {}
 
 export interface IProductListState {
   // filter: any;
@@ -20,7 +20,10 @@ export interface IProductListState {
 @WithRoute("/dashboard/product", { exact: false, })
 @inject("common", "product")
 @observer
-export default class ProductList extends BaseReact<IProductListProps, IProductListState> {
+export default class ProductList extends BaseReact<
+IProductListProps,
+IProductListState
+> {
   state = {
     filter: {},
     tableLoading: false,
@@ -61,37 +64,42 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
         typeOptions: res.data.results,
       });
     }
-  }
+  };
 
   onTypeSelected = (val, elem) => {
-    this.setState({
-      type__name: val,
-    }, () => {
-      this.props.product.setFilterProduct({
+    this.setState(
+      {
         type__name: val,
-      });
-    });
-  }
+      },
+      () => {
+        this.props.product.setFilterProduct({
+          type__name: val,
+        });
+      }
+    );
+  };
 
   onStatusSelected = (val, elem) => {
-    this.setState({
-      status: val,
-    }, () => {
-      this.props.product.setFilterProduct({
+    this.setState(
+      {
         status: val,
-      });
-    });
-  }
+      },
+      () => {
+        this.props.product.setFilterProduct({
+          status: val,
+        });
+      }
+    );
+  };
 
   onInputChanged = (field, value) => {
     this.setState({
       [field]: value,
     });
     this.props.product.setFilterProduct({
-
       [field]: value ? value : undefined,
     });
-  }
+  };
 
   getDataList = (payload = {}) => {
     this.setState(
@@ -113,7 +121,11 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
   resetPagination = async (page_size, current_page) => {
     this.props.product.setFilterProduct({
       page_size,
-      current_page,
+      page: current_page,
+      name: undefined,
+      product__code: undefined,
+      type__name: undefined,
+      status: undefined,
     });
     this.setState(
       {
@@ -164,20 +176,22 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
   };
 
   goToEditor = (record: any): void => {
-    const url = `/dashboard/product/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
+    const url = `/dashboard/product/editor?id=${
+      !utils.isEmpty(record) ? record.id : 0
+    }`;
     this.props.history.push(url);
-  }
+  };
 
   renderMenu = (record): JSX.Element => {
     return null;
   };
 
   // @ts-ignore
-  private onBatch = async value => { };
+  private onBatch = async value => {};
 
   render() {
     const { match, } = this.props;
-    const computedTitle = '交易品种设置';
+    const computedTitle = "交易品种设置";
 
     return (
       <div>
@@ -186,9 +200,10 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
-        <Route path={`${match.url}/editor`} render={props => (
-          <ProductEdtior {...props} />
-        )} />
+        <Route
+          path={`${match.url}/editor`}
+          render={props => <ProductEdtior {...props} />}
+        />
       </div>
     );
   }

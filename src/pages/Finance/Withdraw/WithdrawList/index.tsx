@@ -3,6 +3,7 @@ import CommonList from "components/CommonList";
 import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
+import ReactDOM from "react-dom";
 import { BaseReact } from "components/BaseReact";
 import WithdrawEdtior from "pages/Finance/Withdraw/WithdrawEditor";
 import { inject, observer } from "mobx-react";
@@ -26,6 +27,8 @@ IWithdrawListProps,
 IWithdrawListState
 > {
   private $withdrawEditor = null;
+  exportExcel = React.createRef();
+
   state = {
     filter: {},
     tableLoading: false,
@@ -33,6 +36,7 @@ IWithdrawListState
     selectedRowKeys: [],
     withdrawModalVisible: false,
     user__username: undefined,
+    phone: undefined,
     province: undefined,
     city: undefined,
     agent_name: undefined,
@@ -40,6 +44,8 @@ IWithdrawListState
     remitStatus: undefined,
     reviewDateRange: [],
     remitDateRange: [],
+    exportExcelBtnStatus: false,
+    excelFileName: "出金管理",
   };
 
   async componentDidMount() {
@@ -133,6 +139,15 @@ IWithdrawListState
     this.props.finance.setFilterWithdraw({
       page_size,
       current_page,
+      user__username: undefined,
+      phone: undefined,
+      province: undefined,
+      city: undefined,
+      agent_name: undefined,
+      reviewStatus: undefined,
+      remitStatus: undefined,
+      reviewDateRange: [],
+      remitDateRange: [],
     });
     this.setState(
       {
@@ -155,6 +170,8 @@ IWithdrawListState
         currentPage: 1,
       },
       () => {
+        this.comfirmSearchParams();
+        this.setTableAttrToExportExcel();
         this.getDataList(this.props.finance.filterWithdraw);
       }
     );
@@ -172,14 +189,17 @@ IWithdrawListState
       {
         currentPage: 1,
         user__username: undefined,
+        phone: undefined,
         province: undefined,
         city: undefined,
+        agent_name: undefined,
         reviewStatus: undefined,
         remitStatus: undefined,
         reviewDateRange: [],
         remitDateRange: [],
       },
       () => {
+        this.comfirmSearchParams();
         this.getDataList(this.props.finance.filterWithdraw);
       }
     );
@@ -229,6 +249,42 @@ IWithdrawListState
         this.getDataList(this.props.finance.filterWithdraw);
       }
     );
+  };
+
+  comfirmSearchParams = () => {
+    const {
+      user__username,
+      phone,
+      province,
+      city,
+      agent_name,
+      reviewStatus,
+      remitStatus,
+      reviewDateRange,
+      remitDateRange,
+    } = this.state;
+
+    if (
+      !utils.isEmpty(user__username) ||
+      !utils.isEmpty(phone) ||
+      !utils.isEmpty(province) ||
+      !utils.isEmpty(city) ||
+      !utils.isEmpty(agent_name) ||
+      !utils.isEmpty(reviewStatus) ||
+      !utils.isEmpty(remitStatus) ||
+      !utils.isEmpty(reviewDateRange) ||
+      !utils.isEmpty(remitDateRange)
+    ) {
+      this.setState({ exportExcelBtnStatus: true, });
+    } else {
+      this.setState({ exportExcelBtnStatus: false, });
+    }
+  };
+
+  setTableAttrToExportExcel = () => {
+    const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
+    const table = tableCon.querySelector("table"); //获取table
+    table.setAttribute("id", "table-to-xls"); //给该table设置属性
   };
 
   // @ts-ignore

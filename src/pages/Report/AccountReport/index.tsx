@@ -7,6 +7,7 @@ import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { PAGE_PERMISSION_MAP } from "constant";
 import { Row, Col, Statistic, Card } from "antd";
+import utils from "utils";
 import "../index.scss";
 
 interface ReportState {
@@ -44,6 +45,7 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
     const { paginationConfig, } = this.props.common;
 
     this.getDataList({
+      ...utils.resetFilter(filter),
       page_size: filter.page_size || paginationConfig.defaultPageSize,
       page: filter.page || 1,
     });
@@ -117,9 +119,8 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
   private onReset = async () => {
     // @ts-ignore
     this.getDataList({
-      username: undefined,
-      phone: undefined,
       page: 1,
+      ...utils.resetFilter(this.state.tempFilter),
     });
     this.setState({
       tempFilter: {},

@@ -168,7 +168,7 @@ IAccountDetailDrawertate
               </div>
               <div>
                 <span>总出金:</span>
-                <span>{metaFund.deposit}</span>
+                <span>{metaFund.net_withdraw}</span>
               </div>
               <div>
                 <span>净入金:</span>

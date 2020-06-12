@@ -4,14 +4,14 @@ import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import PaymentEdtior from 'pages/Finance/Payment/PaymentEditor';
+import PaymentEdtior from "pages/Finance/Payment/PaymentEditor";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
-import utils from 'utils';
-import { Modal } from 'antd';
+import utils from "utils";
+import { Modal } from "antd";
 
-export interface IPaymentListProps { }
+export interface IPaymentListProps {}
 
 export interface IPaymentListState {
   // filter: any;
@@ -21,7 +21,10 @@ export interface IPaymentListState {
 @WithRoute("/dashboard/finance/payment", { exact: false, })
 @inject("common", "finance")
 @observer
-export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentListState> {
+export default class PaymentList extends BaseReact<
+IPaymentListProps,
+IPaymentListState
+> {
   private $paymentEditor = null;
   state = {
     filter: {},
@@ -72,7 +75,7 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     this.setState({
       paymentModalVisible: !this.state.paymentModalVisible,
     });
-  }
+  };
 
   onModalConfirm = async () => {
     const { currentPayment, } = this.props.finance;
@@ -80,44 +83,43 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     let res;
 
     if (!currentPayment.name) {
-      return this.$msg.warn('请输入通道名称');
+      return this.$msg.warn("请输入通道名称");
     }
 
     if (!currentPayment.code) {
-      return this.$msg.warn('请输入通道编码');
+      return this.$msg.warn("请输入通道编码");
     }
 
     if (!currentPayment.merchant) {
-      return this.$msg.warn('请输入商户名称');
+      return this.$msg.warn("请输入商户名称");
     }
 
     if (!currentPayment.merchant_number) {
-      return this.$msg.warn('请输入商户编号');
+      return this.$msg.warn("请输入商户编号");
     }
 
-
     if (!currentPayment.currency) {
-      return this.$msg.warn('请输入支持货币');
+      return this.$msg.warn("请输入支持货币");
     }
 
     if (currentPayment.redirect == null) {
-      return this.$msg.warn('请输入银行/三方');
+      return this.$msg.warn("请输入银行/三方");
     }
 
     if (currentPayment.min_deposit == null) {
-      return this.$msg.warn('请输入最低入金');
+      return this.$msg.warn("请输入最低入金");
     }
 
     if (currentPayment.max_deposit == null) {
-      return this.$msg.warn('请输入最高入金');
+      return this.$msg.warn("请输入最高入金");
     }
 
     if (currentPayment.fee == null) {
-      return this.$msg.warn('请输入金手续费');
+      return this.$msg.warn("请输入金手续费");
     }
 
     if (currentPayment.scope == null) {
-      return this.$msg.warn('请选择适用范围');
+      return this.$msg.warn("请选择适用范围");
     }
 
     let payload: any = {
@@ -147,25 +149,30 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     const statusCode = currentPayment.id ? 200 : 201;
 
     if (res.status == statusCode) {
-      this.$msg.success(!currentPayment.id ? '支付方式添加成功' : '支付方式编辑成功');
+      this.$msg.success(
+        !currentPayment.id ? "支付方式添加成功" : "支付方式编辑成功"
+      );
       this.togglePaymentModal();
       this.getDataList(this.props.finance.filterPayment);
     } else {
       this.$msg.error(res.data.msg);
     }
-  }
+  };
 
   onModalCancel = () => {
     this.setState({
       paymentModalVisible: false,
     });
     this.props.finance.setCurrentPayment({}, true, false);
-  }
+  };
 
   resetPagination = async (page_size, current_page) => {
     this.props.finance.setFilterPayment({
       page_size,
       current_page,
+      name: undefined,
+      code: undefined,
+      status: undefined,
     });
     this.setState(
       {
@@ -215,9 +222,11 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
   };
 
   goToEditor = (record: any): void => {
-    const url = `/dashboard/finance/payment/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
+    const url = `/dashboard/finance/payment/editor?id=${
+      !utils.isEmpty(record) ? record.id : 0
+    }`;
     this.props.history.push(url);
-  }
+  };
 
   renderMenu = (record): JSX.Element => {
     return null;
@@ -231,26 +240,29 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
     this.props.finance.setFilterPayment({
       [field]: value ? value : undefined,
     });
-  }
+  };
 
   onOptionSelect = (field, value, elem) => {
-    this.setState({
-      [`${field}`]: value,
-    }, () => {
-      this.props.finance.setFilterPayment({
+    this.setState(
+      {
         [`${field}`]: value,
-      });
+      },
+      () => {
+        this.props.finance.setFilterPayment({
+          [`${field}`]: value,
+        });
 
-      this.getDataList(this.props.finance.filterPayment);
-    });
-  }
+        this.getDataList(this.props.finance.filterPayment);
+      }
+    );
+  };
 
   // @ts-ignore
-  private onBatch = async value => { };
+  private onBatch = async value => {};
 
   render() {
     const { match, } = this.props;
-    const computedTitle = '支付方式';
+    const computedTitle = "支付方式";
     const { paymentModalVisible, } = this.state;
     const { currentPayment, } = this.props.finance;
 
@@ -261,21 +273,19 @@ export default class PaymentList extends BaseReact<IPaymentListProps, IPaymentLi
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
-        {
-          paymentModalVisible  && (
-            <Modal
-              width={900}
-              visible={paymentModalVisible}
-              title={
-                utils.isEmpty(currentPayment.id) ? '添加支付方式' : '编辑支付方式'
-              }
-              onOk={this.onModalConfirm}
-              onCancel={this.onModalCancel}
-            >
-              <PaymentEdtior onRef={ref => this.$paymentEditor = ref} />
-            </Modal>
-          )
-        }
+        {paymentModalVisible && (
+          <Modal
+            width={900}
+            visible={paymentModalVisible}
+            title={
+              utils.isEmpty(currentPayment.id) ? "添加支付方式" : "编辑支付方式"
+            }
+            onOk={this.onModalConfirm}
+            onCancel={this.onModalCancel}
+          >
+            <PaymentEdtior onRef={ref => (this.$paymentEditor = ref)} />
+          </Modal>
+        )}
       </div>
     );
   }

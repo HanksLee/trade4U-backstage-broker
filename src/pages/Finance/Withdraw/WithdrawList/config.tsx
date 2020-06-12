@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm, Row, Col } from "antd";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import utils from "utils";
 import StatusText from "components/StatusText";
 import moment from "moment";
@@ -24,6 +25,11 @@ const config = self => {
         return (text && text.username) || "--";
       },
       fixed: "left",
+    },
+    {
+      title: "手机号",
+      width: 150,
+      render: (text, record) => record.user_display.phone || "--",
     },
     {
       title: "省份",
@@ -67,7 +73,7 @@ const config = self => {
     },
     {
       title: "申请时间",
-      width: 140,
+      width: 200,
       dataIndex: "create_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
@@ -99,7 +105,7 @@ const config = self => {
     },
     {
       title: "审核状态",
-      width: 100,
+      width: 120,
       dataIndex: "review_status",
       ellipsis: true,
 
@@ -156,7 +162,7 @@ const config = self => {
     },
     {
       title: "划款状态",
-      width: 100,
+      width: 120,
       dataIndex: "remit_status",
       render: (text, record) => {
         const statusType = {
@@ -204,7 +210,7 @@ const config = self => {
     },
     {
       title: "划款单号",
-      width: 140,
+      width: 220,
       dataIndex: "remit_number",
       render: (text, record) => {
         return text || "--";
@@ -212,7 +218,7 @@ const config = self => {
     },
     {
       title: "划款时间",
-      width: 140,
+      width: 200,
       dataIndex: "remit_time",
       render: (text, record) => {
         return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
@@ -279,19 +285,32 @@ const config = self => {
 
   return {
     // 是否显示增加按钮
-    addBtn: {
+    // addBtn: {
+    //   title: () => (
+    //     <Button
+    //       // style={{ display: "none", }}
+    //       type="primary"
+    //       onClick={() => {
+    //         self.props.finance.setCurrentWithdraw({});
+    //         self.toggleWithdrawModal();
+    //       }}
+    //     >
+    //       <Icon type="plus" />
+    //       添加
+    //     </Button>
+    //   )
+    // },
+    exportExcelBtn: {
+      showExportExcelBtn: self.state.exportExcelBtnStatus,
       title: () => (
-        <Button
-          style={{ display: "none", }}
-          type="primary"
-          onClick={() => {
-            self.props.finance.setCurrentWithdraw({});
-            self.toggleWithdrawModal();
-          }}
-        >
-          <Icon type="plus" />
-          添加
-        </Button>
+        <ReactHTMLTableToExcel
+          // id="test-table-xls-button"
+          className="ant-btn ant-btn-primary"
+          table="table-to-xls"
+          filename={self.state.excelFileName}
+          sheet={self.state.excelFileName}
+          buttonText="导出excel"
+        />
       ),
     },
     // tableHeader: () => {
@@ -339,6 +358,20 @@ const config = self => {
               self.onSearch();
             },
           },
+          {
+            type: "Input",
+            label: "手机号",
+            placeholder: "请输入手机号",
+            value: self.state.phone || undefined,
+            onChange(evt) {
+              self.onInputChanged("phone", evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          }
+        ],
+        [
           {
             type: "Input",
             label: "省份",
@@ -474,19 +507,20 @@ const config = self => {
     },
     table: {
       rowKey: "id",
+      ref: self.exportExcel,
       // rowSelection,
       title: () => {
         const { total_amount, } = self.props.finance.withdrawListMeta;
 
         return (
           <Row style={{ marginBottom: 10, fontSize: 14, }}>
-            <Col span={3}>
+            <Col span={4}>
               <span style={{ fontWeight: 500, }}>充值总金额：</span>
               <span style={{ color: "red", }}>
                 {total_amount && total_amount.expect_total_amount}
               </span>
             </Col>
-            <Col span={3}>
+            <Col span={4}>
               <span style={{ fontWeight: 500, }}>支付总金额：</span>
               <span style={{ color: "red", }}>
                 {total_amount && total_amount.actual_total_amount}

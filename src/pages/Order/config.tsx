@@ -1,4 +1,5 @@
 import * as React from "react";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import utils from "utils";
 import moment from "moment";
 import { Row, Col } from "antd";
@@ -14,6 +15,9 @@ const config = self => {
     {
       title: "订单号",
       dataIndex: "order_number",
+      width: 200,
+      fixed: "left",
+      ellipsis: true,
       render: (text, record) => {
         return (
           <a className="link" onClick={() => self.goToOrderDetail(record)}>
@@ -25,46 +29,68 @@ const config = self => {
     {
       title: "用户名",
       dataIndex: "username",
+      width: 150,
+      fixed: "left",
     },
     {
       title: "手机号",
       dataIndex: "phone",
+      width: 150,
+    },
+    {
+      title: "代理",
+      dataIndex: "agent_name",
+      width: 120,
     },
     {
       title: "产品名称",
       dataIndex: "symbol_name",
+      width: 100,
     },
     {
       title: "产品代码",
       dataIndex: "product_code",
+      width: 100,
     },
     {
       title: "开仓价",
       dataIndex: "open_price",
+      width: 150,
     },
     {
       title: "平仓价",
       dataIndex: "close_price",
+      width: 150,
     },
     {
       title: "交易手数",
       dataIndex: "lots",
+      width: 100,
     },
     {
       title: "库存费",
       dataIndex: "swaps",
+      width: 100,
     },
     {
       title: "税费",
       dataIndex: "taxes",
+      width: 100,
     },
     {
       title: "手续费",
       dataIndex: "fee",
+      width: 100,
+    },
+    {
+      title: "原始盈亏",
+      dataIndex: "original_profit",
+      width: 100,
     },
     {
       title: "盈亏",
       dataIndex: "profit",
+      width: 100,
     }
   ];
 
@@ -72,6 +98,7 @@ const config = self => {
     columns.push({
       title: "创建时间",
       dataIndex: "create_time",
+      width: 150,
       render: text => moment(text * 1000).format("YYYY-MM-DD HH:mm:ss"),
     });
   } else {
@@ -79,11 +106,13 @@ const config = self => {
       {
         title: "平仓时间",
         dataIndex: "close_time",
+        width: 150,
         render: text => moment(text * 1000).format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         title: "平仓原因",
         dataIndex: "close_reason",
+        width: 100,
       }
     );
   }
@@ -107,6 +136,19 @@ const config = self => {
   };
 
   return {
+    exportExcelBtn: {
+      showExportExcelBtn: self.state.exportExcelBtnStatus,
+      title: () => (
+        <ReactHTMLTableToExcel
+          // id="test-table-xls-button"
+          className="ant-btn ant-btn-primary"
+          table="table-to-xls"
+          filename={self.state.excelFileName}
+          sheet={self.state.excelFileName}
+          buttonText="导出excel"
+        />
+      ),
+    },
     searcher: {
       widgets: [
         [
@@ -248,6 +290,7 @@ const config = self => {
     },
     table: {
       rowKey: "id",
+      ref: self.exportExcel,
       title: () => {
         const totalData = self.state.totalData;
 
