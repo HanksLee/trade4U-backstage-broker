@@ -47,6 +47,10 @@ const config = self => {
     {
       title: "盈亏",
       dataIndex: "profit",
+    },
+    {
+      title: "净值",
+      dataIndex: "equity",
     }
   ];
 
@@ -55,7 +59,7 @@ const config = self => {
     total: self.state.total,
     current: self.props.accountReport.filter.page,
     pageSize: self.props.accountReport.filter.page_size,
-    onChange: (current, pageSize) => {},
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,

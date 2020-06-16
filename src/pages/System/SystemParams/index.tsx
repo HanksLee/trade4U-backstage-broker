@@ -35,7 +35,7 @@ const getFormItemLayout = (
   wrapperCol: { span: wrapper, },
 });
 
-export interface ISystemEditorProps {}
+export interface ISystemEditorProps { }
 
 export interface ISystemEditorState {
   withdraw_periods: string;
@@ -81,7 +81,7 @@ ISystemEditorState
   }
 
   onPeriodsChange = (checkedValues: any) => {
-    checkedValues.sort(function(a, b) {
+    checkedValues.sort(function (a, b) {
       return a - b;
     });
     this.setState({
@@ -105,7 +105,7 @@ ISystemEditorState
     const res = await this.$api.system.getBrokerConfigList();
     if (res.status === 200) {
       const self = this;
-      res.data.forEach(function(item, index, array) {
+      res.data.forEach(function (item, index, array) {
         switch (item.key) {
           case "withdraw_periods":
             self.setState({ withdraw_periods: item.value.split(","), });
@@ -168,25 +168,25 @@ ISystemEditorState
             >
               <Row>
                 <Col span={4}>
-                  <Checkbox value="1">周一</Checkbox>
+                  <Checkbox value="0">周一</Checkbox>
                 </Col>
                 <Col span={4}>
-                  <Checkbox value="2">周二</Checkbox>
+                  <Checkbox value="1">周二</Checkbox>
                 </Col>
                 <Col span={4}>
-                  <Checkbox value="3">周三</Checkbox>
+                  <Checkbox value="2">周三</Checkbox>
                 </Col>
                 <Col span={4}>
-                  <Checkbox value="4">周四</Checkbox>
+                  <Checkbox value="3">周四</Checkbox>
                 </Col>
                 <Col span={4}>
-                  <Checkbox value="5">周五</Checkbox>
+                  <Checkbox value="4">周五</Checkbox>
                 </Col>
                 <Col span={4}>
-                  <Checkbox value="6">周六</Checkbox>
+                  <Checkbox value="5">周六</Checkbox>
                 </Col>
                 <Col span={4}>
-                  <Checkbox value="7">周日</Checkbox>
+                  <Checkbox value="6">周日</Checkbox>
                 </Col>
               </Row>
             </Checkbox.Group>

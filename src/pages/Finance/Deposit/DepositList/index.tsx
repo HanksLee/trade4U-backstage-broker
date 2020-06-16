@@ -12,7 +12,7 @@ import "./index.scss";
 import utils from "utils";
 import { Modal } from "antd";
 
-export interface IDepositListProps {}
+export interface IDepositListProps { }
 
 export interface IDepositListState {
   // filter: any;
@@ -218,6 +218,7 @@ IDepositListState
       },
       () => {
         this.getDataList(this.props.finance.filterDeposit);
+        this.comfirmSearchParams();
       }
     );
   };
@@ -225,7 +226,7 @@ IDepositListState
   goToEditor = (record: any): void => {
     const url = `/dashboard/finance/deposit/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-    }`;
+      }`;
     this.props.history.push(url);
   };
 
@@ -266,7 +267,7 @@ IDepositListState
   };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;

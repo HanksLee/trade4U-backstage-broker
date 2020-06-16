@@ -12,7 +12,7 @@ import "./index.scss";
 import utils from "utils";
 import { Modal } from "antd";
 
-export interface IWithdrawListProps {}
+export interface IWithdrawListProps { }
 
 export interface IWithdrawListState {
   // filter: any;
@@ -199,8 +199,8 @@ IWithdrawListState
         remitDateRange: [],
       },
       () => {
-        this.comfirmSearchParams();
         this.getDataList(this.props.finance.filterWithdraw);
+        this.comfirmSearchParams();
       }
     );
   };
@@ -208,7 +208,7 @@ IWithdrawListState
   goToEditor = (record: any): void => {
     const url = `/dashboard/finance/withdraw/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-    }`;
+      }`;
     this.props.history.push(url);
   };
 
@@ -288,7 +288,7 @@ IWithdrawListState
   };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;

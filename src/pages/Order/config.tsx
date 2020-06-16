@@ -68,6 +68,16 @@ const config = self => {
       width: 100,
     },
     {
+      title: "止盈金额",
+      dataIndex: "take_profit",
+      width: 100,
+    },
+    {
+      title: "止损金额",
+      dataIndex: "stop_loss",
+      width: 100,
+    },
+    {
       title: "库存费",
       dataIndex: "swaps",
       width: 100,
@@ -117,7 +127,7 @@ const config = self => {
     );
   }
 
-  const columnsWidth = columns.reduce(function(total, cur) {
+  const columnsWidth = columns.reduce(function (total, cur) {
     return total + cur.width;
   }, 0);
 
@@ -126,7 +136,7 @@ const config = self => {
     total: self.state.total,
     current: getOrder().filter.page,
     pageSize: getOrder().filter.page_size,
-    onChange: (current, pageSize) => {},
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,

@@ -121,7 +121,7 @@ TransactionListState
     });
     this.setState({
       tempFilter: {},
-    });
+    }, () => { this.comfirmSearchParams(); });
   };
 
   onInputChanged = (field, value) => {
