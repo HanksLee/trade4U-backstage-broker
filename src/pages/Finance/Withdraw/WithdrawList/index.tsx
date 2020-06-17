@@ -12,7 +12,7 @@ import "./index.scss";
 import utils from "utils";
 import { Modal } from "antd";
 
-export interface IWithdrawListProps {}
+export interface IWithdrawListProps { }
 
 export interface IWithdrawListState {
   // filter: any;
@@ -199,8 +199,8 @@ IWithdrawListState
         remitDateRange: [],
       },
       () => {
-        this.comfirmSearchParams();
         this.getDataList(this.props.finance.filterWithdraw);
+        this.comfirmSearchParams();
       }
     );
   };
@@ -288,7 +288,7 @@ IWithdrawListState
   };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;
