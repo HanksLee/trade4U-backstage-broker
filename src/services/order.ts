@@ -16,10 +16,14 @@ const getCloseOrderDetail = (order_number: string): Promise<any> =>
 const getOrderFormula = (order_number: string, config: AxiosRequestConfig): Promise<any> =>
   API.get(`/broker/order/${order_number}/transaction`, config);
 
+const getOrderSlsFormula = (order_number: string, config: AxiosRequestConfig): Promise<any> =>
+  API.get(`/broker/order/${order_number}/sls`, config);
+
 export default {
   getOpenOrderList,
   getOpenOrderDetail,
   getCloseOrderList,
   getCloseOrderDetail,
   getOrderFormula,
+  getOrderSlsFormula,
 };
