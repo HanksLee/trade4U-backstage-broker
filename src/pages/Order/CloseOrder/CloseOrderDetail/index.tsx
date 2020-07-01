@@ -42,7 +42,7 @@ export default class CloseOrderDetail extends BaseReact<{}> {
     );
     const data = res.data.data;
     this.setState({
-      transactionChoices: data,
+      transactionChoices: [...data, { field: "sls", translation: "止盈止损记录", }],
       currentTransactionChoice: data[0].field || null,
     });
 
@@ -52,11 +52,17 @@ export default class CloseOrderDetail extends BaseReact<{}> {
   };
 
   getOrderFormula = async (cause: string) => {
-    const res = await this.$api.order.getOrderFormula(this.orderNumber, {
-      params: {
-        cause,
-      },
-    });
+    let res;
+    if (cause !== "sls") {
+      res = await this.$api.order.getOrderFormula(this.orderNumber, {
+        params: {
+          cause,
+        },
+      });
+    } else {
+      res = await this.$api.order.getOrderSlsFormula(this.orderNumber);
+    }
+
     this.setState({
       formula: res.data,
     });
@@ -151,20 +157,37 @@ export default class CloseOrderDetail extends BaseReact<{}> {
   };
 
   getFormulaColumns = () => {
-    const columns = [
-      {
-        title: "公式",
-        dataIndex: "description",
-        render: (text, { amount, }) => {
-          return `${text}=${amount}`;
+    const { currentTransactionChoice, } = this.state;
+    let columns;
+    currentTransactionChoice === 'sls' ?
+      columns = [
+        {
+          title: "日志时间",
+          dataIndex: "timestamp",
+          render: text => moment(text * 1000).format("YYYY-MM-DD HH:mm:ss"),
         },
-      },
-      {
-        title: "创建时间",
-        dataIndex: "create_time",
-        render: text => moment(text * 1000).format("YYYY-MM-DD HH:mm:ss"),
-      }
-    ];
+        {
+          title: "日志内容",
+          dataIndex: "message",
+          render: (text, { amount, }) => {
+            return text;
+          },
+        }
+      ] : columns = [
+        {
+          title: "公式",
+          dataIndex: "description",
+          render: (text, { amount, }) => {
+            return `${text}=${amount}`;
+          },
+        },
+        {
+          title: "创建时间",
+          dataIndex: "create_time",
+          render: text => moment(text * 1000).format("YYYY-MM-DD HH:mm:ss"),
+        }
+      ];
+
     return columns;
   };
 
