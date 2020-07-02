@@ -115,6 +115,9 @@ export default class OpenOrderDetail extends BaseReact<{}> {
                   <span>手续费</span> {orderDetail.fee}
                 </div>
                 <div>
+                  <span>开仓理由</span> {orderDetail.open_reason}
+                </div>
+                <div>
                   <span>平仓理由</span> {orderDetail.close_reason}
                 </div>
               </div>
