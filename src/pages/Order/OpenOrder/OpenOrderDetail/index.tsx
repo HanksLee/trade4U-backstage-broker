@@ -97,6 +97,9 @@ export default class OpenOrderDetail extends BaseReact<{}> {
                 <div>
                   <span>交易方向</span> {orderDetail.action}
                 </div>
+                <div>
+                  <span>订单号</span> {orderDetail.order_number}
+                </div>
               </div>
               <div>
                 <div>
