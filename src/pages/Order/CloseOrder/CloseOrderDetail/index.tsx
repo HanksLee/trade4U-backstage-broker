@@ -114,22 +114,37 @@ export default class CloseOrderDetail extends BaseReact<{}> {
                 <div>
                   <span>手续费</span> {orderDetail.fee}
                 </div>
-                <div>
-                  <span>平仓理由</span> {orderDetail.close_reason}
-                </div>
+                {orderDetail.status == 'in_transaction' ? (
+                    <div>
+                      <span>开仓理由</span> {orderDetail.open_reason}
+                    </div>
+                ) : (
+                    <div>
+                      <span>平仓理由</span> {orderDetail.close_reason}
+                    </div>
+                )}
               </div>
               <div>
                 <div>
                   <span>开仓价</span> {orderDetail.open_price}
                 </div>
-                <div>
-                  <span>当前价格</span> {orderDetail.new_price}
-                </div>
+                {orderDetail.status == 'in_transaction' ? (
+                    <div>
+                      <span>当前价格</span> {orderDetail.new_price}
+                    </div>
+                    <div>
+                      <span>当前盈亏</span> {orderDetail.profit}
+                    </div>
+                ) : (
+                    <div>
+                      <span>平仓价格</span> {orderDetail.close_price}
+                    </div>
+                    <div>
+                      <span>平仓盈亏</span> {orderDetail.profit}
+                    </div>
+                )}
                 <div>
                   <span>原始盈亏</span> {orderDetail.original_profit}
-                </div>
-                <div>
-                  <span>当前盈亏</span> {orderDetail.profit}
                 </div>
                 <div>
                   <span>开仓时间</span>{" "}
