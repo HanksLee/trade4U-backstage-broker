@@ -171,7 +171,7 @@ const config = self => {
                     self.$msg.error(res.data.message);
                   }
                 }}
-                onCancel={() => {}}
+                onCancel={() => { }}
               >
                 <span>删除</span>
               </Popconfirm>
@@ -186,7 +186,7 @@ const config = self => {
     ...self.props.common.paginationConfig,
     total: self.props.finance.depositListMeta.total,
     current: self.state.currentPage,
-    onChange: (current, pageSize) => {},
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
@@ -213,14 +213,15 @@ const config = self => {
     exportExcelBtn: {
       showExportExcelBtn: self.state.exportExcelBtnStatus,
       title: () => (
-        <ReactHTMLTableToExcel
-          // id="test-table-xls-button"
-          className="ant-btn ant-btn-primary"
-          table="table-to-xls"
-          filename={self.state.excelFileName}
-          sheet={self.state.excelFileName}
-          buttonText="导出excel"
-        />
+        // <ReactHTMLTableToExcel
+        //   // id="test-table-xls-button"
+        //   className="ant-btn ant-btn-primary"
+        //   table="table-to-xls"
+        //   filename={self.state.excelFileName}
+        //   sheet={self.state.excelFileName}
+        //   buttonText="导出excel"
+        // />
+        <div className="ant-btn ant-btn-primary excel-btn" onClick={() => { self.exportExcel(); }}>导出excel</div>
       ),
     },
     searcher: {
@@ -300,6 +301,36 @@ const config = self => {
             self.onSearch();
           },
         },
+        [
+
+          {
+            type: "Select",
+            label: "支付状态",
+            placeholder: "请选择支付状态",
+            // width: 200,
+            value: self.state.status,
+            option: {
+              key: "id",
+              value: "id",
+              title: "name",
+              data: [
+                {
+                  id: 0,
+                  name: "未支付",
+                },
+                {
+                  id: 1,
+                  name: "已支付",
+                }
+              ],
+            },
+            onChange(val, elem) {
+              self.onOptionSelect("status", val, elem);
+            },
+            onSelect(val, elem) { },
+            onBlur() { },
+          }
+        ],
         {
           type: "RangePicker",
           label: "提交时间",
@@ -334,7 +365,7 @@ const config = self => {
     },
     table: {
       rowKey: "id",
-      ref: self.exportExcel,
+      // ref: self.exportExcel,
       // rowSelection,
       bordered: true,
       title: () => {

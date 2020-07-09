@@ -19,6 +19,12 @@ const getOrderFormula = (order_number: string, config: AxiosRequestConfig): Prom
 const getOrderSlsFormula = (order_number: string, config: AxiosRequestConfig): Promise<any> =>
   API.get(`/broker/order/${order_number}/sls`, config);
 
+const exportInTransactionOrder = (config: AxiosRequestConfig, queryString: string): Promise<any> =>
+  API.post(`/broker/in-transaction-order-export${queryString}`, config);
+
+const exportFinishOrder = (config: AxiosRequestConfig, queryString: string): Promise<any> =>
+  API.post(`/broker/finish-order-export${queryString}`, config);
+
 export default {
   getOpenOrderList,
   getOpenOrderDetail,
@@ -26,4 +32,6 @@ export default {
   getCloseOrderDetail,
   getOrderFormula,
   getOrderSlsFormula,
+  exportInTransactionOrder,
+  exportFinishOrder,
 };

@@ -12,7 +12,7 @@ import utils from "utils";
 import { PAGE_PERMISSION_MAP } from "constant";
 import "./index.scss";
 
-export interface OpenOrderListProps {}
+export interface OpenOrderListProps { }
 
 export interface OpenOrderListState {
   status: string;
@@ -36,7 +36,6 @@ export default class OpenOrderList extends BaseReact<
 OpenOrderListProps,
 OpenOrderListState
 > {
-  exportExcel = React.createRef();
   state = {
     status: "open",
     orderList: [],
@@ -104,7 +103,7 @@ OpenOrderListState
     }
 
     this.comfirmSearchParams();
-    this.setTableAttrToExportExcel();
+    // this.setTableAttrToExportExcel();
     this.getDataList(filter);
   };
 
@@ -166,14 +165,43 @@ OpenOrderListState
     }
   };
 
-  setTableAttrToExportExcel = () => {
-    const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
-    const table = tableCon.querySelector("table"); //获取table
-    table.setAttribute("id", "table-to-xls"); //给该table设置属性
-  };
+  exportExcel = async () => {
+    let queryString = '?';
+    const filter: any = {
+      ...this.state.tempFilter,
+    };
+
+    if (filter.close_start_time) {
+      filter.close_start_time = filter.close_start_time.unix();
+    }
+
+    if (filter.close_end_time) {
+      filter.close_end_time = filter.close_end_time.unix();
+    }
+
+    for (var index in filter) {
+      queryString += index + "=" + filter[index] + "&";
+    }
+
+
+    await this.$api.order.exportInTransactionOrder({ responseType: 'blob', }, queryString).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${Date.now()}.xls`);
+      document.body.appendChild(link);
+      link.click();
+    });
+  }
+
+  // setTableAttrToExportExcel = () => {
+  //   const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
+  //   const table = tableCon.querySelector("table"); //获取table
+  //   table.setAttribute("id", "table-to-xls"); //给该table设置属性
+  // };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;

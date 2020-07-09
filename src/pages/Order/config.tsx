@@ -149,14 +149,15 @@ const config = self => {
     exportExcelBtn: {
       showExportExcelBtn: self.state.exportExcelBtnStatus,
       title: () => (
-        <ReactHTMLTableToExcel
-          // id="test-table-xls-button"
-          className="ant-btn ant-btn-primary"
-          table="table-to-xls"
-          filename={self.state.excelFileName}
-          sheet={self.state.excelFileName}
-          buttonText="导出excel"
-        />
+        // <ReactHTMLTableToExcel
+        //   // id="test-table-xls-button"
+        //   className="ant-btn ant-btn-primary"
+        //   table="table-to-xls"
+        //   filename={self.state.excelFileName}
+        //   sheet={self.state.excelFileName}
+        //   buttonText="导出excel"
+        // />
+        <div className="ant-btn ant-btn-primary excel-btn" onClick={() => { self.exportExcel(); }}>导出excel</div>
       ),
     },
     searcher: {
@@ -300,7 +301,6 @@ const config = self => {
     },
     table: {
       rowKey: "id",
-      ref: self.exportExcel,
       title: () => {
         const totalData = self.state.totalData;
 

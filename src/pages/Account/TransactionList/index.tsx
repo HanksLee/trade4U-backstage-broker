@@ -43,7 +43,7 @@ export default class TransactionList extends BaseReact<
 {},
 TransactionListState
 > {
-  exportExcel = React.createRef();
+  // exportExcel = React.createRef();
   state = {
     transactionList: [],
     tableLoading: false,
@@ -108,7 +108,7 @@ TransactionListState
     }
 
     this.comfirmSearchParams();
-    this.setTableAttrToExportExcel();
+    // this.setTableAttrToExportExcel();
     this.getDataList(filter);
   };
 
@@ -133,6 +133,34 @@ TransactionListState
     }));
   };
 
+  exportExcel = async () => {
+    let queryString = '?';
+    const filter: any = {
+      ...this.state.tempFilter,
+    };
+
+    if (filter.start_time) {
+      filter.start_time = filter.start_time.unix();
+    }
+
+    if (filter.end_time) {
+      filter.end_time = filter.end_time.unix();
+    }
+
+    for (var index in filter) {
+      queryString += index + "=" + filter[index] + "&";
+    }
+
+    await this.$api.account.exportTransaction({ responseType: 'blob', }, queryString).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${Date.now()}.xls`);
+      document.body.appendChild(link);
+      link.click();
+    });
+  }
+
   comfirmSearchParams = () => {
     const { tempFilter, } = this.state;
 
@@ -154,11 +182,11 @@ TransactionListState
     }
   };
 
-  setTableAttrToExportExcel = () => {
-    const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
-    const table = tableCon.querySelector("table"); //获取table
-    table.setAttribute("id", "table-to-xls"); //给该table设置属性
-  };
+  // setTableAttrToExportExcel = () => {
+  //   const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
+  //   const table = tableCon.querySelector("table"); //获取table
+  //   table.setAttribute("id", "table-to-xls"); //给该table设置属性
+  // };
 
   render() {
     return (

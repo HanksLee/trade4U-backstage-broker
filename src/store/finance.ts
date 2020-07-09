@@ -6,7 +6,7 @@ class FinanceStore extends BaseStore {
   @observable
   filterDeposit = {
     page_size: 10,
-    current_page: 1,
+    page: 1,
   };
   @action
   setFilterDeposit = (filter, overwrite = false) => {
@@ -75,7 +75,7 @@ class FinanceStore extends BaseStore {
   @observable
   filterWithdraw = {
     page_size: 10,
-    current_page: 1,
+    page: 1,
   };
   @action
   setFilterWithdraw = (filter, overwrite = false) => {
@@ -143,7 +143,7 @@ class FinanceStore extends BaseStore {
   @observable
   filterPayment = {
     page_size: 10,
-    current_page: 1,
+    page: 1,
   };
   @action
   setFilterPayment = (filter, overwrite = false) => {
@@ -207,7 +207,7 @@ class FinanceStore extends BaseStore {
   @observable
   filterRate = {
     page_size: 10,
-    current_page: 1,
+    page: 1,
   };
   @action
   setFilterRate = (filter, overwrite = false) => {

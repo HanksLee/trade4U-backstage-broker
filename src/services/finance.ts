@@ -61,6 +61,12 @@ const updateRate = (id: string, config): Promise<any> =>
 const deleteRate = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/broker/exchangerate/${id}`, config);
 
+const exportWithdraw = (config: AxiosRequestConfig, queryString: string): Promise<any> =>
+  API.post(`/broker/withdraw-export${queryString}`, config);
+
+const exportDeposit = (config: AxiosRequestConfig, queryString: string): Promise<any> =>
+  API.post(`/broker/deposit-export${queryString}`, config);
+
 export default {
   getDepositList,
   getCurrentDeposit,
@@ -82,4 +88,6 @@ export default {
   createRate,
   updateRate,
   deleteRate,
+  exportWithdraw,
+  exportDeposit,
 };

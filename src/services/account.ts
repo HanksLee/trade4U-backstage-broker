@@ -36,6 +36,11 @@ const getTransactionList = (config): Promise<any> =>
 const getAccountMetaFund = (id: string): Promise<any> =>
   API.get(`/broker/account/${id}/meta-fund`);
 
+const exportTransaction = (config: AxiosRequestConfig, queryString: string): Promise<any> =>
+  API.post(`/broker/transaction-export${queryString}`, config);
+
+
+
 export default {
   getAccountList,
   createAccount,
@@ -49,4 +54,5 @@ export default {
   getAccountLoginLog,
   getTransactionList,
   getAccountMetaFund,
+  exportTransaction,
 };

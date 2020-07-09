@@ -27,7 +27,6 @@ IDepositListProps,
 IDepositListState
 > {
   private $depositEditor = null;
-  exportExcel = React.createRef();
   state = {
     filter: {},
     tableLoading: false,
@@ -39,6 +38,7 @@ IDepositListState
     phone: undefined,
     order_number: undefined,
     agent_name: undefined,
+    status: undefined,
     createDateRange: [],
     notifyDateRange: [],
     initStatus: 0, // 订单状态
@@ -165,6 +165,7 @@ IDepositListState
       phone: undefined,
       order_number: undefined,
       agent_name: undefined,
+      status: undefined,
       createDateRange: [],
       notifyDateRange: [],
     });
@@ -190,7 +191,7 @@ IDepositListState
       },
       () => {
         this.comfirmSearchParams();
-        this.setTableAttrToExportExcel();
+        // this.setTableAttrToExportExcel();
         this.getDataList(this.props.finance.filterDeposit);
       }
     );
@@ -213,6 +214,7 @@ IDepositListState
         phone: undefined,
         order_number: undefined,
         agent_name: undefined,
+        status: undefined,
         createDateRange: [],
         notifyDateRange: [],
       },
@@ -226,12 +228,25 @@ IDepositListState
   goToEditor = (record: any): void => {
     const url = `/dashboard/finance/deposit/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-    }`;
+      }`;
     this.props.history.push(url);
   };
 
   renderMenu = (record): JSX.Element => {
     return null;
+  };
+
+  onOptionSelect = (field, value, elem) => {
+    this.setState(
+      {
+        [`${field}`]: value,
+      },
+      () => {
+        this.props.finance.setFilterDeposit({
+          [`${field}`]: value,
+        });
+      }
+    );
   };
 
   comfirmSearchParams = () => {
@@ -243,6 +258,7 @@ IDepositListState
       agent_name,
       createDateRange,
       notifyDateRange,
+      status,
     } = this.state;
 
     if (
@@ -252,7 +268,9 @@ IDepositListState
       !utils.isEmpty(order_number) ||
       !utils.isEmpty(agent_name) ||
       !utils.isEmpty(createDateRange) ||
-      !utils.isEmpty(notifyDateRange)
+      !utils.isEmpty(notifyDateRange) ||
+      status !== undefined
+
     ) {
       this.setState({ exportExcelBtnStatus: true, });
     } else {
@@ -260,11 +278,59 @@ IDepositListState
     }
   };
 
-  setTableAttrToExportExcel = () => {
-    const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
-    const table = tableCon.querySelector("table"); //获取table
-    table.setAttribute("id", "table-to-xls"); //给该table设置属性
-  };
+  exportExcel = async () => {
+    let queryString = '?';
+    const {
+      user__username,
+      expect_amount,
+      phone,
+      order_number,
+      agent_name,
+      createDateRange,
+      notifyDateRange,
+      status,
+    } = this.state;
+    const filter: any = {
+      user__username,
+      phone,
+      expect_amount,
+      order_number,
+      agent_name,
+      status,
+    };
+
+    if (!utils.isEmpty(createDateRange)) {
+      filter.create_time__start = createDateRange[0].unix();
+      filter.create_time__end = createDateRange[1].unix();
+    }
+
+    if (!utils.isEmpty(notifyDateRange)) {
+      filter.notify_time__start = notifyDateRange[0].unix();
+      filter.notify_time__end = notifyDateRange[1].unix();
+    }
+
+    for (var index in filter) {
+      if (filter[index] !== undefined && filter[index] !== "" && filter[index] !== null) {
+        queryString += index + "=" + filter[index] + "&";
+      }
+    }
+
+
+    await this.$api.finance.exportDeposit({ responseType: 'blob', }, queryString).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${Date.now()}.xls`);
+      document.body.appendChild(link);
+      link.click();
+    });
+  }
+
+  // setTableAttrToExportExcel = () => {
+  //   const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
+  //   const table = tableCon.querySelector("table"); //获取table
+  //   table.setAttribute("id", "table-to-xls"); //给该table设置属性
+  // };
 
   // @ts-ignore
   private onBatch = async value => { };

@@ -27,7 +27,6 @@ IWithdrawListProps,
 IWithdrawListState
 > {
   private $withdrawEditor = null;
-  exportExcel = React.createRef();
 
   state = {
     filter: {},
@@ -171,7 +170,7 @@ IWithdrawListState
       },
       () => {
         this.comfirmSearchParams();
-        this.setTableAttrToExportExcel();
+        // this.setTableAttrToExportExcel();
         this.getDataList(this.props.finance.filterWithdraw);
       }
     );
@@ -208,7 +207,7 @@ IWithdrawListState
   goToEditor = (record: any): void => {
     const url = `/dashboard/finance/withdraw/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-    }`;
+      }`;
     this.props.history.push(url);
   };
 
@@ -246,7 +245,7 @@ IWithdrawListState
           [`${field}_status`]: value,
         });
 
-        this.getDataList(this.props.finance.filterWithdraw);
+        // this.getDataList(this.props.finance.filterWithdraw);
       }
     );
   };
@@ -270,8 +269,8 @@ IWithdrawListState
       !utils.isEmpty(province) ||
       !utils.isEmpty(city) ||
       !utils.isEmpty(agent_name) ||
-      !utils.isEmpty(reviewStatus) ||
-      !utils.isEmpty(remitStatus) ||
+      reviewStatus !== undefined ||
+      remitStatus !== undefined ||
       !utils.isEmpty(reviewDateRange) ||
       !utils.isEmpty(remitDateRange)
     ) {
@@ -281,11 +280,61 @@ IWithdrawListState
     }
   };
 
-  setTableAttrToExportExcel = () => {
-    const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
-    const table = tableCon.querySelector("table"); //获取table
-    table.setAttribute("id", "table-to-xls"); //给该table设置属性
-  };
+  exportExcel = async () => {
+    let queryString = '?';
+    const {
+      user__username,
+      phone,
+      province,
+      city,
+      agent_name,
+      reviewStatus,
+      remitStatus,
+      reviewDateRange,
+      remitDateRange,
+    } = this.state;
+    const filter: any = {
+      user__username,
+      phone,
+      province,
+      city,
+      agent_name,
+      review_status: reviewStatus,
+      remit_statue: remitStatus,
+    };
+
+    if (!utils.isEmpty(reviewDateRange)) {
+      filter.review_time__start = reviewDateRange[0].unix();
+      filter.review_time__end = reviewDateRange[1].unix();
+    }
+
+    if (!utils.isEmpty(remitDateRange)) {
+      filter.remit_time__start = remitDateRange[0].unix();
+      filter.remit_time__end = remitDateRange[1].unix();
+    }
+
+    for (var index in filter) {
+      if (filter[index] !== undefined && filter[index] !== "" && filter[index] !== null) {
+        queryString += index + "=" + filter[index] + "&";
+      }
+    }
+
+
+    await this.$api.finance.exportWithdraw({ responseType: 'blob', }, queryString).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${Date.now()}.xls`);
+      document.body.appendChild(link);
+      link.click();
+    });
+  }
+
+  // setTableAttrToExportExcel = () => {
+  //   const tableCon = ReactDOM.findDOMNode(this.exportExcel.current); // 通过ref属性找到该table
+  //   const table = tableCon.querySelector("table"); //获取table
+  //   table.setAttribute("id", "table-to-xls"); //给该table设置属性
+  // };
 
   // @ts-ignore
   private onBatch = async value => { };
