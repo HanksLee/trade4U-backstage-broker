@@ -91,6 +91,18 @@ const config = self => {
       },
     },
     {
+      title: "开户时间",
+      width: 200,
+      dataIndex: "create_time",
+      render: (text, record) => {
+        return (
+          (record.create_time &&
+            moment(record.create_time * 1000).format(FORMAT_TIME)) ||
+          "--"
+        );
+      },
+    },
+    {
       title: "审核人",
       width: 200,
       dataIndex: "inspect_person",

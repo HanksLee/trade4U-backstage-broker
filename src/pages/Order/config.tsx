@@ -101,6 +101,11 @@ const config = self => {
       title: "盈亏",
       dataIndex: "profit",
       width: 100,
+    },
+    {
+      title: "开仓原因",
+      dataIndex: "open_reason",
+      width: 100,
     }
   ];
 

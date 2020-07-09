@@ -167,6 +167,14 @@ const config = self => {
       },
     },
     {
+      title: "开户时间",
+      width: 200,
+      dataIndex: "create_time",
+      render: (text, record) => {
+        return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
+      },
+    },
+    {
       title: "审核原因",
       width: 200,
       dataIndex: "reason",
