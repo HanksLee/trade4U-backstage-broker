@@ -207,7 +207,7 @@ IWithdrawListState
   goToEditor = (record: any): void => {
     const url = `/dashboard/finance/withdraw/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-      }`;
+    }`;
     this.props.history.push(url);
   };
 

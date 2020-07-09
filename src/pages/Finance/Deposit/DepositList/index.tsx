@@ -228,7 +228,7 @@ IDepositListState
   goToEditor = (record: any): void => {
     const url = `/dashboard/finance/deposit/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-      }`;
+    }`;
     this.props.history.push(url);
   };
 
