@@ -10,7 +10,7 @@ import "./index.scss";
 import utils from "utils";
 import { Modal } from "antd";
 
-export interface ILogListProps {}
+export interface ILogListProps { }
 
 export interface ILogListState {
   // filter: any;
@@ -24,7 +24,7 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   state = {
     filter: {},
     tableLoading: false,
-    currentPage: 1,
+    page: 1,
     selectedRowKeys: [],
     logModalVisible: false,
     username: undefined,
@@ -70,7 +70,7 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   resetPagination = async (page_size, current_page) => {
     this.props.agency.setFilterLog({
       page_size,
-      current_page,
+      page: current_page,
       username: undefined,
       phone: undefined,
       order_number: undefined,
@@ -80,7 +80,7 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
     });
     this.setState(
       {
-        current_page,
+        page: current_page,
       },
       async () => {
         const filter = this.props.agency.filterLog;
@@ -92,11 +92,11 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   // @ts-ignore
   private onSearch = async () => {
     this.props.agency.setFilterLog({
-      current_page: 1,
+      page: 1,
     });
     this.setState(
       {
-        currentPage: 1,
+        page: 1,
       },
       () => {
         this.getDataList(this.props.agency.filterLog);
@@ -107,14 +107,14 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   private onReset = async () => {
     // @ts-ignore
     const filter: any = {
-      current_page: 1,
+      page: 1,
     };
 
     this.props.agency.setFilterLog(filter, true);
 
     this.setState(
       {
-        currentPage: 1,
+        page: 1,
         username: undefined,
         phone: undefined,
         order_number: undefined,
@@ -131,7 +131,7 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   goToEditor = (record: any): void => {
     const url = `/dashboard/agency/log/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-    }`;
+      }`;
     this.props.history.push(url);
   };
 
@@ -160,7 +160,7 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;

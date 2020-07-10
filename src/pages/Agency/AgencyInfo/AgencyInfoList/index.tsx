@@ -10,7 +10,7 @@ import "./index.scss";
 import utils from "utils";
 import { Modal } from "antd";
 
-export interface IInfoListProps {}
+export interface IInfoListProps { }
 
 export interface IInfoListState {
   // filter: any;
@@ -27,7 +27,7 @@ IInfoListState
   state = {
     filter: {},
     tableLoading: false,
-    currentPage: 1,
+    page: 1,
     selectedRowKeys: [],
     infoModalVisible: false,
     username: undefined,
@@ -83,7 +83,7 @@ IInfoListState
     });
     this.setState(
       {
-        current_page,
+        page: current_page,
       },
       async () => {
         const filter = this.props.agency.filterInfo;
@@ -95,11 +95,11 @@ IInfoListState
   // @ts-ignore
   private onSearch = async () => {
     this.props.agency.setFilterInfo({
-      current_page: 1,
+      page: 1,
     });
     this.setState(
       {
-        currentPage: 1,
+        page: 1,
       },
       () => {
         this.getDataList(this.props.agency.filterInfo);
@@ -110,14 +110,14 @@ IInfoListState
   private onReset = async () => {
     // @ts-ignore
     const filter: any = {
-      current_page: 1,
+      page: 1,
     };
 
     this.props.agency.setFilterInfo(filter, true);
 
     this.setState(
       {
-        currentPage: 1,
+        page: 1,
         username: undefined,
         phone: undefined,
         order_number: undefined,
@@ -134,7 +134,7 @@ IInfoListState
   goToEditor = (record: any): void => {
     const url = `/dashboard/agency/info/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-    }`;
+      }`;
     this.props.history.push(url);
   };
 
@@ -163,7 +163,7 @@ IInfoListState
   };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;

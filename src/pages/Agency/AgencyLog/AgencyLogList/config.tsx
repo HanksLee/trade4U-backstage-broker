@@ -125,15 +125,15 @@ const config = self => {
     }
   ];
 
-  const columnsWidth = columns.reduce(function(total, cur) {
+  const columnsWidth = columns.reduce(function (total, cur) {
     return total + cur.width;
   }, 0);
 
   const pagination = {
     ...self.props.common.paginationConfig,
     total: self.props.agency.logListMeta.total,
-    current: self.state.currentPage,
-    onChange: (current, pageSize) => {},
+    current: self.state.page,
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
@@ -265,7 +265,7 @@ const config = self => {
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {
-          current_page: pagination.current,
+          page: pagination.current,
           page_size: pagination.pageSize,
         };
 
@@ -287,7 +287,7 @@ const config = self => {
 
         self.setState(
           {
-            currentPage: pagination.current,
+            page: pagination.current,
           },
           () => {
             self.getDataList(self.props.agency.filterLog);

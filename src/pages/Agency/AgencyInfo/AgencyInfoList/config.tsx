@@ -62,8 +62,8 @@ const config = self => {
         ) : record.in_or_out === 0 ? (
           <span style={{ color: "red", }}>{`-${text}`}</span>
         ) : (
-          <span style={{ color: "green", }}>{`+${text}`}</span>
-        );
+              <span style={{ color: "green", }}>{`+${text}`}</span>
+            );
       },
     },
     {
@@ -112,8 +112,8 @@ const config = self => {
   const pagination = {
     ...self.props.common.paginationConfig,
     total: self.props.agency.infoListMeta.total,
-    current: self.state.currentPage,
-    onChange: (current, pageSize) => {},
+    current: self.state.page,
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
@@ -269,7 +269,7 @@ const config = self => {
 
         self.setState(
           {
-            currentPage: pagination.current,
+            page: pagination.current,
           },
           () => {
             self.getDataList(self.props.agency.filterInfo);

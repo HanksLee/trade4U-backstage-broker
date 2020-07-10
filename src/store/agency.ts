@@ -6,7 +6,7 @@ class AgencyStore extends BaseStore {
   @observable
   filterLog = {
     page_size: 10,
-    current_page: 1,
+    page: 1,
   };
   @action
   setFilterLog = (filter, overwrite = false) => {
@@ -42,7 +42,7 @@ class AgencyStore extends BaseStore {
   @observable
   filterInfo = {
     page_size: 10,
-    current_page: 1,
+    page: 1,
   };
   @action
   setFilterInfo = (filter, overwrite = false) => {
@@ -78,7 +78,7 @@ class AgencyStore extends BaseStore {
   @observable
   filterAgent = {
     page_size: 10,
-    current_page: 1,
+    page: 1,
   };
   @action
   setFilterAgent = (filter, overwrite = false) => {
