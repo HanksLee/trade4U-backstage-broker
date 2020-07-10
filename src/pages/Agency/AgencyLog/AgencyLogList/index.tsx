@@ -131,7 +131,7 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
   goToEditor = (record: any): void => {
     const url = `/dashboard/agency/log/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-      }`;
+    }`;
     this.props.history.push(url);
   };
 

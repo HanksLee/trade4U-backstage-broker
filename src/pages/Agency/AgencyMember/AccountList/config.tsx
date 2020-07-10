@@ -52,7 +52,7 @@ const config = self => {
         const handleChange = e => {
           const title = `确认对「${record.first_name + record.last_name}」${
             e.target.checked ? "启用" : "关闭"
-            }只读？`;
+          }只读？`;
           self.updateAccountDetailField(
             record.id,
             "read_only",
@@ -72,7 +72,7 @@ const config = self => {
         const handleChange = e => {
           const title = `确认对「${record.first_name + record.last_name}」${
             e.target.checked ? "开启" : "关闭"
-            }禁用？`;
+          }禁用？`;
           self.updateAccountDetailField(
             record.id,
             "disable_status",
@@ -148,7 +148,7 @@ const config = self => {
                 onClick={e => {
                   const url = `/dashboard/agency/agent/rebate-editor?id=${
                     !utils.isEmpty(record) ? record.id : 0
-                    }`;
+                  }`;
                   self.props.history.push(url);
                 }}
               >

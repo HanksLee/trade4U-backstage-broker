@@ -62,8 +62,8 @@ const config = self => {
         ) : record.in_or_out === 0 ? (
           <span style={{ color: "red", }}>{`-${text}`}</span>
         ) : (
-              <span style={{ color: "green", }}>{`+${text}`}</span>
-            );
+          <span style={{ color: "green", }}>{`+${text}`}</span>
+        );
       },
     },
     {
