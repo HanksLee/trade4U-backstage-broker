@@ -179,7 +179,7 @@ IProductListState
   goToEditor = (record: any): void => {
     const url = `/dashboard/product/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-      }`;
+    }`;
     this.props.history.push(url);
   };
 
