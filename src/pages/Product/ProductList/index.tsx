@@ -10,7 +10,7 @@ import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from "utils";
 
-export interface IProductListProps {}
+export interface IProductListProps { }
 
 export interface IProductListState {
   // filter: any;
@@ -33,6 +33,7 @@ IProductListState
     product__code: undefined,
     type__name: undefined,
     status: undefined,
+    typeOptions: undefined,
   };
 
   async componentDidMount() {
@@ -178,7 +179,7 @@ IProductListState
   goToEditor = (record: any): void => {
     const url = `/dashboard/product/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
-    }`;
+      }`;
     this.props.history.push(url);
   };
 
@@ -187,7 +188,7 @@ IProductListState
   };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;
