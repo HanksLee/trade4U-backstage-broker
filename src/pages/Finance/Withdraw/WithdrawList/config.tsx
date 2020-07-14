@@ -97,7 +97,7 @@ const config = self => {
     },
     {
       title: "代理姓名",
-      width: 140,
+      width: utils.calcColumnMaxWidth(self.props.finance.withdrawList, 140, "agent_name"),
       dataIndex: "agent_name",
       render: (text, record) => {
         return text || "--";
@@ -154,7 +154,7 @@ const config = self => {
     },
     {
       title: "审核人",
-      width: 100,
+      width: 110,
       dataIndex: "reviewer",
       render: (text, record) => {
         return text || "--";

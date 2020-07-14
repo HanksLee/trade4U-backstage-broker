@@ -4,38 +4,39 @@ import moment from "moment";
 import utils from "utils";
 
 const config = self => {
+  const defaultWidth = 150;
   const columns = [
     {
       title: "客户名称",
       dataIndex: "username",
-      width: 150,
+      width: defaultWidth,
       fixed: "left",
     },
     {
       title: "手机号",
       dataIndex: "phone",
-      width: 150,
+      width: defaultWidth,
     },
     {
       title: "代理",
       dataIndex: "agent_name",
-      width: 150,
+      width: utils.calcColumnMaxWidth(self.state.transactionList, defaultWidth, "agent_name"),
     },
     {
       title: "明细类型",
       dataIndex: "cause",
       ellipsis: true,
-      width: 150,
+      width: defaultWidth,
     },
     {
       title: "原有余额",
       dataIndex: "before_balance",
-      width: 150,
+      width: defaultWidth,
     },
     {
       title: "变动金额",
       dataIndex: "amount",
-      width: 150,
+      width: defaultWidth,
       render: (text, record) => {
         return text == 0 ? (
           0
@@ -49,7 +50,7 @@ const config = self => {
     {
       title: "现有余额",
       dataIndex: "after_balance",
-      width: 150,
+      width: defaultWidth,
     },
     {
       title: "相关订单",
@@ -65,7 +66,7 @@ const config = self => {
     {
       title: "ip",
       dataIndex: "ip",
-      width: 150,
+      width: defaultWidth,
     },
     {
       title: "备注",
