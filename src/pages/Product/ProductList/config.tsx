@@ -150,6 +150,7 @@ const config = self => {
     },
   };
   const permissions = self.props.common.permissions;
+  console.log(self.state.typeOptions);
   return {
     // 是否显示增加按钮
     addBtn: {
@@ -205,8 +206,8 @@ const config = self => {
             value: self.state.type__name,
             option: {
               key: "id",
-              value: "name",
-              title: "name",
+              value: "symbol_type_name",
+              title: "symbol_type_name",
               data: self.state.typeOptions || [],
             },
             onSelect(val, elem) {
