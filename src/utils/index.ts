@@ -194,6 +194,26 @@ function resetFilter(filter) {
   });
   return resetedFilter;
 }
+function calcColumnMaxWidth(list: any, defaultWidth: number, column: string): string {
+  const fontSize = 14;
+  const paddingSize = 16;
+  if(list.length === 0) {
+    return `${defaultWidth}`;
+  }
+  let maxLength = 0;
+  list.forEach((item, i)=>{
+    const colLength = item[column].length;
+
+    if(maxLength < colLength) {
+      maxLength = colLength;
+    }
+  });
+
+  const maxWidth = fontSize * maxLength + paddingSize * 2;
+  const ret = maxWidth < defaultWidth ? defaultWidth : maxWidth;
+  return `${ret}px`;
+}
+
 
 export default {
   setRootFontSizeFromClient,
@@ -214,4 +234,5 @@ export default {
   parsePrice,
   randomNum,
   resetFilter,
+  calcColumnMaxWidth,
 };

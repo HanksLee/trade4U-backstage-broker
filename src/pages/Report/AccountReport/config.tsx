@@ -2,29 +2,37 @@ import utils from "utils";
 import * as React from "react";
 
 const config = self => {
+  const defaultWidth = 150;
   const columns = [
     {
       title: "用户名",
+      width:defaultWidth, 
       dataIndex: "username",
+      fixed: "left",
     },
     {
       title: "手机号",
+      width:defaultWidth,
       dataIndex: "phone",
     },
     {
       title: "上级",
+      width: utils.calcColumnMaxWidth(self.state.dataList, defaultWidth, "agent_name"),
       dataIndex: "agent_name",
     },
     {
       title: "入金",
+      width:defaultWidth,
       dataIndex: "deposit",
     },
     {
       title: "出金",
+      width:defaultWidth,
       dataIndex: "net_withdraw",
     },
     {
       title: "净入金",
+      width:defaultWidth,
       dataIndex: "net_deposit",
     },
     // {
@@ -38,18 +46,22 @@ const config = self => {
     ...self.state.commissionRuleColumns,
     {
       title: "手续费",
+      width:defaultWidth,
       dataIndex: "fee",
     },
     {
       title: "库存费",
+      width:defaultWidth,
       dataIndex: "swaps",
     },
     {
       title: "盈亏",
+      width:defaultWidth,
       dataIndex: "profit",
     },
     {
       title: "净值",
+      width:defaultWidth,
       dataIndex: "equity",
     }
   ];
@@ -89,7 +101,7 @@ const config = self => {
             type: "Input",
             label: "手机",
             placeholder: "请输入手机",
-            width: 150,
+            width: 350,
             value: self.state.tempFilter.phone || undefined,
             onChange(evt) {
               self.onInputChanged("phone", evt.target.value);
@@ -120,6 +132,7 @@ const config = self => {
       },
     },
     table: {
+      scroll:{ x:'max-content', },
       rowKey: "id",
       columns,
       dataSource: self.state.dataList,

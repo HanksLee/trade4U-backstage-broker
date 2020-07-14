@@ -5,9 +5,25 @@ import moment from "moment";
 import { FORMAT_TIME } from "constant";
 
 const Option = Select.Option;
+const calcMaxWidth = (list: any, defaultWidth: number, column: string)=>{
+  const fontSize = 14;
+  const paddingSize = 16;
+  if(list.length === 0) {
+    return `${defaultWidth}`;
+  }
+  const sortList = list.sort((a, b)=>{
+    const aCol: string = a[column];
+    const bCol: string = b[column];
 
+    return (aCol.length - bCol.length) * -1;
+  });
+  const maxLength: number = sortList[0][column].length;
+  const maxWidth = fontSize * maxLength + paddingSize * 2;
+  const ret = maxWidth < defaultWidth ? defaultWidth : maxWidth;
+  return `${ret}px`;
+};
 const config = self => {
-  const { selectedRowKeys, } = self.state;
+  const { selectedRowKeys, accountList, } = self.state;
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
@@ -15,7 +31,7 @@ const config = self => {
     },
   };
   const permissions = self.props.common.permissions;
-
+ 
   let columns: any = [
     {
       title: "名字",
@@ -31,7 +47,7 @@ const config = self => {
     },
     {
       title: "代理",
-      width: 150,
+      width:  calcMaxWidth(accountList, 150, "agent_name"),
       dataIndex: "agent_name",
       ellipsis: true, // 必须保留
     },
@@ -184,7 +200,7 @@ const config = self => {
     },
     {
       title: "操作",
-      width: 230,
+      width: 280,
       fixed: "right",
       render: (text, record) => {
         return (
@@ -205,6 +221,14 @@ const config = self => {
               <>
                 <a onClick={e => self.handleTransferAgent(e, record)}>
                   划转代理
+                </a>
+                <span className="common-list-table-operation-spliter"></span>
+              </>
+            )}
+            {permissions.indexOf("change_account_pwd") !== -1 && (
+              <>
+                <a onClick={e => self.handleResetPassword(e, record)}>
+                  修改密码
                 </a>
                 <span className="common-list-table-operation-spliter"></span>
               </>

@@ -40,7 +40,7 @@ const config = self => {
     {
       title: "代理",
       dataIndex: "agent_name",
-      width: 120,
+      width: utils.calcColumnMaxWidth(self.state.orderList, 150, "agent_name"),
     },
     {
       title: "产品名称",

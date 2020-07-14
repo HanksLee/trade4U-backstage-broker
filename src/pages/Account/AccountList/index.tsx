@@ -5,6 +5,7 @@ import CommonList from "components/CommonList";
 import EditBalanceModal from "./EditBalanceModal";
 import listConfig from "./config";
 import TransferAgentModal from "./TransferAgentModal";
+import ResetPasswordModal from "./ResetPasswordModal";
 import TransferGroupModal from "./TransferGroupModal";
 import WithRoute from "components/WithRoute";
 import moment from "moment";
@@ -52,6 +53,7 @@ interface AccountListState {
   isShowBalanceModal: boolean;
   isShowTransferAgentModal: boolean;
   isShowTransferGroupModal: boolean;
+  isShowResetPasswordModal: boolean;
 }
 
 /* eslint new-cap: "off" */
@@ -73,6 +75,7 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     isShowBalanceModal: false,
     isShowTransferAgentModal: false,
     isShowTransferGroupModal: false,
+    isShowResetPasswordModal: false,
   };
 
   async componentDidMount() {
@@ -283,6 +286,26 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     }
   };
 
+  handleResetPassword = (e: any, record: Account) => {
+    this.setState({
+      currentAccount: record,
+      isShowResetPasswordModal: true,
+    });
+  };
+
+  saveRetsetPassword = () => {
+    this.hideResetPassword();
+    this.getDataList();
+  };
+
+  hideResetPassword = () => {
+    this.setState({
+      currentAccount: null,
+      isShowResetPasswordModal: false,
+    });
+  };
+
+
   render() {
     const { match, } = this.props;
     const {
@@ -291,6 +314,7 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
       currentAccount,
       isShowTransferAgentModal,
       isShowTransferGroupModal,
+      isShowResetPasswordModal,
     } = this.state;
     return (
       <div>
@@ -327,6 +351,13 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
             currentAccount={currentAccount}
             onOk={this.saveTransferAgent}
             onCancel={this.hideTransferAgentModal}
+          />
+        )}
+        {isShowResetPasswordModal && currentAccount && (
+          <ResetPasswordModal
+            currentAccount={currentAccount}
+            onOk={this.saveRetsetPassword}
+            onCancel={this.hideResetPassword}
           />
         )}
         {isShowTransferGroupModal && (

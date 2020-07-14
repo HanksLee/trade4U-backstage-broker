@@ -57,7 +57,7 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
     res.data.results.forEach((item, index) => {
       columns.push({
         title: `${item.symbol_type_name}交易数`,
-        // width: 200,
+        width: 200,
         render: (_, record) => {
           let content = Object.values(record.trading_data);
           let content_ary = content[index];
