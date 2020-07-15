@@ -46,6 +46,7 @@ export interface ISystemEditorState {
   withdraw_daily_times: string;
   order_tp_sl_unit: string;
   platform_currency: string;
+  user_authentication: string;
 }
 
 // @ts-ignore
@@ -70,6 +71,7 @@ ISystemEditorState
     withdraw_daily_times: "",
     order_tp_sl_unit: "",
     platform_currency: "",
+    user_authentication: "",
   };
 
   async componentDidMount() {
@@ -131,6 +133,9 @@ ISystemEditorState
           case "platform_currency":
             self.setState({ platform_currency: item.value, });
             break;
+          case "user_authentication":
+            self.setState({ user_authentication: item.value, });
+            break;
         }
       });
     }
@@ -147,6 +152,7 @@ ISystemEditorState
       withdraw_daily_times,
       order_tp_sl_unit,
       platform_currency,
+      user_authentication,
     } = this.state;
     const vaildatorNum = {
       patternNum: /^\d+\.?\d*$/,
@@ -274,11 +280,25 @@ ISystemEditorState
         </FormItem>
         <FormItem label="止盈止损显示" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("order_tp_sl_unit", {
-            initialValue: order_tp_sl_unit || "",
+            initialValue: order_tp_sl_unit || "price",
           })(
             <Radio.Group>
               <Radio value={"price"}>按单价显示</Radio>
               <Radio value={"profit"}>按金额显示</Radio>
+            </Radio.Group>
+          )}
+        </FormItem>
+        <FormItem>
+          <h2 className="editor-form-title form-title">审批提示时间</h2>
+        </FormItem>
+        <FormItem label="审批提示时间" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("user_authentication", {
+            initialValue: user_authentication || "not_required",
+          })(
+            <Radio.Group>
+              <Radio value={"not_required"}>不认证</Radio>
+              <Radio value={"deposit_authentication"}>入金前认证</Radio>
+              <Radio value={"withdraw_authentication"}>出金前认证</Radio>
             </Radio.Group>
           )}
         </FormItem>
@@ -353,6 +373,10 @@ ISystemEditorState
         valuesArr.push({
           key: "platform_currency",
           value: values.platform_currency,
+        });
+        valuesArr.push({
+          key: "user_authentication",
+          value: values.user_authentication,
         });
 
         const configs = JSON.stringify(valuesArr);

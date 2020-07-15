@@ -444,7 +444,7 @@ export default class CommonList extends React.Component<any, any> {
           loading={loading}
           pagination={pagination}
           onChange={onChange}
-          scroll={scroll || {x:true}}
+          scroll={scroll || { x:true, }}
         />
       </section>
     );

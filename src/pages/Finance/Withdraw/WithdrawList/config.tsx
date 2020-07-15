@@ -80,7 +80,7 @@ const config = self => {
       },
     },
     {
-      title: "预计出金",
+      title: "预计出金(USD)",
       width: 140,
       dataIndex: "expect_amount",
       render: (text, record) => {
@@ -88,7 +88,7 @@ const config = self => {
       },
     },
     {
-      title: "实际出金",
+      title: "实际出金(CNY)",
       width: 140,
       dataIndex: "actual_amount",
       render: (text, record) => {

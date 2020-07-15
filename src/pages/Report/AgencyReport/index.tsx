@@ -9,7 +9,7 @@ import { PAGE_PERMISSION_MAP } from "constant";
 import { Row, Col, Statistic, Card, Icon } from "antd";
 import "../index.scss";
 
-export interface Report {}
+export interface Report { }
 
 interface ReportState {
   dataList: Report[];
@@ -50,7 +50,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
     this.getDataList({
       page_size: filter.page_size || paginationConfig.defaultPageSize,
       page: filter.page || 1,
-      username: undefined,
+      agent_username: undefined,
       phone: undefined,
     });
   }
@@ -88,7 +88,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
     this.props.agencyReport.setFilter({
       page_size,
       page: current_page,
-      username: payload.username,
+      agent_username: payload.agent_username,
       phone: payload.phone,
     });
     this.setState(
@@ -132,7 +132,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
       },
       () => {
         this.getDataList({
-          username: undefined,
+          agent_username: undefined,
           phone: undefined,
           page: 1,
           agencyStack: [],
@@ -156,7 +156,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
 
   handleAgencyStackChange = (username: string, index?: number) => {
     this.getDataList({
-      username,
+      agent_username: username,
       page: 1,
     });
     if (index === undefined) {
@@ -177,7 +177,7 @@ export default class AgencyReport extends BaseReact<{}, ReportState> {
       },
       () => {
         this.getDataList({
-          username: undefined,
+          agent_username: undefined,
           page: 1,
         });
       }
