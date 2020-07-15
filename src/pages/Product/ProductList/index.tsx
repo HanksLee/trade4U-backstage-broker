@@ -123,10 +123,10 @@ IProductListState
     this.props.product.setFilterProduct({
       page_size,
       page: current_page,
-      name: undefined,
-      product__code: undefined,
-      type__name: undefined,
-      status: undefined,
+      // name: undefined,
+      // product__code: undefined,
+      // type__name: undefined,
+      // status: undefined,
     });
     this.setState(
       {

@@ -47,6 +47,7 @@ export interface ISystemEditorState {
   order_tp_sl_unit: string;
   platform_currency: string;
   user_authentication: string;
+  withdraw_currency: string;
 }
 
 // @ts-ignore
@@ -72,6 +73,7 @@ ISystemEditorState
     order_tp_sl_unit: "",
     platform_currency: "",
     user_authentication: "",
+    withdraw_currency: "",
   };
 
   async componentDidMount() {
@@ -136,6 +138,9 @@ ISystemEditorState
           case "user_authentication":
             self.setState({ user_authentication: item.value, });
             break;
+          case "withdraw_currency":
+            self.setState({ withdraw_currency: item.value, });
+            break;
         }
       });
     }
@@ -153,6 +158,7 @@ ISystemEditorState
       order_tp_sl_unit,
       platform_currency,
       user_authentication,
+      withdraw_currency,
     } = this.state;
     const vaildatorNum = {
       patternNum: /^\d+\.?\d*$/,
@@ -321,6 +327,22 @@ ISystemEditorState
             />
           )}
         </FormItem>
+        <FormItem label="出金货币" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("withdraw_currency", {
+            initialValue: withdraw_currency || "",
+            rules: [
+              {
+                pattern: /[a-zA-Z]+/,
+                message: "只能输入英文",
+              }
+            ],
+          })(
+            <Input
+              placeholder="平台货币"
+              style={{ display: "inline-block", width: 200, }}
+            />
+          )}
+        </FormItem>
         <FormItem className="editor-form-btns">
           {/* <Button onClick={this.goBack}>取消</Button> */}
           {
@@ -377,6 +399,10 @@ ISystemEditorState
         valuesArr.push({
           key: "user_authentication",
           value: values.user_authentication,
+        });
+        valuesArr.push({
+          key: "withdraw_currency",
+          value: values.withdraw_currency,
         });
 
         const configs = JSON.stringify(valuesArr);

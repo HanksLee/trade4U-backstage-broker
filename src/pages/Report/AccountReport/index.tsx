@@ -88,8 +88,7 @@ export default class AccountReport extends BaseReact<{}, ReportState> {
       this.props.accountReport.setFilter({
         page_size,
         page: current_page,
-        username: payload.username,
-        phone: payload.username,
+        ...this.state.tempFilter,
       });
       this.setState(
         {

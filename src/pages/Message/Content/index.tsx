@@ -9,6 +9,7 @@ import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import { PAGE_PERMISSION_MAP } from "constant";
+import utils from "utils";
 import "./index.scss";
 
 export interface MessageContent {
@@ -109,7 +110,7 @@ MessageContentListState
       this.props.message.setFilterContent({
         page_size,
         page: current_page,
-        name: payload.name,
+        ...this.state.tempFilter,
       });
       this.setState({
         messageContentList: results,
@@ -132,8 +133,8 @@ MessageContentListState
   private onReset = async () => {
     // @ts-ignore
     this.getDataList({
-      name: undefined,
       page: 1,
+      ...utils.resetFilter(this.state.tempFilter),
     });
     this.setState({
       tempFilter: {},

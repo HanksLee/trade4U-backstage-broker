@@ -44,7 +44,8 @@ IWithdrawListState
     reviewDateRange: [],
     remitDateRange: [],
     exportExcelBtnStatus: false,
-    excelFileName: "出金管理",
+    platform_currency: "",
+    withdraw_currency: "",
   };
 
   async componentDidMount() {
@@ -53,6 +54,7 @@ IWithdrawListState
       paginationConfig: { defaultPageSize, defaultCurrent, },
     } = this.props.common;
 
+    this.getCurrency();
     this.resetPagination(defaultPageSize, defaultCurrent);
   }
 
@@ -61,6 +63,23 @@ IWithdrawListState
       this.props.history.replace("/dashboard/finance/withdraw/list");
     }
   }
+
+  getCurrency = async () => {
+    const res = await this.$api.system.getBrokerConfigList();
+    if (res.status === 200) {
+      const self = this;
+      res.data.forEach(function (item, index, array) {
+        switch (item.key) {
+          case "platform_currency":
+            self.setState({ platform_currency: item.value, });
+            break;
+          case "withdraw_currency":
+            self.setState({ withdraw_currency: item.value, });
+            break;
+        }
+      });
+    }
+  };
 
   getDataList = (payload = {}) => {
     this.setState(
@@ -138,15 +157,15 @@ IWithdrawListState
     this.props.finance.setFilterWithdraw({
       page_size,
       current_page,
-      user__username: undefined,
-      phone: undefined,
-      province: undefined,
-      city: undefined,
-      agent_name: undefined,
-      reviewStatus: undefined,
-      remitStatus: undefined,
-      reviewDateRange: [],
-      remitDateRange: [],
+      // user__username: undefined,
+      // phone: undefined,
+      // province: undefined,
+      // city: undefined,
+      // agent_name: undefined,
+      // review_status: undefined,
+      // remit_status: undefined,
+      // reviewDateRange: [],
+      // remitDateRange: [],
     });
     this.setState(
       {

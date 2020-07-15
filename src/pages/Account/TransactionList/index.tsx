@@ -82,7 +82,7 @@ TransactionListState
       this.props.transaction.setFilter({
         page_size,
         page: current_page,
-        name: payload.name,
+        ...this.state.tempFilter,
       });
       this.setState({
         transactionList: results,
