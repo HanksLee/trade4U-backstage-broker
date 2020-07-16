@@ -5,6 +5,7 @@ import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import ProductEdtior from "pages/Product/ProductEditor";
+import ProductHistory from "../ProductHistory";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
@@ -181,6 +182,12 @@ IProductListState
     }`;
     this.props.history.push(url);
   };
+  goToHistory = (record: any): void => {
+    const url = `/dashboard/product/history?id=${
+      !utils.isEmpty(record) ? record.id : 0
+    }`;
+    this.props.history.push(url);
+  };
 
   renderMenu = (record): JSX.Element => {
     return null;
@@ -203,6 +210,10 @@ IProductListState
         <Route
           path={`${match.url}/editor`}
           render={props => <ProductEdtior {...props} />}
+        />
+        <Route
+          path={`${match.url}/history`}
+          render={props => <ProductHistory {...props} />}
         />
       </div>
     );

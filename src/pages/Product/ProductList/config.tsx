@@ -99,12 +99,25 @@ const config = self => {
       },
     },
     {
-      width: 100,
+      width: 130,
       // fixed: 'right',
       title: "操作",
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
+            {permissions.includes("view_broker_symbol_history") && (
+              <>
+              <span
+                onClick={() => {
+                  self.goToHistory(record);
+                }}
+              >
+                行情
+              </span>
+              <span className="common-list-table-operation-spliter"></span>
+              </>
+            )
+            }
             {permissions.includes("edit_product") && (
               <span
                 onClick={() => {
@@ -150,7 +163,6 @@ const config = self => {
     },
   };
   const permissions = self.props.common.permissions;
-  console.log(self.state.typeOptions);
   return {
     // 是否显示增加按钮
     addBtn: {

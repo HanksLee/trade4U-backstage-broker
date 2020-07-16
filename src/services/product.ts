@@ -19,6 +19,9 @@ const deleteProduct = (id: string, config: AxiosRequestConfig): Promise<any> =>
 const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/symbol_type?status=1", config);
 
+const getHistoryList = (broker_symbol_id: string, startDate: number, endDate: number, config: AxiosRequestConfig): Promise<any> =>
+  API.get(`broker/symbol/${broker_symbol_id}/history?start_time=${startDate}&end_time=${endDate}`, config);
+
 const getTransactionModeOptions = config =>
   API.get("/constant/system_symbol_transaction_mode_choices", config);
 
@@ -44,6 +47,7 @@ export default {
   updateProduct,
   deleteProduct,
   getGenreList,
+  getHistoryList,
   getTransactionModeOptions,
   getBgColorOptions,
   getProfitOptioins,
