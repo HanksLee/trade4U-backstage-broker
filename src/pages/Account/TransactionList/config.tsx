@@ -81,11 +81,13 @@ const config = self => {
     total: self.state.total,
     current: self.props.transaction.filter.page,
     pageSize: self.props.transaction.filter.page_size,
-    onChange: (current, pageSize) => { },
+    onChange: (current, pageSize) => {
+    },
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
         page: current,
+        // ...self.state.tempFilter
       });
     },
   };

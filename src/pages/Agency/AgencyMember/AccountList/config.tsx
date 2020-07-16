@@ -205,6 +205,7 @@ const config = self => {
     onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
+        ...self.state.tempFilterAgent,
         page_size: pageSize,
         page: current,
       });
@@ -321,6 +322,7 @@ const config = self => {
         self.getDataList({
           page_size: pagination.pageSize,
           page: pagination.current,
+          ...payload,
         });
       },
     },

@@ -74,12 +74,12 @@ IInfoListState
     this.props.agency.setFilterInfo({
       page_size,
       page: current_page,
-      username: undefined,
-      phone: undefined,
-      order_number: undefined,
-      agent_name: undefined,
-      ip: undefined,
-      DateRange: [],
+      // username: undefined,
+      // phone: undefined,
+      // order_number: undefined,
+      // agent_name: undefined,
+      // ip: undefined,
+      // DateRange: [],
     });
     this.setState(
       {

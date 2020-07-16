@@ -15,6 +15,7 @@ import { Modal } from "antd";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import { PAGE_PERMISSION_MAP } from "constant";
+import utils from "utils";
 
 export interface Account {
   id: number;
@@ -111,7 +112,7 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
       this.props.account.setFilter({
         page_size,
         page: current_page,
-        name: payload.name,
+        ...payload,
       });
       this.setState({
         accountList: results,
@@ -143,8 +144,8 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
   private onReset = async () => {
     // @ts-ignore
     this.getDataList({
-      name: undefined,
       page: 1,
+      ...utils.resetFilter(this.state.tempFilter),
     });
     this.setState({
       tempFilter: {},
@@ -165,7 +166,7 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
       return (
         current > moment().endOf("day") ||
         current >
-          this.state.tempFilter.start_time.valueOf() + 60 * 60 * 24 * 90 * 1000
+        this.state.tempFilter.start_time.valueOf() + 60 * 60 * 24 * 90 * 1000
       );
     } else {
       return current > moment().endOf("day");

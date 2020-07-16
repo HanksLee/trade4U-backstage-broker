@@ -15,7 +15,7 @@ const config = self => {
 
   const columns = [
     {
-      width: 100,
+      width: 80,
       title: "品种 ID",
       dataIndex: "id",
       ellipsis: true,
@@ -52,7 +52,7 @@ const config = self => {
       },
     },
     {
-      width: 100,
+      width: 50,
       title: "小数位",
       dataIndex: "decimals_place",
       render: (text, record) => {
@@ -68,7 +68,7 @@ const config = self => {
       },
     },
     {
-      width: 100,
+      width: 50,
       title: "点差",
       dataIndex: "spread",
       render: (text, record) => {
@@ -82,7 +82,7 @@ const config = self => {
     },
     {
       title: "启用",
-      width: 200,
+      width: 50,
       dataIndex: "status",
       render: (text, record) => {
         const handleChange = async e => {
@@ -104,6 +104,7 @@ const config = self => {
       title: "操作",
       render: (text, record) => {
         return (
+
           <div className="common-list-table-operation">
             {permissions.includes("view_broker_symbol_history") && (
               <>
@@ -141,7 +142,7 @@ const config = self => {
                     self.$msg.error(res.data.message);
                   }
                 }}
-                onCancel={() => {}}
+                onCancel={() => { }}
               >
                 <span>删除</span>
               </Popconfirm>
@@ -156,7 +157,7 @@ const config = self => {
     ...self.props.common.paginationConfig,
     total: self.props.product.productListMeta.total,
     current: self.state.currentPage,
-    onChange: (current, pageSize) => {},
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);

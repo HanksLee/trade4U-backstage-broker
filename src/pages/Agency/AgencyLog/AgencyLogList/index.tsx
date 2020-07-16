@@ -71,12 +71,12 @@ export default class LogList extends BaseReact<ILogListProps, ILogListState> {
     this.props.agency.setFilterLog({
       page_size,
       page: current_page,
-      username: undefined,
-      phone: undefined,
-      order_number: undefined,
-      agent_name: undefined,
-      createDateRange: [],
-      transferDateRange: [],
+      // username: undefined,
+      // phone: undefined,
+      // order_number: undefined,
+      // agent_name: undefined,
+      // createDateRange: [],
+      // transferDateRange: [],
     });
     this.setState(
       {

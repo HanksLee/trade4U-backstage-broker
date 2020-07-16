@@ -160,14 +160,14 @@ IDepositListState
     this.props.finance.setFilterDeposit({
       page_size,
       current_page,
-      user__username: undefined,
-      expect_amount: undefined,
-      phone: undefined,
-      order_number: undefined,
-      agent_name: undefined,
-      status: undefined,
-      createDateRange: [],
-      notifyDateRange: [],
+      // user__username: undefined,
+      // expect_amount: undefined,
+      // phone: undefined,
+      // order_number: undefined,
+      // agent_name: undefined,
+      // status: undefined,
+      // createDateRange: [],
+      // notifyDateRange: [],
     });
     this.setState(
       {

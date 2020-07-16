@@ -85,7 +85,7 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
     const { paginationConfig, } = this.props.common;
 
     this.getDataList({
-      ...utils.resetFilter(filterAgent),
+      // ...utils.resetFilter(filterAgent),
       page_size: filterAgent.page_size || paginationConfig.defaultPageSize,
       page: filterAgent.page || 1,
     });
@@ -114,7 +114,7 @@ export default class AccountList extends BaseReact<{}, AccountListState> {
       this.props.agency.setFilterAgent({
         page_size,
         page: current_page,
-        name: payload.name,
+        ...this.state.tempFilterAgent,
       });
       this.setState({
         accountList: results,

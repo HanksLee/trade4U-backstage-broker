@@ -46,6 +46,8 @@ export interface ISystemEditorState {
   withdraw_daily_times: string;
   order_tp_sl_unit: string;
   platform_currency: string;
+  user_authentication: string;
+  withdraw_currency: string;
 }
 
 // @ts-ignore
@@ -70,6 +72,8 @@ ISystemEditorState
     withdraw_daily_times: "",
     order_tp_sl_unit: "",
     platform_currency: "",
+    user_authentication: "",
+    withdraw_currency: "",
   };
 
   async componentDidMount() {
@@ -131,6 +135,12 @@ ISystemEditorState
           case "platform_currency":
             self.setState({ platform_currency: item.value, });
             break;
+          case "user_authentication":
+            self.setState({ user_authentication: item.value, });
+            break;
+          case "withdraw_currency":
+            self.setState({ withdraw_currency: item.value, });
+            break;
         }
       });
     }
@@ -147,6 +157,8 @@ ISystemEditorState
       withdraw_daily_times,
       order_tp_sl_unit,
       platform_currency,
+      user_authentication,
+      withdraw_currency,
     } = this.state;
     const vaildatorNum = {
       patternNum: /^\d+\.?\d*$/,
@@ -274,11 +286,25 @@ ISystemEditorState
         </FormItem>
         <FormItem label="止盈止损显示" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("order_tp_sl_unit", {
-            initialValue: order_tp_sl_unit || "",
+            initialValue: order_tp_sl_unit || "price",
           })(
             <Radio.Group>
               <Radio value={"price"}>按单价显示</Radio>
               <Radio value={"profit"}>按金额显示</Radio>
+            </Radio.Group>
+          )}
+        </FormItem>
+        <FormItem>
+          <h2 className="editor-form-title form-title">审批提示时间</h2>
+        </FormItem>
+        <FormItem label="审批提示时间" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("user_authentication", {
+            initialValue: user_authentication || "not_required",
+          })(
+            <Radio.Group>
+              <Radio value={"not_required"}>不认证</Radio>
+              <Radio value={"deposit_authentication"}>入金前认证</Radio>
+              <Radio value={"withdraw_authentication"}>出金前认证</Radio>
             </Radio.Group>
           )}
         </FormItem>
@@ -288,6 +314,22 @@ ISystemEditorState
         <FormItem label="平台货币" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("platform_currency", {
             initialValue: platform_currency || "",
+            rules: [
+              {
+                pattern: /[a-zA-Z]+/,
+                message: "只能输入英文",
+              }
+            ],
+          })(
+            <Input
+              placeholder="平台货币"
+              style={{ display: "inline-block", width: 200, }}
+            />
+          )}
+        </FormItem>
+        <FormItem label="出金货币" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("withdraw_currency", {
+            initialValue: withdraw_currency || "",
             rules: [
               {
                 pattern: /[a-zA-Z]+/,
@@ -353,6 +395,14 @@ ISystemEditorState
         valuesArr.push({
           key: "platform_currency",
           value: values.platform_currency,
+        });
+        valuesArr.push({
+          key: "user_authentication",
+          value: values.user_authentication,
+        });
+        valuesArr.push({
+          key: "withdraw_currency",
+          value: values.withdraw_currency,
         });
 
         const configs = JSON.stringify(valuesArr);

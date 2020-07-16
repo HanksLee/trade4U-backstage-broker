@@ -11,7 +11,7 @@ import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from "utils";
 
-export interface IProductListProps {}
+export interface IProductListProps { }
 
 export interface IProductListState {
   // filter: any;
@@ -34,6 +34,7 @@ IProductListState
     product__code: undefined,
     type__name: undefined,
     status: undefined,
+    typeOptions: undefined,
   };
 
   async componentDidMount() {
@@ -123,10 +124,10 @@ IProductListState
     this.props.product.setFilterProduct({
       page_size,
       page: current_page,
-      name: undefined,
-      product__code: undefined,
-      type__name: undefined,
-      status: undefined,
+      // name: undefined,
+      // product__code: undefined,
+      // type__name: undefined,
+      // status: undefined,
     });
     this.setState(
       {
@@ -194,7 +195,7 @@ IProductListState
   };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;

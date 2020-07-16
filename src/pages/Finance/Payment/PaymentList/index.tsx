@@ -11,7 +11,7 @@ import "./index.scss";
 import utils from "utils";
 import { Modal } from "antd";
 
-export interface IPaymentListProps {}
+export interface IPaymentListProps { }
 
 export interface IPaymentListState {
   // filter: any;
@@ -170,9 +170,9 @@ IPaymentListState
     this.props.finance.setFilterPayment({
       page_size,
       current_page,
-      name: undefined,
-      code: undefined,
-      status: undefined,
+      // name: undefined,
+      // code: undefined,
+      // status: undefined,
     });
     this.setState(
       {
@@ -258,7 +258,7 @@ IPaymentListState
   };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;

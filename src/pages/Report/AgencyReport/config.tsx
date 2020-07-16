@@ -97,7 +97,7 @@ const config = self => {
     total: self.state.total,
     current: self.props.agencyReport.filter.page,
     pageSize: self.props.agencyReport.filter.page_size,
-    onChange: (current, pageSize) => {},
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
@@ -114,10 +114,10 @@ const config = self => {
             type: "Input",
             label: "用户名",
             placeholder: "请输入用户名",
-            value: self.state.tempFilter.username || undefined,
+            value: self.state.tempFilter.agent_username || undefined,
             width: 150,
             onChange(evt) {
-              self.onInputChanged("username", evt.target.value);
+              self.onInputChanged("agent_username", evt.target.value);
             },
             onPressEnter(evt) {
               self.onSearch();
