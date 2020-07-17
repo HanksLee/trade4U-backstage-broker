@@ -299,10 +299,9 @@ ISystemEditorState
         </FormItem>
         <FormItem label="审批提示时间" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("user_authentication", {
-            initialValue: user_authentication || "not_required",
+            initialValue: user_authentication || "deposit_authentication",
           })(
             <Radio.Group>
-              <Radio value={"not_required"}>不认证</Radio>
               <Radio value={"deposit_authentication"}>入金前认证</Radio>
               <Radio value={"withdraw_authentication"}>出金前认证</Radio>
             </Radio.Group>
