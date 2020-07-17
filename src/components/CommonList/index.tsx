@@ -149,6 +149,7 @@ const widgetMap = {
       showTime,
       format,
       disabledDate,
+      disabledTime,
     } = config;
     return (
       <>
@@ -162,6 +163,7 @@ const widgetMap = {
             value={value}
             onCalendarChange={onChange}
             disabledDate={disabledDate}
+            disabledTime={disabledTime || undefined}
           />
           <span className="common-list-control-date-alias">
             {!utils.isEmpty(alias) &&
@@ -273,10 +275,14 @@ export default class CommonList extends React.Component<any, any> {
           <div className="common-list-search-right">
             {!searcher.hideSearcher && (
               <>
-                <Button type="primary" onClick={searcher.onSearch}>
+                <Button type="primary" disabled={searcher.searchDisabled} onClick={searcher.onSearch}>
                   查询
                 </Button>
                 <Button onClick={searcher.onReset}>重置</Button>
+                {searcher.onBackClick &&
+                   <Button onClick={searcher.onBackClick}>返回</Button>
+                }
+               
               </>
             )}
             {searcher.collapseControl && searcher.collapseControl.showMoreBtn && (

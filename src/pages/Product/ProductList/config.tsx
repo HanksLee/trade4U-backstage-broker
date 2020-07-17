@@ -99,13 +99,26 @@ const config = self => {
       },
     },
     {
-      width: 100,
+      width: 130,
       // fixed: 'right',
       title: "操作",
       render: (text, record) => {
         return (
 
           <div className="common-list-table-operation">
+            {permissions.includes("view_broker_symbol_history") && (
+              <>
+              <span
+                onClick={() => {
+                  self.goToHistory(record);
+                }}
+              >
+                行情
+              </span>
+              <span className="common-list-table-operation-spliter"></span>
+              </>
+            )
+            }
             {permissions.includes("edit_product") && (
               <span
                 onClick={() => {

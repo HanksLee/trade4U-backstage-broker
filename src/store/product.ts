@@ -96,6 +96,75 @@ class ProductStore extends BaseStore {
       utils.setLStorage("currentProduct", this.currentProduct);
     }
   };
+
+
+  @observable
+  filterHistoryDateList = [null, null];
+
+  @action
+  setFilterHistoryDateInit() {
+    this.filterHistoryDateList = [null, null];
+  }
+
+  @action
+  setFilterHistoryDate(date) {
+    let [start, end] = date;
+    if(start && end) {
+      end = !this.checkDateLimited(start, end) ? 
+        start.add(10, 'm')
+        : end;
+    }
+   
+    this.filterHistoryDateList[0]  = start;
+    this.filterHistoryDateList[1] = end;
+  }
+
+  @computed
+  get getFilterHistoryDateList() {
+    return this.filterHistoryDateList;
+  }
+   
+  @computed
+  get checkFilter() {
+    const [start, end] = this.filterHistoryDateList;
+    return start && end && this.checkDateLimited(start, end);
+  }
+
+  checkDateLimited(start, end) {
+    return end.diff(start, 'm') <= 10;
+  }
+
+  @observable
+  historyList = [];
+
+  @action 
+  async fetchHistoryList(id, start_time, end_time, config) {
+    const res = await this.$api.product.getHistoryList(id, start_time, end_time, config);
+ 
+    this.setHistoryList(res.data);
+  }
+
+  @computed
+  get getHistoryList() {
+    return this.historyList;
+  }
+
+  @action 
+  setHistoryList(data) {
+    this.historyList = data;
+  }
+
+  @action 
+  setHistoryListInit() {
+    this.historyList = [];
+  }
+
+
+  @action 
+  setInit() {
+    this.setHistoryListInit();
+    this.setFilterHistoryDateInit();
+  }
 }
 
 export default new ProductStore();
