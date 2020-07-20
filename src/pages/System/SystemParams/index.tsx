@@ -48,6 +48,7 @@ export interface ISystemEditorState {
   platform_currency: string;
   user_authentication: string;
   withdraw_currency: string;
+  quoted_price: string;
 }
 
 // @ts-ignore
@@ -74,6 +75,7 @@ ISystemEditorState
     platform_currency: "",
     user_authentication: "",
     withdraw_currency: "",
+    quoted_price: "1",
   };
 
   async componentDidMount() {
@@ -141,6 +143,9 @@ ISystemEditorState
           case "withdraw_currency":
             self.setState({ withdraw_currency: item.value, });
             break;
+          case "quoted_price":
+            self.setState({ quoted_price: item.value, });
+            break;
         }
       });
     }
@@ -159,6 +164,7 @@ ISystemEditorState
       platform_currency,
       user_authentication,
       withdraw_currency,
+      quoted_price,
     } = this.state;
     const vaildatorNum = {
       patternNum: /^\d+\.?\d*$/,
@@ -295,6 +301,19 @@ ISystemEditorState
           )}
         </FormItem>
         <FormItem>
+          <h2 className="editor-form-title form-title">报价显示设定</h2>
+        </FormItem>
+        <FormItem label="报价显示设定" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("quoted_price", {
+            initialValue: quoted_price || "quoted_price",
+          })(
+            <Radio.Group>
+              <Radio value={"0"}>单报价</Radio>
+              <Radio value={"1"}>双报价</Radio>
+            </Radio.Group>
+          )}
+        </FormItem>
+        <FormItem>
           <h2 className="editor-form-title form-title">审批提示时间</h2>
         </FormItem>
         <FormItem label="审批提示时间" {...getFormItemLayout(3, 12)}>
@@ -402,6 +421,10 @@ ISystemEditorState
         valuesArr.push({
           key: "withdraw_currency",
           value: values.withdraw_currency,
+        });
+        valuesArr.push({
+          key: "quoted_price",
+          value: values.quoted_price,
         });
 
         const configs = JSON.stringify(valuesArr);

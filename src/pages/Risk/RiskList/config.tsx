@@ -124,7 +124,7 @@ const config = self => {
       bordered: true,
       columns,
       pagination:false,
-      dataSource: self.props.risk.getHistoryList,
+      dataSource: self.props.risk.riskList,
     },
   };
 };
