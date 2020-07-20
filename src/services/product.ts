@@ -20,7 +20,7 @@ const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/symbol_type?status=1", config);
 
 const getHistoryList = (broker_symbol_id: string, startDate: number, endDate: number, config: AxiosRequestConfig): Promise<any> =>
-  API.get(`broker/symbol/${broker_symbol_id}/history?start_time=${startDate}&end_time=${endDate}`, config);
+  API.get(`/broker/symbol/${broker_symbol_id}/history?start_time=${startDate}&end_time=${endDate}`, config);
 
 const getTransactionModeOptions = config =>
   API.get("/constant/system_symbol_transaction_mode_choices", config);

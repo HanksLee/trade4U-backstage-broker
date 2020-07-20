@@ -4,6 +4,7 @@ import finance from "./finance";
 import group from "./group";
 import manager from "./manager";
 import product from "./product";
+import risk from "./risk";
 import agency from "./agency";
 import verify from "./verify";
 import system from "./system";
@@ -22,6 +23,7 @@ export default {
   group,
   manager,
   product,
+  risk,
   agency,
   verify,
   system,

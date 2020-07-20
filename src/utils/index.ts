@@ -222,6 +222,10 @@ function getRangeNumberList(start, end) {
   return result;
 }
 
+function checkDateLimited(start, end, max) {
+  return end.diff(start, 'm') <= max;
+}
+
 export default {
   setRootFontSizeFromClient,
   initI18n,
@@ -243,4 +247,5 @@ export default {
   resetFilter,
   calcColumnMaxWidth,
   getRangeNumberList,
+  checkDateLimited,
 };

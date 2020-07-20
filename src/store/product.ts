@@ -5,6 +5,8 @@ import { WeeklyOrder } from 'constant';
 import moment from 'moment';
 
 class ProductStore extends BaseStore {
+  LIMITED_MINUTES = 10;
+  
   @observable
   filterProduct = {
     page_size: 10,
@@ -110,7 +112,7 @@ class ProductStore extends BaseStore {
   setFilterHistoryDate(date) {
     let [start, end] = date;
     if(start && end) {
-      end = !this.checkDateLimited(start, end) ? 
+      end = !utils.checkDateLimited(start, end, this.LIMITED_MINUTES) ? 
         start.add(10, 'm')
         : end;
     }
@@ -127,12 +129,10 @@ class ProductStore extends BaseStore {
   @computed
   get checkFilter() {
     const [start, end] = this.filterHistoryDateList;
-    return start && end && this.checkDateLimited(start, end);
+    return start && end && utils.checkDateLimited(start, end, this.LIMITED_MINUTES);
   }
 
-  checkDateLimited(start, end) {
-    return end.diff(start, 'm') <= 10;
-  }
+  
 
   @observable
   historyList = [];

@@ -189,6 +189,13 @@ const routes: any[] = [
         /* webpackChunkName: "agency-report-page" */ "./pages/Report/AgencyReport"
       )
     ),
+  },
+  {
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "agency-report-page" */ "./pages/Risk/RiskList"
+      )
+    ),
   }
 ];
 
