@@ -13,7 +13,7 @@ import message from "./message";
 import order from "./order";
 import report from "./report";
 import sms from "./sms";
-import currencyHistory from './currencyHistory'
+import currencyHistory from './currencyHistory';
 export default {
   account,
   common,

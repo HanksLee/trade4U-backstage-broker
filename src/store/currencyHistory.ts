@@ -5,13 +5,13 @@ import moment from 'moment';
 
 
 class CurrencyHistoryStore extends BaseStore {
-    LIMITED_MINUTES = 10;
+  LIMITED_MINUTES = 10;
     @observable
-    filterInfo ={
-        start_time:null,
-        end_time:null,
-        currency:"",
-    }
+  filterInfo ={
+    start_time:null,
+    end_time:null,
+    currency:"",
+  }
 
     @action
     setFilterInfo(d) {
@@ -28,7 +28,7 @@ class CurrencyHistoryStore extends BaseStore {
 
     @computed
     get isFilterOK() {
-      const { start_time, end_time, currency} =  this.filterInfo;
+      const { start_time, end_time, currency, } =  this.filterInfo;
       return (start_time && end_time) && 
                 utils.checkDateLimited(start_time, end_time, this.LIMITED_MINUTES) &&
                 currency;

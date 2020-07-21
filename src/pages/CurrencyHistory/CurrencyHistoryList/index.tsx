@@ -11,12 +11,12 @@ export interface ICurrencyHistoryListProps {}
 export interface ICurrencyHistoryListState {}
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/currency_history", { exact: false })
+@WithRoute("/dashboard/currency_history", { exact: false, })
 @inject("common", "currencyHistory")
 @observer
 export default class CurrencyHistoryList extends BaseReact<
-  ICurrencyHistoryListProps,
-  ICurrencyHistoryListProps
+ICurrencyHistoryListProps,
+ICurrencyHistoryListProps
 > {
   state = {};
 

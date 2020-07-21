@@ -112,7 +112,7 @@ const config = self => {
       // width: 140,
       dataIndex: "create_time",
       render: (text, record) => {
-        return  utils.timestampFormatDate(text , FORMAT_TIME);
+        return  utils.timestampFormatDate(text, FORMAT_TIME);
       },
     },
     {
@@ -120,7 +120,7 @@ const config = self => {
       // width: 140,
       dataIndex: "transfer_time",
       render: (text, record) => {
-        return  utils.timestampFormatDate(text , FORMAT_TIME);
+        return  utils.timestampFormatDate(text, FORMAT_TIME);
       },
     }
   ];

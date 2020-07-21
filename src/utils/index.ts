@@ -227,7 +227,7 @@ function checkDateLimited(start, end, max) {
   return end.diff(start, 'm') <= max;
 }
 
-function timestampFormatDate(text , type){
+function timestampFormatDate(text, type) {
   return (text && moment(text * 1000).format(type)) || "--";
 } 
 
