@@ -75,7 +75,7 @@ ISystemEditorState
     platform_currency: "",
     user_authentication: "",
     withdraw_currency: "",
-    quoted_price: "1",
+    quoted_price: "",
   };
 
   async componentDidMount() {
@@ -308,8 +308,8 @@ ISystemEditorState
             initialValue: quoted_price || "quoted_price",
           })(
             <Radio.Group>
-              <Radio value={"0"}>单报价</Radio>
-              <Radio value={"1"}>双报价</Radio>
+              <Radio value={"sell"}>单报价</Radio>
+              <Radio value={"sell_buy"}>双报价</Radio>
             </Radio.Group>
           )}
         </FormItem>
