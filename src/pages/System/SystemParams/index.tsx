@@ -308,8 +308,8 @@ ISystemEditorState
             initialValue: quoted_price || "quoted_price",
           })(
             <Radio.Group>
-              <Radio value={"sell"}>单报价</Radio>
-              <Radio value={"sell_buy"}>双报价</Radio>
+              <Radio value={"one_price"}>单报价</Radio>
+              <Radio value={"two_price"}>双报价</Radio>
             </Radio.Group>
           )}
         </FormItem>
