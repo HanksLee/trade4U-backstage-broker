@@ -15,6 +15,7 @@ import openOrder from "./order/openOrder";
 import accountReport from "./report/accountReport";
 import agencyReport from "./report/agencyReport";
 import sms from "./sms";
+import currencyHistory from "./currencyHistory";
 
 export default {
   account,
@@ -34,4 +35,5 @@ export default {
   accountReport,
   agencyReport,
   sms,
+  currencyHistory,
 };

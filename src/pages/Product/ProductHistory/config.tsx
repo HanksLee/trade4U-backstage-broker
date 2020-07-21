@@ -24,7 +24,7 @@ const config = self => {
       dataIndex: "timestamp",
       width: 100,
       render: (text, record) => {
-        return (text && moment(text * 1000).format(FORMAT_TIME)) || "--";
+        return  utils.timestampFormatDate(text , FORMAT_TIME);
       },
     },
     {

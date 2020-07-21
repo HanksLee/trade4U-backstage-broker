@@ -5,6 +5,7 @@ import PromiseFileReader from "promise-file-reader";
 import commonAPI from "services/common";
 import NProgress from "nprogress";
 import { message } from "antd";
+import moment from "moment";
 
 function setRootFontSizeFromClient() {
   let dpr, rem;
@@ -226,6 +227,10 @@ function checkDateLimited(start, end, max) {
   return end.diff(start, 'm') <= max;
 }
 
+function timestampFormatDate(text , type){
+  return (text && moment(text * 1000).format(type)) || "--";
+} 
+
 export default {
   setRootFontSizeFromClient,
   initI18n,
@@ -248,4 +253,5 @@ export default {
   calcColumnMaxWidth,
   getRangeNumberList,
   checkDateLimited,
+  timestampFormatDate,
 };

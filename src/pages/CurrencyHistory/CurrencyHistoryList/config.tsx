@@ -5,20 +5,32 @@ import { FORMAT_TIME } from "constant";
 const config = self => {
   const columns = [
     {
-      title: "日志时间",
+      title: "时间",
       dataIndex: "timestamp",
       width: 200,
       render: (text, record) => {
-        return  utils.timestampFormatDate(text , FORMAT_TIME);
+        return utils.timestampFormatDate(text , FORMAT_TIME);
       },
     },
     {
-      title: "日志內容",
-      dataIndex: "message",
+      title: "客户买入汇率",
+      dataIndex: "buy",
+    },
+    {
+      title: "客户卖出汇率",
+      dataIndex: "sell",
+    },
+    {
+      title: "货币名称",
+      dataIndex: "name",
+    },
+    {
+      title: "货币代码",
+      dataIndex: "currency",
     }
   ];
 
-  const { start_time, end_time, username, phone, } = self.props.risk.getFilterInfo;
+  const { start_time, end_time, currency, } = self.props.currencyHistory.getFilterInfo;
   
   return {
     searcher: {
@@ -26,30 +38,16 @@ const config = self => {
         [
           {
             type: "Input",
-            label: "姓名",
-            placeholder: "请输入姓名",
-            value: username || undefined,
+            label: "货币",
+            placeholder: "请输入货币",
+            value: currency || undefined,
             onChange(evt) {
-              const username = evt.target.value;
-              self.props.risk.setFilterInfo({ username, });
+              const currency = evt.target.value;
+              self.props.currencyHistory.setFilterInfo({ currency, });
             },
             onPressEnter(evt) {
               if(self.props.isFilterOK)
-                self.props.risk.fetchRiskList();
-            },
-          },
-          {
-            type: "Input",
-            label: "手机号",
-            placeholder: "请输入手机号",
-            value: phone || undefined,
-            onChange(evt) {
-              const phone = evt.target.value;
-              self.props.risk.setFilterInfo({ phone, });
-            },
-            onPressEnter(evt) {
-              if(self.props.isFilterOK)
-                self.props.risk.fetchRiskList();
+                self.props.currencyHistory.fetchCurrencyHistoryList();
             },
           }
         ],
@@ -65,10 +63,10 @@ const config = self => {
             value: [start_time, end_time],
             onChange(dateList) {
               let [start_time, end_time] = dateList;                            
-              self.props.risk.setFilterInfo({ start_time, end_time, });
+              self.props.currencyHistory.setFilterInfo({ start_time, end_time, });
             },
             disabledDate(date) {
-              const  { start_time, end_time, }  = self.props.risk.getFilterInfo;
+              const  { start_time, end_time, }  = self.props.currencyHistory.getFilterInfo;
                      
               if(start_time === null)
                 return date && date > moment().endOf("day");
@@ -82,7 +80,7 @@ const config = self => {
               };
 
               if(type === "end" && list) {
-                const  { start_time, end_time, }  = self.props.risk.getFilterInfo;
+                const  { start_time, end_time, }  = self.props.currencyHistory.getFilterInfo;
 
                 if(start_time === null)
                   return lockSencodeFun;
@@ -110,12 +108,12 @@ const config = self => {
           }
         ]
       ],
-      searchDisabled: !self.props.risk.isFilterOK,
+      searchDisabled: !self.props.currencyHistory.isFilterOK,
       onSearch() {
-        self.props.risk.fetchRiskList();
+        self.props.currencyHistory.fetchCurrencyHistoryList();
       },
       onReset() {
-        self.props.risk.setInit();
+        self.props.currencyHistory.setInit();
       },
     },
   
@@ -124,7 +122,7 @@ const config = self => {
       bordered: true,
       columns,
       pagination:false,
-      dataSource: self.props.risk.riskList,
+      dataSource: self.props.currencyHistory.currencyHistoryList,
     },
   };
 };

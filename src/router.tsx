@@ -196,6 +196,13 @@ const routes: any[] = [
         /* webpackChunkName: "agency-report-page" */ "./pages/Risk/RiskList"
       )
     ),
+  },
+  {
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "agency-report-page" */ "./pages/CurrencyHistory/CurrencyHistoryList"
+      )
+    ),
   }
 ];
 

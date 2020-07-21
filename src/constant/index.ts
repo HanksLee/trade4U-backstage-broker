@@ -81,6 +81,7 @@ export const THREE_DAY_OPTIONS = [
 // 主要用于控制菜单的显示隐藏，key 为路由地址，value 为主后台配置的菜单权限
 export const PAGE_PERMISSION_MAP = {
   "/dashboard/risk":"view_risk_control_sls",
+  "/dashboard/currency_history":"view_platform_currency_history",
   "/dashboard/role": "VIEW_ROLE_PAGE",
   "/dashboard/order": "view_order",
   "/dashboard/order/open": "view_in_transaction_order",
