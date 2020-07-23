@@ -176,7 +176,7 @@ export default class PermissionList extends BaseReact<{}, PermissionListState> {
     return (
       <div className="panel-block common-list">
         {
-          permissions.indexOf('change_group_symbol_type') !== -1 && (
+          permissions.indexOf('create_group_symbol_type') !== -1 && (
             <section className='common-list-addbtn'>
               <Button type="primary" onClick={() => this.showEditSymbolTypeModal()}>
                 <Icon type="plus" /> 添加
