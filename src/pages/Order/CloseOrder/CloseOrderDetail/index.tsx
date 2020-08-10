@@ -92,7 +92,7 @@ export default class CloseOrderDetail extends BaseReact<{}> {
                   <span>交易手数</span> {orderDetail.lots}
                 </div>
                 <div>
-                  <span>合约量</span> {orderDetail.trading_volume}
+                  <span>交易量</span> {orderDetail.trading_volume}
                 </div>
                 <div>
                   <span>交易方向</span> {orderDetail.action}
