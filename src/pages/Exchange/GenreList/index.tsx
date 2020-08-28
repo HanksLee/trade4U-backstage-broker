@@ -19,8 +19,7 @@ export interface IExchangeGenreState {
 
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/exchange/genre", { exact: false, })
-// @inject("common", "exchange")
-@inject("common")
+@inject("common", "exchange")
 @observer
 export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExchangeGenreState> {
   private $genreEditor = null;

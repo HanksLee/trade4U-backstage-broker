@@ -1,6 +1,11 @@
 import { AxiosRequestConfig } from "axios";
 import { moonAPI as API } from "utils/request";
 
+//! 交易类型
+const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
+  API.get("/broker/symbol_type?status=1", config);
+
+//! 交易品种
 const getProductList = async (config: AxiosRequestConfig): Promise<any> => {
   const res = await API.get("/broker/symbol", config);
   const results = res.data.results;
@@ -19,9 +24,6 @@ const updateProduct = (id: string, config): Promise<any> =>
 
 const deleteProduct = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/broker/symbol/${id}`, config);
-
-const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/broker/symbol_type?status=1", config);
 
 const getHistoryList = (
   broker_symbol_id: string,
