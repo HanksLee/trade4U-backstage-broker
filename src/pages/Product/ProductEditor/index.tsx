@@ -66,7 +66,6 @@ IProductEditorState
   };
 
   async componentDidMount() {
-    console.log(this.props);
     this.init();
     this.getGenreOptions(); // 获取品种类型
     this.getMarketOptions(); // 获取行情产品类型

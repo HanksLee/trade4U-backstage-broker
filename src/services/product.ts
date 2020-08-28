@@ -9,7 +9,7 @@ const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
 const getProductList = async (config: AxiosRequestConfig): Promise<any> => {
   const res = await API.get("/broker/symbol", config);
   const results = res.data.results;
-  console.log(results);
+
   return res;
 };
 

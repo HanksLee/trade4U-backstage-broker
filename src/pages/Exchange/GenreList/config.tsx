@@ -5,6 +5,7 @@ import StatusText from 'components/StatusText';
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
+
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
@@ -21,7 +22,7 @@ const config = self => {
     {
       // width: 120,
       title: "品种类型名称",
-      dataIndex: "name",
+      dataIndex: "symbol_type_name",
       render: (text, record) => {
         return text || '--';
       },
@@ -39,9 +40,9 @@ const config = self => {
         };
 
         return <StatusText type={
-          statusType[record.in_use]
+          statusType[record.status]
         } text={
-          statusText[record.in_use]
+          statusText[record.status]
         } />;
       },
     },
@@ -90,14 +91,7 @@ const config = self => {
 
   return {
     // 是否显示增加按钮
-    addBtn: {
-      title: () => (
-        <Button type='primary' onClick={() => {
-          self.props.exchange.setCurrentGenre({});
-          self.toggleGenreModal();
-        }}><Icon type="plus" />添加</Button>
-      ),
-    },
+    addBtn: false,
     searcher: {
       hideSearcher: true,
       batchControl: {
