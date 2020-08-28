@@ -4,7 +4,7 @@ import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import ProductEdtior from "pages/Product/ProductEditor";
+import ProductEdtior from "../ProductEditor";
 import ProductHistory from "../ProductHistory";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";

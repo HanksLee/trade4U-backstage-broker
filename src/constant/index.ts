@@ -95,7 +95,7 @@ export const PAGE_PERMISSION_MAP = {
   "/dashboard/finance/withdraw": "VIEW_FINANCE_WITHDRAW_PAGE",
   "/dashboard/finance/payment": "VIEW_FINANCE_PAYMENT_PAGE",
   "/dashboard/finance/rate": "VIEW_FINANCE_RATE_PAGE",
-  // "/dashboard/product": "VIEW_PRODUCT_PAGE",
+
   "/dashboard/exchange": "VIEW_PRODUCT_PAGE",
   "/dashboard/exchange/product": "view_broker_symbol",
   "/dashboard/exchange/genre": "view_broker_symbol_type",

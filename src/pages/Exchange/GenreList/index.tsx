@@ -74,7 +74,7 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
     const { currentGenre, } = this.props.exchange;
 
     let res;
-    if (!currentGenre.name) {
+    if (!currentGenre.symbol_type_name) {
       return this.$msg.warn('请输入品种类型名称');
     }
 
@@ -83,7 +83,7 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
     }
 
     let payload: any = {
-      name: currentGenre.name,
+      name: currentGenre.symbol_type_name,
       in_use: currentGenre.in_use,
     };
 
