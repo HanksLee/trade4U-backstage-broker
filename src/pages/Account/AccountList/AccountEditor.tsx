@@ -80,6 +80,7 @@ export default class AccountEditor extends BaseReact<{}> {
             initialValue: accountDetail && accountDetail.phone,
           })(
             <Input placeholder="请输入手机号" onChange={evt => {
+              evt.target.value = evt.target.value.replace(/[^\d]/g, '');
               this.setCurrentAccount({
                 phone: evt.target.value,
               });
@@ -90,7 +91,7 @@ export default class AccountEditor extends BaseReact<{}> {
           {getFieldDecorator('birth', {
             initialValue: accountDetail && accountDetail.birth,
           })(
-            <Input placeholder="请输入生日" onChange={evt => {
+            <Input placeholder="请输入生日" type="date" onChange={evt => {
               this.setCurrentAccount({
                 birth: evt.target.value,
               });
@@ -113,6 +114,7 @@ export default class AccountEditor extends BaseReact<{}> {
             initialValue: accountDetail && accountDetail.mobile,
           })(
             <Input placeholder="请输入电话" onChange={evt => {
+              evt.target.value = evt.target.value.replace(/[^\d]/g, '');
               this.setCurrentAccount({
                 mobile: evt.target.value,
               });
@@ -176,6 +178,7 @@ export default class AccountEditor extends BaseReact<{}> {
             initialValue: accountDetail && accountDetail.postal,
           })(
             <Input placeholder="请输入邮编" onChange={evt => {
+              evt.target.value = evt.target.value.replace(/[^\d]/g, '');
               this.setCurrentAccount({
                 postal: evt.target.value,
               });
@@ -188,7 +191,7 @@ export default class AccountEditor extends BaseReact<{}> {
               {getFieldDecorator('password', {
                 initialValue: accountDetail && accountDetail.password,
               })(
-                <Input placeholder="请输入密码" type="password" onChange={evt => {
+                <Input placeholder="请输入密码" onChange={evt => {
                   this.setCurrentAccount({
                     password: evt.target.value,
                   });
@@ -347,6 +350,23 @@ export default class AccountEditor extends BaseReact<{}> {
         }
       ]);
     }
+
+    validator.add(payload.phone, [
+      {
+        strategy: 'isNonEmpty',
+        errMsg: '请输入手机号',
+      }
+    ]);
+
+    if (payload.email !== undefined && payload.email !== "") {
+      validator.add(payload.email, [
+        {
+          strategy: 'isEmail',
+          errMsg: '请输入正确信箱',
+        }
+      ]);
+    }
+
 
     let errMsg: any = validator.start();
 
