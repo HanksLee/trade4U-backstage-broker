@@ -20,7 +20,7 @@ class CommonStore extends BaseStore {
   @action
   setSidebar = (sidebar: any) => {
     this.sidebar = sidebar;
-  }
+  } //!
 
   @observable
   permissions: any[] | null = null;

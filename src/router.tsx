@@ -58,9 +58,18 @@ const routes: any[] = [
     ),
   },
   {
+    //!
     component: loadable(() =>
       import(
-        /* webpackChunkName: "product-page" */ "./pages/Product/ProductList"
+        /* webpackChunkName: "product-page" */ "./pages/Exchange/GenreList"
+      )
+    ),
+  },
+  {
+    //!
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "product-page" */ "./pages/Exchange/ProductList"
       )
     ),
   },

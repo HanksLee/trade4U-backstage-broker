@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": false,
+  "javascript.format.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.editor.enablePreview": false
+}
