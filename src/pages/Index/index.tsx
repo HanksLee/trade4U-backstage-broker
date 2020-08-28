@@ -151,7 +151,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
     if (permissions.indexOf(PAGE_PERMISSION_MAP[route.path]) === -1) {
       return null; // 過濾掉不允許顯示的菜單
     }
-    console.log(route.path);
+
     if (route.children && route.children.length > 0) {
       return (
         <SubMenu key={route.path} title={route.name}>
