@@ -3,7 +3,7 @@ import CommonList from "components/CommonList";
 import listConfig from "./config";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import ProductEdtior from "pages/Product/ProductEditor";
+import ProductEdtior from "../ProductEditor";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 
