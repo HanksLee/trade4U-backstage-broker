@@ -436,6 +436,7 @@ export default class CommonList extends React.Component<any, any> {
       bordered,
       scroll,
     } = this.props.config.table;
+    // console.log('columns :>> ', columns);
     return (
       <section className="common-list-table">
         <Table

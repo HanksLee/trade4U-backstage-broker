@@ -3,6 +3,8 @@ import { Button, Icon, Popconfirm, Checkbox } from "antd";
 import utils from "utils";
 import { WeeklyOrder } from "constant";
 import moment from "moment";
+import { toJS } from 'mobx';
+
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
@@ -103,6 +105,7 @@ const config = self => {
       // fixed: 'right',
       title: "操作",
       render: (text, record) => {
+        // console.log('permissions :>> ', toJS(permissions));
         return (
 
           <div className="common-list-table-operation">

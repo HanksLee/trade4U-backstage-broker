@@ -53,9 +53,10 @@ const config = self => {
         return (
           <div className="common-list-table-operation">
             <span onClick={() => {
-              self.props.exchange.setCurrentGenre(record, true, false);
-              self.toggleGenreModal();
+              // self.props.exchange.setCurrentGenre(record, true, false);
+              self.goToEditor(record);
             }}>编辑</span>
+
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除品种类型"
@@ -91,7 +92,7 @@ const config = self => {
 
   return {
     // 是否显示增加按钮
-    addBtn: false,
+    addBtn: null,
     searcher: {
       hideSearcher: true,
       batchControl: {
