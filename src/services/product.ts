@@ -1,8 +1,17 @@
 import { AxiosRequestConfig } from "axios";
 import { moonAPI as API } from "utils/request";
 
-const getProductList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/broker/symbol", config);
+// 交易产品类型 api
+const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
+  API.get("/broker/symbol_type?status=1", config);
+
+// 交易品种类型 api
+const getProductList = async (config: AxiosRequestConfig): Promise<any> => {
+  const res = await API.get("/broker/symbol", config);
+  const results = res.data.results;
+
+  return res;
+};
 
 const getCurrentProduct = (id: string, config): Promise<any> =>
   API.get(`/broker/symbol/${id}`, config);
@@ -16,11 +25,16 @@ const updateProduct = (id: string, config): Promise<any> =>
 const deleteProduct = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/broker/symbol/${id}`, config);
 
-const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/broker/symbol_type?status=1", config);
-
-const getHistoryList = (broker_symbol_id: string, startDate: number, endDate: number, config: AxiosRequestConfig): Promise<any> =>
-  API.get(`/broker/symbol/${broker_symbol_id}/history?start_time=${startDate}&end_time=${endDate}`, config);
+const getHistoryList = (
+  broker_symbol_id: string,
+  startDate: number,
+  endDate: number,
+  config: AxiosRequestConfig
+): Promise<any> =>
+  API.get(
+    `/broker/symbol/${broker_symbol_id}/history?start_time=${startDate}&end_time=${endDate}`,
+    config
+  );
 
 const getTransactionModeOptions = config =>
   API.get("/constant/system_symbol_transaction_mode_choices", config);

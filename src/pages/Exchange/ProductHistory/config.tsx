@@ -54,7 +54,7 @@ const config = self => {
     searcher: {
       onBackClick:()=>{
         self.props.product.setInit();
-        const url = `/dashboard/product`;
+        const url = `/dashboard/exchange/product`;
         self.props.history.push(url);
       },
       widgets:[

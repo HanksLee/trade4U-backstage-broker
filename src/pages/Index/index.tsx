@@ -103,7 +103,8 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   async componentDidMount() {
     const res = await this.$api.role.getMenus();
     this.props.common.setPermissions(res.data.permission);
-    this.props.common.setSidebar(res.data.menu);
+    this.props.common.setSidebar(res.data.menu); //!
+  
     this.getTitle();
   }
 
@@ -129,7 +130,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   renderMenu = (): JSX.Element => {
     const { selectedKeys, openKeys, } = this.state;
     const { sidebar, } = this.props.common;
-
+  
     return (
       <Menu
         mode="inline"
@@ -146,8 +147,9 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
   renderMenuItem = (route: any): JSX.Element => {
     const { permissions, } = this.props.common;
-    if (permissions.indexOf(PAGE_PERMISSION_MAP[route.path]) === -1)
-      return null;
+    if (permissions.indexOf(PAGE_PERMISSION_MAP[route.path]) === -1) {
+      return null; // 過濾掉不允許顯示的菜單
+    }
 
     if (route.children && route.children.length > 0) {
       return (

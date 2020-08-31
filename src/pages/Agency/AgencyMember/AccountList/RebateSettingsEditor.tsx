@@ -356,7 +356,6 @@ IRebateSettingsEditorState
         const errMsg = this.getValidation(payload);
         payload.commission_rule = this.getCommitRule(payload.commission_rule);
 
-        // console.log('commission_rule', payload.commission_rule);
 
         if (errMsg) return this.$msg.warn(errMsg);
         if (mode == "add") {

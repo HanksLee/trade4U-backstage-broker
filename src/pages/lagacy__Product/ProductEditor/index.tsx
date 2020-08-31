@@ -33,7 +33,7 @@ const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
   wrapperCol: { span: wrapper, },
 });
-
+const placeholders = { "label":'placeholder', };
 export interface IProductEditorProps {}
 
 export interface IProductEditorState {}
@@ -230,7 +230,7 @@ IProductEditorState
       fee_rule_options,
       delay_rule_options,
     } = this.state;
-    // console.log('delay_rule_options', delay_rule_options);
+   
 
     return (
       <Form className="editor-form">
@@ -500,8 +500,7 @@ IProductEditorState
 
         <FormItem label="最大交易手数" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("max_lots", {
-            initialValue:
-              currentShowProduct && currentShowProduct.max_lots,
+            initialValue: currentShowProduct && currentShowProduct.max_lots,
           })(
             <InputNumber
               min={0}
@@ -521,8 +520,7 @@ IProductEditorState
         </FormItem>
         <FormItem label="最小交易手数" {...getFormItemLayout(3, 12)}>
           {getFieldDecorator("min_lots", {
-            initialValue:
-              currentShowProduct && currentShowProduct.min_lots,
+            initialValue: currentShowProduct && currentShowProduct.min_lots,
           })(
             <InputNumber
               min={0}
@@ -541,8 +539,7 @@ IProductEditorState
           )}
         </FormItem>
         <FormItem
-          label="挂单模式
-          "
+          label="挂单模式"
           className="push-type-select"
           {...getFormItemLayout(3, 6)}
           required
@@ -873,10 +870,10 @@ IProductEditorState
         >
           {getFieldDecorator("calculate_for_fee", {
             initialValue:
-            currentShowProduct && currentShowProduct.calculate_for_fee,
+              currentShowProduct && currentShowProduct.calculate_for_fee,
           })(
             <Select
-            // @ts-ignore
+              // @ts-ignore
               getPopupContainer={() =>
                 document.getElementsByClassName("push-type-select")[0]
               }
@@ -892,7 +889,7 @@ IProductEditorState
               onFocus={async () => {}}
             >
               {delay_rule_options.map(item => (
-              // @ts-ignore
+                // @ts-ignore
                 <Option key={item.func_name}>{item.name}</Option>
               ))}
             </Select>
@@ -906,10 +903,10 @@ IProductEditorState
         >
           {getFieldDecorator("three_days_swap", {
             initialValue:
-            currentShowProduct && currentShowProduct.three_days_swap,
+              currentShowProduct && currentShowProduct.three_days_swap,
           })(
             <Select
-            // @ts-ignore
+              // @ts-ignore
               getPopupContainer={() =>
                 document.getElementsByClassName("push-type-select")[0]
               }
@@ -925,7 +922,7 @@ IProductEditorState
               onFocus={async () => {}}
             >
               {THREE_DAY_OPTIONS.map(item => (
-              // @ts-ignore
+                // @ts-ignore
                 <Option key={item.id}>{item.name}</Option>
               ))}
             </Select>
@@ -938,10 +935,10 @@ IProductEditorState
         >
           {getFieldDecorator("hands_fee_for_bought", {
             initialValue:
-            currentShowProduct && currentShowProduct.hands_fee_for_bought,
+              currentShowProduct && currentShowProduct.hands_fee_for_bought,
           })(
             <Select
-            // @ts-ignore
+              // @ts-ignore
               getPopupContainer={() =>
                 document.getElementsByClassName("push-type-select")[0]
               }
@@ -957,7 +954,7 @@ IProductEditorState
               onFocus={async () => {}}
             >
               {fee_rule_options.map(item => (
-              // @ts-ignore
+                // @ts-ignore
                 <Option key={item.func_name}>{item.name}</Option>
               ))}
             </Select>
@@ -970,10 +967,10 @@ IProductEditorState
         >
           {getFieldDecorator("hands_fee_for_sale", {
             initialValue:
-            currentShowProduct && currentShowProduct.hands_fee_for_sale,
+              currentShowProduct && currentShowProduct.hands_fee_for_sale,
           })(
             <Select
-            // @ts-ignore
+              // @ts-ignore
               getPopupContainer={() =>
                 document.getElementsByClassName("push-type-select")[0]
               }
@@ -989,7 +986,7 @@ IProductEditorState
               onFocus={async () => {}}
             >
               {fee_rule_options.map(item => (
-              // @ts-ignore
+                // @ts-ignore
                 <Option key={item.func_name}>{item.name}</Option>
               ))}
             </Select>
@@ -1002,10 +999,10 @@ IProductEditorState
         >
           {getFieldDecorator("calculate_for_tax", {
             initialValue:
-            currentShowProduct && currentShowProduct.calculate_for_tax,
+              currentShowProduct && currentShowProduct.calculate_for_tax,
           })(
             <Select
-            // @ts-ignore
+              // @ts-ignore
               getPopupContainer={() =>
                 document.getElementsByClassName("push-type-select")[0]
               }
@@ -1021,7 +1018,7 @@ IProductEditorState
               onFocus={async () => {}}
             >
               {tax_rule_options.map(item => (
-              // @ts-ignore
+                // @ts-ignore
                 <Option key={item.func_name}>{item.name}</Option>
               ))}
             </Select>
@@ -1065,7 +1062,7 @@ IProductEditorState
                       //   copy[item.day].trades  = [];
                       // }
                       copy[item.day].trades[0] = time.unix();
-                      // console.log(copy);
+
                       setCurrentProduct(
                         {
                           trading_times: JSON.stringify(copy),
@@ -1226,7 +1223,6 @@ IProductEditorState
           spread_mode: currentProduct.spread_mode,
         };
 
-        // console.log('payload', payload);
         const errMsg = this.getValidation(payload);
         // payload.trading_times = JSON.stringify(payload.trading_times);
         if (errMsg) return this.$msg.warn(errMsg);

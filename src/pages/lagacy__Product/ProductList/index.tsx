@@ -18,7 +18,7 @@ export interface IProductListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/product", { exact: false, })
+@WithRoute("/dashboard/exchange/product", { exact: false, })
 @inject("common", "product")
 @observer
 export default class ProductList extends BaseReact<
@@ -48,8 +48,8 @@ IProductListState
   }
 
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/product") {
-      this.props.history.replace("/dashboard/product/list");
+    if (this.props.location.pathname === "/dashboard/exchange/product") {
+      this.props.history.replace("/dashboard/exchange/product/list");
     }
   }
 
@@ -178,13 +178,13 @@ IProductListState
   };
 
   goToEditor = (record: any): void => {
-    const url = `/dashboard/product/editor?id=${
+    const url = `/dashboard/exchange/product/editor?id=${
       !utils.isEmpty(record) ? record.id : 0
     }`;
     this.props.history.push(url);
   };
   goToHistory = (record: any): void => {
-    const url = `/dashboard/product/history?id=${
+    const url = `/dashboard/exchange/product/history?id=${
       !utils.isEmpty(record) ? record.id : 0
     }`;
     this.props.history.push(url);
