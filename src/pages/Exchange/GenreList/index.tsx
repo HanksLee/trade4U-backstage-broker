@@ -131,8 +131,6 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
   private onSearch = async () => {
     const filter: any = this.state.filter;
 
-    // console.log('filter', filter);
-
     this.setState(
       {
         filter: {

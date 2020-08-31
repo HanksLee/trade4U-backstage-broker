@@ -230,7 +230,7 @@ IProductEditorState
       fee_rule_options,
       delay_rule_options,
     } = this.state;
-    // console.log('delay_rule_options', delay_rule_options);
+   
 
     return (
       <Form className="editor-form">
@@ -1062,7 +1062,7 @@ IProductEditorState
                       //   copy[item.day].trades  = [];
                       // }
                       copy[item.day].trades[0] = time.unix();
-                      // console.log(copy);
+
                       setCurrentProduct(
                         {
                           trading_times: JSON.stringify(copy),
@@ -1223,7 +1223,6 @@ IProductEditorState
           spread_mode: currentProduct.spread_mode,
         };
 
-        // console.log('payload', payload);
         const errMsg = this.getValidation(payload);
         // payload.trading_times = JSON.stringify(payload.trading_times);
         if (errMsg) return this.$msg.warn(errMsg);

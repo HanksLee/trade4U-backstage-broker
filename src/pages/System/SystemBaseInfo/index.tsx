@@ -208,7 +208,6 @@ ISystemBaseInfoEditorState
         //       calculate_for_fee: currentProduct.calculate_for_fee,
         //       calculate_for_tax: currentProduct.calculate_for_tax
         //     };
-        //     // console.log('payload', payload);
         //     // const errMsg = this.getValidation(payload);
         //     // payload.trading_times = JSON.stringify(payload.trading_times);
         //     // if (errMsg) return this.$msg.warn(errMsg);

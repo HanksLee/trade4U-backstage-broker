@@ -22,7 +22,6 @@ class Editor extends React.Component<IEditProps> {
     const { setEditorContent, } = this.props;
     // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
     editor.customConfig.onchange = html => {
-      // console.log(editor.txt.html());
       // this.setState({
       //   // editorContent: editor.txt.text()
       // editorContent: editor.txt.html()

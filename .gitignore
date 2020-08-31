@@ -7,7 +7,7 @@ yarn-error.log
 dist/qa
 dist/dev
 .eslintcache
-
+.vscode
 # *
 *.DS_Store
 

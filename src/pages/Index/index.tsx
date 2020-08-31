@@ -130,8 +130,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   renderMenu = (): JSX.Element => {
     const { selectedKeys, openKeys, } = this.state;
     const { sidebar, } = this.props.common;
-    // console.log(sidebar.map(route => route.path));
-    // console.log(sidebar.map(route => route.children));
+  
     return (
       <Menu
         mode="inline"

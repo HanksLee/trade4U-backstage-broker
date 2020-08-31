@@ -163,7 +163,6 @@ IEditSMSChannelModalState
     const { confirmLoading, extra_params, } = this.state;
     const getFieldDecorator = form.getFieldDecorator;
     // const { TextArea } = Input;
-    // console.log(this.props);
 
     return (
       <Modal

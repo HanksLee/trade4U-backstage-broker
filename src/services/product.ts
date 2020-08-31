@@ -1,11 +1,11 @@
 import { AxiosRequestConfig } from "axios";
 import { moonAPI as API } from "utils/request";
 
-//! 交易类型
+// 交易产品类型 api
 const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/symbol_type?status=1", config);
 
-//! 交易品种
+// 交易品种类型 api
 const getProductList = async (config: AxiosRequestConfig): Promise<any> => {
   const res = await API.get("/broker/symbol", config);
   const results = res.data.results;
