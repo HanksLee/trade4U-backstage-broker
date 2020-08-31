@@ -1,9 +1,15 @@
 import { AxiosRequestConfig } from "axios";
 import { moonAPI as API } from "utils/request";
 
+ 
+
+
 // 交易产品类型 api
 const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/symbol_type?status=1", config);
+
+const getCurrentSymbolType = (id, config): Promise<any> =>
+  API.get(`/broker/symbol_type/${id}`, config);
 
 // 交易品种类型 api
 const getProductList = async (config: AxiosRequestConfig): Promise<any> => {
@@ -51,10 +57,12 @@ const getMarginCurrencyOptions = config =>
 const getOrderModeOptions = config =>
   API.get("/constant/system_symbol_order_mode_choices", config);
 
+// 利润规则
 const getRuleList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/profit_rule", config);
 
 export default {
+  getCurrentSymbolType,
   getProductList,
   getCurrentProduct,
   createProduct,
