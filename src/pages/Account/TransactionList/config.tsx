@@ -7,7 +7,7 @@ const config = self => {
   const defaultWidth = 150;
   const columns = [
     {
-      title: "客户名称",
+      title: "用户名",
       dataIndex: "username",
       width: defaultWidth,
       fixed: "left",
@@ -115,7 +115,7 @@ const config = self => {
             label: "用户名",
             placeholder: "请输入用户名",
             value: self.state.tempFilter.username || undefined,
-            width: 150,
+            //width: 150,
             onChange(evt) {
               self.onInputChanged("username", evt.target.value);
             },
@@ -125,22 +125,9 @@ const config = self => {
           },
           {
             type: "Input",
-            label: "ip",
-            placeholder: "请输入ip",
-            value: self.state.tempFilter.ip || undefined,
-            width: 150,
-            onChange(evt) {
-              self.onInputChanged("ip", evt.target.value);
-            },
-            onPressEnter(evt) {
-              self.onSearch();
-            },
-          },
-          {
-            type: "Input",
-            label: "手机",
-            placeholder: "请输入手机",
-            width: 150,
+            label: "手机号",
+            placeholder: "请输入手机号",
+            //width: 150,
             value: self.state.tempFilter.phone || undefined,
             onChange(evt) {
               self.onInputChanged("phone", evt.target.value);
@@ -150,19 +137,19 @@ const config = self => {
             },
           }
         ],
-        {
-          type: "Input",
-          label: "代理姓名",
-          placeholder: "请输入代理姓名",
-          value: self.state.tempFilter.agent_name || undefined,
-          onChange(evt) {
-            self.onInputChanged("agent_name", evt.target.value);
-          },
-          onPressEnter(evt) {
-            self.onSearch();
-          },
-        },
         [
+          {
+            type: "Input",
+            label: "代理姓名",
+            placeholder: "请输入代理姓名",
+            value: self.state.tempFilter.agent_name || undefined,
+            onChange(evt) {
+              self.onInputChanged("agent_name", evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
           {
             type: "Input",
             label: "订单号",
@@ -176,6 +163,19 @@ const config = self => {
             },
           }
         ],
+        {
+          type: "Input",
+          label: "ip",
+          placeholder: "请输入ip",
+          value: self.state.tempFilter.ip || undefined,
+          // width: 150,
+          onChange(evt) {
+            self.onInputChanged("ip", evt.target.value);
+          },
+          onPressEnter(evt) {
+            self.onSearch();
+          },
+        },
         [
           {
             type: "RangePicker",

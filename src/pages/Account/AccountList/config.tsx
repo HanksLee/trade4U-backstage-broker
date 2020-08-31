@@ -34,14 +34,14 @@ const config = self => {
  
   let columns: any = [
     {
-      title: "名字",
+      title: "用户名",
       width: 150,
       render: (_, record) => {
         return record.last_name + record.first_name;
       },
     },
     {
-      title: "手机",
+      title: "手机号",
       width: 150,
       dataIndex: "phone",
     },
@@ -305,7 +305,7 @@ const config = self => {
           },
           {
             type: "Input",
-            label: "手机",
+            label: "手机号",
             placeholder: "请输入手机号",
             value: self.state.tempFilter.phone || undefined,
             onChange(evt) {
@@ -316,19 +316,19 @@ const config = self => {
             },
           }
         ],
-        {
-          type: "Input",
-          label: "代理姓名",
-          placeholder: "请输入代理姓名",
-          value: self.state.tempFilter.agent_name || undefined,
-          onChange(evt) {
-            self.onInputChanged("agent_name", evt.target.value);
-          },
-          onPressEnter(evt) {
-            self.onSearch();
-          },
-        },
         [
+          {
+            type: "Input",
+            label: "代理姓名",
+            placeholder: "请输入代理姓名",
+            value: self.state.tempFilter.agent_name || undefined,
+            onChange(evt) {
+              self.onInputChanged("agent_name", evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
           {
             type: "Select",
             label: "审核状态",

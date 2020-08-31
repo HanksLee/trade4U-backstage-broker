@@ -26,8 +26,9 @@ const config = self => {
         [
           {
             type: "Input",
-            label: "姓名",
-            placeholder: "请输入姓名",
+            label: "用户名",
+            labelWidth: 60,
+            placeholder: "请输入用户名",
             value: username || undefined,
             onChange(evt) {
               const username = evt.target.value;
@@ -41,6 +42,7 @@ const config = self => {
           {
             type: "Input",
             label: "手机号",
+            labelWidth: 60,
             placeholder: "请输入手机号",
             value: phone || undefined,
             onChange(evt) {
@@ -57,6 +59,7 @@ const config = self => {
           {
             type: "RangePicker",
             label: "时间",
+            labelWidth: 60,
             placeholder: ["开始日期", "结束日期"],
             showTime: { defaultValue: [
               moment("00:00:00", "hh:mm:ss"), moment("00:00:00", "hh:mm:ss")

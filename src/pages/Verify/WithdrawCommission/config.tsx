@@ -7,13 +7,13 @@ import { FORMAT_TIME } from "constant";
 const config = self => {
   const columns = [
     {
-      title: "名字",
+      title: "用户名",
       width: 100,
       dataIndex: "username",
       fixed: "left",
     },
     {
-      title: "手机",
+      title: "手机号",
       width: 200,
       dataIndex: "phone",
       ellipsis: true,

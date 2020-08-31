@@ -16,14 +16,14 @@ const config = self => {
 
   const columns = [
     {
-      title: "名字",
+      title: "用户名",
       width: 150,
       render: (_, record) => {
         return record.last_name + record.first_name;
       },
     },
     {
-      title: "手机",
+      title: "手机号",
       width: 150,
       dataIndex: "phone",
     },
@@ -255,7 +255,7 @@ const config = self => {
           },
           {
             type: "Input",
-            label: "手机",
+            label: "手机号",
             placeholder: "请输入手机号",
             value: self.state.tempFilterAgent.phone || undefined,
             onChange(evt) {

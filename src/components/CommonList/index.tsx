@@ -64,6 +64,7 @@ const widgetMap = {
     const {
       option,
       label,
+      labelWidth,
       mode,
       onSearch,
       onSelect,
@@ -80,7 +81,7 @@ const widgetMap = {
     } = config;
     return (
       <>
-        {label && <span className="common-list-label">{`${label}：`}</span>}
+        {label && <span className="common-list-label" style={{ width: labelWidth || 70,  }}>{`${label}：`}</span>}
         <span className="common-list-control">
           <Select
             allowClear={allowClear}
@@ -115,6 +116,7 @@ const widgetMap = {
   DatePicker: config => {
     const {
       label,
+      labelWidth,
       placeholder,
       onChange,
       value,
@@ -125,7 +127,7 @@ const widgetMap = {
 
     return (
       <>
-        {label && <span className="common-list-label">{`${label}：`}</span>}
+        {label && <span className="common-list-label" style={{ width: labelWidth || 70,  }}>{`${label}：`}</span>}
         <span className="common-list-control">
           <DatePicker
             format={format || false}
@@ -142,6 +144,7 @@ const widgetMap = {
   RangePicker: config => {
     const {
       label,
+      labelWidth,
       alias,
       placeholder,
       onChange,
@@ -153,7 +156,7 @@ const widgetMap = {
     } = config;
     return (
       <>
-        {label && <span className="common-list-label">{`${label}：`}</span>}
+        {label && <span className="common-list-label" style={{ width: labelWidth || 70, }}>{`${label}：`}</span>}
         <span className="common-list-control">
           <RangePicker
             style={{ width: 400, }}
@@ -188,11 +191,11 @@ const widgetMap = {
     );
   },
   Input: config => {
-    const { label, value, placeholder, onChange, width, onPressEnter, } = config;
+    const { label, labelWidth, value, placeholder, onChange, width, onPressEnter, } = config;
 
     return (
       <>
-        {label && <span className="common-list-label">{`${label}：`}</span>}
+        {label && <span className="common-list-label" style={{ width: labelWidth || 70, }}>{`${label}：`}</span>}
         <span className="common-list-control">
           <Input
             style={{ minWidth: width || 258, }}
@@ -214,11 +217,11 @@ const widgetMap = {
     );
   },
   CheckableTag: config => {
-    const { label, option, value, onChange, } = config;
+    const { label, labelWidth, option, value, onChange, } = config;
 
     return (
       <>
-        {label && <span className="common-list-label">{`${label}：`}</span>}
+        {label && <span className="common-list-label" style={{ width: labelWidth || 70, }}>{`${label}：`}</span>}
         <span className="common-list-control">
           {!utils.isEmpty(option) &&
             option.map(item => (
@@ -237,11 +240,11 @@ const widgetMap = {
     );
   },
   Label: (config, children) => {
-    const { label, } = config;
+    const { label, labelWidth, } = config;
 
     return (
       <>
-        {label && <span className="common-list-label">{`${label}：`}</span>}
+        {label && <span className="common-list-label" style={{ width: labelWidth || 70,  }}>{`${label}：`}</span>}
         <span className="common-list-control">{children}</span>
       </>
     );
@@ -280,9 +283,9 @@ export default class CommonList extends React.Component<any, any> {
                 </Button>
                 <Button onClick={searcher.onReset}>重置</Button>
                 {searcher.onBackClick &&
-                   <Button onClick={searcher.onBackClick}>返回</Button>
+                  <Button onClick={searcher.onBackClick}>返回</Button>
                 }
-               
+
               </>
             )}
             {searcher.collapseControl && searcher.collapseControl.showMoreBtn && (
@@ -314,7 +317,7 @@ export default class CommonList extends React.Component<any, any> {
                   style={{
                     display:
                       searcher.collapseControl &&
-                      searcher.collapseControl.showMoreBtn
+                        searcher.collapseControl.showMoreBtn
                         ? collapse && index > 0
                           ? "none"
                           : "flex"
@@ -450,7 +453,7 @@ export default class CommonList extends React.Component<any, any> {
           loading={loading}
           pagination={pagination}
           onChange={onChange}
-          scroll={scroll || { x:true, }}
+          scroll={scroll || { x: true, }}
         />
       </section>
     );
@@ -473,30 +476,30 @@ export default class CommonList extends React.Component<any, any> {
               <Spin />
             </div>
           ) : (
-            <>
-              <li className="common-list-card add-btn">
-                <div
-                  className="common-list-card-item"
-                  onClick={addBtn.onAddBtnClick}
-                >
-                  {addBtn.icon ? (
-                    <img src={addBtn.icon} alt="" />
-                  ) : (
-                    <Icon type="plus-circle" />
-                  )}
-                  <p>{addBtn.title}</p>
-                </div>
-              </li>
-              {dataSource.map(item => {
-                return (
-                  <li className="common-list-card">
-                    <div className="common-list-card-item">
-                      {renderCard(item)}
-                    </div>
-                  </li>
-                );
-              })}
-            </>
+              <>
+                <li className="common-list-card add-btn">
+                  <div
+                    className="common-list-card-item"
+                    onClick={addBtn.onAddBtnClick}
+                  >
+                    {addBtn.icon ? (
+                      <img src={addBtn.icon} alt="" />
+                    ) : (
+                      <Icon type="plus-circle" />
+                    )}
+                    <p>{addBtn.title}</p>
+                  </div>
+                </li>
+                {dataSource.map(item => {
+                  return (
+                    <li className="common-list-card">
+                      <div className="common-list-card-item">
+                        {renderCard(item)}
+                      </div>
+                    </li>
+                  );
+                })}
+              </>
           )}
         </ul>
         <section className="common-list-cards-pagination">

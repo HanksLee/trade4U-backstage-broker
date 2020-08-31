@@ -125,7 +125,7 @@ const config = self => {
             label: "所属key",
             placeholder: "请输入所属key",
             value: self.state.tempFilter.key || undefined,
-            width: 150,
+            //width: 150,
             onChange(evt) {
               self.onInputChanged("key", evt.target.value);
             },
@@ -136,9 +136,10 @@ const config = self => {
           {
             type: "Input",
             label: "名称",
+            labelWidth:45,
             placeholder: "请输入名称",
             value: self.state.tempFilter.title || undefined,
-            width: 150,
+            //width: 150,
             onChange(evt) {
               self.onInputChanged("title", evt.target.value);
             },

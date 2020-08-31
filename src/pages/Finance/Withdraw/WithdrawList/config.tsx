@@ -18,7 +18,7 @@ const config = self => {
 
   const columns = [
     {
-      title: "姓名",
+      title: "用户名",
       width: 100,
       dataIndex: "user_display",
       render: (text, record) => {
@@ -76,7 +76,7 @@ const config = self => {
       width: 200,
       dataIndex: "create_time",
       render: (text, record) => {
-        return  utils.timestampFormatDate(text, FORMAT_TIME);
+        return utils.timestampFormatDate(text, FORMAT_TIME);
       },
     },
     {
@@ -95,9 +95,11 @@ const config = self => {
         return text || "--";
       },
     },
-    {
+    { //parseInt(agent_name_width)==140?140:agent_name_width
       title: "代理姓名",
-      width: utils.calcColumnMaxWidth(self.props.finance.withdrawList, 140, "agent_name"),
+      width: parseInt(utils.calcColumnMaxWidth(self.props.finance.withdrawList, 140, "agent_name")) == 140 
+        ? 140 
+        : utils.calcColumnMaxWidth(self.props.finance.withdrawList, 140, "agent_name"),
       dataIndex: "agent_name",
       render: (text, record) => {
         return text || "--";
@@ -149,7 +151,7 @@ const config = self => {
       width: 140,
       dataIndex: "review_time",
       render: (text, record) => {
-        return  utils.timestampFormatDate(text, FORMAT_TIME);
+        return utils.timestampFormatDate(text, FORMAT_TIME);
       },
     },
     {
@@ -221,7 +223,7 @@ const config = self => {
       width: 200,
       dataIndex: "remit_time",
       render: (text, record) => {
-        return  utils.timestampFormatDate(text, FORMAT_TIME);
+        return utils.timestampFormatDate(text, FORMAT_TIME);
       },
     },
     {
@@ -349,8 +351,8 @@ const config = self => {
         [
           {
             type: "Input",
-            label: "姓名",
-            placeholder: "请输入姓名",
+            label: "用户名",
+            placeholder: "请输入用户名",
             value: self.state.user__username || undefined,
             onChange(evt) {
               self.onInputChanged("user__username", evt.target.value);

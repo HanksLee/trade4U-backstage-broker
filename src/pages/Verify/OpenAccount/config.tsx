@@ -16,7 +16,7 @@ const config = self => {
       // fixed: "left"
     },
     {
-      title: "手机",
+      title: "手机号",
       width: 200,
       dataIndex: "phone",
       render: (text, record) => {

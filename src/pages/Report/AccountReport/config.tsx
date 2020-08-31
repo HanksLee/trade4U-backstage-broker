@@ -16,7 +16,7 @@ const config = self => {
       dataIndex: "phone",
     },
     {
-      title: "上级",
+      title: "代理",
       width: utils.calcColumnMaxWidth(self.state.dataList, defaultWidth, "agent_name"),
       dataIndex: "agent_name",
     },
@@ -89,7 +89,7 @@ const config = self => {
             label: "用户名",
             placeholder: "请输入用户名",
             value: self.state.tempFilter.username || undefined,
-            width: 150,
+            //width: 150,
             onChange(evt) {
               self.onInputChanged("username", evt.target.value);
             },
@@ -99,9 +99,9 @@ const config = self => {
           },
           {
             type: "Input",
-            label: "手机",
-            placeholder: "请输入手机",
-            width: 350,
+            label: "手机号",
+            placeholder: "请输入手机号",
+            //width: 350,
             value: self.state.tempFilter.phone || undefined,
             onChange(evt) {
               self.onInputChanged("phone", evt.target.value);
@@ -113,8 +113,8 @@ const config = self => {
         ],
         {
           type: "Input",
-          label: "上级姓名",
-          placeholder: "请输入上级姓名",
+          label: "代理姓名",
+          placeholder: "请输入代理姓名",
           value: self.state.tempFilter.agent_name || undefined,
           onChange(evt) {
             self.onInputChanged("agent_name", evt.target.value);

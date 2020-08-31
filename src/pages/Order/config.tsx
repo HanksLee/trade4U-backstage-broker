@@ -40,15 +40,17 @@ const config = self => {
     {
       title: "代理",
       dataIndex: "agent_name",
-      width: utils.calcColumnMaxWidth(self.state.orderList, 150, "agent_name"),
+      width: parseInt(utils.calcColumnMaxWidth(self.state.orderList, 150, "agent_name")) == 150
+        ? 150
+        : utils.calcColumnMaxWidth(self.state.orderList, 150, "agent_name"),
     },
     {
-      title: "产品名称",
+      title: "品种名称",
       dataIndex: "symbol_name",
       width: 100,
     },
     {
-      title: "产品代码",
+      title: "产品编码",
       dataIndex: "product_code",
       width: 100,
     },
@@ -182,21 +184,9 @@ const config = self => {
           // },
           {
             type: "Input",
-            label: "手机号",
-            width: 100,
-            placeholder: "请输入手机号",
-            value: self.state.tempFilter.phone || undefined,
-            onChange(evt) {
-              self.onInputChanged("phone", evt.target.value);
-            },
-            onPressEnter(evt) {
-              self.onSearch();
-            },
-          },
-          {
-            type: "Input",
             label: "用户名",
-            width: 100,
+            //labelWidth:70,
+            //width: 100,
             placeholder: "请输入用户名",
             value: self.state.tempFilter.username || undefined,
             onChange(evt) {
@@ -205,21 +195,35 @@ const config = self => {
             onPressEnter(evt) {
               self.onSearch();
             },
+          },
+          {
+            type: "Input",
+            label: "手机号",
+            //labelWidth:70,
+            //width: 100,
+            placeholder: "请输入手机号",
+            value: self.state.tempFilter.phone || undefined,
+            onChange(evt) {
+              self.onInputChanged("phone", evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
           }
         ],
-        {
-          type: "Input",
-          label: "上级姓名",
-          placeholder: "请输入上级姓名",
-          value: self.state.tempFilter.agent_name || undefined,
-          onChange(evt) {
-            self.onInputChanged("agent_name", evt.target.value);
-          },
-          onPressEnter(evt) {
-            self.onSearch();
-          },
-        },
         [
+          {
+            type: "Input",
+            label: "代理姓名",
+            placeholder: "请输入代理姓名",
+            value: self.state.tempFilter.agent_name || undefined,
+            onChange(evt) {
+              self.onInputChanged("agent_name", evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
           {
             type: "Input",
             label: "订单号",
@@ -231,12 +235,14 @@ const config = self => {
             onPressEnter(evt) {
               self.onSearch();
             },
-          },
+          }
+        ],
+        [
           {
             type: "Input",
-            label: "交易产品名",
-            width: 100,
-            placeholder: "请输入交易产品名",
+            label: "品种名称",
+            //width: 100,
+            placeholder: "请输入品种名称",
             value: self.state.tempFilter.symbol_name || undefined,
             onChange(evt) {
               self.onInputChanged("symbol_name", evt.target.value);
@@ -247,9 +253,9 @@ const config = self => {
           },
           {
             type: "Input",
-            label: "交易产品代号",
-            width: 100,
-            placeholder: "请输入交易产品代号",
+            label: "产品编码",
+            //width: 100,
+            placeholder: "请输入产品编码",
             value: self.state.tempFilter.product_code || undefined,
             onChange(evt) {
               self.onInputChanged("product_code", evt.target.value);
@@ -311,7 +317,7 @@ const config = self => {
 
         return (
           <Row style={{ marginBottom: 10, fontSize: 14, }}>
-            <Col span={4}>
+            <Col span={5}>
               <span style={{ fontWeight: 500, }}>盈亏：</span>
               <span style={{ color: "red", }}>{totalData.profit}</span>
             </Col>

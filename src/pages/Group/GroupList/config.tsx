@@ -102,6 +102,7 @@ const config = self => {
         [{
           type: 'Input',
           label: '客户组名称',
+          labelWidth: 85,
           placeholder: '请输入客户组名称',
           value: self.state.tempFilter.name || undefined,
           onChange(evt) {
@@ -113,6 +114,7 @@ const config = self => {
         }, {
           type: 'Select',
           label: '状态',
+          labelWidth: 45,
           placeholder: '请选择状态',
           option: {
             key: 'id',

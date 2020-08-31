@@ -18,7 +18,7 @@ const config = self => {
 
   const columns = [
     {
-      title: "姓名",
+      title: "用户名",
       dataIndex: "user_display",
       width: 100,
       fixed: "left",
@@ -242,23 +242,11 @@ const config = self => {
         [
           {
             type: "Input",
-            label: "姓名",
-            placeholder: "请输入姓名",
+            label: "用户名",
+            placeholder: "请输入用户名",
             value: self.state.user__username || undefined,
             onChange(evt) {
               self.onInputChanged("user__username", evt.target.value);
-            },
-            onPressEnter(evt) {
-              self.onSearch();
-            },
-          },
-          {
-            type: "Input",
-            label: "金额",
-            placeholder: "请输入金额",
-            value: self.state.expect_amount || undefined,
-            onChange(evt) {
-              self.onInputChanged("expect_amount", evt.target.value);
             },
             onPressEnter(evt) {
               self.onSearch();
@@ -277,32 +265,45 @@ const config = self => {
             },
           }
         ],
-        {
-          type: "Input",
-          label: "订单号",
-          placeholder: "请输入订单号",
-          value: self.state.order_number || undefined,
-          onChange(evt) {
-            self.onInputChanged("order_number", evt.target.value);
-          },
-          onPressEnter(evt) {
-            self.onSearch();
-          },
-        },
-        {
-          type: "Input",
-          label: "代理姓名",
-          placeholder: "请输入代理姓名",
-          value: self.state.agent_name || undefined,
-          onChange(evt) {
-            self.onInputChanged("agent_name", evt.target.value);
-          },
-          onPressEnter(evt) {
-            self.onSearch();
-          },
-        },
         [
-
+          {
+            type: "Input",
+            label: "代理姓名",
+            placeholder: "请输入代理姓名",
+            value: self.state.agent_name || undefined,
+            onChange(evt) {
+              self.onInputChanged("agent_name", evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
+          {
+            type: "Input",
+            label: "订单号",
+            placeholder: "请输入订单号",
+            value: self.state.order_number || undefined,
+            onChange(evt) {
+              self.onInputChanged("order_number", evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          }
+        ],
+        [
+          {
+            type: "Input",
+            label: "金额",
+            placeholder: "请输入金额",
+            value: self.state.expect_amount || undefined,
+            onChange(evt) {
+              self.onInputChanged("expect_amount", evt.target.value);
+            },
+            onPressEnter(evt) {
+              self.onSearch();
+            },
+          },
           {
             type: "Select",
             label: "支付状态",

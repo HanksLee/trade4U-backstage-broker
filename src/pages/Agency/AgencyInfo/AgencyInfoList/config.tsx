@@ -16,7 +16,7 @@ const config = self => {
 
   const columns = [
     {
-      title: "客户姓名",
+      title: "用户名",
       // width: 100,
       dataIndex: "username",
       render: (text, record) => {
@@ -24,7 +24,7 @@ const config = self => {
       },
     },
     {
-      title: "客户手机",
+      title: "手机号",
       // width: 100,
       dataIndex: "phone",
       render: (text, record) => {
@@ -155,8 +155,8 @@ const config = self => {
         [
           {
             type: "Input",
-            label: "姓名",
-            placeholder: "请输入姓名",
+            label: "用户名",
+            placeholder: "请输入用户名",
             value: self.state.username || undefined,
             onChange(evt) {
               self.onInputChanged("username", evt.target.value);
@@ -167,8 +167,8 @@ const config = self => {
           },
           {
             type: "Input",
-            label: "手机",
-            placeholder: "请输入手机",
+            label: "手机号",
+            placeholder: "请输入手机号",
             value: self.state.phone || undefined,
             onChange(evt) {
               self.onInputChanged("phone", evt.target.value);
@@ -181,11 +181,11 @@ const config = self => {
         [
           {
             type: "Input",
-            label: "ip",
-            placeholder: "请输入ip",
-            value: self.state.ip || undefined,
+            label: "代理姓名",
+            placeholder: "请输入代理姓名",
+            value: self.state.agent_name || undefined,
             onChange(evt) {
-              self.onInputChanged("ip", evt.target.value);
+              self.onInputChanged("agent_name", evt.target.value);
             },
             onPressEnter(evt) {
               self.onSearch();
@@ -204,14 +204,13 @@ const config = self => {
             },
           }
         ],
-
         {
           type: "Input",
-          label: "代理姓名",
-          placeholder: "请输入代理姓名",
-          value: self.state.agent_name || undefined,
+          label: "ip",
+          placeholder: "请输入ip",
+          value: self.state.ip || undefined,
           onChange(evt) {
-            self.onInputChanged("agent_name", evt.target.value);
+            self.onInputChanged("ip", evt.target.value);
           },
           onPressEnter(evt) {
             self.onSearch();

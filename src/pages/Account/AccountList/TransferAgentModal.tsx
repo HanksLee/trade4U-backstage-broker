@@ -83,7 +83,7 @@ export default class TransferCustomModal extends BaseReact<IAgentModalProps, IAg
         confirmLoading={confirmLoading}
       >
         <Form className='editor-form'>
-          <FormItem label='姓名' {...getFormItemLayout(5, 13)} required>
+          <FormItem label='用户名' {...getFormItemLayout(5, 13)} required>
             {getFieldDecorator('username', {
               initialValue: currentAccount && currentAccount.username,
             })(

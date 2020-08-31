@@ -115,7 +115,7 @@ const config = self => {
             label: "用户名",
             placeholder: "请输入用户名",
             value: self.state.tempFilter.agent_username || undefined,
-            width: 150,
+            //width: 150,
             onChange(evt) {
               self.onInputChanged("agent_username", evt.target.value);
             },
@@ -125,9 +125,9 @@ const config = self => {
           },
           {
             type: "Input",
-            label: "手机",
-            placeholder: "请输入手机",
-            width: 150,
+            label: "手机号",
+            placeholder: "请输入手机号",
+            //width: 150,
             value: self.state.tempFilter.phone || undefined,
             onChange(evt) {
               self.onInputChanged("phone", evt.target.value);

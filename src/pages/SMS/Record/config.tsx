@@ -6,7 +6,7 @@ import { FORMAT_TIME } from "constant";
 const config = self => {
   const columns = [
     {
-      title: "手机号码",
+      title: "手机号",
       dataIndex: "phone",
       render: (text, record) => {
         return text || "-";

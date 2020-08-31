@@ -142,9 +142,10 @@ const config = self => {
           {
             type: "Input",
             label: "标题",
+            labelWidth: 50,
             placeholder: "请输入标题",
             value: self.state.tempFilter.title || undefined,
-            width: 150,
+            //width: 150,
             onChange(evt) {
               self.onInputChanged("title", evt.target.value);
             },
