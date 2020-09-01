@@ -1,22 +1,10 @@
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import {
-  Form,
-  Input,
-  Select,
-  Button,
-  Modal,
-  Radio,
-  InputNumber,
-  DatePicker,
-  TimePicker,
-  Row,
-  Col
-} from "antd";
+import { Form, Input, Select, InputNumber, TimePicker, Row, Col } from "antd";
 import "./index.scss";
 import { inject } from "mobx-react";
+import moment from "moment";
 
-const FormItem = Form.Item;
 const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
   wrapperCol: { span: wrapper, },
@@ -292,11 +280,13 @@ IGenreEditorState
           >
             {getFieldDecorator("calculate_for_buy_stock_fee")(
               <Select placeholder="Please select">
-                {this.getRuleOfField("calculate_for_buy_stock_fee").map(rule => (
-                  <Select.Option key={rule.id} value={rule.func_name}>
-                    {rule.name}
-                  </Select.Option>
-                ))}
+                {this.getRuleOfField("calculate_for_buy_stock_fee").map(
+                  rule => (
+                    <Select.Option key={rule.id} value={rule.func_name}>
+                      {rule.name}
+                    </Select.Option>
+                  )
+                )}
               </Select>
             )}
           </Form.Item>
@@ -307,11 +297,13 @@ IGenreEditorState
           >
             {getFieldDecorator("calculate_for_buy_stock_fee")(
               <Select placeholder="Please select">
-                {this.getRuleOfField("calculate_for_sell_stock_fee").map(rule => (
-                  <Select.Option key={rule.id} value={rule.func_name}>
-                    {rule.name}
-                  </Select.Option>
-                ))}
+                {this.getRuleOfField("calculate_for_sell_stock_fee").map(
+                  rule => (
+                    <Select.Option key={rule.id} value={rule.func_name}>
+                      {rule.name}
+                    </Select.Option>
+                  )
+                )}
               </Select>
             )}
           </Form.Item>
@@ -468,83 +460,91 @@ IGenreEditorState
             )}
           </Form.Item>
         </Form>
+        <TradingTimeBoard />
       </div>
     );
   }
 }
 
-// function CustomFormItem({}) {
-//   const children =
-//     typeof props.children === "function"
-//       ? props.children(props)
-//       : props.children;
-//   return <Form.Item {...props} >{children}</Form.Item>;
-// }
-class LagacyGenreEditor extends BaseReact<
-IGenreEditorProps,
-IGenreEditorState
-> {
-  state = {};
-
-  async componentDidMount() {
-    this.props.onRef(this);
+// @ts-ignore
+function TradingTimeBoard(props) {
+  const raw = {
+    "0": {
+      trades: [1585531800, 1585540800, 1585544400, 1585555200],
+    },
+    "1": {
+      trades: [1585531800, 1585540800, 1585544400, 1585555200],
+    },
+    "2": {
+      trades: [1585497600, 1585540800, 1585544400, 1585555200],
+    },
+    "3": {
+      trades: [1585531800, 1585540800, 1585544400, 1585555200],
+    },
+    "4": {
+      trades: [1585531800, 1585540800, 1585544400, 1585555200],
+    },
+    "5": {
+      trades: [],
+    },
+    "6": {
+      trades: [],
+    },
+  };
+  const dayString = {
+    0: "Monday",
+    1: "Tuesday",
+    2: "Wednesday",
+    3: "Thursday",
+    4: "Friday",
+    5: "Saturday",
+    6: "Sunday",
+  };
+  function formatData(raw) {
+    return Object.values(raw)
+      .map((each, index) => {
+        if (each.trades.length < 1) return null;
+        const beforenoon = each.trades.slice(0, 2);
+        const afternoon = each.trades.slice(2);
+        return { day: dayString[index], beforenoon, afternoon, };
+      })
+      .filter(v => v);
+  }
+  const data = formatData(raw);
+  // console.log("data :>> ", data);
+  function timestampToMoment(timestamp) {
+    const hhmmss = moment(timestamp).format("HH:mm:ss");
+    return moment(hhmmss, "HH:mm:ss");
   }
 
-  render() {
-    const { currentGenre, setCurrentGenre, } = this.props.exchange;
-    const { getFieldDecorator, } = this.props.form;
-
-    return (
-      <div className="editor talent-editor">
-        <Form className="editor-form">
-          <FormItem label="类型名称" {...getFormItemLayout(6, 14)}>
-            {getFieldDecorator("name", {
-              initialValue: currentGenre.name,
-              rules: [],
-            })(
-              <Input
-                placeholder="请输入品种类型名称"
-                onChange={evt => {
-                  setCurrentGenre(
-                    {
-                      name: evt.target.value,
-                    },
-                    false
-                  );
-                }}
+  return (
+    <div>
+      <Row>
+        <Col span={8}>交易日</Col>
+        <Col span={8}>上午交易时间</Col>
+        <Col span={8}>下午交易時間</Col>
+      </Row>
+      {Object.values(data).map(each => (
+        <Row>
+          <Col span={8}>{each.day}</Col>
+          <Col span={8}>
+            {each.beforenoon.map(timestamp => (
+              <TimePicker
+                defaultValue={timestampToMoment(timestamp)}
+                disabled
               />
-            )}
-          </FormItem>
-          <FormItem
-            label="是否可用"
-            required
-            {...getFormItemLayout(6, 14)}
-            className="editor-upshelf"
-          >
-            {getFieldDecorator("in_use", {
-              initialValue: currentGenre && currentGenre.in_use,
-            })(
-              <Radio.Group
-                onChange={evt => {
-                  setCurrentGenre(
-                    {
-                      in_use: evt.target.value,
-                    },
-                    false
-                  );
-                }}
-              >
-                <Radio style={radioStyle} value={1}>
-                  是
-                </Radio>
-                <Radio style={radioStyle} value={0}>
-                  否
-                </Radio>
-              </Radio.Group>
-            )}
-          </FormItem>
-        </Form>
-      </div>
-    );
-  }
+            ))}
+          </Col>
+          <Col span={8}>
+            {each.afternoon.map(timestamp => (
+              <TimePicker
+                defaultValue={timestampToMoment(timestamp)}
+                disabled
+              />
+            ))}
+          </Col>
+        </Row>
+      ))}
+    </div>
+  );
 }
