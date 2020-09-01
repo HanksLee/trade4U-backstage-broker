@@ -39,8 +39,8 @@ const scopeOfFields = {
   calculate_for_sell_hands_fee: "fee_rule",
   calculate_for_buy_tax: "tax_rule",
   calculate_for_sell_tax: "tax_rule",
-  purchase_fee: "",
-  selling_fee: "",
+  calculate_for_buy_stock_fee: "",
+  calculate_for_sell_stock_fee: "",
   profit_calculate_for_bought: "profit_rule",
   profit_calculate_for_sale: "profit_rule",
   calculate_for_cash_deposit: "margin_rule",
@@ -61,6 +61,11 @@ IGenreEditorState
     scopes,
     scopeOfFields,
     ruleOfScope: {},
+    formLayout: "horizontal",
+    formItemLayout: {
+      labelCol: { span: 4, },
+      wrapperCol: { span: 14, },
+    },
   };
 
   componentDidMount() {
@@ -113,20 +118,30 @@ IGenreEditorState
     const rule = this.state.ruleOfScope[scope];
     return rule || [];
   };
+
   render() {
     // const { currentGenre, setCurrentGenre, } = this.props.exchange;
     const { getFieldDecorator, } = this.props.form;
+    const { formItemLayout, } = this.state;
     // console.log("fieldsValue :>> ", this.props.form.getFieldsValue());
 
     return (
       <div className="editor talent-editor">
-        <Form className="editor-form">
-          <Form.Item data-id="symbol_type_name" label="交易类型">
+        <Form className="editor-form" layout={"horizontal"}>
+          <Form.Item
+            data-id="symbol_type_name"
+            label="交易类型"
+            {...formItemLayout}
+          >
             {getFieldDecorator("symbol_type_name")(
               <Input type="text" disabled={true} />
             )}
           </Form.Item>
-          <Form.Item data-id="position_type" label="持仓类型">
+          <Form.Item
+            data-id="position_type"
+            label="持仓类型"
+            {...formItemLayout}
+          >
             {getFieldDecorator("position_type")(
               <Select mode="tags" placeholder="Please select">
                 {selectOptions["position_type"].map(option => (
@@ -135,10 +150,16 @@ IGenreEditorState
               </Select>
             )}
           </Form.Item>
-          <Form.Item data-id="max_position_days" label="持仓天数">
-            {getFieldDecorator("max_position_days")(<Input type="text" />)}
+          <Form.Item
+            data-id="max_position_days"
+            label="持仓天数"
+            {...formItemLayout}
+          >
+            {getFieldDecorator("max_position_days")(
+              <InputNumber type="text" />
+            )}
           </Form.Item>
-          <Form.Item data-id="leverage" label="杠杆">
+          <Form.Item data-id="leverage" label="杠杆" {...formItemLayout}>
             {getFieldDecorator("leverage", {
               rules: [
                 {
@@ -151,6 +172,7 @@ IGenreEditorState
           <Form.Item
             data-id="calculate_for_buy_hands_fee"
             label="买入手续费计算"
+            {...formItemLayout}
           >
             {getFieldDecorator("calculate_for_buy_hands_fee")(
               <Select placeholder="Please select">
@@ -167,6 +189,7 @@ IGenreEditorState
           <Form.Item
             data-id="calculate_for_sell_hands_fee"
             label="卖出手续费计算"
+            {...formItemLayout}
           >
             {getFieldDecorator("calculate_for_sell_hands_fee")(
               <Select placeholder="Please select">
@@ -180,13 +203,39 @@ IGenreEditorState
               </Select>
             )}
           </Form.Item>
-          <Form.Item data-id="hands_fee_for_buy" label="买入手续费费率">
-            {getFieldDecorator("hands_fee_for_buy")(<Input type="text" />)}
+          <Form.Item
+            data-id="hands_fee_for_buy"
+            label="买入手续费费率"
+            {...formItemLayout}
+          >
+            {getFieldDecorator("hands_fee_for_buy")(
+              <InputNumber
+                min={0}
+                max={100}
+                formatter={value => `${value}%`}
+                parser={value => value.replace("%", "")}
+              />
+            )}
           </Form.Item>
-          <Form.Item data-id="hands_fee_for_sell" label="卖出手续费费率">
-            {getFieldDecorator("hands_fee_for_sell")(<Input type="text" />)}
+          <Form.Item
+            data-id="hands_fee_for_sell"
+            label="卖出手续费费率"
+            {...formItemLayout}
+          >
+            {getFieldDecorator("hands_fee_for_sell")(
+              <InputNumber
+                min={0}
+                max={100}
+                formatter={value => `${value}%`}
+                parser={value => value.replace("%", "")}
+              />
+            )}
           </Form.Item>
-          <Form.Item data-id="calculate_for_buy_tax" label="买入税费计算">
+          <Form.Item
+            data-id="calculate_for_buy_tax"
+            label="买入税费计算"
+            {...formItemLayout}
+          >
             {getFieldDecorator("calculate_for_buy_tax")(
               <Select placeholder="Please select">
                 {this.getRuleOfField("calculate_for_buy_tax").map(rule => (
@@ -197,7 +246,11 @@ IGenreEditorState
               </Select>
             )}
           </Form.Item>
-          <Form.Item data-id="calculate_for_sell_tax" label="卖出税费计算">
+          <Form.Item
+            data-id="calculate_for_sell_tax"
+            label="卖出税费计算"
+            {...formItemLayout}
+          >
             {getFieldDecorator("calculate_for_sell_tax")(
               <Select placeholder="Please select">
                 {this.getRuleOfField("calculate_for_sell_tax").map(rule => (
@@ -208,30 +261,38 @@ IGenreEditorState
               </Select>
             )}
           </Form.Item>
-          <Form.Item data-id="tax_for_buy" label="买入税率">
-            {getFieldDecorator("tax_for_buy")(<Input type="text" />)}
-          </Form.Item>
-          <Form.Item data-id="tax_for_sell" label="卖出税率">
-            {getFieldDecorator("tax_for_sell")(<Input type="text" />)}
-          </Form.Item>
-          <Form.Item
-            data-id="purchase_fee"
-            label="买入库存费计算（作多库存费）"
-          >
-            {getFieldDecorator("purchase_fee")(
-              <Select placeholder="Please select">
-                {this.getRuleOfField("purchase_fee").map(rule => (
-                  <Select.Option key={rule.id} value={rule.func_name}>
-                    {rule.name}
-                  </Select.Option>
-                ))}
-              </Select>
+          <Form.Item data-id="tax_for_buy" label="买入税率" {...formItemLayout}>
+            {getFieldDecorator("tax_for_buy")(
+              <InputNumber
+                min={0}
+                max={100}
+                formatter={value => `${value}%`}
+                parser={value => value.replace("%", "")}
+              />
             )}
           </Form.Item>
-          <Form.Item data-id="selling_fee" label="卖出库存费计算（作空库存费）">
-            {getFieldDecorator("selling_fee")(
+          <Form.Item
+            data-id="tax_for_sell"
+            label="卖出税率"
+            {...formItemLayout}
+          >
+            {getFieldDecorator("tax_for_sell")(
+              <InputNumber
+                min={0}
+                max={100}
+                formatter={value => `${value}%`}
+                parser={value => value.replace("%", "")}
+              />
+            )}
+          </Form.Item>
+          <Form.Item
+            data-id="calculate_for_buy_stock_fee"
+            label="买入库存费计算（作多库存费）"
+            {...formItemLayout}
+          >
+            {getFieldDecorator("calculate_for_buy_stock_fee")(
               <Select placeholder="Please select">
-                {this.getRuleOfField("selling_fee").map(rule => (
+                {this.getRuleOfField("calculate_for_buy_stock_fee").map(rule => (
                   <Select.Option key={rule.id} value={rule.func_name}>
                     {rule.name}
                   </Select.Option>
@@ -241,22 +302,49 @@ IGenreEditorState
           </Form.Item>
           <Form.Item
             data-id="calculate_for_buy_stock_fee"
-            label="买入库存费率（作多库存费）"
+            label="卖出库存费计算（作空库存费）"
+            {...formItemLayout}
           >
             {getFieldDecorator("calculate_for_buy_stock_fee")(
-              <Input type="text" />
+              <Select placeholder="Please select">
+                {this.getRuleOfField("calculate_for_sell_stock_fee").map(rule => (
+                  <Select.Option key={rule.id} value={rule.func_name}>
+                    {rule.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
+          </Form.Item>
+          <Form.Item
+            data-id="purchase_fee"
+            label="买入库存费率（作多库存费）"
+            {...formItemLayout}
+          >
+            {getFieldDecorator("purchase_fee")(
+              <InputNumber
+                min={0}
+                max={100}
+                formatter={value => `${value}%`}
+                parser={value => value.replace("%", "")}
+              />
             )}
           </Form.Item>
 
           <Form.Item
-            data-id="calculate_for_sell_stock_fee"
+            data-id="selling_fee"
             label="卖出库存费率（作空库存费）"
+            {...formItemLayout}
           >
-            {getFieldDecorator("calculate_for_sell_stock_fee")(
-              <Input type="text" />
+            {getFieldDecorator("selling_fee")(
+              <InputNumber
+                min={-100}
+                max={100}
+                formatter={value => `${value}%`}
+                parser={value => value.replace("%", "")}
+              />
             )}
           </Form.Item>
-          <Form.Item data-id="max_lots" label="最大手数">
+          <Form.Item data-id="max_lots" label="最大手数" {...formItemLayout}>
             {getFieldDecorator("max_lots", {
               rules: [
                 {
@@ -266,7 +354,7 @@ IGenreEditorState
               ],
             })(<Input />)}
           </Form.Item>
-          <Form.Item data-id="min_lots" label="最小手数">
+          <Form.Item data-id="min_lots" label="最小手数" {...formItemLayout}>
             {getFieldDecorator("min_lots", {
               rules: [
                 {
@@ -276,19 +364,31 @@ IGenreEditorState
               ],
             })(<Input />)}
           </Form.Item>
-          <Form.Item data-id="take_profit_point" label="止盈线">
+          <Form.Item
+            data-id="take_profit_point"
+            label="止盈线"
+            {...formItemLayout}
+          >
             {getFieldDecorator("take_profit_point")(<Input type="text" />)}
           </Form.Item>
-          <Form.Item data-id="stop_loss_point" label="止损线">
+          <Form.Item
+            data-id="stop_loss_point"
+            label="止损线"
+            {...formItemLayout}
+          >
             {getFieldDecorator("stop_loss_point")(<Input type="text" />)}
           </Form.Item>
-          <Form.Item data-id="spread" label="点差">
+          <Form.Item data-id="spread" label="点差" {...formItemLayout}>
             {getFieldDecorator("spread")(<Input type="text" />)}
           </Form.Item>
-          <Form.Item data-id="spread_mode" label="点差模式">
+          <Form.Item data-id="spread_mode" label="点差模式" {...formItemLayout}>
             {getFieldDecorator("spread_mode")(<Input type="text" />)}
           </Form.Item>
-          <Form.Item data-id="calculate_for_cash_deposit" label="保证金计算">
+          <Form.Item
+            data-id="calculate_for_cash_deposit"
+            label="保证金计算"
+            {...formItemLayout}
+          >
             {getFieldDecorator("calculate_for_cash_deposit", {
               rules: [
                 {
@@ -309,6 +409,7 @@ IGenreEditorState
           <Form.Item
             data-id="profit_calculate_for_bought"
             label="盈虧計算（多）"
+            {...formItemLayout}
           >
             {getFieldDecorator("profit_calculate_for_bought", {
               rules: [
@@ -329,7 +430,11 @@ IGenreEditorState
               </Select>
             )}
           </Form.Item>
-          <Form.Item data-id="profit_calculate_for_sale" label="盈虧計算（空）">
+          <Form.Item
+            data-id="profit_calculate_for_sale"
+            label="盈虧計算（空）"
+            {...formItemLayout}
+          >
             {getFieldDecorator("profit_calculate_for_sale", {
               rules: [
                 {
@@ -347,7 +452,11 @@ IGenreEditorState
               </Select>
             )}
           </Form.Item>
-          <Form.Item data-id="three_days_swap" label="三日库存费">
+          <Form.Item
+            data-id="three_days_swap"
+            label="三日库存费"
+            {...formItemLayout}
+          >
             {getFieldDecorator("three_days_swap")(
               <Select placeholder="Please select">
                 {selectOptions["three_days_swap"].map(option => (
@@ -364,6 +473,13 @@ IGenreEditorState
   }
 }
 
+// function CustomFormItem({}) {
+//   const children =
+//     typeof props.children === "function"
+//       ? props.children(props)
+//       : props.children;
+//   return <Form.Item {...props} >{children}</Form.Item>;
+// }
 class LagacyGenreEditor extends BaseReact<
 IGenreEditorProps,
 IGenreEditorState
