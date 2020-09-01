@@ -1,6 +1,6 @@
 const config = require("./config"),
   MiniCssExtractPlugin = require("mini-css-extract-plugin"),
-  tsImportPluginFactory = require('ts-import-plugin'),
+  tsImportPluginFactory = require("ts-import-plugin"),
   { resolve } = require("./utils");
 
 const setLoaderSourceMap = (loader, options, isProd) => {
@@ -17,35 +17,57 @@ const getStyleRule = (
   }
 ) => {
   const cssModulesSetting = opt.isModules
-  ? {
-      modules: true,
-      localIdentName: "[path][name]__[local]"
-    }
-  : {};
+    ? {
+        modules: true,
+        localIdentName: "[path][name]__[local]"
+      }
+    : {};
 
   const map = {
     css: {
       use: [
         setLoaderSourceMap("style-loader", {}, opt.isProd),
-        setLoaderSourceMap("css-loader",      {
-          ...cssModulesSetting
-        }, opt.isProd),
-        setLoaderSourceMap("postcss-loader", {
-          plugins: () => [require('autoprefixer')({
-            'browsers': ['> 1%', 'last 5 versions']
-          })],
-        }, opt.isProd)
+        setLoaderSourceMap(
+          "css-loader",
+          {
+            ...cssModulesSetting
+          },
+          opt.isProd
+        ),
+        setLoaderSourceMap(
+          "postcss-loader",
+          {
+            plugins: () => [
+              require("autoprefixer")({
+                browsers: ["> 1%", "last 5 versions"]
+              })
+            ]
+          },
+          opt.isProd
+        )
       ]
     },
     scss: {
       use: [
         setLoaderSourceMap("style-loader", {}, opt.isProd),
-        setLoaderSourceMap("css-loader", {}, opt.isProd),
-        setLoaderSourceMap("postcss-loader", {
-          plugins: () => [require('autoprefixer')({
-            'browsers': ['> 1%', 'last 5 versions']
-          })],
-        }, opt.isProd),
+        setLoaderSourceMap(
+          "css-loader",
+          {
+            ...cssModulesSetting
+          },
+          opt.isProd
+        ),
+        setLoaderSourceMap(
+          "postcss-loader",
+          {
+            plugins: () => [
+              require("autoprefixer")({
+                browsers: ["> 1%", "last 5 versions"]
+              })
+            ]
+          },
+          opt.isProd
+        ),
         setLoaderSourceMap(
           "sass-loader",
           {
@@ -55,19 +77,30 @@ const getStyleRule = (
           },
           opt.isProd
         ),
-        setLoaderSourceMap('sass-resources-loader', {
-          resources: [resolve('src/styles/vars.scss'), resolve('src/styles/mixins.scss'), resolve('src/styles/func.scss')]}),
+        setLoaderSourceMap("sass-resources-loader", {
+          resources: [
+            resolve("src/styles/vars.scss"),
+            resolve("src/styles/mixins.scss"),
+            resolve("src/styles/func.scss")
+          ]
+        })
       ]
     },
     less: {
       use: [
         setLoaderSourceMap("style-loader", {}, opt.isProd),
         setLoaderSourceMap("css-loader", {}, opt.isProd),
-        setLoaderSourceMap("postcss-loader", {
-          plugins: () => [require('autoprefixer')({
-            'browsers': ['> 1%', 'last 5 versions']
-          })],
-        }, opt.isProd),
+        setLoaderSourceMap(
+          "postcss-loader",
+          {
+            plugins: () => [
+              require("autoprefixer")({
+                browsers: ["> 1%", "last 5 versions"]
+              })
+            ]
+          },
+          opt.isProd
+        ),
         setLoaderSourceMap(
           "less-loader",
           {
@@ -83,28 +116,27 @@ const getStyleRule = (
           {
             resources: [
               resolve("src/styles/vars.less"),
-              resolve("src/styles/mixins.less"),
+              resolve("src/styles/mixins.less")
             ]
           },
           opt.isProd
         )
       ]
-    },
-  }
+    }
+  };
 
   // 生产环境下提取 CSS
   if (opt.isProd) {
     for (const preprocessor of Object.values(map)) {
       // production enviroment should not use style-loader
-      preprocessor.use.shift()
+      preprocessor.use.shift();
       preprocessor.use.unshift({
         loader: MiniCssExtractPlugin.loader,
         options: {
           hmr: !config.isProd
         }
-      })
+      });
     }
-
   }
 
   return map[opt.preProcessor];
@@ -118,7 +150,7 @@ const styleLoaders = [
   },
   {
     test: /\.scss$/,
-    exclude:/\.module\.scss$/,
+    exclude: /\.module\.scss$/,
     include: [resolve("src")],
     ...getStyleRule({ isProd: config.isProd, preProcessor: "scss" })
   },
@@ -152,14 +184,16 @@ const scriptLoaders = [
         options: {
           transpileOnly: true,
           getCustomTransformers: () => ({
-            before: [tsImportPluginFactory({
-              libraryName: 'antd',
-              libraryDirectory: 'lib',
-              style: 'css'
-            })]
+            before: [
+              tsImportPluginFactory({
+                libraryName: "antd",
+                libraryDirectory: "lib",
+                style: "css"
+              })
+            ]
           }),
           compilerOptions: {
-            module: 'es2015'
+            module: "es2015"
           }
         }
       }
@@ -173,7 +207,7 @@ const assetsLoaders = [
     loader: "url-loader",
     options: {
       limit: 1024 * 10,
-      name: "assets/img/[name].[ext]?[hash]",
+      name: "assets/img/[name].[ext]?[hash]"
     }
   },
   {
@@ -181,7 +215,7 @@ const assetsLoaders = [
     loader: "url-loader",
     options: {
       limit: 1024 * 200,
-      fallback: 'url-loader',
+      fallback: "url-loader",
       name: "assets/font/[name].[ext]?[hash]"
     }
   },
