@@ -12,14 +12,24 @@ const s = JSON.stringify;
 const getStyleRule = (
   opt = {
     isProd: false,
+    isModules: false,
     preProcessor: "css"
   }
 ) => {
+  const cssModulesSetting = opt.isModules
+  ? {
+      modules: true,
+      localIdentName: "[path][name]__[local]"
+    }
+  : {};
+
   const map = {
     css: {
       use: [
         setLoaderSourceMap("style-loader", {}, opt.isProd),
-        setLoaderSourceMap("css-loader", {}, opt.isProd),
+        setLoaderSourceMap("css-loader",      {
+          ...cssModulesSetting
+        }, opt.isProd),
         setLoaderSourceMap("postcss-loader", {
           plugins: () => [require('autoprefixer')({
             'browsers': ['> 1%', 'last 5 versions']
@@ -108,8 +118,18 @@ const styleLoaders = [
   },
   {
     test: /\.scss$/,
+    exclude:/\.module\.scss$/,
     include: [resolve("src")],
     ...getStyleRule({ isProd: config.isProd, preProcessor: "scss" })
+  },
+  {
+    test: /\.module\.scss$/,
+    include: [resolve("src")],
+    ...getStyleRule({
+      isProd: config.isProd,
+      preProcessor: "scss",
+      isModules: true
+    })
   },
   {
     test: /\.less$/,
