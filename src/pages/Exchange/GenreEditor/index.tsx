@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import { Form, Input, Select, InputNumber, Tooltip, Row, Col } from "antd";
+import { Form, Input, Select, InputNumber, Tooltip, Button } from "antd";
 import "./index.scss";
 import { inject } from "mobx-react";
 import { TradingTimeBoard } from "../TradingTimeBoard";
@@ -107,12 +107,13 @@ IGenreEditorState
     const rule = this.state.ruleOfScope[scope];
     return rule || [];
   };
-
+  handleSubmit = () => {
+    // console.log("fieldsValue :>> ", this.props.form.getFieldsValue());
+  };
   render() {
     // const { currentGenre, setCurrentGenre, } = this.props.exchange;
     const { getFieldDecorator, } = this.props.form;
     const { formItemLayout, } = this.state;
-    // console.log("fieldsValue :>> ", this.props.form.getFieldsValue());
 
     return (
       <div className="editor">
@@ -460,7 +461,13 @@ IGenreEditorState
                 </Select>
               )}
             </Form.Item>
+            <Form.Item>
+              <Button type="primary" onClick={this.handleSubmit}>
+                提交
+              </Button>
+            </Form.Item>
           </Form>
+
           <TradingTimeBoard />
         </section>
       </div>
@@ -468,14 +475,8 @@ IGenreEditorState
   }
 }
 
-export interface InputPercentProps {}
 
-export interface InputPercentState {}
-
-class InputPercent extends React.Component<
-InputPercentProps,
-InputPercentState
-> {
+class InputPercent extends React.Component {
   render() {
     return (
       <InputNumber
@@ -483,6 +484,21 @@ InputPercentState
         parser={value => value.replace("%", "")}
         {...this.props}
       />
+    );
+  }
+}
+
+
+
+class FormItemWithTooltip extends React.Component {
+  render() {
+    const { tooltipProps = {}, ...formItemProps } = this.props;
+    return (
+      <Form.Item {...formItemProps}>
+        <Tooltip placement="topLeft" {...tooltipProps}>
+          {this.props.children}
+        </Tooltip>
+      </Form.Item>
     );
   }
 }
