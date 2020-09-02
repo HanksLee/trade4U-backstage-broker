@@ -11,16 +11,9 @@ import {
   Row
 } from "antd";
 import { inject } from "mobx-react";
-import { TradingTimeBoard } from "../TradingTimeBoard";
 import styles from "./index.module.scss";
 import classnames from "classnames/bind";
 const cx = classnames.bind(styles);
-
-const getFormItemLayout = (label, wrapper, offset?) => ({
-  labelCol: { span: label, offset, },
-  wrapperCol: { span: wrapper, },
-});
-const radioStyle = { display: "block", marginBottom: 12, };
 
 export interface IGenreEditorProps {}
 
@@ -75,9 +68,6 @@ IGenreEditorState
     const { scopes, } = this.state;
     const parsedQueryString = this.$qs.parse(this.props.location.search);
     const { id, } = parsedQueryString;
-    // console.log("id :>> ", id);
-    // console.log("this.props :>> ", this.props);
-    // console.log("this.$api :>> ", this.$api);
     const { setFieldsValue, } = this.props.form;
     const res = await this.$api.product.getCurrentSymbolType(id);
     const fieldValue = this.mapApiDataToFieldValue(res.data);
@@ -122,14 +112,18 @@ IGenreEditorState
     const rule = this.state.rulesOfScope[scope];
     return rule || [];
   };
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
 
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(async (err, values) => {
       if (err) return;
       const payload = this.mapFieldValueToApiData(values);
+      const parsedQueryString = this.$qs.parse(this.props.location.search);
+      const { id, } = parsedQueryString;
+      const res = await this.$api.product.updateSymbolType(id, payload);
       // console.log("values :>> ", values);
       // console.log("payload :>> ", payload);
+      // console.log("res :>> ", res);
     });
   };
   render() {
