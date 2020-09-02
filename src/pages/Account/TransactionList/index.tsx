@@ -7,7 +7,7 @@ import ReactDOM from "react-dom";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import utils from "utils";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 
 export interface Transaction {
   id?: string;
@@ -35,7 +35,7 @@ interface TransactionListState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/account/transaction", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/transaction"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/transaction"],
 })
 @inject("common", "transaction")
 @observer

@@ -8,7 +8,7 @@ import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import utils from "utils";
 import "./index.scss";
 
@@ -36,7 +36,7 @@ interface MessageTypeListState extends IMessageTypeState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/message/type", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/message/type"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/message/type"],
 })
 @inject("common", "message")
 @observer

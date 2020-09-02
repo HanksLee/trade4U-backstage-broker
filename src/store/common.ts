@@ -1,6 +1,6 @@
 import { action, observable, computed } from "mobx";
 import BaseStore from "store/base";
-import utils from '../utils';
+
 class CommonStore extends BaseStore {
   @observable
   paginationConfig = {
@@ -24,11 +24,6 @@ class CommonStore extends BaseStore {
 
   @observable
   permissions: any[] | null = null;
-
-  @computed
-  get permissionRouters() {
-    return utils.swapObjectKeyValue(this.permissions);
-  }
 
   @action
   setPermissions = (permissions: string[]) => {

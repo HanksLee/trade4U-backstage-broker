@@ -3,7 +3,7 @@ import { BaseReact } from "components/BaseReact";
 import { Form, Input, Button, Upload, Icon } from "antd";
 import CommonHeader from "components/CommonHeader";
 import withRoute from "components/WithRoute";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import "./index.scss";
 import { inject, observer } from "mobx-react";
 import { RcFile } from "antd/lib/upload";
@@ -40,7 +40,7 @@ export interface ISystemBaseInfoEditorState {
 
 @withRoute("/dashboard/system/baseinfo", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/system/baseinfo"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/system/baseinfo"],
 })
 @Form.create()
 @inject("common", "system")

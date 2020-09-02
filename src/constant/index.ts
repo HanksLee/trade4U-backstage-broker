@@ -1,3 +1,4 @@
+import utils from "../utils";
 export const SHARE_DATA = {
   title: "",
   desc: "",
@@ -79,7 +80,7 @@ export const THREE_DAY_OPTIONS = [
 ];
 
 // 主要用于控制菜单的显示隐藏，key 为路由地址，value 为主后台配置的菜单权限
-export const PAGE_PERMISSION_MAP = {
+export const ROUTE_TO_PERMISSION = {
   "/dashboard/risk": "view_risk_control_sls",
   "/dashboard/currency_history": "view_platform_currency_history",
   "/dashboard/role": "VIEW_ROLE_PAGE",
@@ -124,6 +125,9 @@ export const PAGE_PERMISSION_MAP = {
   "/dashboard/sms/smstemplate": "view_sms_template",
   "/dashboard/sms/smsrecord": "view_sms_record",
 };
+
+// 交换 ROUTE_TO_PERMISSION 键值，key 为权限名，value 为路由名
+export const PERMISSION_TO_ROUTE = utils.swapObjectKeyValue(ROUTE_TO_PERMISSION);
 
 
 

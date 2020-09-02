@@ -10,7 +10,7 @@ import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from "utils";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import axios from 'axios';
 
 export interface CloseOrderListProps { }
@@ -29,7 +29,7 @@ export interface CloseOrderListState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/order/close", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/order/close"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/order/close"],
 })
 @inject("common", "closeOrder")
 @observer

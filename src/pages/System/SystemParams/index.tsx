@@ -12,7 +12,7 @@ import {
 } from "antd";
 import CommonHeader from "components/CommonHeader";
 import withRoute from "components/WithRoute";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import "./index.scss";
 import { inject, observer } from "mobx-react";
 import utils from "utils";
@@ -55,7 +55,7 @@ export interface ISystemEditorState {
 
 @withRoute("/dashboard/system/params", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/system/params"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/system/params"],
 })
 @Form.create()
 @inject("common", "system")

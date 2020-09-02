@@ -9,7 +9,7 @@ import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import utils from "utils";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import "./index.scss";
 
 export interface OpenOrderListProps { }
@@ -28,7 +28,7 @@ export interface OpenOrderListState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/order/open", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/order/open"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/order/open"],
 })
 @inject("common", "openOrder")
 @observer
