@@ -4,7 +4,7 @@ import { moonAPI as API } from "utils/request";
 // 交易产品分类设置 api
 const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/symbol_type?status=1", config);
-
+// * 回传的 id 是券商后台商品分类 key, symbol_type 是主后台商品分类 key, code 是商品分类名
 const getCurrentSymbolType = (id, config): Promise<any> =>
   API.get(`/broker/symbol_type/${id}`, config);
 const updateSymbolType = (id, config): Promise<any> =>

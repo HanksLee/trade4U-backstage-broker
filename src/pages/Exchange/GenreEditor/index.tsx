@@ -18,6 +18,7 @@ const cx = classnames.bind(styles);
 export interface IGenreEditorProps {}
 
 export interface IGenreEditorState {}
+// 利润规则 scope
 const scopes = [
   "margin_rule",
   "profit_rule",
@@ -26,6 +27,7 @@ const scopes = [
   "tax_rule",
   "fee_rule"
 ];
+// 栏位的利润规则 scope
 const scopeOfField = {
   calculate_for_buy_hands_fee: "fee_rule",
   calculate_for_sell_hands_fee: "fee_rule",
@@ -37,9 +39,20 @@ const scopeOfField = {
   profit_calculate_for_sale: "profit_rule",
   calculate_for_cash_deposit: "margin_rule",
 };
-const selectOptions = {
-  position_type: ["T+0", "T+1"],
-  three_days_swap: ["週一", "週二", "週三", "週四", "週五", "週六", "週日"],
+/**
+ * MT 外汇
+ * HK 港股
+ * 该种产品分类的栏位选项
+ */
+const fieldOptionsOfSymbolType = {
+  HK: {
+    position_type: ["T+0", "T+1"],
+    three_days_swap: ["週一", "週二", "週三", "週四", "週五", "週六", "週日"],
+  },
+  MT: {
+    position_type: ["T+0", "T+1", "T+2", "T+3"],
+    three_days_swap: ["週一", "週二", "週三", "週四", "週五", "週六", "週日"],
+  },
 };
 
 // @ts-ignore
@@ -58,6 +71,7 @@ IGenreEditorState
       labelCol: { span: 4, },
       wrapperCol: { span: 12, },
     },
+    fieldOptions: {},
   };
 
   componentDidMount() {
@@ -70,8 +84,10 @@ IGenreEditorState
     const { id, } = parsedQueryString;
     const { setFieldsValue, } = this.props.form;
     const res = await this.$api.product.getCurrentSymbolType(id);
-    const fieldValue = this.mapApiDataToFieldValue(res.data);
-    setFieldsValue(fieldValue);
+    const initFieldValue = this.mapApiDataToFieldValue(res.data);
+    const fieldOptions = fieldOptionsOfSymbolType[res.data.code];
+    this.setState({ fieldOptions, });
+    setFieldsValue(initFieldValue);
     // console.log("res :>> ", res);
 
     // 取得栏位选项公式 （利润规则）
@@ -127,9 +143,8 @@ IGenreEditorState
     });
   };
   render() {
-    // const { currentGenre, setCurrentGenre, } = this.props.exchange;
     const { getFieldDecorator, } = this.props.form;
-    const { formItemLayout, } = this.state;
+    const { formItemLayout, fieldOptions, } = this.state;
 
     return (
       <div className="editor">
@@ -162,11 +177,12 @@ IGenreEditorState
                   ],
                 })(
                   <Select mode="tags" placeholder="Please select">
-                    {selectOptions["position_type"].map(option => (
-                      <Select.Option key={option} value={option}>
-                        {option}
-                      </Select.Option>
-                    ))}
+                    {fieldOptions["position_type"] &&
+                      fieldOptions["position_type"].map(option => (
+                        <Select.Option key={option} value={option}>
+                          {option}
+                        </Select.Option>
+                      ))}
                   </Select>
                 )}
               </Tooltip>
@@ -181,12 +197,20 @@ IGenreEditorState
               )}
             </Form.Item>
             <Form.Item data-name="leverage" label="杠杆" {...formItemLayout}>
-              <Tooltip title="以 , 区隔，例如： 1,2,3" placement="topLeft">
+              <Tooltip
+                title="最多3个，以 , 符号区隔，例如： 1,2,3"
+                placement="topLeft"
+              >
                 {getFieldDecorator("leverage", {
                   rules: [
                     {
                       required: true,
                       message: "必填",
+                    },
+                    {
+                      validator:  async (_, value) => {
+                        if(value.length > 3) throw new Error('不能设置超过 3 个');
+                      },
                     }
                   ],
                 })(<Select mode="tags" tokenSeparators={[","]} open={false} />)}
@@ -468,11 +492,12 @@ IGenreEditorState
             >
               {getFieldDecorator("three_days_swap")(
                 <Select placeholder="Please select">
-                  {selectOptions["three_days_swap"].map(option => (
-                    <Select.Option key={option} value={option}>
-                      {option}
-                    </Select.Option>
-                  ))}
+                  {fieldOptions["three_days_swap"] &&
+                    fieldOptions["three_days_swap"].map(option => (
+                      <Select.Option key={option} value={option}>
+                        {option}
+                      </Select.Option>
+                    ))}
                 </Select>
               )}
             </Form.Item>
