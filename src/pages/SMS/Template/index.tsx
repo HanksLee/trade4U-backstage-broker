@@ -8,7 +8,7 @@ import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import "./index.scss";
 
 export interface SMSTemplate {
@@ -36,7 +36,7 @@ interface SMSTemplateListState extends ISMSTemplateState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/sms/smstemplate", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/sms/smstemplate"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/sms/smstemplate"],
 })
 @inject("common", "sms")
 @observer

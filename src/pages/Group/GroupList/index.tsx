@@ -9,7 +9,7 @@ import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import utils from "utils";
 
 interface Group {
@@ -36,7 +36,7 @@ interface GroupListState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/group", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/group"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/group"],
 })
 @inject("common", "group")
 @observer

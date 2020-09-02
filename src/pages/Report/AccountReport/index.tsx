@@ -5,7 +5,7 @@ import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import { Row, Col, Statistic, Card } from "antd";
 import utils from "utils";
 import "../index.scss";
@@ -24,7 +24,7 @@ interface ReportState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/report/account", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/report/account"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/report/account"],
 })
 @inject("common", "accountReport")
 @observer

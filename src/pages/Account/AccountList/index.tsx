@@ -14,7 +14,7 @@ import { BaseReact } from "components/BaseReact";
 import { Modal } from "antd";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import utils from "utils";
 
 export interface Account {
@@ -60,7 +60,7 @@ interface AccountListState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/account/account", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/account/account"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/account/account"],
 })
 @inject("common", "account")
 @observer

@@ -8,7 +8,7 @@ import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import "./index.scss";
 
 export interface VerifyCommissionType {
@@ -48,7 +48,7 @@ interface VerifyCommissionListState extends IVerifyCommissionState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/verify/commission", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/commission"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/verify/commission"],
 })
 @inject("common", "verify")
 @observer

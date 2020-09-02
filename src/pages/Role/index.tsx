@@ -8,7 +8,7 @@ import { BaseReact } from "components/BaseReact";
 import { Button, Icon, Table, Popconfirm } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import { Route } from "react-router-dom";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import "./index.scss";
 
 export interface RoleType {
@@ -29,7 +29,7 @@ interface IRoleState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/role", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/role"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/role"],
 })
 export default class Role extends BaseReact<{}, IRoleState> {
   state = {

@@ -8,7 +8,7 @@ import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import "./index.scss";
 
 export interface ManagerType {
@@ -36,7 +36,7 @@ interface ManagerListState extends IManagerState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/manager", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/manager"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/manager"],
 })
 @inject("common", "manager")
 @observer

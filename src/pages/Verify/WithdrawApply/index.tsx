@@ -8,7 +8,7 @@ import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
-import { PAGE_PERMISSION_MAP } from "constant";
+import { ROUTE_TO_PERMISSION } from "constant";
 import "./index.scss";
 
 export interface VerifyWithdrawApplyType {
@@ -52,7 +52,7 @@ interface VerifyWithdrawApplyListState extends IVerifyWithdrawApplyState {
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/verify/withdrawapply", {
   exact: false,
-  permissionCode: PAGE_PERMISSION_MAP["/dashboard/verify/withdrawapply"],
+  permissionCode: ROUTE_TO_PERMISSION["/dashboard/verify/withdrawapply"],
 })
 @inject("common", "verify")
 @observer
