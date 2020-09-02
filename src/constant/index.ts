@@ -125,12 +125,7 @@ export const PAGE_PERMISSION_MAP = {
   "/dashboard/sms/smsrecord": "view_sms_record",
 };
 
-function swapObjectKeyValue(obj) {
-  return Object.fromEntries(
-    Object.entries(obj).map(each => each.slice().reverse())
-  );
-}
-export const PermissionRouters = swapObjectKeyValue(PAGE_PERMISSION_MAP);
+
 
 
 // export const PAGE_ROUTES = [
