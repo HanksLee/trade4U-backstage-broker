@@ -7,6 +7,7 @@ import {
   InputNumber,
   Tooltip,
   Button,
+  Radio,
   Col,
   Row
 } from "antd";
@@ -123,14 +124,13 @@ IGenreEditorState
     payload.leverage = payload.leverage.join(",");
     return payload;
   };
-  getRuleOfField = fieldName => {
+  getRulesOfField = fieldName => {
     const scope = this.state.scopeOfFields[fieldName];
-    const rule = this.state.rulesOfScope[scope];
-    return rule || [];
+    const rules = this.state.rulesOfScope[scope];
+    return rules || [];
   };
   handleSubmit = e => {
     e.preventDefault();
-
     this.props.form.validateFields(async (err, values) => {
       if (err) return;
       const payload = this.mapFieldValueToApiData(values);
@@ -298,7 +298,7 @@ IGenreEditorState
             >
               {getFieldDecorator("calculate_for_buy_tax")(
                 <Select placeholder="Please select">
-                  {this.getRuleOfField("calculate_for_buy_tax").map(rule => (
+                  {this.getRulesOfField("calculate_for_buy_tax").map(rule => (
                     <Select.Option key={rule.id} value={rule.func_name}>
                       {rule.name}
                     </Select.Option>
@@ -313,7 +313,7 @@ IGenreEditorState
             >
               {getFieldDecorator("calculate_for_sell_tax")(
                 <Select placeholder="Please select">
-                  {this.getRuleOfField("calculate_for_sell_tax").map(rule => (
+                  {this.getRulesOfField("calculate_for_sell_tax").map(rule => (
                     <Select.Option key={rule.id} value={rule.func_name}>
                       {rule.name}
                     </Select.Option>
@@ -351,7 +351,7 @@ IGenreEditorState
                 ],
               })(
                 <Select placeholder="Please select">
-                  {this.getRuleOfField("calculate_for_cash_deposit").map(
+                  {this.getRulesOfField("calculate_for_cash_deposit").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
                         {rule.name}
@@ -375,7 +375,7 @@ IGenreEditorState
                 ],
               })(
                 <Select placeholder="Please select">
-                  {this.getRuleOfField("profit_calculate_for_bought").map(
+                  {this.getRulesOfField("profit_calculate_for_bought").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
                         {rule.name}
@@ -399,7 +399,7 @@ IGenreEditorState
                 ],
               })(
                 <Select placeholder="Please select">
-                  {this.getRuleOfField("profit_calculate_for_sale").map(
+                  {this.getRulesOfField("profit_calculate_for_sale").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
                         {rule.name}
@@ -417,9 +417,9 @@ IGenreEditorState
               {...formItemLayout}
             >
               {getFieldDecorator("calculate_for_buy_hands_fee")(
-                <Select placeholder="Please select" >
+                <Select placeholder="Please select">
                   {renderClearOption()}
-                  {this.getRuleOfField("calculate_for_buy_hands_fee").map(
+                  {this.getRulesOfField("calculate_for_buy_hands_fee").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
                         {rule.name}
@@ -435,9 +435,9 @@ IGenreEditorState
               {...formItemLayout}
             >
               {getFieldDecorator("calculate_for_sell_hands_fee")(
-                <Select placeholder="Please select" >
+                <Select placeholder="Please select">
                   {renderClearOption()}
-                  {this.getRuleOfField("calculate_for_sell_hands_fee").map(
+                  {this.getRulesOfField("calculate_for_sell_hands_fee").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
                         {rule.name}
@@ -467,9 +467,9 @@ IGenreEditorState
               {...formItemLayout}
             >
               {getFieldDecorator("calculate_for_buy_stock_fee")(
-                <Select placeholder="Please select" >
+                <Select placeholder="Please select">
                   {renderClearOption()}
-                  {this.getRuleOfField("calculate_for_buy_stock_fee").map(
+                  {this.getRulesOfField("calculate_for_buy_stock_fee").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
                         {rule.name}
@@ -485,9 +485,9 @@ IGenreEditorState
               {...formItemLayout}
             >
               {getFieldDecorator("calculate_for_sell_stock_fee")(
-                <Select placeholder="Please select" >
+                <Select placeholder="Please select">
                   {renderClearOption()}
-                  {this.getRuleOfField("calculate_for_sell_stock_fee").map(
+                  {this.getRulesOfField("calculate_for_sell_stock_fee").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
                         {rule.name}
@@ -528,6 +528,17 @@ IGenreEditorState
                 </Select>
               )}
             </Form.Item>
+
+            {renderGroupHeader('其他设定')}
+            <Form.Item label="是否可用" required {...formItemLayout}>
+              {getFieldDecorator("status")(
+                <Radio.Group>
+                  <Radio value={1}>是</Radio>
+                  <Radio value={0}>否</Radio>
+                </Radio.Group>
+              )}
+            </Form.Item>
+
             <Row>
               <Col span={16} className={cx("button-group")}>
                 <Button type="primary" onClick={this.handleSubmit}>
