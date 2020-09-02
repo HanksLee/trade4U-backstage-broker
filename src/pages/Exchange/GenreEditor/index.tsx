@@ -70,7 +70,6 @@ IGenreEditorState
     formItemLayout: {
       labelCol: { span: 4, },
       wrapperCol: { span: 12, },
-      buttonGroupCol:{ span: 16, },
     },
     fieldOptions: {},
   };
@@ -150,10 +149,17 @@ IGenreEditorState
       </Form.Item>
     );
   };
+  renderClearOption = () => {
+    return (
+      <Select.Option key="clear" value={null}>
+        无设置
+      </Select.Option>
+    );
+  };
   render() {
     const { getFieldDecorator, } = this.props.form;
     const { formItemLayout, fieldOptions, } = this.state;
-    const { renderGroupHeader, } = this;
+    const { renderGroupHeader, renderClearOption, } = this;
 
     return (
       <div className="editor">
@@ -411,7 +417,8 @@ IGenreEditorState
               {...formItemLayout}
             >
               {getFieldDecorator("calculate_for_buy_hands_fee")(
-                <Select placeholder="Please select">
+                <Select placeholder="Please select" >
+                  {renderClearOption()}
                   {this.getRuleOfField("calculate_for_buy_hands_fee").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
@@ -428,7 +435,8 @@ IGenreEditorState
               {...formItemLayout}
             >
               {getFieldDecorator("calculate_for_sell_hands_fee")(
-                <Select placeholder="Please select">
+                <Select placeholder="Please select" >
+                  {renderClearOption()}
                   {this.getRuleOfField("calculate_for_sell_hands_fee").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
@@ -459,7 +467,8 @@ IGenreEditorState
               {...formItemLayout}
             >
               {getFieldDecorator("calculate_for_buy_stock_fee")(
-                <Select placeholder="Please select">
+                <Select placeholder="Please select" >
+                  {renderClearOption()}
                   {this.getRuleOfField("calculate_for_buy_stock_fee").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
@@ -476,7 +485,8 @@ IGenreEditorState
               {...formItemLayout}
             >
               {getFieldDecorator("calculate_for_sell_stock_fee")(
-                <Select placeholder="Please select">
+                <Select placeholder="Please select" >
+                  {renderClearOption()}
                   {this.getRuleOfField("calculate_for_sell_stock_fee").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
@@ -508,6 +518,7 @@ IGenreEditorState
             >
               {getFieldDecorator("three_days_swap")(
                 <Select placeholder="Please select">
+                  {renderClearOption()}
                   {fieldOptions["three_days_swap"] &&
                     fieldOptions["three_days_swap"].map(option => (
                       <Select.Option key={option} value={option}>
@@ -518,7 +529,7 @@ IGenreEditorState
               )}
             </Form.Item>
             <Row>
-              <Col span={formItemLayout.buttonGroupCol.span} className={cx("button-group")}>
+              <Col span={16} className={cx("button-group")}>
                 <Button type="primary" onClick={this.handleSubmit}>
                   提交
                 </Button>
