@@ -84,6 +84,7 @@ IGenreEditorState
     setFieldsValue(fieldValue);
     // console.log("res :>> ", res);
 
+    // 取得栏位选项公式 （利润规则）
     const ruleList = await Promise.all(
       scopes.map(scope =>
         this.$api.product.getRuleList({
@@ -104,21 +105,32 @@ IGenreEditorState
     // console.log("ruleList :>> ", ruleList);
     // console.log("this.state.rulesOfScope :>> ", this.state.rulesOfScope);
   };
-  mapApiDataToFieldValue = data => {
+  mapApiDataToFieldValue = input => {
     // 将 api 回传格式转为栏位值
-    data.leverage = data.leverage.split(",");
-    return data;
+    const payload = { ...input, };
+    payload.leverage = payload.leverage.split(",");
+    return payload;
   };
-  mapFieldValueToApiData = () => {
-    // TODO: 将表单栏位值转为 api 吃的格式
+  mapFieldValueToApiData = input => {
+    // 将表单栏位值转为 api 吃的格式
+    const payload = { ...input, };
+    payload.leverage = payload.leverage.join(",");
+    return payload;
   };
   getRuleOfField = fieldName => {
     const scope = this.state.scopeOfFields[fieldName];
     const rule = this.state.rulesOfScope[scope];
     return rule || [];
   };
-  handleSubmit = () => {
-    // console.log("fieldsValue :>> ", this.props.form.getFieldsValue());
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    this.props.form.validateFields((err, values) => {
+      if (err) return;
+      const payload = this.mapFieldValueToApiData(values);
+      // console.log("values :>> ", values);
+      // console.log("payload :>> ", payload);
+    });
   };
   render() {
     // const { currentGenre, setCurrentGenre, } = this.props.exchange;
@@ -147,7 +159,14 @@ IGenreEditorState
                 title="T+0 (可多可空)、T+1 (只能作多)"
                 placement="topLeft"
               >
-                {getFieldDecorator("position_type")(
+                {getFieldDecorator("position_type", {
+                  rules: [
+                    {
+                      required: true,
+                      message: "必填",
+                    }
+                  ],
+                })(
                   <Select mode="tags" placeholder="Please select">
                     {selectOptions["position_type"].map(option => (
                       <Select.Option key={option} value={option}>
@@ -164,7 +183,7 @@ IGenreEditorState
               {...formItemLayout}
             >
               {getFieldDecorator("max_position_days")(
-                <InputNumber type="text" />
+                <InputNumber className={cx("input-number")} />
               )}
             </Form.Item>
             <Form.Item data-name="leverage" label="杠杆" {...formItemLayout}>
@@ -218,18 +237,14 @@ IGenreEditorState
               label="买入手续费费率"
               {...formItemLayout}
             >
-              {getFieldDecorator("hands_fee_for_buy")(
-                <InputPercent min={0} max={100} />
-              )}
+              {getFieldDecorator("hands_fee_for_buy")(<InputPercent />)}
             </Form.Item>
             <Form.Item
               data-name="hands_fee_for_sell"
               label="卖出手续费费率"
               {...formItemLayout}
             >
-              {getFieldDecorator("hands_fee_for_sell")(
-                <InputPercent min={0} max={100} />
-              )}
+              {getFieldDecorator("hands_fee_for_sell")(<InputPercent />)}
             </Form.Item>
             <Form.Item
               data-name="calculate_for_buy_tax"
@@ -266,18 +281,14 @@ IGenreEditorState
               label="买入税率"
               {...formItemLayout}
             >
-              {getFieldDecorator("tax_for_buy")(
-                <InputPercent min={0} max={100} />
-              )}
+              {getFieldDecorator("tax_for_buy")(<InputPercent />)}
             </Form.Item>
             <Form.Item
               data-name="tax_for_sell"
               label="卖出税率"
               {...formItemLayout}
             >
-              {getFieldDecorator("tax_for_sell")(
-                <InputPercent min={0} max={100} />
-              )}
+              {getFieldDecorator("tax_for_sell")(<InputPercent />)}
             </Form.Item>
             <Form.Item
               data-name="calculate_for_buy_stock_fee"
@@ -318,9 +329,7 @@ IGenreEditorState
               label="买入库存费率（作多库存费）"
               {...formItemLayout}
             >
-              {getFieldDecorator("purchase_fee")(
-                <InputPercent min={0} max={100} />
-              )}
+              {getFieldDecorator("purchase_fee")(<InputPercent />)}
             </Form.Item>
 
             <Form.Item
@@ -328,23 +337,23 @@ IGenreEditorState
               label="卖出库存费率（作空库存费）"
               {...formItemLayout}
             >
-              {getFieldDecorator("selling_fee")(
-                <InputPercent min={-100} max={100} />
-              )}
+              {getFieldDecorator("selling_fee")(<InputPercent />)}
             </Form.Item>
             <Form.Item
               data-name="max_lots"
               label="最大手数"
               {...formItemLayout}
             >
-              {getFieldDecorator("max_lots", {
-                rules: [
-                  {
-                    required: true,
-                    message: "必填",
-                  }
-                ],
-              })(<InputNumber />)}
+              <Tooltip title="不限制请填 -1" placement="topLeft">
+                {getFieldDecorator("max_lots", {
+                  rules: [
+                    {
+                      required: true,
+                      message: "最大手数必填，如不限制请填 -1",
+                    }
+                  ],
+                })(<InputNumber className={cx("input-number")} min={-1} />)}
+              </Tooltip>
             </Form.Item>
             <Form.Item
               data-name="min_lots"
@@ -355,10 +364,10 @@ IGenreEditorState
                 rules: [
                   {
                     required: true,
-                    message: "必填",
+                    message: "最小手数必填",
                   }
                 ],
-              })(<InputNumber />)}
+              })(<InputNumber className={cx("input-number")} min={1} />)}
             </Form.Item>
             <Form.Item
               data-name="take_profit_point"
@@ -375,7 +384,9 @@ IGenreEditorState
               {getFieldDecorator("stop_loss_point")(<InputPercent />)}
             </Form.Item>
             <Form.Item data-name="spread" label="点差" {...formItemLayout}>
-              {getFieldDecorator("spread")(<InputNumber />)}
+              {getFieldDecorator("spread")(
+                <InputNumber className={cx("input-number")} />
+              )}
             </Form.Item>
             <Form.Item
               data-name="spread_mode"
@@ -492,6 +503,7 @@ class InputPercent extends React.Component {
   render() {
     return (
       <InputNumber
+        className={cx("input-number")}
         formatter={value => `${value}%`}
         parser={value => value.replace("%", "")}
         {...this.props}
