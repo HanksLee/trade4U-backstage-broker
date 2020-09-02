@@ -33,7 +33,7 @@ const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
   wrapperCol: { span: wrapper, },
 });
-const placeholders = { "label":'placeholder', };
+const placeholders = { label: "placeholder", };
 export interface IProductEditorProps {}
 
 export interface IProductEditorState {}
@@ -673,8 +673,7 @@ IProductEditorState
           )}
         </FormItem>
         <FormItem
-          label="价格变动最小单位
-"
+          label="价格变动最小单位"
           {...getFormItemLayout(3, 12)}
         >
           {getFieldDecorator("min_unit_of_price_change", {
@@ -684,8 +683,7 @@ IProductEditorState
             <InputNumber
               min={0}
               type="number"
-              placeholder="请输入价格变动最小单位
-          "
+              placeholder="请输入价格变动最小单位"
               onChange={value => {
                 setCurrentProduct(
                   {
