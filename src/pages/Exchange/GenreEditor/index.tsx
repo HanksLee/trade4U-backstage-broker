@@ -56,7 +56,7 @@ IGenreEditorState
     formLayout: "horizontal",
     formItemLayout: {
       labelCol: { span: 4, },
-      wrapperCol: { span: 8, },
+      wrapperCol: { span: 12, },
     },
   };
 
@@ -286,7 +286,7 @@ IGenreEditorState
             </Form.Item>
             <Form.Item
               data-name="calculate_for_buy_stock_fee"
-              label="买入库存费计算（作多库存费）"
+              label="买入库存费计算（多）"
               {...formItemLayout}
             >
               {getFieldDecorator("calculate_for_buy_stock_fee")(
@@ -303,7 +303,7 @@ IGenreEditorState
             </Form.Item>
             <Form.Item
               data-name="calculate_for_buy_stock_fee"
-              label="卖出库存费计算（作空库存费）"
+              label="卖出库存费计算（空）"
               {...formItemLayout}
             >
               {getFieldDecorator("calculate_for_buy_stock_fee")(
@@ -320,7 +320,7 @@ IGenreEditorState
             </Form.Item>
             <Form.Item
               data-name="purchase_fee"
-              label="买入库存费率（作多库存费）"
+              label="买入库存费率（多）"
               {...formItemLayout}
             >
               {getFieldDecorator("purchase_fee")(<InputPercent />)}
@@ -328,7 +328,7 @@ IGenreEditorState
 
             <Form.Item
               data-name="selling_fee"
-              label="卖出库存费率（作空库存费）"
+              label="卖出库存费率（空）"
               {...formItemLayout}
             >
               {getFieldDecorator("selling_fee")(<InputPercent />)}

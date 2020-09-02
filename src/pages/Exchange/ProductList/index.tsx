@@ -4,7 +4,7 @@ import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import ProductEdtior from "../ProductEditor";
+import ProductEditor from "../ProductEditor";
 import ProductHistory from "../ProductHistory";
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
@@ -44,7 +44,7 @@ IProductListState
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
-    this.getTypetOptions();
+    this.getTypeOptions();
   }
 
   componentDidUpdate() {
@@ -53,7 +53,7 @@ IProductListState
     }
   }
 
-  getTypetOptions = async () => {
+  getTypeOptions = async () => {
     const res = await this.$api.product.getGenreList({
       params: {
         page: 1,
@@ -210,7 +210,7 @@ IProductListState
         />
         <Route
           path={`${match.url}/editor`}
-          render={props => <ProductEdtior {...props} />}
+          render={props => <ProductEditor {...props} />}
         />
         <Route
           path={`${match.url}/history`}

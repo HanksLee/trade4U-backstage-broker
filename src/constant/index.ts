@@ -80,8 +80,8 @@ export const THREE_DAY_OPTIONS = [
 
 // 主要用于控制菜单的显示隐藏，key 为路由地址，value 为主后台配置的菜单权限
 export const PAGE_PERMISSION_MAP = {
-  "/dashboard/risk":"view_risk_control_sls",
-  "/dashboard/currency_history":"view_platform_currency_history",
+  "/dashboard/risk": "view_risk_control_sls",
+  "/dashboard/currency_history": "view_platform_currency_history",
   "/dashboard/role": "VIEW_ROLE_PAGE",
   "/dashboard/order": "view_order",
   "/dashboard/order/open": "view_in_transaction_order",
@@ -99,7 +99,6 @@ export const PAGE_PERMISSION_MAP = {
   "/dashboard/exchange": "VIEW_PRODUCT_PAGE",
   "/dashboard/exchange/product": "view_broker_symbol",
   "/dashboard/exchange/genre": "view_broker_symbol_type",
-
 
   "/dashboard/group": "view_group",
   "/dashboard/agency": "VIEW_AGENCY_PAGE",
@@ -126,27 +125,35 @@ export const PAGE_PERMISSION_MAP = {
   "/dashboard/sms/smsrecord": "view_sms_record",
 };
 
-export const PAGE_ROUTES = [
-  {
-    title: "财务管理",
-    path: "/dashboard/finance",
-    children: [
-      {
-        title: "入金管理",
-        path: "/dashboard/finance/deposit",
-      },
-      {
-        title: "出金管理",
-        path: "/dashboard/finance/withdraw",
-      },
-      {
-        title: "支付方式",
-        path: "/dashboard/finance/payment",
-      },
-      {
-        title: "出入金汇率表",
-        path: "/dashboard/finance/rate",
-      }
-    ],
-  }
-];
+function swapObjectKeyValue(obj) {
+  return Object.fromEntries(
+    Object.entries(obj).map(each => each.slice().reverse())
+  );
+}
+export const PermissionRouters = swapObjectKeyValue(PAGE_PERMISSION_MAP);
+
+
+// export const PAGE_ROUTES = [
+//   {
+//     title: "财务管理",
+//     path: "/dashboard/finance",
+//     children: [
+//       {
+//         title: "入金管理",
+//         path: "/dashboard/finance/deposit",
+//       },
+//       {
+//         title: "出金管理",
+//         path: "/dashboard/finance/withdraw",
+//       },
+//       {
+//         title: "支付方式",
+//         path: "/dashboard/finance/payment",
+//       },
+//       {
+//         title: "出入金汇率表",
+//         path: "/dashboard/finance/rate",
+//       }
+//     ],
+//   }
+// ];

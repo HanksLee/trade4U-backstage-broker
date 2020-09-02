@@ -5,9 +5,11 @@ import { WeeklyOrder } from "constant";
 import moment from "moment";
 import { toJS } from 'mobx';
 
-
+// 传给 CommentList 的设定，渲染列表
 const config = self => {
   const { selectedRowKeys, } = self.state;
+  const permissions = self.props.common.permissions;
+  
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
@@ -166,7 +168,7 @@ const config = self => {
       self.resetPagination(pageSize, current);
     },
   };
-  const permissions = self.props.common.permissions;
+
   return {
     // 是否显示增加按钮
     addBtn: {
