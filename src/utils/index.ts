@@ -231,7 +231,14 @@ function timestampFormatDate(text, type) {
   return (text && moment(text * 1000).format(type)) || "--";
 } 
 
+
+function swapObjectKeyValue(obj) {
+  return Object.fromEntries(
+    Object.entries(obj).map(each => each.slice().reverse())
+  );
+}
 export default {
+  swapObjectKeyValue,
   setRootFontSizeFromClient,
   initI18n,
   isEmpty: _isEmpty,
