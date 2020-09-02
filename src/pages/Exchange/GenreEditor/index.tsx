@@ -1,9 +1,20 @@
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import { Form, Input, Select, InputNumber, Tooltip, Button } from "antd";
-import "./index.scss";
+import {
+  Form,
+  Input,
+  Select,
+  InputNumber,
+  Tooltip,
+  Button,
+  Col,
+  Row
+} from "antd";
 import { inject } from "mobx-react";
 import { TradingTimeBoard } from "../TradingTimeBoard";
+import styles from "./index.module.scss";
+import classnames from "classnames/bind";
+const cx = classnames.bind(styles);
 
 const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
@@ -22,7 +33,7 @@ const scopes = [
   "tax_rule",
   "fee_rule"
 ];
-const scopeOfFields = {
+const scopeOfField = {
   calculate_for_buy_hands_fee: "fee_rule",
   calculate_for_sell_hands_fee: "fee_rule",
   calculate_for_buy_tax: "tax_rule",
@@ -47,12 +58,12 @@ IGenreEditorState
 > {
   state = {
     scopes,
-    scopeOfFields,
-    ruleOfScope: {},
+    scopeOfFields: scopeOfField,
+    rulesOfScope: {},
     formLayout: "horizontal",
     formItemLayout: {
       labelCol: { span: 4, },
-      wrapperCol: { span: 14, },
+      wrapperCol: { span: 8, },
     },
   };
 
@@ -69,6 +80,9 @@ IGenreEditorState
     // console.log("this.$api :>> ", this.$api);
     const { setFieldsValue, } = this.props.form;
     const res = await this.$api.product.getCurrentSymbolType(id);
+    const fieldValue = this.mapApiDataToFieldValue(res.data);
+    setFieldsValue(fieldValue);
+    // console.log("res :>> ", res);
 
     const ruleList = await Promise.all(
       scopes.map(scope =>
@@ -79,32 +93,28 @@ IGenreEditorState
         })
       )
     );
-    // console.log("res :>> ", res);
-    const fieldValue = this.formatResponseDataToFieldValue(res.data);
-    setFieldsValue(fieldValue);
-    // console.log("ruleList :>> ", ruleList);
-    // console.log(
-    //   "ruleList :>> ",
-    //   ruleList.map(each => each.data.results)
-    // );
-    const ruleOfScope = {};
-    ruleList
+    const rulesOfScope = ruleList
       .map(each => each.data.results)
-      .forEach((rule, index) => {
+      .reduce((obj, rules, index) => {
         const scope = scopes[index];
-        ruleOfScope[scope] = rule;
-      });
-    this.setState({ ruleOfScope, });
-    // console.log("this.state.ruleOfScope :>> ", this.state.ruleOfScope);
+        obj[scope] = rules;
+        return obj;
+      }, {});
+    this.setState({ rulesOfScope, });
+    // console.log("ruleList :>> ", ruleList);
+    // console.log("this.state.rulesOfScope :>> ", this.state.rulesOfScope);
   };
-  formatResponseDataToFieldValue = data => {
+  mapApiDataToFieldValue = data => {
+    // 将 api 回传格式转为栏位值
     data.leverage = data.leverage.split(",");
-
     return data;
+  };
+  mapFieldValueToApiData = () => {
+    // TODO: 将表单栏位值转为 api 吃的格式
   };
   getRuleOfField = fieldName => {
     const scope = this.state.scopeOfFields[fieldName];
-    const rule = this.state.ruleOfScope[scope];
+    const rule = this.state.rulesOfScope[scope];
     return rule || [];
   };
   handleSubmit = () => {
@@ -461,20 +471,22 @@ IGenreEditorState
                 </Select>
               )}
             </Form.Item>
-            <Form.Item>
-              <Button type="primary" onClick={this.handleSubmit}>
-                提交
-              </Button>
-            </Form.Item>
+            <Row>
+              <Col span={12} className={cx("button-group")}>
+                <Button type="primary" onClick={this.handleSubmit}>
+                  提交
+                </Button>
+              </Col>
+            </Row>
+            {/* <Form.Item {...formItemLayout}>
+              <TradingTimeBoard />
+            </Form.Item> */}
           </Form>
-
-          <TradingTimeBoard />
         </section>
       </div>
     );
   }
 }
-
 
 class InputPercent extends React.Component {
   render() {
@@ -487,8 +499,6 @@ class InputPercent extends React.Component {
     );
   }
 }
-
-
 
 class FormItemWithTooltip extends React.Component {
   render() {
