@@ -140,6 +140,11 @@ IGenreEditorState
       // console.log("values :>> ", values);
       // console.log("payload :>> ", payload);
       // console.log("res :>> ", res);
+      if (res.status === 200) {
+        // this.props.history.goBack();
+      } else {
+        // TODO: 提示使用者表单送出失败
+      }
     });
   };
   renderGroupHeader = title => {
@@ -421,7 +426,11 @@ IGenreEditorState
                   {renderClearOption()}
                   {this.getRulesOfField("calculate_for_buy_hands_fee").map(
                     rule => (
-                      <Select.Option key={rule.id} value={rule.func_name} label={rule.name}>
+                      <Select.Option
+                        key={rule.id}
+                        value={rule.func_name}
+                        label={rule.name}
+                      >
                         {rule.name}
                       </Select.Option>
                     )
@@ -439,7 +448,11 @@ IGenreEditorState
                   {renderClearOption()}
                   {this.getRulesOfField("calculate_for_sell_hands_fee").map(
                     rule => (
-                      <Select.Option key={rule.id} value={rule.func_name} label={rule.name}>
+                      <Select.Option
+                        key={rule.id}
+                        value={rule.func_name}
+                        label={rule.name}
+                      >
                         {rule.name}
                       </Select.Option>
                     )
@@ -471,7 +484,11 @@ IGenreEditorState
                   {renderClearOption()}
                   {this.getRulesOfField("calculate_for_buy_stock_fee").map(
                     rule => (
-                      <Select.Option key={rule.id} value={rule.func_name} label={rule.name}>
+                      <Select.Option
+                        key={rule.id}
+                        value={rule.func_name}
+                        label={rule.name}
+                      >
                         {rule.name}
                       </Select.Option>
                     )
@@ -489,7 +506,11 @@ IGenreEditorState
                   {renderClearOption()}
                   {this.getRulesOfField("calculate_for_sell_stock_fee").map(
                     rule => (
-                      <Select.Option key={rule.id} value={rule.func_name} label={rule.name}>
+                      <Select.Option
+                        key={rule.id}
+                        value={rule.func_name}
+                        label={rule.name}
+                      >
                         {rule.name}
                       </Select.Option>
                     )
@@ -521,7 +542,7 @@ IGenreEditorState
                   {renderClearOption()}
                   {fieldOptions["three_days_swap"] &&
                     fieldOptions["three_days_swap"].map(option => (
-                      <Select.Option key={option} value={option} label={option}> 
+                      <Select.Option key={option} value={option} label={option}>
                         {option}
                       </Select.Option>
                     ))}
@@ -529,7 +550,7 @@ IGenreEditorState
               )}
             </Form.Item>
 
-            {renderGroupHeader('其他设定')}
+            {renderGroupHeader("其他设定")}
             <Form.Item label="是否可用" required {...formItemLayout}>
               {getFieldDecorator("status")(
                 <Radio.Group>

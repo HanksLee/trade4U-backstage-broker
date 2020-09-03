@@ -251,6 +251,9 @@ const widgetMap = {
   },
 };
 
+/**
+ * @param props.config 表单渲染配置
+ */
 export default class CommonList extends React.Component<any, any> {
   state = {
     collapse: true,
@@ -261,7 +264,7 @@ export default class CommonList extends React.Component<any, any> {
       collapse: !this.state.collapse,
     });
   };
-
+  // * 渲染查询组接口
   renderSearcher = () => {
     const { searcher, table, } = this.props.config;
     const { collapse, } = this.state;
@@ -275,14 +278,17 @@ export default class CommonList extends React.Component<any, any> {
           <div className="common-list-search-right">
             {!searcher.hideSearcher && (
               <>
-                <Button type="primary" disabled={searcher.searchDisabled} onClick={searcher.onSearch}>
+                <Button
+                  type="primary"
+                  disabled={searcher.searchDisabled}
+                  onClick={searcher.onSearch}
+                >
                   查询
                 </Button>
                 <Button onClick={searcher.onReset}>重置</Button>
-                {searcher.onBackClick &&
-                   <Button onClick={searcher.onBackClick}>返回</Button>
-                }
-               
+                {searcher.onBackClick && (
+                  <Button onClick={searcher.onBackClick}>返回</Button>
+                )}
               </>
             )}
             {searcher.collapseControl && searcher.collapseControl.showMoreBtn && (
@@ -361,7 +367,7 @@ export default class CommonList extends React.Component<any, any> {
       )
     );
   };
-
+  // * 渲染新增按钮接口
   renderAddBtn = () => {
     const { addBtn, searcher, } = this.props.config;
     const AddBtnTitle = addBtn && addBtn.title;
@@ -410,6 +416,7 @@ export default class CommonList extends React.Component<any, any> {
     );
   };
 
+  // * 渲染表格接口
   renderTableHeader = () => {
     const { tableHeader, } = this.props.config;
     const TableHeader = tableHeader;
@@ -421,6 +428,7 @@ export default class CommonList extends React.Component<any, any> {
     );
   };
 
+  // * 渲染表格接口
   renderTable = () => {
     const {
       rowKey,
@@ -436,7 +444,11 @@ export default class CommonList extends React.Component<any, any> {
       bordered,
       scroll,
     } = this.props.config.table;
-    // console.log('columns :>> ', columns);
+    // console.log('config.table :>> ', this.props.config.table);
+    /**
+     * [antd v3. Table API] https://3x.ant.design/components/table-cn/#Table
+     * [antd v3. Column API] https://3x.ant.design/components/table-cn/#Column
+     */
     return (
       <section className="common-list-table">
         <Table
@@ -451,7 +463,7 @@ export default class CommonList extends React.Component<any, any> {
           loading={loading}
           pagination={pagination}
           onChange={onChange}
-          scroll={scroll || { x:true, }}
+          scroll={scroll || { x: true, }}
         />
       </section>
     );

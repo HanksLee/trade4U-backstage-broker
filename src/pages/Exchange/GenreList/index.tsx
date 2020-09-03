@@ -71,7 +71,7 @@ IExchangeGenreState
   //   });
   // };
 
-  // * genreEditor 送出
+  // ! 主后台 genreEditor 送出逻辑, 非券商后台
   onModalConfirm = async () => {
     const { currentGenre, } = this.props.exchange;
 

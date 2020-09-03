@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm } from "antd";
 import utils from "utils";
-import StatusText from 'components/StatusText';
+import StatusText from "components/StatusText";
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
@@ -24,26 +24,26 @@ const config = self => {
       title: "品种类型名称",
       dataIndex: "symbol_type_name",
       render: (text, record) => {
-        return text || '--';
+        return text || "--";
       },
     },
     {
-      title: '可用状态',
+      title: "可用状态",
       render: (text, record) => {
-        const statusType = {
-          1: 'normal',
-          0: 'block',
+        // [antd v3. Column API] https://3x.ant.design/components/table-cn/#Column
+        // console.log('该笔资料 record :>> ', record);
+        const { status, } = record;
+        if (!status) return;
+        const statusInfo = {
+          0: { type: "block", text: "不可用", },
+          1: { type: "normal", text: "可用", },
         };
-        const statusText = {
-          1: '可用',
-          0: '不可用',
-        };
-
-        return <StatusText type={
-          statusType[record.status]
-        } text={
-          statusText[record.status]
-        } />;
+        return (
+          <StatusText
+            type={statusInfo[status]["type"]}
+            text={statusInfo[status]["text"]}
+          />
+        );
       },
     },
     {
@@ -52,12 +52,15 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => {
-              // self.props.exchange.setCurrentGenre(record, true, false);
-              self.goToEditor(record);
-            }}>编辑</span>
-
-            <span className="common-list-table-operation-spliter"></span>
+            <span
+              onClick={() => {
+                // self.props.exchange.setCurrentGenre(record, true, false);
+                self.goToEditor(record);
+              }}
+            >
+              编辑
+            </span>
+            {/* <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除品种类型"
               onConfirm={async () => {
@@ -72,7 +75,7 @@ const config = self => {
               onCancel={() => {}}
             >
               <span>删除</span>
-            </Popconfirm>
+            </Popconfirm> */}
           </div>
         );
       },
@@ -108,12 +111,9 @@ const config = self => {
           self.onBatch(value);
         },
       },
-      widgets: [
-      ],
-      onSearch() {
-      },
-      onReset() {
-      },
+      widgets: [],
+      onSearch() {},
+      onReset() {},
     },
     table: {
       rowKey: "id",
