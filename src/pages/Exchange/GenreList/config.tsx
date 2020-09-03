@@ -5,7 +5,6 @@ import StatusText from "components/StatusText";
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
-
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
@@ -33,7 +32,7 @@ const config = self => {
         // [antd v3. Column API] https://3x.ant.design/components/table-cn/#Column
         // console.log('该笔资料 record :>> ', record);
         const { status, } = record;
-        if (!status) return;
+        if (status === undefined) return;
         const statusInfo = {
           0: { type: "block", text: "不可用", },
           1: { type: "normal", text: "可用", },
@@ -54,28 +53,11 @@ const config = self => {
           <div className="common-list-table-operation">
             <span
               onClick={() => {
-                // self.props.exchange.setCurrentGenre(record, true, false);
                 self.goToEditor(record);
               }}
             >
               编辑
             </span>
-            {/* <span className="common-list-table-operation-spliter"></span>
-            <Popconfirm
-              title="请问是否确定删除品种类型"
-              onConfirm={async () => {
-                const res = await self.$api.exchange.deleteGenre(record.id);
-
-                if (res.status === 204) {
-                  self.getDataList(self.state.filter);
-                } else {
-                  self.$msg.error(res.data.message);
-                }
-              }}
-              onCancel={() => {}}
-            >
-              <span>删除</span>
-            </Popconfirm> */}
           </div>
         );
       },
@@ -84,12 +66,16 @@ const config = self => {
 
   const pagination = {
     ...self.props.common.paginationConfig,
-    total: self.props.exchange.genreListMeta.total,
-    current: self.state.currentPage,
+    // total: self.props.exchange.genreListMeta.total,
+    current: self.props.product.genreListPagination.current,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
-      // @todo 调用获取表接口
-      self.resetPagination(pageSize, current);
+      const {
+        setGenreListPagination,
+        genreListPagination,
+      } = self.props.product;
+      const pagination = { ...genreListPagination, pageSize, current, };
+      setGenreListPagination(pagination);
     },
   };
 
@@ -119,14 +105,12 @@ const config = self => {
       rowKey: "id",
       // rowSelection,
       columns,
-      dataSource: self.props.exchange.genreList,
+      dataSource: self.props.product.genreList,
       pagination,
       onChange(pagination, filters, sorter) {
-        const payload: any = {
-          page: pagination.current,
-          page_size: pagination.pageSize,
-        };
-
+        const { setGenreListPagination, getGenreList, } = self.props.product;
+        const payload: any = { ...pagination, };
+        // console.log("payload :>> ", payload);
         if (!utils.isEmpty(filters)) {
           for (let [key, value] of Object.entries(filters)) {
             payload[key] = value ? value[0] : undefined;
@@ -140,19 +124,9 @@ const config = self => {
           delete payload.orderBy;
           delete payload.sort;
         }
-
-        self.setState(
-          {
-            filter: {
-              ...self.state.filter,
-              ...payload,
-            },
-            currentPage: pagination.current,
-          },
-          () => {
-            self.getDataList(self.state.filter);
-          }
-        );
+        // 更新分页后，呼叫回呼重抓数据
+        setGenreListPagination(payload);
+        getGenreList();
       },
     },
   };

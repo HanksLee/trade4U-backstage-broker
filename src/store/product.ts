@@ -1,12 +1,30 @@
 import { action, observable, computed } from "mobx";
 import BaseStore from "store/base";
 import utils from "utils";
-import { WeeklyOrder } from 'constant';
-import moment from 'moment';
+import { WeeklyOrder } from "constant";
+import moment from "moment";
 
 class ProductStore extends BaseStore {
   LIMITED_MINUTES = 10;
-  
+  // * 产品分类数据 (列表资料与分页..)
+  @observable genreList = [];
+  @observable genreListPagination = {};
+  @action getGenreList = async (config = {}) => {
+    const { current, pageSize, } = this.genreListPagination;
+    const res = await this.$api.product.getGenreList({
+      params: { page_size: pageSize, page: current, },
+      ...config,
+    });
+    this.setGenreList(res.data.results);
+  };
+  @action setGenreList = payload => {
+    this.genreList = payload;
+  };
+  @action setGenreListPagination = pagination => {
+    this.genreListPagination = pagination;
+  };
+
+  // * 个别产品数据 (列表资料与分页..)
   @observable
   filterProduct = {
     page_size: 10,
@@ -44,9 +62,7 @@ class ProductStore extends BaseStore {
 
   @computed
   get currentShowProduct() {
-    const obj: any = {
-
-    };
+    const obj: any = {};
 
     if (!utils.isEmpty(this.currentProduct.trading_times)) {
       obj.trading_times = WeeklyOrder.map(item => {
@@ -55,7 +71,9 @@ class ProductStore extends BaseStore {
         if (matched) {
           return {
             day: item,
-            trades: matched.trades.map(time => time && moment(time * 1000) || null),
+            trades: matched.trades.map(
+              time => (time && moment(time * 1000)) || null
+            ),
           };
         }
 
@@ -99,7 +117,6 @@ class ProductStore extends BaseStore {
     }
   };
 
-
   @observable
   filterHistoryDateList = [null, null];
 
@@ -111,13 +128,13 @@ class ProductStore extends BaseStore {
   @action
   setFilterHistoryDate(date) {
     let [start, end] = date;
-    if(start && end) {
-      end = !utils.checkDateLimited(start, end, this.LIMITED_MINUTES) ? 
-        start.add(10, 'm')
+    if (start && end) {
+      end = !utils.checkDateLimited(start, end, this.LIMITED_MINUTES)
+        ? start.add(10, "m")
         : end;
     }
-   
-    this.filterHistoryDateList[0]  = start;
+
+    this.filterHistoryDateList[0] = start;
     this.filterHistoryDateList[1] = end;
   }
 
@@ -125,22 +142,27 @@ class ProductStore extends BaseStore {
   get getFilterHistoryDateList() {
     return this.filterHistoryDateList;
   }
-   
+
   @computed
   get checkFilter() {
     const [start, end] = this.filterHistoryDateList;
-    return start && end && utils.checkDateLimited(start, end, this.LIMITED_MINUTES);
+    return (
+      start && end && utils.checkDateLimited(start, end, this.LIMITED_MINUTES)
+    );
   }
-
-  
 
   @observable
   historyList = [];
 
-  @action 
+  @action
   async fetchHistoryList(id, start_time, end_time, config) {
-    const res = await this.$api.product.getHistoryList(id, start_time, end_time, config);
- 
+    const res = await this.$api.product.getHistoryList(
+      id,
+      start_time,
+      end_time,
+      config
+    );
+
     this.setHistoryList(res.data);
   }
 
@@ -149,18 +171,17 @@ class ProductStore extends BaseStore {
     return this.historyList;
   }
 
-  @action 
+  @action
   setHistoryList(data) {
     this.historyList = data;
   }
 
-  @action 
+  @action
   setHistoryListInit() {
     this.historyList = [];
   }
 
-
-  @action 
+  @action
   setInit() {
     this.setHistoryListInit();
     this.setFilterHistoryDateInit();
