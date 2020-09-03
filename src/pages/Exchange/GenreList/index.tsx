@@ -8,17 +8,17 @@ import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from "utils";
-import GenreEditor from 'pages/Exchange/GenreEditor';
+import GenreEditor from "pages/Exchange/GenreEditor";
 
 export interface IExchangeGenreProps {}
 
 export interface IExchangeGenreState {
-  // filter: any;
+  // pagination: any;
 }
 
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/exchange/genre", { exact: false, })
-@inject("common", "exchange")
+@inject("common")
 @observer
 export default class ExchangeGenre extends BaseReact<
 IExchangeGenreProps,
@@ -26,20 +26,17 @@ IExchangeGenreState
 > {
   private $genreEditor = null;
   state = {
-    filter: {},
-    tableLoading: false,
-    currentPage: 1,
+    pagination: {},
     selectedRowKeys: [],
-    genreModalVisible: false,
+    genreList:null,
+    currentPage: 1,
   };
-
   async componentDidMount() {
     // @todo 这里需要从 commonStore 中设置默认的分页
     const {
       paginationConfig: { defaultPageSize, defaultCurrent, },
     } = this.props.common;
-
-    this.resetPagination(defaultPageSize, defaultCurrent);
+    this.setPagination(defaultPageSize, defaultCurrent);
   }
 
   componentDidUpdate() {
@@ -48,121 +45,62 @@ IExchangeGenreState
     }
   }
 
-  getDataList = (payload = {}) => {
+  getGenreList = async (payload = {}) => {
+    console.log('this.state.pagination :>> ', this.state.pagination);
+    const res = await this.$api.product.getAllSymbolType({
+      params: this.state.pagination,
+    });
+    const genreList = res.data.results;
+    console.log('res :>> ', res);
+    this.setState({ genreList, });
+  };
+ 
+  setPagination = async (pageSize, pageNum) => {
     this.setState(
       {
-        tableLoading: true,
-        filter: {
-          ...this.state.filter,
-          ...payload,
-        },
-      },
-      async () => {
-        await this.props.exchange.getGenreList({
-          params: this.state.filter,
-        });
-        this.setState({ tableLoading: false, });
-      }
-    );
-  };
-  // toggleGenreModal = () => {
-  //   this.setState({
-  //     genreModalVisible: !this.state.genreModalVisible,
-  //   });
-  // };
-
-  // ! 主后台 genreEditor 送出逻辑, 非券商后台
-  onModalConfirm = async () => {
-    const { currentGenre, } = this.props.exchange;
-
-    let res;
-    if (!currentGenre.symbol_type_name) {
-      return this.$msg.warn("请输入品种类型名称");
-    }
-
-    if (currentGenre.in_use == null) {
-      return this.$msg.warn("请选择品种类型是否可用");
-    }
-
-    let payload: any = {
-      name: currentGenre.symbol_type_name,
-      in_use: currentGenre.in_use,
-    };
-
-    if (currentGenre.id) {
-      // payload['id'] = currentGenre.id,
-      res = await this.$api.exchange.updateGenre(currentGenre.id, payload);
-    } else {
-      res = await this.$api.exchange.createGenre(payload);
-    }
-
-    const statusCode = currentGenre.id ? 200 : 201;
-
-    if (res.status == statusCode) {
-      this.$msg.success(
-        !currentGenre.uid ? "品种类型添加成功" : "品种类型编辑成功"
-      );
-      // this.toggleGenreModal();
-      this.getDataList(this.state.filter);
-    } else {
-      this.$msg.error(res.data.msg);
-    }
-  };
-
-  // onModalCancel = () => {
-  //   this.setState({
-  //     genreModalVisible: false,
-  //   });
-  //   this.props.exchange.setCurrentGenre({});
-  // }
-
-  resetPagination = async (pageSize, pageNum) => {
-    this.setState(
-      {
-        filter: {
-          ...this.state.filter,
+        pagination: {
+          ...this.state.pagination,
           page_size: pageSize,
           page: pageNum,
         },
       },
       async () => {
-        const filter = this.state.filter;
-        this.getDataList(filter);
+        const pagination = this.state.pagination;
+        this.getGenreList(pagination);
       }
     );
   };
   // @ts-ignore
-  private onSearch = async () => {
-    const filter: any = this.state.filter;
+  // private onSearch = async () => {
+  //   const pagination: any = this.state.pagination;
+  //   this.setState(
+  //     {
+  //       pagination: {
+  //         ...pagination,
+  //         page: 1,
+  //       },
+  //       currentPage: 1,
+  //     },
+  //     () => {
+  //       this.getGenreList(this.state.pagination);
+  //     }
+  //   );
+  // };
+  // // @ts-ignore
+  // private onReset = async () => {
+  //   // @ts-ignore
+  //   const pagination: any = { page: 1, page_size: this.state.pagination.page_size, };
 
-    this.setState(
-      {
-        filter: {
-          ...filter,
-          page: 1,
-        },
-        currentPage: 1,
-      },
-      () => {
-        this.getDataList(this.state.filter);
-      }
-    );
-  };
-  // @ts-ignore
-  private onReset = async () => {
-    // @ts-ignore
-    const filter: any = { page: 1, page_size: this.state.filter.page_size, };
-
-    this.setState(
-      {
-        filter,
-        currentPage: 1,
-      },
-      () => {
-        this.getDataList(this.state.filter);
-      }
-    );
-  };
+  //   this.setState(
+  //     {
+  //       pagination,
+  //       currentPage: 1,
+  //     },
+  //     () => {
+  //       this.getGenreList(this.state.pagination);
+  //     }
+  //   );
+  // };
 
   // * 按下编辑钮后, 跳转至 genreEditor 页面
   goToEditor = (record: any): void => {
@@ -170,21 +108,13 @@ IExchangeGenreState
       !utils.isEmpty(record) ? record.id : 0
     }`;
     this.props.history.push(url);
-    this.props.exchange.setCurrentGenre(record, true, false);
   };
-
-  renderMenu = (record): JSX.Element => {
-    return null;
-  };
-
   // @ts-ignore
   private onBatch = async value => {};
 
   render() {
     const { match, } = this.props;
     const computedTitle = "交易类型设置";
-    const { genreModalVisible, } = this.state;
-    const { currentGenre, } = this.props.exchange;
 
     return (
       <div>
@@ -198,21 +128,6 @@ IExchangeGenreState
           path={`${match.url}/editor`}
           render={props => <GenreEditor {...props} />}
         />
-        {/* {
-          genreModalVisible && (
-            <Modal
-              width={720}
-              visible={genreModalVisible}
-              title={
-                utils.isEmpty(currentGenre.id) ? '添加品种类型' : '编辑品种类型'
-              }
-              onOk={this.onModalConfirm}
-              onCancel={this.onModalCancel}
-            >
-              <GenreEditor onRef={ref => this.$genreEditor = ref} />
-            </Modal>
-          )
-        } */}
       </div>
     );
   }

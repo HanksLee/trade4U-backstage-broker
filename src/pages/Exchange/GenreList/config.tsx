@@ -33,7 +33,7 @@ const config = self => {
         // [antd v3. Column API] https://3x.ant.design/components/table-cn/#Column
         // console.log('该笔资料 record :>> ', record);
         const { status, } = record;
-        if (!status) return;
+        if (status === undefined) return;
         const statusInfo = {
           0: { type: "block", text: "不可用", },
           1: { type: "normal", text: "可用", },
@@ -54,28 +54,11 @@ const config = self => {
           <div className="common-list-table-operation">
             <span
               onClick={() => {
-                // self.props.exchange.setCurrentGenre(record, true, false);
                 self.goToEditor(record);
               }}
             >
               编辑
             </span>
-            {/* <span className="common-list-table-operation-spliter"></span>
-            <Popconfirm
-              title="请问是否确定删除品种类型"
-              onConfirm={async () => {
-                const res = await self.$api.exchange.deleteGenre(record.id);
-
-                if (res.status === 204) {
-                  self.getDataList(self.state.filter);
-                } else {
-                  self.$msg.error(res.data.message);
-                }
-              }}
-              onCancel={() => {}}
-            >
-              <span>删除</span>
-            </Popconfirm> */}
           </div>
         );
       },
@@ -84,12 +67,12 @@ const config = self => {
 
   const pagination = {
     ...self.props.common.paginationConfig,
-    total: self.props.exchange.genreListMeta.total,
+    // total: self.props.exchange.genreListMeta.total,
     current: self.state.currentPage,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
-      self.resetPagination(pageSize, current);
+      self.setPagination(pageSize, current);
     },
   };
 
@@ -119,7 +102,7 @@ const config = self => {
       rowKey: "id",
       // rowSelection,
       columns,
-      dataSource: self.props.exchange.genreList,
+      dataSource: self.state.genreList,
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {
@@ -143,14 +126,14 @@ const config = self => {
 
         self.setState(
           {
-            filter: {
-              ...self.state.filter,
+            pagination: {
+              ...self.state.pagination,
               ...payload,
             },
             currentPage: pagination.current,
           },
           () => {
-            self.getDataList(self.state.filter);
+            self.getGenreList(self.state.pagination);
           }
         );
       },

@@ -58,7 +58,7 @@ const fieldOptionsOfSymbolType = {
 
 // @ts-ignore
 @Form.create()
-@inject("common", "exchange", "product")
+@inject("common", "product")
 export default class GenreEditor extends BaseReact<
 IGenreEditorProps,
 IGenreEditorState
