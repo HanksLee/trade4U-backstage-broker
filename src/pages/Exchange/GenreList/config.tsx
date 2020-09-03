@@ -68,11 +68,12 @@ const config = self => {
   const pagination = {
     ...self.props.common.paginationConfig,
     // total: self.props.exchange.genreListMeta.total,
-    current: self.state.currentPage,
+    current: self.state.pagination.current,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
-      self.setPagination(pageSize, current);
+      const pagination = { ...self.state.pagination, pageSize, current, };
+      self.setState({ pagination, });
     },
   };
 
@@ -105,11 +106,8 @@ const config = self => {
       dataSource: self.state.genreList,
       pagination,
       onChange(pagination, filters, sorter) {
-        const payload: any = {
-          page: pagination.current,
-          page_size: pagination.pageSize,
-        };
-
+        const payload: any = { ...pagination, };
+        // console.log("payload :>> ", payload);
         if (!utils.isEmpty(filters)) {
           for (let [key, value] of Object.entries(filters)) {
             payload[key] = value ? value[0] : undefined;
@@ -123,18 +121,9 @@ const config = self => {
           delete payload.orderBy;
           delete payload.sort;
         }
-
-        self.setState(
-          {
-            pagination: {
-              ...self.state.pagination,
-              ...payload,
-            },
-            currentPage: pagination.current,
-          },
-          () => {
-            self.getGenreList(self.state.pagination);
-          }
+        // 更新分页后，呼叫回呼重抓数据
+        self.setState({ pagination: payload, }, () =>
+          self.getGenreList(payload)
         );
       },
     },

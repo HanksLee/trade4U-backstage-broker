@@ -28,15 +28,17 @@ IExchangeGenreState
   state = {
     pagination: {},
     selectedRowKeys: [],
-    genreList:null,
-    currentPage: 1,
+    genreList: null,
   };
   async componentDidMount() {
-    // @todo 这里需要从 commonStore 中设置默认的分页
-    const {
-      paginationConfig: { defaultPageSize, defaultCurrent, },
-    } = this.props.common;
-    this.setPagination(defaultPageSize, defaultCurrent);
+    // 从 commonStore 中拿取分页预设值，加入到组件的 state
+    const { paginationConfig, } = this.props.common;
+    // console.log('paginationConfig :>> ', paginationConfig);
+    const current = paginationConfig.defaultCurrent;
+    const pageSize = paginationConfig.defaultPageSize;
+    const pagination = { ...paginationConfig, current, pageSize, } ;
+    this.setState({ pagination,  });
+    this.getGenreList(pagination);
   }
 
   componentDidUpdate() {
@@ -44,63 +46,16 @@ IExchangeGenreState
       this.props.history.replace("/dashboard/exchange/genre/list");
     }
   }
-
-  getGenreList = async (payload = {}) => {
-    console.log('this.state.pagination :>> ', this.state.pagination);
+  getGenreList = async pagination => {
+    const { current, pageSize, } = pagination;
+    // console.log("pagination :>> ", pagination);
     const res = await this.$api.product.getAllSymbolType({
-      params: this.state.pagination,
+      params: { page_size: pageSize, page: current, },
     });
+    // console.log('res :>> ', res);
     const genreList = res.data.results;
-    console.log('res :>> ', res);
     this.setState({ genreList, });
   };
- 
-  setPagination = async (pageSize, pageNum) => {
-    this.setState(
-      {
-        pagination: {
-          ...this.state.pagination,
-          page_size: pageSize,
-          page: pageNum,
-        },
-      },
-      async () => {
-        const pagination = this.state.pagination;
-        this.getGenreList(pagination);
-      }
-    );
-  };
-  // @ts-ignore
-  // private onSearch = async () => {
-  //   const pagination: any = this.state.pagination;
-  //   this.setState(
-  //     {
-  //       pagination: {
-  //         ...pagination,
-  //         page: 1,
-  //       },
-  //       currentPage: 1,
-  //     },
-  //     () => {
-  //       this.getGenreList(this.state.pagination);
-  //     }
-  //   );
-  // };
-  // // @ts-ignore
-  // private onReset = async () => {
-  //   // @ts-ignore
-  //   const pagination: any = { page: 1, page_size: this.state.pagination.page_size, };
-
-  //   this.setState(
-  //     {
-  //       pagination,
-  //       currentPage: 1,
-  //     },
-  //     () => {
-  //       this.getGenreList(this.state.pagination);
-  //     }
-  //   );
-  // };
 
   // * 按下编辑钮后, 跳转至 genreEditor 页面
   goToEditor = (record: any): void => {
@@ -119,7 +74,6 @@ IExchangeGenreState
     return (
       <div>
         <CommonHeader {...this.props} links={[]} title={computedTitle} />
-
         <Route
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}
