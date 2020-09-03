@@ -18,7 +18,7 @@ interface CommonHeaderProps {
 @observer
 export default class CommonHeader extends React.Component<CommonHeaderProps> {
   breadcrumbs = utils.getPageBreadcrumb(
-    this.props.common.sidebar,
+    this.props.common.menu,
     this.props.location.pathname
   );
 

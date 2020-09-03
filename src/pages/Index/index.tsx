@@ -37,7 +37,7 @@ function computedPathLevel(path: string) {
   return ret;
 }
 
-function exactFromSidebarPath(pathlist) {
+function exactFromMenuPath(pathlist) {
   const list = [];
 
   function walk(pathlist) {
@@ -70,17 +70,17 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   static getDerivedStateFromProps(nextProps, prevState) {
     const {
       location: { pathname, },
-      common: { sidebar, },
+      common: { menu, },
     } = nextProps;
 
-    if (!sidebar) return null;
+    if (!menu) return null;
 
     const pathLevel = union(
       prevState.openKeys,
       computedPathLevel(pathname)
     ).sort((a, b) => b.length - a.length);
 
-    const pathlist = exactFromSidebarPath(sidebar);
+    const pathlist = exactFromMenuPath(menu);
     let selectedKeys = [];
     pathlist.forEach(item => {
       if (
@@ -103,8 +103,9 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   async componentDidMount() {
     const res = await this.$api.role.getMenus();
     this.props.common.setPermissions(res.data.permission);
-    this.props.common.setSidebar(res.data.menu); //!
-  
+    this.props.common.setMenu(res.data.menu);
+    // console.log("(res.data :>> ", res.data);
+
     this.getTitle();
   }
 
@@ -129,8 +130,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
   renderMenu = (): JSX.Element => {
     const { selectedKeys, openKeys, } = this.state;
-    const { sidebar, } = this.props.common;
-  
+    const { menu, } = this.props.common;
     return (
       <Menu
         mode="inline"
@@ -140,14 +140,16 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
         onClick={this.onMenuItemClick}
         selectedKeys={selectedKeys}
       >
-        {sidebar.map(route => this.renderMenuItem(route))}
+        {menu.map(route => this.renderMenuItem(route))}
       </Menu>
     );
   };
 
   renderMenuItem = (route: any): JSX.Element => {
-    const { permissions, } = this.props.common;
-    if (permissions.indexOf(ROUTE_TO_PERMISSION[route.path]) === -1) {
+    const { permissionMap, } = this.props.common;
+    // console.log(permissionMap);
+    const permissionOfRoute = ROUTE_TO_PERMISSION[route.path];
+    if (!permissionMap[permissionOfRoute]) {
       return null; // 過濾掉不允許顯示的菜單
     }
 
@@ -181,10 +183,13 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
   render() {
     const { collapsed, showContainer, title, } = this.state;
-    const { location, common, } = this.props;
+    const {
+      location,
+      common: { menu, },
+    } = this.props;
 
     // 还未加载到菜单数据
-    if (!common.sidebar) {
+    if (!menu) {
       return (
         <Layout className="layout">
           <Spin className="absolute-center" />

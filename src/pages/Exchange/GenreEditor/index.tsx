@@ -7,6 +7,7 @@ import {
   InputNumber,
   Tooltip,
   Button,
+  Radio,
   Col,
   Row
 } from "antd";
@@ -123,14 +124,13 @@ IGenreEditorState
     payload.leverage = payload.leverage.join(",");
     return payload;
   };
-  getRuleOfField = fieldName => {
+  getRulesOfField = fieldName => {
     const scope = this.state.scopeOfFields[fieldName];
-    const rule = this.state.rulesOfScope[scope];
-    return rule || [];
+    const rules = this.state.rulesOfScope[scope];
+    return rules || [];
   };
   handleSubmit = e => {
     e.preventDefault();
-
     this.props.form.validateFields(async (err, values) => {
       if (err) return;
       const payload = this.mapFieldValueToApiData(values);
@@ -140,16 +140,37 @@ IGenreEditorState
       // console.log("values :>> ", values);
       // console.log("payload :>> ", payload);
       // console.log("res :>> ", res);
+      if (res.status === 200) {
+        // this.props.history.goBack();
+      } else {
+        // TODO: 提示使用者表单送出失败
+      }
     });
+  };
+  renderGroupHeader = title => {
+    return (
+      <Form.Item>
+        <h2 className="form-title">{title}</h2>
+      </Form.Item>
+    );
+  };
+  renderClearOption = () => {
+    return (
+      <Select.Option key="clear" value={null} label="">
+        －清除设置－
+      </Select.Option>
+    );
   };
   render() {
     const { getFieldDecorator, } = this.props.form;
     const { formItemLayout, fieldOptions, } = this.state;
+    const { renderGroupHeader, renderClearOption, } = this;
 
     return (
       <div className="editor">
         <section className="panel-block">
           <Form className="editor-form" layout={"horizontal"}>
+            {renderGroupHeader("基本配置")}
             <Form.Item
               data-name="symbol_type_name"
               label="交易类型"
@@ -208,154 +229,14 @@ IGenreEditorState
                       message: "必填",
                     },
                     {
-                      validator:  async (_, value) => {
-                        if(value.length > 3) throw new Error('不能设置超过 3 个');
+                      validator: async (_, value) => {
+                        if (value.length > 3)
+                          throw new Error("不能设置超过 3 个");
                       },
                     }
                   ],
                 })(<Select mode="tags" tokenSeparators={[","]} open={false} />)}
               </Tooltip>
-            </Form.Item>
-            <Form.Item
-              data-name="calculate_for_buy_hands_fee"
-              label="买入手续费计算"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_buy_hands_fee")(
-                <Select placeholder="Please select">
-                  {this.getRuleOfField("calculate_for_buy_hands_fee").map(
-                    rule => (
-                      <Select.Option key={rule.id} value={rule.func_name}>
-                        {rule.name}
-                      </Select.Option>
-                    )
-                  )}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="calculate_for_sell_hands_fee"
-              label="卖出手续费计算"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_sell_hands_fee")(
-                <Select placeholder="Please select">
-                  {this.getRuleOfField("calculate_for_sell_hands_fee").map(
-                    rule => (
-                      <Select.Option key={rule.id} value={rule.func_name}>
-                        {rule.name}
-                      </Select.Option>
-                    )
-                  )}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="hands_fee_for_buy"
-              label="买入手续费费率"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("hands_fee_for_buy")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item
-              data-name="hands_fee_for_sell"
-              label="卖出手续费费率"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("hands_fee_for_sell")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item
-              data-name="calculate_for_buy_tax"
-              label="买入税费计算"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_buy_tax")(
-                <Select placeholder="Please select">
-                  {this.getRuleOfField("calculate_for_buy_tax").map(rule => (
-                    <Select.Option key={rule.id} value={rule.func_name}>
-                      {rule.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="calculate_for_sell_tax"
-              label="卖出税费计算"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_sell_tax")(
-                <Select placeholder="Please select">
-                  {this.getRuleOfField("calculate_for_sell_tax").map(rule => (
-                    <Select.Option key={rule.id} value={rule.func_name}>
-                      {rule.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="tax_for_buy"
-              label="买入税率"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("tax_for_buy")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item
-              data-name="tax_for_sell"
-              label="卖出税率"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("tax_for_sell")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item
-              data-name="calculate_for_buy_stock_fee"
-              label="买入库存费计算（多）"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_buy_stock_fee")(
-                <Select placeholder="Please select">
-                  {this.getRuleOfField("calculate_for_buy_stock_fee").map(
-                    rule => (
-                      <Select.Option key={rule.id} value={rule.func_name}>
-                        {rule.name}
-                      </Select.Option>
-                    )
-                  )}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="calculate_for_buy_stock_fee"
-              label="卖出库存费计算（空）"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_buy_stock_fee")(
-                <Select placeholder="Please select">
-                  {this.getRuleOfField("calculate_for_sell_stock_fee").map(
-                    rule => (
-                      <Select.Option key={rule.id} value={rule.func_name}>
-                        {rule.name}
-                      </Select.Option>
-                    )
-                  )}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="purchase_fee"
-              label="买入库存费率（多）"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("purchase_fee")(<InputPercent />)}
-            </Form.Item>
-
-            <Form.Item
-              data-name="selling_fee"
-              label="卖出库存费率（空）"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("selling_fee")(<InputPercent />)}
             </Form.Item>
             <Form.Item
               data-name="max_lots"
@@ -413,6 +294,54 @@ IGenreEditorState
             >
               {getFieldDecorator("spread_mode")(<Input type="text" />)}
             </Form.Item>
+
+            {renderGroupHeader("税费计算")}
+            <Form.Item
+              data-name="calculate_for_buy_tax"
+              label="买入税费计算"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("calculate_for_buy_tax")(
+                <Select placeholder="Please select">
+                  {this.getRulesOfField("calculate_for_buy_tax").map(rule => (
+                    <Select.Option key={rule.id} value={rule.func_name}>
+                      {rule.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
+            </Form.Item>
+            <Form.Item
+              data-name="calculate_for_sell_tax"
+              label="卖出税费计算"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("calculate_for_sell_tax")(
+                <Select placeholder="Please select">
+                  {this.getRulesOfField("calculate_for_sell_tax").map(rule => (
+                    <Select.Option key={rule.id} value={rule.func_name}>
+                      {rule.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
+            </Form.Item>
+            <Form.Item
+              data-name="tax_for_buy"
+              label="买入税率"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("tax_for_buy")(<InputPercent />)}
+            </Form.Item>
+            <Form.Item
+              data-name="tax_for_sell"
+              label="卖出税率"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("tax_for_sell")(<InputPercent />)}
+            </Form.Item>
+
+            {renderGroupHeader("保证金计算")}
             <Form.Item
               data-name="calculate_for_cash_deposit"
               label="保证金计算"
@@ -427,7 +356,7 @@ IGenreEditorState
                 ],
               })(
                 <Select placeholder="Please select">
-                  {this.getRuleOfField("calculate_for_cash_deposit").map(
+                  {this.getRulesOfField("calculate_for_cash_deposit").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
                         {rule.name}
@@ -439,7 +368,7 @@ IGenreEditorState
             </Form.Item>
             <Form.Item
               data-name="profit_calculate_for_bought"
-              label="盈虧計算（多）"
+              label="盈亏计算（多）"
               {...formItemLayout}
             >
               {getFieldDecorator("profit_calculate_for_bought", {
@@ -451,7 +380,7 @@ IGenreEditorState
                 ],
               })(
                 <Select placeholder="Please select">
-                  {this.getRuleOfField("profit_calculate_for_bought").map(
+                  {this.getRulesOfField("profit_calculate_for_bought").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
                         {rule.name}
@@ -463,7 +392,7 @@ IGenreEditorState
             </Form.Item>
             <Form.Item
               data-name="profit_calculate_for_sale"
-              label="盈虧計算（空）"
+              label="盈亏计算（空）"
               {...formItemLayout}
             >
               {getFieldDecorator("profit_calculate_for_sale", {
@@ -475,7 +404,7 @@ IGenreEditorState
                 ],
               })(
                 <Select placeholder="Please select">
-                  {this.getRuleOfField("profit_calculate_for_sale").map(
+                  {this.getRulesOfField("profit_calculate_for_sale").map(
                     rule => (
                       <Select.Option key={rule.id} value={rule.func_name}>
                         {rule.name}
@@ -485,32 +414,159 @@ IGenreEditorState
                 </Select>
               )}
             </Form.Item>
+
+            {renderGroupHeader("利润设定")}
+            <Form.Item
+              data-name="calculate_for_buy_hands_fee"
+              label="买入手续费计算"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("calculate_for_buy_hands_fee")(
+                <Select optionLabelProp="label" placeholder="Please select">
+                  {renderClearOption()}
+                  {this.getRulesOfField("calculate_for_buy_hands_fee").map(
+                    rule => (
+                      <Select.Option
+                        key={rule.id}
+                        value={rule.func_name}
+                        label={rule.name}
+                      >
+                        {rule.name}
+                      </Select.Option>
+                    )
+                  )}
+                </Select>
+              )}
+            </Form.Item>
+            <Form.Item
+              data-name="calculate_for_sell_hands_fee"
+              label="卖出手续费计算"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("calculate_for_sell_hands_fee")(
+                <Select optionLabelProp="label" placeholder="Please select">
+                  {renderClearOption()}
+                  {this.getRulesOfField("calculate_for_sell_hands_fee").map(
+                    rule => (
+                      <Select.Option
+                        key={rule.id}
+                        value={rule.func_name}
+                        label={rule.name}
+                      >
+                        {rule.name}
+                      </Select.Option>
+                    )
+                  )}
+                </Select>
+              )}
+            </Form.Item>
+            <Form.Item
+              data-name="hands_fee_for_buy"
+              label="买入手续费费率"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("hands_fee_for_buy")(<InputPercent />)}
+            </Form.Item>
+            <Form.Item
+              data-name="hands_fee_for_sell"
+              label="卖出手续费费率"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("hands_fee_for_sell")(<InputPercent />)}
+            </Form.Item>
+            <Form.Item
+              data-name="calculate_for_buy_stock_fee"
+              label="买入库存费计算（多）"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("calculate_for_buy_stock_fee")(
+                <Select optionLabelProp="label" placeholder="Please select">
+                  {renderClearOption()}
+                  {this.getRulesOfField("calculate_for_buy_stock_fee").map(
+                    rule => (
+                      <Select.Option
+                        key={rule.id}
+                        value={rule.func_name}
+                        label={rule.name}
+                      >
+                        {rule.name}
+                      </Select.Option>
+                    )
+                  )}
+                </Select>
+              )}
+            </Form.Item>
+            <Form.Item
+              data-name="calculate_for_sell_stock_fee"
+              label="卖出库存费计算（空）"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("calculate_for_sell_stock_fee")(
+                <Select optionLabelProp="label" placeholder="Please select">
+                  {renderClearOption()}
+                  {this.getRulesOfField("calculate_for_sell_stock_fee").map(
+                    rule => (
+                      <Select.Option
+                        key={rule.id}
+                        value={rule.func_name}
+                        label={rule.name}
+                      >
+                        {rule.name}
+                      </Select.Option>
+                    )
+                  )}
+                </Select>
+              )}
+            </Form.Item>
+            <Form.Item
+              data-name="purchase_fee"
+              label="买入库存费率（多）"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("purchase_fee")(<InputPercent />)}
+            </Form.Item>
+            <Form.Item
+              data-name="selling_fee"
+              label="卖出库存费率（空）"
+              {...formItemLayout}
+            >
+              {getFieldDecorator("selling_fee")(<InputPercent />)}
+            </Form.Item>
             <Form.Item
               data-name="three_days_swap"
               label="三日库存费"
               {...formItemLayout}
             >
               {getFieldDecorator("three_days_swap")(
-                <Select placeholder="Please select">
+                <Select optionLabelProp="label" placeholder="Please select">
+                  {renderClearOption()}
                   {fieldOptions["three_days_swap"] &&
                     fieldOptions["three_days_swap"].map(option => (
-                      <Select.Option key={option} value={option}>
+                      <Select.Option key={option} value={option} label={option}>
                         {option}
                       </Select.Option>
                     ))}
                 </Select>
               )}
             </Form.Item>
+
+            {renderGroupHeader("其他设定")}
+            <Form.Item label="是否可用" required {...formItemLayout}>
+              {getFieldDecorator("status")(
+                <Radio.Group>
+                  <Radio value={1}>是</Radio>
+                  <Radio value={0}>否</Radio>
+                </Radio.Group>
+              )}
+            </Form.Item>
+
             <Row>
-              <Col span={12} className={cx("button-group")}>
+              <Col span={16} className={cx("button-group")}>
                 <Button type="primary" onClick={this.handleSubmit}>
                   提交
                 </Button>
               </Col>
             </Row>
-            {/* <Form.Item {...formItemLayout}>
-              <TradingTimeBoard />
-            </Form.Item> */}
           </Form>
         </section>
       </div>
