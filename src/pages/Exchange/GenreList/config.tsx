@@ -5,7 +5,6 @@ import StatusText from "components/StatusText";
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
-
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
@@ -68,12 +67,15 @@ const config = self => {
   const pagination = {
     ...self.props.common.paginationConfig,
     // total: self.props.exchange.genreListMeta.total,
-    current: self.state.pagination.current,
+    current: self.props.product.genreListPagination.current,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
-      // @todo 调用获取表接口
-      const pagination = { ...self.state.pagination, pageSize, current, };
-      self.setState({ pagination, });
+      const {
+        setGenreListPagination,
+        genreListPagination,
+      } = self.props.product;
+      const pagination = { ...genreListPagination, pageSize, current, };
+      setGenreListPagination(pagination);
     },
   };
 
@@ -103,9 +105,10 @@ const config = self => {
       rowKey: "id",
       // rowSelection,
       columns,
-      dataSource: self.state.genreList,
+      dataSource: self.props.product.genreList,
       pagination,
       onChange(pagination, filters, sorter) {
+        const { setGenreListPagination, getGenreList, } = self.props.product;
         const payload: any = { ...pagination, };
         // console.log("payload :>> ", payload);
         if (!utils.isEmpty(filters)) {
@@ -122,9 +125,8 @@ const config = self => {
           delete payload.sort;
         }
         // 更新分页后，呼叫回呼重抓数据
-        self.setState({ pagination: payload, }, () =>
-          self.getGenreList(payload)
-        );
+        setGenreListPagination(payload);
+        getGenreList();
       },
     },
   };

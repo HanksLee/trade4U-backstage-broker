@@ -5,10 +5,8 @@ import { moonAPI as API } from "utils/request";
 // 回传的 id 是券商后台商品分类 key, symbol_type 是主后台商品分类 key, code 是商品分类名
 
 const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/broker/symbol_type?status=1", config); // getGenreList 只回传启用的分类
+  API.get("/broker/symbol_type", config);
 
-const getAllSymbolType = (config: AxiosRequestConfig): Promise<any> =>
-  API.get(`/broker/symbol_type`, config);
 const getCurrentSymbolType = (id, config): Promise<any> =>
   API.get(`/broker/symbol_type/${id}`, config);
 const updateSymbolType = (id, config): Promise<any> =>
@@ -65,7 +63,7 @@ const getRuleList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/profit_rule", config);
 
 export default {
-  getAllSymbolType,
+  getGenreList,
   getCurrentSymbolType,
   updateSymbolType,
   getProductList,
@@ -73,7 +71,6 @@ export default {
   createProduct,
   updateProduct,
   deleteProduct,
-  getGenreList,
   getHistoryList,
   getTransactionModeOptions,
   getBgColorOptions,

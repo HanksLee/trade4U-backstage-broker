@@ -1,4 +1,5 @@
 import * as React from "react";
+import WithRoute from "components/WithRoute";
 import { BaseReact } from "components/BaseReact";
 import {
   Form,
@@ -57,6 +58,8 @@ const fieldOptionsOfSymbolType = {
 };
 
 // @ts-ignore
+/* eslint new-cap: "off" */
+@WithRoute("/dashboard/exchange/genre/editor", { exact: false, })
 @Form.create()
 @inject("common", "product")
 export default class GenreEditor extends BaseReact<
@@ -141,7 +144,9 @@ IGenreEditorState
       // console.log("payload :>> ", payload);
       // console.log("res :>> ", res);
       if (res.status === 200) {
-        // this.props.history.goBack();
+        // 编辑表单后，重抓分类列表数据
+        this.props.product.getGenreList();
+        this.props.history.push("/dashboard/exchange/genre");
       } else {
         // TODO: 提示使用者表单送出失败
       }

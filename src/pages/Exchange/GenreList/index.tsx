@@ -1,7 +1,7 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import listConfig from "./config";
-import WithRoute from "components/WithRoute";
+
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
@@ -9,6 +9,7 @@ import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from "utils";
 import GenreEditor from "pages/Exchange/GenreEditor";
+import WithRoute from 'components/WithRoute';
 
 export interface IExchangeGenreProps {}
 
@@ -18,44 +19,32 @@ export interface IExchangeGenreState {
 
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/exchange/genre", { exact: false, })
-@inject("common")
+@inject("common", "product")
 @observer
-export default class ExchangeGenre extends BaseReact<
+export default class GenreList extends BaseReact<
 IExchangeGenreProps,
 IExchangeGenreState
 > {
   private $genreEditor = null;
   state = {
-    pagination: {},
     selectedRowKeys: [],
-    genreList: null,
   };
   async componentDidMount() {
-    // 从 commonStore 中拿取分页预设值，加入到组件的 state
+    // 从 commonStore 中拿取分页预设值, 分页状态放在 ProductStore, 因为编辑完后需用分页状态去重抓列表
     const { paginationConfig, } = this.props.common;
-    // console.log('paginationConfig :>> ', paginationConfig);
+    const { setGenreListPagination, getGenreList, } = this.props.product;
     const current = paginationConfig.defaultCurrent;
     const pageSize = paginationConfig.defaultPageSize;
-    const pagination = { ...paginationConfig, current, pageSize, } ;
-    this.setState({ pagination,  });
-    this.getGenreList(pagination);
+    const pagination = { ...paginationConfig, current, pageSize, };
+    setGenreListPagination(pagination);
+    getGenreList();
+    // console.log('paginationConfig :>> ', paginationConfig);
   }
-
   componentDidUpdate() {
     if (this.props.location.pathname === "/dashboard/exchange/genre") {
       this.props.history.replace("/dashboard/exchange/genre/list");
     }
   }
-  getGenreList = async pagination => {
-    const { current, pageSize, } = pagination;
-    // console.log("pagination :>> ", pagination);
-    const res = await this.$api.product.getAllSymbolType({
-      params: { page_size: pageSize, page: current, },
-    });
-    // console.log('res :>> ', res);
-    const genreList = res.data.results;
-    this.setState({ genreList, });
-  };
 
   // * 按下编辑钮后, 跳转至 genreEditor 页面
   goToEditor = (record: any): void => {
@@ -70,7 +59,7 @@ IExchangeGenreState
   render() {
     const { match, } = this.props;
     const computedTitle = "交易类型设置";
-
+    const genreList = this.props.product.genreList; // genreList 需被使用 @observer 才会更新
     return (
       <div>
         <CommonHeader {...this.props} links={[]} title={computedTitle} />
