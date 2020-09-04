@@ -1,5 +1,5 @@
 import * as React from "react";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import utils from 'utils';
 import { BaseReact } from "components/BaseReact";
 import { Spin } from 'antd';
@@ -7,7 +7,7 @@ import './index.scss';
 
 
 /* eslint new-cap: "off" */
-@WithRoute("/auth")
+@withRoutePermissionGuard("/auth")
 export default class Auth extends BaseReact<any> {
   componentDidMount() {
     const search = this.$qs.parse(this.props.location.search);

@@ -4,7 +4,7 @@ import CommonList from "components/CommonList";
 import GroupSymbolList from "../GroupSymbolList";
 import listConfig from "./config";
 import EditGroupModal from "../EditGroupModal";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
@@ -34,7 +34,7 @@ interface GroupListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/group", {
+@withRoutePermissionGuard("/dashboard/group", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/group"],
 })

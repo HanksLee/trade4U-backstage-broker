@@ -3,7 +3,7 @@ import CommonList from "components/CommonList";
 import EditSMSTemplateModal from "./EditSMSTemplateModal";
 import listConfig from "./config";
 // import utils from "utils";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
@@ -34,7 +34,7 @@ interface SMSTemplateListState extends ISMSTemplateState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/sms/smstemplate", {
+@withRoutePermissionGuard("/dashboard/sms/smstemplate", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/sms/smstemplate"],
 })

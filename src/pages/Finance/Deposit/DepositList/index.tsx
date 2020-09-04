@@ -1,7 +1,7 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import listConfig from "./config";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import ReactDOM from "react-dom";
 import { BaseReact } from "components/BaseReact";
@@ -19,7 +19,7 @@ export interface IDepositListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/finance/deposit", { exact: false, })
+@withRoutePermissionGuard("/dashboard/finance/deposit", { exact: false, })
 @inject("common", "finance")
 @observer
 export default class DepositList extends BaseReact<

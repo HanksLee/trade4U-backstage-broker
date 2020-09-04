@@ -1,5 +1,5 @@
 import * as React from "react";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import { BaseReact } from "components/BaseReact";
 import {
   Form,
@@ -41,6 +41,7 @@ const scopeOfField = {
   profit_calculate_for_sale: "profit_rule",
   calculate_for_cash_deposit: "margin_rule",
 };
+
 /**
  * MT 外汇
  * HK 港股
@@ -56,10 +57,39 @@ const fieldOptionsOfSymbolType = {
     three_days_swap: ["週一", "週二", "週三", "週四", "週五", "週六", "週日"],
   },
 };
-
+// 栏位资讯
+const infoOfField = {
+  symbol_type_name: { label: "交易類型", },
+  position_type: { label: "持仓类型", },
+  max_position_days: { label: "持仓天数", },
+  leverage: { label: "杠杆", },
+  calculate_for_buy_hands_fee: { label: "买入手续费计算", },
+  calculate_for_sell_hands_fee: { label: "卖出手续费计算", },
+  hands_fee_for_buy: { label: "买入手续费率", },
+  hands_fee_for_sell: { label: "卖出手续费率", },
+  calculate_for_buy_tax: { label: "买入税费计算", },
+  calculate_for_sell_tax: { label: "卖出税费计算", },
+  tax_for_buy: { label: "买入税率", },
+  tax_for_sell: { label: "卖出税率", },
+  calculate_for_buy_stock_fee: { label: "买入库存费计算(多)", },
+  calculate_for_sell_stock_fee: { label: "卖出库存费計算(空)", },
+  purchase_fee: { label: "买入库存费率(多)", },
+  selling_fee: { label: "卖出库存费率(空)", },
+  max_lots: { label: "最大手数", },
+  min_lots: { label: "最小手数", },
+  take_profit_point: { label: "止盈线", },
+  stop_loss_point: { label: "止损线", },
+  spread: { label: "点差", },
+  spread_mode: { label: "点差模式", },
+  calculate_for_cash_deposit: { label: "保证金计算", },
+  profit_calculate_for_bought: { label: "盈亏计算(多)", },
+  profit_calculate_for_sale: { label: "盈亏计算(空)", },
+  three_days_swap: { label: "三日库存费", },
+  status: { label: "是否可用", },
+};
 // @ts-ignore
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/exchange/genre/editor", { exact: false, })
+@withRoutePermissionGuard("/dashboard/exchange/genre/editor", { exact: false, })
 @Form.create()
 @inject("common", "product")
 export default class GenreEditor extends BaseReact<
@@ -87,7 +117,7 @@ IGenreEditorState
     const parsedQueryString = this.$qs.parse(this.props.location.search);
     const { id, } = parsedQueryString;
     const { setFieldsValue, } = this.props.form;
-    const res = await this.$api.product.getCurrentSymbolType(id);
+    const res = await this.$api.product.getCurrentGenre(id);
     const initFieldValue = this.mapApiDataToFieldValue(res.data);
     const fieldOptions = fieldOptionsOfSymbolType[res.data.code];
     this.setState({ fieldOptions, });
@@ -139,7 +169,7 @@ IGenreEditorState
       const payload = this.mapFieldValueToApiData(values);
       const parsedQueryString = this.$qs.parse(this.props.location.search);
       const { id, } = parsedQueryString;
-      const res = await this.$api.product.updateSymbolType(id, payload);
+      const res = await this.$api.product.updateGenre(id, payload);
       // console.log("values :>> ", values);
       // console.log("payload :>> ", payload);
       // console.log("res :>> ", res);
@@ -174,397 +204,532 @@ IGenreEditorState
     return (
       <div className="editor">
         <section className="panel-block">
-          <Form className="editor-form" layout={"horizontal"}>
+          <Form className="editor-form" layout={this.formLayout}>
             {renderGroupHeader("基本配置")}
-            <Form.Item
-              data-name="symbol_type_name"
-              label="交易类型"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("symbol_type_name")(
-                <Input type="text" disabled={true} />
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="position_type"
-              label="持仓类型"
-              {...formItemLayout}
-            >
-              <Tooltip
-                title="T+0 (可多可空)、T+1 (只能作多)"
-                placement="topLeft"
-              >
-                {getFieldDecorator("position_type", {
-                  rules: [
-                    {
-                      required: true,
-                      message: "必填",
-                    }
-                  ],
-                })(
-                  <Select mode="tags" placeholder="Please select">
-                    {fieldOptions["position_type"] &&
-                      fieldOptions["position_type"].map(option => (
-                        <Select.Option key={option} value={option}>
-                          {option}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Input type="text" disabled={true} />
+                  )}
+                </Form.Item>
+              );
+            })("symbol_type_name")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  <Tooltip
+                    title="T+0 (可多可空)、T+1 (只能作多)"
+                    placement="topLeft"
+                  >
+                    {getFieldDecorator(name, {
+                      rules: [
+                        {
+                          required: true,
+                          message: "必填",
+                        }
+                      ],
+                    })(
+                      <Select mode="tags" placeholder="Please select">
+                        {fieldOptions[name] &&
+                          fieldOptions[name].map(option => (
+                            <Select.Option key={option} value={option}>
+                              {option}
+                            </Select.Option>
+                          ))}
+                      </Select>
+                    )}
+                  </Tooltip>
+                </Form.Item>
+              );
+            })("position_type")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <InputNumber className={cx("input-number")} />
+                  )}
+                </Form.Item>
+              );
+            })("max_position_days")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  <Tooltip
+                    title="最多3个，以 , 符号区隔，例如： 1,2,3"
+                    placement="topLeft"
+                  >
+                    {getFieldDecorator(name, {
+                      rules: [
+                        {
+                          required: true,
+                          message: "必填",
+                        },
+                        {
+                          validator: async (_, value) => {
+                            if (value.length > 3)
+                              throw new Error("不能设置超过 3 个");
+                          },
+                        }
+                      ],
+                    })(
+                      <Select
+                        mode="tags"
+                        tokenSeparators={[","]}
+                        open={false}
+                      />
+                    )}
+                  </Tooltip>
+                </Form.Item>
+              );
+            })("leverage")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  <Tooltip title="不限制请填 -1" placement="topLeft">
+                    {getFieldDecorator(name, {
+                      rules: [
+                        {
+                          required: true,
+                          message: "最大手数必填，如不限制请填 -1",
+                        }
+                      ],
+                    })(<InputNumber className={cx("input-number")} min={-1} />)}
+                  </Tooltip>
+                </Form.Item>
+              );
+            })("max_lots")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "最小手数必填",
+                      }
+                    ],
+                  })(<InputNumber className={cx("input-number")} min={1} />)}
+                </Form.Item>
+              );
+            })("min_lots")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("take_profit_point")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("stop_loss_point")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <InputNumber className={cx("input-number")} />
+                  )}
+                </Form.Item>
+              );
+            })("spread")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<Input type="text" />)}
+                </Form.Item>
+              );
+            })("spread_mode")}
+            {renderGroupHeader("税费计算")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select placeholder="Please select">
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option key={rule.id} value={rule.func_name}>
+                          {rule.name}
                         </Select.Option>
                       ))}
-                  </Select>
-                )}
-              </Tooltip>
-            </Form.Item>
-            <Form.Item
-              data-name="max_position_days"
-              label="持仓天数"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("max_position_days")(
-                <InputNumber className={cx("input-number")} />
-              )}
-            </Form.Item>
-            <Form.Item data-name="leverage" label="杠杆" {...formItemLayout}>
-              <Tooltip
-                title="最多3个，以 , 符号区隔，例如： 1,2,3"
-                placement="topLeft"
-              >
-                {getFieldDecorator("leverage", {
-                  rules: [
-                    {
-                      required: true,
-                      message: "必填",
-                    },
-                    {
-                      validator: async (_, value) => {
-                        if (value.length > 3)
-                          throw new Error("不能设置超过 3 个");
-                      },
-                    }
-                  ],
-                })(<Select mode="tags" tokenSeparators={[","]} open={false} />)}
-              </Tooltip>
-            </Form.Item>
-            <Form.Item
-              data-name="max_lots"
-              label="最大手数"
-              {...formItemLayout}
-            >
-              <Tooltip title="不限制请填 -1" placement="topLeft">
-                {getFieldDecorator("max_lots", {
-                  rules: [
-                    {
-                      required: true,
-                      message: "最大手数必填，如不限制请填 -1",
-                    }
-                  ],
-                })(<InputNumber className={cx("input-number")} min={-1} />)}
-              </Tooltip>
-            </Form.Item>
-            <Form.Item
-              data-name="min_lots"
-              label="最小手数"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("min_lots", {
-                rules: [
-                  {
-                    required: true,
-                    message: "最小手数必填",
-                  }
-                ],
-              })(<InputNumber className={cx("input-number")} min={1} />)}
-            </Form.Item>
-            <Form.Item
-              data-name="take_profit_point"
-              label="止盈线"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("take_profit_point")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item
-              data-name="stop_loss_point"
-              label="止损线"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("stop_loss_point")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item data-name="spread" label="点差" {...formItemLayout}>
-              {getFieldDecorator("spread")(
-                <InputNumber className={cx("input-number")} />
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="spread_mode"
-              label="点差模式"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("spread_mode")(<Input type="text" />)}
-            </Form.Item>
-
-            {renderGroupHeader("税费计算")}
-            <Form.Item
-              data-name="calculate_for_buy_tax"
-              label="买入税费计算"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_buy_tax")(
-                <Select placeholder="Please select">
-                  {this.getRulesOfField("calculate_for_buy_tax").map(rule => (
-                    <Select.Option key={rule.id} value={rule.func_name}>
-                      {rule.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="calculate_for_sell_tax"
-              label="卖出税费计算"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_sell_tax")(
-                <Select placeholder="Please select">
-                  {this.getRulesOfField("calculate_for_sell_tax").map(rule => (
-                    <Select.Option key={rule.id} value={rule.func_name}>
-                      {rule.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="tax_for_buy"
-              label="买入税率"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("tax_for_buy")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item
-              data-name="tax_for_sell"
-              label="卖出税率"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("tax_for_sell")(<InputPercent />)}
-            </Form.Item>
-
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("calculate_for_buy_tax")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select placeholder="Please select">
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option key={rule.id} value={rule.func_name}>
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("calculate_for_sell_tax")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("tax_for_buy")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("tax_for_sell")}
             {renderGroupHeader("保证金计算")}
-            <Form.Item
-              data-name="calculate_for_cash_deposit"
-              label="保证金计算"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_cash_deposit", {
-                rules: [
-                  {
-                    required: true,
-                    message: "必填",
-                  }
-                ],
-              })(
-                <Select placeholder="Please select">
-                  {this.getRulesOfField("calculate_for_cash_deposit").map(
-                    rule => (
-                      <Select.Option key={rule.id} value={rule.func_name}>
-                        {rule.name}
-                      </Select.Option>
-                    )
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(
+                    <Select placeholder="Please select">
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option key={rule.id} value={rule.func_name}>
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   )}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="profit_calculate_for_bought"
-              label="盈亏计算（多）"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("profit_calculate_for_bought", {
-                rules: [
-                  {
-                    required: true,
-                    message: "必填",
-                  }
-                ],
-              })(
-                <Select placeholder="Please select">
-                  {this.getRulesOfField("profit_calculate_for_bought").map(
-                    rule => (
-                      <Select.Option key={rule.id} value={rule.func_name}>
-                        {rule.name}
-                      </Select.Option>
-                    )
+                </Form.Item>
+              );
+            })("calculate_for_cash_deposit")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(
+                    <Select placeholder="Please select">
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option key={rule.id} value={rule.func_name}>
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   )}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="profit_calculate_for_sale"
-              label="盈亏计算（空）"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("profit_calculate_for_sale", {
-                rules: [
-                  {
-                    required: true,
-                    message: "必填",
-                  }
-                ],
-              })(
-                <Select placeholder="Please select">
-                  {this.getRulesOfField("profit_calculate_for_sale").map(
-                    rule => (
-                      <Select.Option key={rule.id} value={rule.func_name}>
-                        {rule.name}
-                      </Select.Option>
-                    )
+                </Form.Item>
+              );
+            })("profit_calculate_for_bought")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(
+                    <Select placeholder="Please select">
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option key={rule.id} value={rule.func_name}>
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   )}
-                </Select>
-              )}
-            </Form.Item>
-
+                </Form.Item>
+              );
+            })("profit_calculate_for_sale")}
             {renderGroupHeader("利润设定")}
-            <Form.Item
-              data-name="calculate_for_buy_hands_fee"
-              label="买入手续费计算"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_buy_hands_fee")(
-                <Select optionLabelProp="label" placeholder="Please select">
-                  {renderClearOption()}
-                  {this.getRulesOfField("calculate_for_buy_hands_fee").map(
-                    rule => (
-                      <Select.Option
-                        key={rule.id}
-                        value={rule.func_name}
-                        label={rule.name}
-                      >
-                        {rule.name}
-                      </Select.Option>
-                    )
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {renderClearOption()}
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option
+                          key={rule.id}
+                          value={rule.func_name}
+                          label={rule.name}
+                        >
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   )}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="calculate_for_sell_hands_fee"
-              label="卖出手续费计算"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_sell_hands_fee")(
-                <Select optionLabelProp="label" placeholder="Please select">
-                  {renderClearOption()}
-                  {this.getRulesOfField("calculate_for_sell_hands_fee").map(
-                    rule => (
-                      <Select.Option
-                        key={rule.id}
-                        value={rule.func_name}
-                        label={rule.name}
-                      >
-                        {rule.name}
-                      </Select.Option>
-                    )
+                </Form.Item>
+              );
+            })("calculate_for_buy_hands_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {renderClearOption()}
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option
+                          key={rule.id}
+                          value={rule.func_name}
+                          label={rule.name}
+                        >
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   )}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="hands_fee_for_buy"
-              label="买入手续费费率"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("hands_fee_for_buy")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item
-              data-name="hands_fee_for_sell"
-              label="卖出手续费费率"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("hands_fee_for_sell")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item
-              data-name="calculate_for_buy_stock_fee"
-              label="买入库存费计算（多）"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_buy_stock_fee")(
-                <Select optionLabelProp="label" placeholder="Please select">
-                  {renderClearOption()}
-                  {this.getRulesOfField("calculate_for_buy_stock_fee").map(
-                    rule => (
-                      <Select.Option
-                        key={rule.id}
-                        value={rule.func_name}
-                        label={rule.name}
-                      >
-                        {rule.name}
-                      </Select.Option>
-                    )
+                </Form.Item>
+              );
+            })("calculate_for_sell_hands_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("hands_fee_for_buy")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("hands_fee_for_sell")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {renderClearOption()}
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option
+                          key={rule.id}
+                          value={rule.func_name}
+                          label={rule.name}
+                        >
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   )}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="calculate_for_sell_stock_fee"
-              label="卖出库存费计算（空）"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("calculate_for_sell_stock_fee")(
-                <Select optionLabelProp="label" placeholder="Please select">
-                  {renderClearOption()}
-                  {this.getRulesOfField("calculate_for_sell_stock_fee").map(
-                    rule => (
-                      <Select.Option
-                        key={rule.id}
-                        value={rule.func_name}
-                        label={rule.name}
-                      >
-                        {rule.name}
-                      </Select.Option>
-                    )
+                </Form.Item>
+              );
+            })("calculate_for_buy_stock_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {renderClearOption()}
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option
+                          key={rule.id}
+                          value={rule.func_name}
+                          label={rule.name}
+                        >
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   )}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item
-              data-name="purchase_fee"
-              label="买入库存费率（多）"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("purchase_fee")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item
-              data-name="selling_fee"
-              label="卖出库存费率（空）"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("selling_fee")(<InputPercent />)}
-            </Form.Item>
-            <Form.Item
-              data-name="three_days_swap"
-              label="三日库存费"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("three_days_swap")(
-                <Select optionLabelProp="label" placeholder="Please select">
-                  {renderClearOption()}
-                  {fieldOptions["three_days_swap"] &&
-                    fieldOptions["three_days_swap"].map(option => (
-                      <Select.Option key={option} value={option} label={option}>
-                        {option}
-                      </Select.Option>
-                    ))}
-                </Select>
-              )}
-            </Form.Item>
+                </Form.Item>
+              );
+            })("calculate_for_sell_stock_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("purchase_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("selling_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {renderClearOption()}
+                      {fieldOptions[name] &&
+                        fieldOptions[name].map(option => (
+                          <Select.Option
+                            key={option}
+                            value={option}
+                            label={option}
+                          >
+                            {option}
+                          </Select.Option>
+                        ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("three_days_swap")}
 
             {renderGroupHeader("其他设定")}
-            <Form.Item label="是否可用" required {...formItemLayout}>
-              {getFieldDecorator("status")(
-                <Radio.Group>
-                  <Radio value={1}>是</Radio>
-                  <Radio value={0}>否</Radio>
-                </Radio.Group>
-              )}
-            </Form.Item>
-
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item label={info.label} required {...formItemLayout}>
+                  {getFieldDecorator(name)(
+                    <Radio.Group>
+                      <Radio value={1}>是</Radio>
+                      <Radio value={0}>否</Radio>
+                    </Radio.Group>
+                  )}
+                </Form.Item>
+              );
+            })("status")}
             <Row>
               <Col span={16} className={cx("button-group")}>
                 <Button type="primary" onClick={this.handleSubmit}>

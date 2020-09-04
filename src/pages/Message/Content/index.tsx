@@ -3,7 +3,7 @@ import CommonList from "components/CommonList";
 import EditMessageContentModal from "./EditMessageContentModal";
 import listConfig from "./config";
 // import utils from "utils";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
@@ -35,7 +35,7 @@ interface MessageContentListState extends IMessageContentState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/message/content", {
+@withRoutePermissionGuard("/dashboard/message/content", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/message/content"],
 })

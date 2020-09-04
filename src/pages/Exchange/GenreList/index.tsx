@@ -9,7 +9,7 @@ import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from "utils";
 import GenreEditor from "pages/Exchange/GenreEditor";
-import WithRoute from 'components/WithRoute';
+import { withRoutePermissionGuard } from 'components/withRoutePermissionGuard';
 
 export interface IExchangeGenreProps {}
 
@@ -18,7 +18,7 @@ export interface IExchangeGenreState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/exchange/genre", { exact: false, })
+@withRoutePermissionGuard("/dashboard/exchange/genre", { exact: false, })
 @inject("common", "product")
 @observer
 export default class GenreList extends BaseReact<

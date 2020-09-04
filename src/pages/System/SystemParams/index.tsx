@@ -11,7 +11,7 @@ import {
   Radio
 } from "antd";
 import CommonHeader from "components/CommonHeader";
-import withRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import { ROUTE_TO_PERMISSION } from "constant";
 import "./index.scss";
 import { inject, observer } from "mobx-react";
@@ -53,7 +53,7 @@ export interface ISystemEditorState {
 
 // @ts-ignore
 
-@withRoute("/dashboard/system/params", {
+@withRoutePermissionGuard("/dashboard/system/params", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/system/params"],
 })

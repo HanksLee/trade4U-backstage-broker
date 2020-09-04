@@ -1,7 +1,7 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import listConfig from "./config";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
@@ -24,7 +24,7 @@ interface ReportState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/report/agency", {
+@withRoutePermissionGuard("/dashboard/report/agency", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/report/agency"],
 })

@@ -1,7 +1,7 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import listConfig from "./config";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import RateEdtior from 'pages/Finance/Rate/RateEditor';
@@ -18,7 +18,7 @@ export interface IRateListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/finance/rate", { exact: false, })
+@withRoutePermissionGuard("/dashboard/finance/rate", { exact: false, })
 @inject("common", "finance")
 @observer
 export default class RateList extends BaseReact<IRateListProps, IRateListState> {

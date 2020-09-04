@@ -2,7 +2,7 @@ import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { SHARE_DATA } from "constant";
 
-const WithShare = (WrappedComponent): any => {
+const withShare = (WrappedComponent): any => {
   return class extends BaseReact {
     componentWillMount() {
       this.$share && this.$share(SHARE_DATA);
@@ -21,4 +21,4 @@ const WithShare = (WrappedComponent): any => {
   };
 };
 
-export default WithShare;
+export default withShare;

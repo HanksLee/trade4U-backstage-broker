@@ -7,9 +7,9 @@ import { moonAPI as API } from "utils/request";
 const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/broker/symbol_type", config);
 
-const getCurrentSymbolType = (id, config): Promise<any> =>
+const getCurrentGenre = (id, config): Promise<any> =>
   API.get(`/broker/symbol_type/${id}`, config);
-const updateSymbolType = (id, config): Promise<any> =>
+const updateGenre = (id, config): Promise<any> =>
   API.patch(`/broker/symbol_type/${id}`, config);
 
 // 交易产品设置 api
@@ -64,8 +64,8 @@ const getRuleList = (config: AxiosRequestConfig): Promise<any> =>
 
 export default {
   getGenreList,
-  getCurrentSymbolType,
-  updateSymbolType,
+  getCurrentGenre,
+  updateGenre,
   getProductList,
   getCurrentProduct,
   createProduct,

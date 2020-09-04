@@ -2,7 +2,7 @@ import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import listConfig from "../../config";
 import OpenOrderDetail from "../CloseOrderDetail";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import ReactDOM from "react-dom";
 import { BaseReact } from "components/BaseReact";
@@ -27,7 +27,7 @@ export interface CloseOrderListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/order/close", {
+@withRoutePermissionGuard("/dashboard/order/close", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/order/close"],
 })

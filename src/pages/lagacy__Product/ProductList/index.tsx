@@ -1,7 +1,7 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import listConfig from "./config";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import ProductEdtior from "pages/Product/ProductEditor";
@@ -18,7 +18,7 @@ export interface IProductListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/exchange/product", { exact: false, })
+@withRoutePermissionGuard("/dashboard/exchange/product", { exact: false, })
 @inject("common", "product")
 @observer
 export default class ProductList extends BaseReact<

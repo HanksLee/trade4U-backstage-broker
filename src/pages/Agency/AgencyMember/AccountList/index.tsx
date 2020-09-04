@@ -7,7 +7,7 @@ import EditBalanceModal from "./EditBalanceModal";
 import TransferCustomModal from "./TransferCustomModal";
 import TransferAgentModal from "./TransferAgentModal";
 import listConfig from "./config";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { Modal } from "antd";
@@ -59,7 +59,7 @@ interface AccountListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/agency/agent", {
+@withRoutePermissionGuard("/dashboard/agency/agent", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/agency/agent"],
 })

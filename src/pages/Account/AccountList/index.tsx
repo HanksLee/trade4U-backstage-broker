@@ -7,7 +7,7 @@ import listConfig from "./config";
 import TransferAgentModal from "./TransferAgentModal";
 import ResetPasswordModal from "./ResetPasswordModal";
 import TransferGroupModal from "./TransferGroupModal";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import moment from "moment";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
@@ -58,7 +58,7 @@ interface AccountListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/account/account", {
+@withRoutePermissionGuard("/dashboard/account/account", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/account/account"],
 })

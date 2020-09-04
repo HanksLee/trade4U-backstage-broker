@@ -3,7 +3,7 @@ import CommonList from "components/CommonList";
 import EditSMSChannelModal from "./EditSMSChannelModal";
 import listConfig from "./config";
 // import utils from "utils";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
@@ -34,7 +34,7 @@ interface SMSChannelListState extends ISMSChannelState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/sms/smschannel", {
+@withRoutePermissionGuard("/dashboard/sms/smschannel", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/sms/smschannel"],
 })

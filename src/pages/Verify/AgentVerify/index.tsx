@@ -3,7 +3,7 @@ import CommonList from "components/CommonList";
 import EditAgentVerifyModal from "./EditAgentVerifyModal";
 import listConfig from "./config";
 // import utils from "utils";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
@@ -38,7 +38,7 @@ interface VerifyAgentVerifyListState extends IVerifyAgentVerifyState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/verify/agentverify", {
+@withRoutePermissionGuard("/dashboard/verify/agentverify", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/verify/agentverify"],
 })

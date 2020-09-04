@@ -1,7 +1,7 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import listConfig from "./config";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import ReactDOM from "react-dom";
 import { BaseReact } from "components/BaseReact";
@@ -33,7 +33,7 @@ interface TransactionListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/account/transaction", {
+@withRoutePermissionGuard("/dashboard/account/transaction", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/transaction"],
 })
