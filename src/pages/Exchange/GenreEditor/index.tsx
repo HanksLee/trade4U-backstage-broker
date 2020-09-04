@@ -87,7 +87,7 @@ IGenreEditorState
     const parsedQueryString = this.$qs.parse(this.props.location.search);
     const { id, } = parsedQueryString;
     const { setFieldsValue, } = this.props.form;
-    const res = await this.$api.product.getCurrentSymbolType(id);
+    const res = await this.$api.product.getCurrentGenre(id);
     const initFieldValue = this.mapApiDataToFieldValue(res.data);
     const fieldOptions = fieldOptionsOfSymbolType[res.data.code];
     this.setState({ fieldOptions, });
@@ -139,7 +139,7 @@ IGenreEditorState
       const payload = this.mapFieldValueToApiData(values);
       const parsedQueryString = this.$qs.parse(this.props.location.search);
       const { id, } = parsedQueryString;
-      const res = await this.$api.product.updateSymbolType(id, payload);
+      const res = await this.$api.product.updateGenre(id, payload);
       // console.log("values :>> ", values);
       // console.log("payload :>> ", payload);
       // console.log("res :>> ", res);
