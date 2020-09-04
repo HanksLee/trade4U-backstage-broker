@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import "./index.scss";
 import {
   Button,
@@ -29,7 +29,7 @@ const formItemLayout = {
 };
 
 /* eslint new-cap: "off" */
-@WithRoute("/login")
+@withRoutePermissionGuard("/login")
 // @ts-ignore
 @Form.create()
 export default class Login extends BaseReact<ILoginProps, ILoginState> {

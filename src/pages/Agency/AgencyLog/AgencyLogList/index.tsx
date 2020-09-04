@@ -1,7 +1,7 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import listConfig from "./config";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { inject, observer } from "mobx-react";
@@ -17,7 +17,7 @@ export interface ILogListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/agency/log", { exact: false, })
+@withRoutePermissionGuard("/dashboard/agency/log", { exact: false, })
 @inject("common", "agency")
 @observer
 export default class LogList extends BaseReact<ILogListProps, ILogListState> {

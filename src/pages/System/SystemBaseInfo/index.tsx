@@ -2,7 +2,7 @@ import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { Form, Input, Button, Upload, Icon } from "antd";
 import CommonHeader from "components/CommonHeader";
-import withRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import { ROUTE_TO_PERMISSION } from "constant";
 import "./index.scss";
 import { inject, observer } from "mobx-react";
@@ -38,7 +38,7 @@ export interface ISystemBaseInfoEditorState {
 
 // @ts-ignore
 
-@withRoute("/dashboard/system/baseinfo", {
+@withRoutePermissionGuard("/dashboard/system/baseinfo", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/system/baseinfo"],
 })

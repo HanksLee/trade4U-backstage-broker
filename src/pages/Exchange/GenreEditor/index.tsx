@@ -1,5 +1,5 @@
 import * as React from "react";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import { BaseReact } from "components/BaseReact";
 import {
   Form,
@@ -89,7 +89,7 @@ const infoOfField = {
 };
 // @ts-ignore
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/exchange/genre/editor", { exact: false, })
+@withRoutePermissionGuard("/dashboard/exchange/genre/editor", { exact: false, })
 @Form.create()
 @inject("common", "product")
 export default class GenreEditor extends BaseReact<

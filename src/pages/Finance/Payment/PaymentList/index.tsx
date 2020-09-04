@@ -1,7 +1,7 @@
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import listConfig from "./config";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import PaymentEdtior from "pages/Finance/Payment/PaymentEditor";
@@ -18,7 +18,7 @@ export interface IPaymentListState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/finance/payment", { exact: false, })
+@withRoutePermissionGuard("/dashboard/finance/payment", { exact: false, })
 @inject("common", "finance")
 @observer
 export default class PaymentList extends BaseReact<

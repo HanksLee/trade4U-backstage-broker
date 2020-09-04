@@ -1,5 +1,5 @@
 import EditSymbolTypeModal from '../EditSymbolTypeModal';
-import WithRoute from 'components/WithRoute';
+import { withRoutePermissionGuard } from 'components/withRoutePermissionGuard';
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { ColumnProps } from "antd/lib/table";
@@ -25,7 +25,7 @@ interface PermissionListState {
 };
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/group/symbol", { exact: false, })
+@withRoutePermissionGuard("/dashboard/group/symbol", { exact: false, })
 @inject("common", "group")
 @observer
 export default class PermissionList extends BaseReact<{}, PermissionListState> {

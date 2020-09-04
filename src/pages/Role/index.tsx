@@ -2,7 +2,7 @@ import CommonHeader from "components/CommonHeader";
 import EditRoleModal from "./EditRoleModal";
 import PermissionEditor from "./PermissionEditor";
 import moment from "moment";
-import WithRoute from "components/WithRoute";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import { Button, Icon, Table, Popconfirm } from "antd";
@@ -27,7 +27,7 @@ interface IRoleState {
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/role", {
+@withRoutePermissionGuard("/dashboard/role", {
   exact: false,
   permissionCode: ROUTE_TO_PERMISSION["/dashboard/role"],
 })
