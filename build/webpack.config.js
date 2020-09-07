@@ -66,7 +66,8 @@ module.exports = {
       '/api/moon': {
         // target: 'https://api.ruiyigloble.com',
         // target: 'https://api.trading8a.com',
-        target: 'http://api.cangshu360.com',
+        target: 'https://api.sugargirls.live',
+        // target: 'http://api.cangshu360.com',
         pathRewrite: { '^/api/moon': '', },
         secure: false,
         changeOrigin: true,

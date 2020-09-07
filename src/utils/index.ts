@@ -237,7 +237,13 @@ function swapObjectKeyValue(obj) {
     Object.entries(obj).map(each => each.slice().reverse())
   );
 }
+function capitalize(str) {
+  // 将首字母大写
+  if (typeof str !== 'string') return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 export default {
+  capitalize,
   swapObjectKeyValue,
   setRootFontSizeFromClient,
   initI18n,

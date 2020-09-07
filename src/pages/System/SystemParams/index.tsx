@@ -3,23 +3,27 @@ import { BaseReact } from "components/BaseReact";
 import {
   Form,
   Input,
+  InputNumber,
   Button,
   TimePicker,
   Checkbox,
+  Tooltip,
   Row,
   Col,
-  Radio
+  Radio,
+  Select
 } from "antd";
 import CommonHeader from "components/CommonHeader";
 import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import { ROUTE_TO_PERMISSION } from "constant";
-import "./index.scss";
 import { inject, observer } from "mobx-react";
 import utils from "utils";
 import moment from "moment";
 import { keys } from "mobx";
+import styles from "./index.module.scss";
+import classnames from "classnames/bind";
+const cx = classnames.bind(styles);
 
-const FormItem = Form.Item;
 // const Option = Select.Option;
 // const confirm = Modal.confirm;
 // const TextArea = Input.TextArea;
@@ -35,23 +39,26 @@ const getFormItemLayout = (
   wrapperCol: { span: wrapper, },
 });
 
-export interface ISystemEditorProps { }
+export interface ISystemEditorProps {}
 
-export interface ISystemEditorState {
-  withdraw_periods: string;
-  withdraw_daily_start: string;
-  withdraw_daily_end: string;
-  min_withdraw: string;
-  max_withdraw: string;
-  withdraw_daily_times: string;
-  order_tp_sl_unit: string;
-  platform_currency: string;
-  user_authentication: string;
-  withdraw_currency: string;
-  quoted_price: string;
-}
+export interface ISystemEditorState {}
 
 // @ts-ignore
+
+const dayIndex = {
+  0: "周一",
+  1: "周二",
+  2: "周三",
+  3: "周四",
+  4: "周五",
+  5: "周六",
+  6: "周日",
+};
+const platformCurrency = {
+  HKD: "港币",
+  CNY: "人民币",
+  USD: "美金",
+};
 
 @withRoutePermissionGuard("/dashboard/system/params", {
   exact: false,
@@ -64,30 +71,16 @@ export default class SystemEditor extends BaseReact<
 ISystemEditorProps,
 ISystemEditorState
 > {
-  state = {
-    withdraw_periods: "",
-    withdraw_daily_start: "",
-    withdraw_daily_end: "",
-    min_withdraw: "",
-    max_withdraw: "",
-    withdraw_daily_times: "",
-    order_tp_sl_unit: "",
-    platform_currency: "",
-    user_authentication: "",
-    withdraw_currency: "",
-    quoted_price: "",
-  };
+  state = {};
 
   async componentDidMount() {
-    this.getConfig();
+    this.init();
   }
 
-  componentWillUnmount() {
-    // this.props.product.setCurrentProduct({}, true, false);
-  }
+  componentWillUnmount() {}
 
   onPeriodsChange = (checkedValues: any) => {
-    checkedValues.sort(function (a, b) {
+    checkedValues.sort(function(a, b) {
       return a - b;
     });
     this.setState({
@@ -106,350 +99,298 @@ ISystemEditorState
       withdraw_daily_end: timeString,
     });
   };
-
-  getConfig = async () => {
+  mapFieldValueToApiData = input => {
+    // 将栏位值转为 API 吃的格式
+    const payload = { ...input, };
+    const {
+      withdraw_daily_start,
+      withdraw_daily_end,
+      withdraw_periods,
+      function_ipo,
+      function_news,
+      function_quote,
+      function_setting,
+      function_transaction,
+    } = payload;
+    payload["withdraw_periods"] = withdraw_periods.join(",");
+    payload["withdraw_daily_start"] = withdraw_daily_start
+      ? withdraw_daily_start.format("HH:mm")
+      : "";
+    payload["withdraw_daily_end"] = withdraw_daily_end
+      ? withdraw_daily_end.format("HH:mm")
+      : "";
+    payload["function_ipo"] = utils.capitalize(String(function_ipo)); // convert false to "False"
+    payload["function_news"] = utils.capitalize(String(function_news));
+    payload["function_quote"] = utils.capitalize(String(function_quote));
+    payload["function_setting"] = utils.capitalize(String(function_setting));
+    payload["function_transaction"] = utils.capitalize(
+      String(function_transaction)
+    );
+    // console.log("payload :>> ", payload);
+    return payload;
+  };
+  mapApiDataToFieldValue = input => {
+    // 将 api 回来的值转为表格栏位要求的格式
+    // console.log("input :>> ", input);
+    const payload = { ...input, };
+    const {
+      withdraw_daily_start,
+      withdraw_daily_end,
+      withdraw_periods,
+      function_ipo,
+      function_news,
+      function_quote,
+      function_setting,
+      function_transaction,
+    } = payload;
+    // payload["withdraw_periods"] = withdraw_periods.split(",");
+    payload["withdraw_periods"] = [1, 2, 3, 4, 5, 6];
+    payload["withdraw_daily_start"] = withdraw_daily_start
+      ? moment(withdraw_daily_start, "HH:mm")
+      : null;
+    payload["withdraw_daily_end"] = withdraw_daily_end
+      ? moment(withdraw_daily_end, "HH:mm")
+      : null;
+    payload["function_ipo"] = JSON.parse(function_ipo.toLowerCase()); // convert "False" to false
+    payload["function_news"] = JSON.parse(function_news.toLowerCase());
+    payload["function_quote"] = JSON.parse(function_quote.toLowerCase());
+    payload["function_setting"] = JSON.parse(function_setting.toLowerCase());
+    payload["function_transaction"] = JSON.parse(
+      function_transaction.toLowerCase()
+    );
+    return payload;
+  };
+  init = async () => {
+    const { setFieldsValue, } = this.props.form;
     const res = await this.$api.system.getBrokerConfigList();
     if (res.status === 200) {
-      const self = this;
-      res.data.forEach(function (item, index, array) {
-        switch (item.key) {
-          case "withdraw_periods":
-            self.setState({ withdraw_periods: item.value.split(","), });
-            break;
-          case "withdraw_daily_start":
-            self.setState({ withdraw_daily_start: item.value, });
-            break;
-          case "withdraw_daily_end":
-            self.setState({ withdraw_daily_end: item.value, });
-            break;
-          case "min_withdraw":
-            self.setState({ min_withdraw: item.value, });
-            break;
-          case "max_withdraw":
-            self.setState({ max_withdraw: item.value, });
-            break;
-          case "withdraw_daily_times":
-            self.setState({ withdraw_daily_times: item.value, });
-            break;
-          case "order_tp_sl_unit":
-            self.setState({ order_tp_sl_unit: item.value, });
-            break;
-          case "platform_currency":
-            self.setState({ platform_currency: item.value, });
-            break;
-          case "user_authentication":
-            self.setState({ user_authentication: item.value, });
-            break;
-          case "withdraw_currency":
-            self.setState({ withdraw_currency: item.value, });
-            break;
-          case "quoted_price":
-            self.setState({ quoted_price: item.value, });
-            break;
-        }
-      });
+      // 转换 api 回传的 json 阵列 => json 物件
+      const initApiData = res.data.reduce((obj, curr) => {
+        const { key, value, } = curr;
+        obj[key] = value;
+        return obj;
+      }, {});
+      const initFieldsValue = this.mapApiDataToFieldValue(initApiData);
+      setFieldsValue(initFieldsValue);
+      // console.log("initFieldsValue :>> ", initFieldsValue);
     }
   };
-
-  renderEditor = () => {
-    const { getFieldDecorator, } = this.props.form;
-    const {
-      withdraw_periods,
-      withdraw_daily_start,
-      withdraw_daily_end,
-      max_withdraw,
-      min_withdraw,
-      withdraw_daily_times,
-      order_tp_sl_unit,
-      platform_currency,
-      user_authentication,
-      withdraw_currency,
-      quoted_price,
-    } = this.state;
-    const vaildatorNum = {
-      patternNum: /^\d+\.?\d*$/,
-      message: "密码必须为正整数或小数",
-    };
-
+  renderGroupHeader = title => {
     return (
-      <Form className="editor-form">
-        <FormItem>
-          <h2 className="editor-form-title form-title">出金时间配置</h2>
-        </FormItem>
-        <FormItem label="時間段" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("withdraw_periods", {
-            initialValue: withdraw_periods || [],
-          })(
-            <Checkbox.Group
-              style={{ width: "100%", }}
-              onChange={this.onPeriodsChange}
-            >
-              <Row>
-                <Col span={4}>
-                  <Checkbox value="0">周一</Checkbox>
-                </Col>
-                <Col span={4}>
-                  <Checkbox value="1">周二</Checkbox>
-                </Col>
-                <Col span={4}>
-                  <Checkbox value="2">周三</Checkbox>
-                </Col>
-                <Col span={4}>
-                  <Checkbox value="3">周四</Checkbox>
-                </Col>
-                <Col span={4}>
-                  <Checkbox value="4">周五</Checkbox>
-                </Col>
-                <Col span={4}>
-                  <Checkbox value="5">周六</Checkbox>
-                </Col>
-                <Col span={4}>
-                  <Checkbox value="6">周日</Checkbox>
-                </Col>
-              </Row>
-            </Checkbox.Group>
-          )}
-        </FormItem>
-        <FormItem label="起始时间" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("withdraw_daily_start", {
-            initialValue: withdraw_daily_start
-              ? moment(withdraw_daily_start, "HH:mm")
-              : moment(),
-          })(
-            <TimePicker
-              onChange={this.onStartTimeChange}
-              format="HH:mm"
-              defaultOpenValue={moment("00:00", "HH:mm")}
-            />
-          )}
-        </FormItem>
-        <FormItem label="结束时间" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("withdraw_daily_end", {
-            initialValue: withdraw_daily_end
-              ? moment(withdraw_daily_end, "HH:mm")
-              : null,
-          })(
-            <TimePicker
-              onChange={this.onEndTimeChange}
-              format="HH:mm"
-              defaultOpenValue={moment("00:00", "HH:mm")}
-            />
-          )}
-        </FormItem>
-        <FormItem>
-          <h2 className="editor-form-title form-title">出金金额和次数配置</h2>
-        </FormItem>
-        <FormItem label="最大出金金额" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("max_withdraw", {
-            initialValue: max_withdraw || "",
-            rules: [
-              {
-                pattern: vaildatorNum.patternNum,
-                message: vaildatorNum.message,
-              }
-            ],
-          })(
-            <Input
-              placeholder="请输入最大出金金额"
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem label="最小出金金额" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("min_withdraw", {
-            initialValue: min_withdraw || "",
-            rules: [
-              {
-                pattern: vaildatorNum.patternNum,
-                message: vaildatorNum.message,
-              }
-            ],
-          })(
-            <Input
-              placeholder="请输入最小出金金额"
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem label="每日出金次数" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("withdraw_daily_times", {
-            initialValue: withdraw_daily_times || "",
-            rules: [
-              {
-                pattern: vaildatorNum.patternNum,
-                message: vaildatorNum.message,
-              }
-            ],
-          })(
-            <Input
-              placeholder="请输入每日出金次数"
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem>
-          <h2 className="editor-form-title form-title">止盈止损显示</h2>
-        </FormItem>
-        <FormItem label="止盈止损显示" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("order_tp_sl_unit", {
-            initialValue: order_tp_sl_unit || "price",
-          })(
-            <Radio.Group>
-              <Radio value={"price"}>按单价显示</Radio>
-              <Radio value={"profit"}>按金额显示</Radio>
-            </Radio.Group>
-          )}
-        </FormItem>
-        <FormItem>
-          <h2 className="editor-form-title form-title">报价显示设定</h2>
-        </FormItem>
-        <FormItem label="报价显示设定" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("quoted_price", {
-            initialValue: quoted_price || "quoted_price",
-          })(
-            <Radio.Group>
-              <Radio value={"one_price"}>单报价</Radio>
-              <Radio value={"two_price"}>双报价</Radio>
-            </Radio.Group>
-          )}
-        </FormItem>
-        <FormItem>
-          <h2 className="editor-form-title form-title">审批提示时间</h2>
-        </FormItem>
-        <FormItem label="审批提示时间" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("user_authentication", {
-            initialValue: user_authentication || "deposit_authentication",
-          })(
-            <Radio.Group>
-              <Radio value={"deposit_authentication"}>入金前认证</Radio>
-              <Radio value={"withdraw_authentication"}>出金前认证</Radio>
-            </Radio.Group>
-          )}
-        </FormItem>
-        <FormItem>
-          <h2 className="editor-form-title form-title">平台货币</h2>
-        </FormItem>
-        <FormItem label="平台货币" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("platform_currency", {
-            initialValue: platform_currency || "",
-            rules: [
-              {
-                pattern: /[a-zA-Z]+/,
-                message: "只能输入英文",
-              }
-            ],
-          })(
-            <Input
-              placeholder="平台货币"
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem label="出金货币" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("withdraw_currency", {
-            initialValue: withdraw_currency || "",
-            rules: [
-              {
-                pattern: /[a-zA-Z]+/,
-                message: "只能输入英文",
-              }
-            ],
-          })(
-            <Input
-              placeholder="平台货币"
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem className="editor-form-btns">
-          {/* <Button onClick={this.goBack}>取消</Button> */}
-          {
-            <Button type="primary" onClick={this.handleSubmit}>
-              保存
-            </Button>
-          }
-        </FormItem>
-      </Form>
+      <Form.Item>
+        <h2 className="form-title">{title}</h2>
+      </Form.Item>
     );
   };
-
+  renderClearOption = () => {
+    return (
+      <Select.Option key="clear" value={null} label="">
+        －清除设置－
+      </Select.Option>
+    );
+  };
   handleSubmit = async (evt: any) => {
-    const {
-      withdraw_periods,
-      withdraw_daily_start,
-      withdraw_daily_end,
-    } = this.state;
     this.props.form.validateFields(async (err, values) => {
-      if (!err) {
-        let valuesArr: any = [];
-        valuesArr.push({
-          key: "withdraw_periods",
-          value: withdraw_periods,
-        });
-        valuesArr.push({
-          key: "withdraw_daily_start",
-          value: withdraw_daily_start,
-        });
-        valuesArr.push({
-          key: "withdraw_daily_end",
-          value: withdraw_daily_end,
-        });
-        valuesArr.push({
-          key: "max_withdraw",
-          value: values.max_withdraw,
-        });
-        valuesArr.push({
-          key: "min_withdraw",
-          value: values.min_withdraw,
-        });
-        valuesArr.push({
-          key: "withdraw_daily_times",
-          value: values.withdraw_daily_times,
-        });
-        valuesArr.push({
-          key: "order_tp_sl_unit",
-          value: values.order_tp_sl_unit,
-        });
-        valuesArr.push({
-          key: "platform_currency",
-          value: values.platform_currency,
-        });
-        valuesArr.push({
-          key: "user_authentication",
-          value: values.user_authentication,
-        });
-        valuesArr.push({
-          key: "withdraw_currency",
-          value: values.withdraw_currency,
-        });
-        valuesArr.push({
-          key: "quoted_price",
-          value: values.quoted_price,
-        });
-
-        const configs = JSON.stringify(valuesArr);
-        const payload = { configs, };
-        const res = await this.$api.system.updateBrokerConfig(
-          JSON.stringify(payload)
-        );
-        if (res.status === 200) {
-          this.$msg.success("系统参数更新成功");
-          this.getConfig();
-        }
-      }
+      if (err) return;
+      const fieldsValue = this.props.form.getFieldsValue();
+      // console.log("fieldsValue :>> ", fieldsValue);
+      this.mapFieldValueToApiData(fieldsValue);
+      // const res = await this.$api.system.updateBrokerConfig(
+      //   JSON.stringify(payload)
+      // );
+      // if (res.status === 200) {
+      //   this.$msg.success("系统参数更新成功");
+      //   this.init();
+      // }
     });
   };
 
   render() {
+    const { getFieldDecorator, } = this.props.form;
+    const { renderGroupHeader, renderClearOption, } = this;
     return (
       <>
         <CommonHeader {...this.props} links={[]} title="系统参数" />
         <div className="editor food-card-editor">
           <section className="editor-content panel-block">
-            {this.renderEditor()}
+            <Form className="editor-form">
+              {renderGroupHeader("出金时间配置")}
+              <Form.Item label="時間段" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("withdraw_periods")(
+                  <Checkbox.Group
+                    style={{ width: "100%", }}
+                    onChange={this.onPeriodsChange}
+                  >
+                    {Object.entries(dayIndex).map(([key, val]) => (
+                      <Col span={3} key={key}>
+                        <Checkbox value={key}>{val}</Checkbox>
+                      </Col>
+                    ))}
+                  </Checkbox.Group>
+                )}
+              </Form.Item>
+              <Form.Item label="起始时间" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("withdraw_daily_start")(
+                  <TimePicker
+                    style={{ width: `100%`, }}
+                    format="HH:mm"
+                    defaultOpenValue={moment("00:00", "HH:mm")}
+                  />
+                )}
+              </Form.Item>
+              <Form.Item label="结束时间" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("withdraw_daily_end")(
+                  <TimePicker
+                    style={{ width: `100%`, }}
+                    format="HH:mm"
+                    defaultOpenValue={moment("00:00", "HH:mm")}
+                  />
+                )}
+              </Form.Item>
+              {renderGroupHeader("出金金额和次数配置")}
+              <Form.Item label="最大出金金额" {...getFormItemLayout(4, 12)}>
+                <Tooltip title="不限制请填 -1" placement="topLeft">
+                  {getFieldDecorator("max_withdraw", {
+                    rules: [],
+                  })(<InputFloat fractionDigits={2} min={-1} />)}
+                </Tooltip>
+              </Form.Item>
+              <Form.Item label="最小出金金额" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("min_withdraw", {
+                  rules: [],
+                })(<InputFloat fractionDigits={2} min={0} />)}
+              </Form.Item>
+              <Form.Item label="每日出金次数" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("withdraw_daily_times", {
+                  rules: [],
+                })(<InputNumber min={0} />)}
+              </Form.Item>
+              {renderGroupHeader("止盈止损显示")}
+              <Form.Item label="止盈止损显示" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("order_tp_sl_unit")(
+                  <Radio.Group>
+                    <Radio value={"price"}>按单价显示</Radio>
+                    <Radio value={"profit"}>按金额显示</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+              {renderGroupHeader("报价显示设定")}
+              <Form.Item label="报价显示设定" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("quoted_price")(
+                  <Radio.Group>
+                    <Radio value={"one_price"}>单报价</Radio>
+                    <Radio value={"two_price"}>双报价</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+              {renderGroupHeader("审批提示时间")}
+              <Form.Item label="审批提示时间" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("user_authentication")(
+                  <Radio.Group>
+                    <Radio value={"not_required"}>不认证</Radio>
+                    <Radio value={"deposit_authentication"}>入金前认证</Radio>
+                    <Radio value={"withdraw_authentication"}>出金前认证</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+              {renderGroupHeader("平台货币")}
+              <Form.Item label="平台货币" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("platform_currency")(
+                  <Select optionLabelProp="label" placeholder="Please select">
+                    {Object.entries(platformCurrency).map(([key, val]) => (
+                      <Select.Option
+                        key={key}
+                        value={key}
+                        label={`${key} ${val}`}
+                      >
+                        {`${key} ${val}`}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+              <Form.Item label="出金货币" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("withdraw_currency")(
+                  <Select optionLabelProp="label" placeholder="Please select">
+                    {Object.entries(platformCurrency).map(([key, val]) => (
+                      <Select.Option
+                        key={key}
+                        value={key}
+                        label={`${key} ${val}`}
+                      >
+                        {`${key} ${val}`}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+              {renderGroupHeader("前台显示设定")}
+              <Form.Item label="行情按钮是否显示" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("function_quote")(
+                  <Radio.Group>
+                    <Radio value={false}>否</Radio>
+                    <Radio value={true}>是</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+              <Form.Item label="申购按钮是否显示" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("function_ipo")(
+                  <Radio.Group>
+                    <Radio value={false}>否</Radio>
+                    <Radio value={true}>是</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+              <Form.Item label="交易按钮是否显示" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("function_transaction")(
+                  <Radio.Group>
+                    <Radio value={false}>否</Radio>
+                    <Radio value={true}>是</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+              <Form.Item label="新闻按钮是否显示" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("function_news")(
+                  <Radio.Group>
+                    <Radio value={false}>否</Radio>
+                    <Radio value={true}>是</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+              <Form.Item label="设置按钮是否显示" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("function_setting")(
+                  <Radio.Group>
+                    <Radio value={false}>否</Radio>
+                    <Radio value={true}>是</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+
+              <Row>
+                <Col span={16} className={cx("button-group")}>
+                  <Button type="primary" onClick={this.handleSubmit}>
+                    保存
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
           </section>
         </div>
       </>
+    );
+  }
+}
+
+class InputFloat extends React.Component {
+  render() {
+    const { fractionDigits, ...restProps } = this.props;
+    const step = 1 / 10 ** fractionDigits;
+    return (
+      <InputNumber
+        step={step}
+        parser={value => Number(value).toFixed(fractionDigits)}
+        {...restProps}
+      ></InputNumber>
     );
   }
 }
