@@ -106,11 +106,6 @@ ISystemEditorState
       withdraw_daily_start,
       withdraw_daily_end,
       withdraw_periods,
-      function_ipo,
-      function_news,
-      function_quote,
-      function_setting,
-      function_transaction,
     } = payload;
     payload["withdraw_periods"] = withdraw_periods.join(",");
     payload["withdraw_daily_start"] = withdraw_daily_start
@@ -119,7 +114,8 @@ ISystemEditorState
     payload["withdraw_daily_end"] = withdraw_daily_end
       ? withdraw_daily_end.format("HH:mm")
       : "";
-    return payload;
+    // 转换 json 物件 => api 吃的 json 阵列
+    return Object.entries(payload).map(([key, val]) => ({ key, value: val, }));
   };
   mapApiDataToFieldValue = input => {
     // 将 api 回来的值转为表格栏位要求的格式
@@ -131,9 +127,6 @@ ISystemEditorState
       withdraw_periods,
       function_ipo,
       function_news,
-      function_quote,
-      function_setting,
-      function_transaction,
     } = payload;
     payload["withdraw_periods"] = withdraw_periods.split(",");
     payload["withdraw_daily_start"] = withdraw_daily_start
@@ -144,9 +137,6 @@ ISystemEditorState
       : null;
     payload["function_ipo"] = utils.parseBool(function_ipo); // convert "false" to false
     payload["function_news"] = utils.parseBool(function_news);
-    payload["function_quote"] = utils.parseBool(function_quote);
-    payload["function_setting"] = utils.parseBool(function_setting);
-    payload["function_transaction"] = utils.parseBool(function_transaction);
     return payload;
   };
   init = async () => {
@@ -172,9 +162,10 @@ ISystemEditorState
       if (err) return;
       // console.log("values :>> ", values);
       const payload = this.mapFieldValueToApiData(values);
+      const configs = JSON.stringify(payload); // api 要求将阵列序列化
       // console.log("payload :>> ", payload);
       try {
-        const res = await $api.system.updateBrokerConfig(payload);
+        const res = await $api.system.updateBrokerConfig({ configs, });
         if (res.status === 200) {
           this.$msg.success("系统参数更新成功");
           this.init();
@@ -336,24 +327,8 @@ ISystemEditorState
                 )}
               </Form.Item>
               {renderGroupHeader("前台显示设定")}
-              <Form.Item label="行情按钮是否显示" {...getFormItemLayout(4, 12)}>
-                {getFieldDecorator("function_quote")(
-                  <Radio.Group>
-                    <Radio value={false}>否</Radio>
-                    <Radio value={true}>是</Radio>
-                  </Radio.Group>
-                )}
-              </Form.Item>
               <Form.Item label="申购按钮是否显示" {...getFormItemLayout(4, 12)}>
                 {getFieldDecorator("function_ipo")(
-                  <Radio.Group>
-                    <Radio value={false}>否</Radio>
-                    <Radio value={true}>是</Radio>
-                  </Radio.Group>
-                )}
-              </Form.Item>
-              <Form.Item label="交易按钮是否显示" {...getFormItemLayout(4, 12)}>
-                {getFieldDecorator("function_transaction")(
                   <Radio.Group>
                     <Radio value={false}>否</Radio>
                     <Radio value={true}>是</Radio>
@@ -368,14 +343,31 @@ ISystemEditorState
                   </Radio.Group>
                 )}
               </Form.Item>
-              <Form.Item label="设置按钮是否显示" {...getFormItemLayout(4, 12)}>
+              {/* <Form.Item label="行情按钮是否显示" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("function_quote")(
+                  <Radio.Group>
+                    <Radio value={false}>否</Radio>
+                    <Radio value={true}>是</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item> */}
+
+              {/* <Form.Item label="交易按钮是否显示" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("function_transaction")(
+                  <Radio.Group>
+                    <Radio value={false}>否</Radio>
+                    <Radio value={true}>是</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item> */}
+              {/* <Form.Item label="设置按钮是否显示" {...getFormItemLayout(4, 12)}>
                 {getFieldDecorator("function_setting")(
                   <Radio.Group>
                     <Radio value={false}>否</Radio>
                     <Radio value={true}>是</Radio>
                   </Radio.Group>
                 )}
-              </Form.Item>
+              </Form.Item> */}
 
               <Row>
                 <Col span={16} className={cx("button-group")}>
