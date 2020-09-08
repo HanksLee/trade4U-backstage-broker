@@ -119,14 +119,6 @@ ISystemEditorState
     payload["withdraw_daily_end"] = withdraw_daily_end
       ? withdraw_daily_end.format("HH:mm")
       : "";
-    payload["function_ipo"] = utils.capitalize(String(function_ipo)); // convert false to "False"
-    payload["function_news"] = utils.capitalize(String(function_news));
-    payload["function_quote"] = utils.capitalize(String(function_quote));
-    payload["function_setting"] = utils.capitalize(String(function_setting));
-    payload["function_transaction"] = utils.capitalize(
-      String(function_transaction)
-    );
-    // console.log("payload :>> ", payload);
     return payload;
   };
   mapApiDataToFieldValue = input => {
@@ -143,15 +135,14 @@ ISystemEditorState
       function_setting,
       function_transaction,
     } = payload;
-    // payload["withdraw_periods"] = withdraw_periods.split(",");
-    payload["withdraw_periods"] = [1, 2, 3, 4, 5, 6];
+    payload["withdraw_periods"] = withdraw_periods.split(",");
     payload["withdraw_daily_start"] = withdraw_daily_start
       ? moment(withdraw_daily_start, "HH:mm")
       : null;
     payload["withdraw_daily_end"] = withdraw_daily_end
       ? moment(withdraw_daily_end, "HH:mm")
       : null;
-    payload["function_ipo"] = utils.parseBool(function_ipo); // convert "False" to false
+    payload["function_ipo"] = utils.parseBool(function_ipo); // convert "false" to false
     payload["function_news"] = utils.parseBool(function_news);
     payload["function_quote"] = utils.parseBool(function_quote);
     payload["function_setting"] = utils.parseBool(function_setting);
@@ -180,14 +171,17 @@ ISystemEditorState
     this.props.form.validateFields(async (err, values) => {
       if (err) return;
       // console.log("values :>> ", values);
-      this.mapFieldValueToApiData(values);
-      // const res = await $api.system.updateBrokerConfig(
-      //   JSON.stringify(payload)
-      // );
-      // if (res.status === 200) {
-      //   this.$msg.success("系统参数更新成功");
-      //   this.init();
-      // }
+      const payload = this.mapFieldValueToApiData(values);
+      // console.log("payload :>> ", payload);
+      try {
+        const res = await $api.system.updateBrokerConfig(payload);
+        if (res.status === 200) {
+          this.$msg.success("系统参数更新成功");
+          this.init();
+        }
+      } catch (err) {
+        this.$msg.error("系统参数更新失败");
+      }
     });
   };
   renderGroupHeader = title => {
@@ -251,9 +245,11 @@ ISystemEditorState
                 <Tooltip title="不限制请填 -1" placement="topLeft">
                   {getFieldDecorator("max_withdraw", {
                     rules: [
+                      { required: true, message: "必填，不限制请填 -1", },
                       {
                         validator: async (_, value) => {
-                          if (value !== -1 && value < 0) {
+                          const val = Number(value);
+                          if (val < 0 && val !== -1) {
                             throw new Error("必须 >0，不限制请填 -1");
                           }
                         },
@@ -269,7 +265,9 @@ ISystemEditorState
                 </Tooltip>
               </Form.Item>
               <Form.Item label="最小出金金额" {...getFormItemLayout(4, 12)}>
-                {getFieldDecorator("min_withdraw")(
+                {getFieldDecorator("min_withdraw", {
+                  rules: [{ required: true, message: "必填", }],
+                })(
                   <InputNumber step={0.01} min={0} style={{ width: `100%`, }} />
                 )}
               </Form.Item>
