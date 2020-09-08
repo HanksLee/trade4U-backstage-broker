@@ -151,18 +151,17 @@ ISystemEditorState
     payload["withdraw_daily_end"] = withdraw_daily_end
       ? moment(withdraw_daily_end, "HH:mm")
       : null;
-    payload["function_ipo"] = JSON.parse(function_ipo.toLowerCase()); // convert "False" to false
-    payload["function_news"] = JSON.parse(function_news.toLowerCase());
-    payload["function_quote"] = JSON.parse(function_quote.toLowerCase());
-    payload["function_setting"] = JSON.parse(function_setting.toLowerCase());
-    payload["function_transaction"] = JSON.parse(
-      function_transaction.toLowerCase()
-    );
+    payload["function_ipo"] = utils.parseBool(function_ipo); // convert "False" to false
+    payload["function_news"] = utils.parseBool(function_news);
+    payload["function_quote"] = utils.parseBool(function_quote);
+    payload["function_setting"] = utils.parseBool(function_setting);
+    payload["function_transaction"] = utils.parseBool(function_transaction);
     return payload;
   };
   init = async () => {
     const { setFieldsValue, } = this.props.form;
-    const res = await this.$api.system.getBrokerConfigList();
+    const { $api, } = this.props.system;
+    const res = await $api.system.getBrokerConfigList();
     if (res.status === 200) {
       // 转换 api 回传的 json 阵列 => json 物件
       const initApiData = res.data.reduce((obj, curr) => {
@@ -174,6 +173,22 @@ ISystemEditorState
       setFieldsValue(initFieldsValue);
       // console.log("initFieldsValue :>> ", initFieldsValue);
     }
+  };
+
+  handleSubmit = async (evt: any) => {
+    const { $api, } = this.props.system;
+    this.props.form.validateFields(async (err, values) => {
+      if (err) return;
+      // console.log("values :>> ", values);
+      this.mapFieldValueToApiData(values);
+      // const res = await $api.system.updateBrokerConfig(
+      //   JSON.stringify(payload)
+      // );
+      // if (res.status === 200) {
+      //   this.$msg.success("系统参数更新成功");
+      //   this.init();
+      // }
+    });
   };
   renderGroupHeader = title => {
     return (
@@ -189,22 +204,6 @@ ISystemEditorState
       </Select.Option>
     );
   };
-  handleSubmit = async (evt: any) => {
-    this.props.form.validateFields(async (err, values) => {
-      if (err) return;
-      const fieldsValue = this.props.form.getFieldsValue();
-      // console.log("fieldsValue :>> ", fieldsValue);
-      this.mapFieldValueToApiData(fieldsValue);
-      // const res = await this.$api.system.updateBrokerConfig(
-      //   JSON.stringify(payload)
-      // );
-      // if (res.status === 200) {
-      //   this.$msg.success("系统参数更新成功");
-      //   this.init();
-      // }
-    });
-  };
-
   render() {
     const { getFieldDecorator, } = this.props.form;
     const { renderGroupHeader, renderClearOption, } = this;
@@ -251,19 +250,33 @@ ISystemEditorState
               <Form.Item label="最大出金金额" {...getFormItemLayout(4, 12)}>
                 <Tooltip title="不限制请填 -1" placement="topLeft">
                   {getFieldDecorator("max_withdraw", {
-                    rules: [],
-                  })(<InputFloat fractionDigits={2} min={-1} />)}
+                    rules: [
+                      {
+                        validator: async (_, value) => {
+                          if (value !== -1 && value < 0) {
+                            throw new Error("必须 >0，不限制请填 -1");
+                          }
+                        },
+                      }
+                    ],
+                  })(
+                    <InputNumber
+                      step={0.01}
+                      min={-1}
+                      style={{ width: `100%`, }}
+                    />
+                  )}
                 </Tooltip>
               </Form.Item>
               <Form.Item label="最小出金金额" {...getFormItemLayout(4, 12)}>
-                {getFieldDecorator("min_withdraw", {
-                  rules: [],
-                })(<InputFloat fractionDigits={2} min={0} />)}
+                {getFieldDecorator("min_withdraw")(
+                  <InputNumber step={0.01} min={0} style={{ width: `100%`, }} />
+                )}
               </Form.Item>
               <Form.Item label="每日出金次数" {...getFormItemLayout(4, 12)}>
-                {getFieldDecorator("withdraw_daily_times", {
-                  rules: [],
-                })(<InputNumber min={0} />)}
+                {getFieldDecorator("withdraw_daily_times")(
+                  <InputNumber min={0} style={{ width: `100%`, }} />
+                )}
               </Form.Item>
               {renderGroupHeader("止盈止损显示")}
               <Form.Item label="止盈止损显示" {...getFormItemLayout(4, 12)}>
@@ -385,12 +398,9 @@ class InputFloat extends React.Component {
   render() {
     const { fractionDigits, ...restProps } = this.props;
     const step = 1 / 10 ** fractionDigits;
+    const parser = value => value;
     return (
-      <InputNumber
-        step={step}
-        parser={value => Number(value).toFixed(fractionDigits)}
-        {...restProps}
-      ></InputNumber>
+      <InputNumber step={step} parser={parser} {...restProps}></InputNumber>
     );
   }
 }

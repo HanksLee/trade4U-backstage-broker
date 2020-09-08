@@ -242,7 +242,16 @@ function capitalize(str) {
   if (typeof str !== 'string') return '';
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+function parseBool(input) {
+  // parse "0", "False" to false
+  if (!input) return Boolean(input);
+  const isTrue = /true/i.test(input);
+  const isFalse = /false/i.test(input);
+  return isTrue ? true : isFalse ? false : Boolean(input);
+}
+
 export default {
+  parseBool,
   capitalize,
   swapObjectKeyValue,
   setRootFontSizeFromClient,
