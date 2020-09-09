@@ -106,6 +106,8 @@ ISystemEditorState
       withdraw_daily_start,
       withdraw_daily_end,
       withdraw_periods,
+      function_ipo,
+      function_news,
     } = payload;
     payload["withdraw_periods"] = withdraw_periods.join(",");
     payload["withdraw_daily_start"] = withdraw_daily_start
@@ -114,6 +116,8 @@ ISystemEditorState
     payload["withdraw_daily_end"] = withdraw_daily_end
       ? withdraw_daily_end.format("HH:mm")
       : "";
+    payload["function_ipo"] = String(function_ipo); // convert false to "false"
+    payload["function_news"] = String(function_news);
     // 转换 json 物件 => api 吃的 json 阵列
     return Object.entries(payload).map(([key, val]) => ({ key, value: val, }));
   };
