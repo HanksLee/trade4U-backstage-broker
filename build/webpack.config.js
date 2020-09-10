@@ -64,9 +64,9 @@ module.exports = {
     hot: true,
     proxy: {
       '/api/moon': {
-        // target: 'https://api.ruiyigloble.com',
+        target: 'https://api.ruiyigloble.com',
         // target: 'https://api.trading8a.com',
-        target: 'https://api.sugargirls.live',
+        // target: 'https://api.sugargirls.live',
         // target: 'http://api.cangshu360.com',
         pathRewrite: { '^/api/moon': '', },
         secure: false,

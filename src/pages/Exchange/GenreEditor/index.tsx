@@ -45,17 +45,25 @@ const scopeOfField = {
 /**
  * MT 外汇
  * HK 港股
+ * ASHARES Ａ股
+ * commodity 大宗商品
+ * IXIX 指数
  * 该种产品分类的栏位选项
  */
 const fieldOptionsOfSymbolType = {
   HK: {
-    position_type: ["T+0", "T+1"],
-    three_days_swap: ["週一", "週二", "週三", "週四", "週五", "週六", "週日"],
+    position_type: ["T+0"],
   },
   MT: {
     position_type: ["T+0", "T+1", "T+2", "T+3"],
-    three_days_swap: ["週一", "週二", "週三", "週四", "週五", "週六", "週日"],
   },
+  ASHARES: {
+    position_type: ["T+0", "T+1"],
+  },
+};
+// 找不到产品选项时的预设值
+const defaultFieldOptionsOfSymbolType = {
+  position_type: ["T+0", "T+1", "T+2", "T+3"],
 };
 // 栏位资讯
 const infoOfField = {
@@ -119,7 +127,9 @@ IGenreEditorState
     const { setFieldsValue, } = this.props.form;
     const res = await this.$api.product.getCurrentGenre(id);
     const initFieldValue = this.mapApiDataToFieldValue(res.data);
-    const fieldOptions = fieldOptionsOfSymbolType[res.data.code];
+    const fieldOptions =
+      fieldOptionsOfSymbolType[res.data.code] ||
+      defaultFieldOptionsOfSymbolType;
     this.setState({ fieldOptions, });
     setFieldsValue(initFieldValue);
     // console.log("res :>> ", res);
@@ -148,7 +158,7 @@ IGenreEditorState
   mapApiDataToFieldValue = input => {
     // 将 api 回传格式转为栏位值
     const payload = { ...input, };
-    payload.leverage = payload.leverage.split(",");
+    payload.leverage = payload.leverage ? payload.leverage.split(",") : [];
     return payload;
   };
   mapFieldValueToApiData = input => {
@@ -165,12 +175,12 @@ IGenreEditorState
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
+      // console.log("values :>> ", values);
       if (err) return;
       const payload = this.mapFieldValueToApiData(values);
       const parsedQueryString = this.$qs.parse(this.props.location.search);
       const { id, } = parsedQueryString;
       const res = await this.$api.product.updateGenre(id, payload);
-      // console.log("values :>> ", values);
       // console.log("payload :>> ", payload);
       // console.log("res :>> ", res);
       if (res.status === 200) {
@@ -222,6 +232,7 @@ IGenreEditorState
             })("symbol_type_name")}
             {(name => {
               const info = infoOfField[name];
+              const options = fieldOptions[name];
               return (
                 <Form.Item
                   data-name={name}
@@ -241,8 +252,8 @@ IGenreEditorState
                       ],
                     })(
                       <Select mode="tags" placeholder="Please select">
-                        {fieldOptions[name] &&
-                          fieldOptions[name].map(option => (
+                        {options &&
+                          options.map(option => (
                             <Select.Option key={option} value={option}>
                               {option}
                             </Select.Option>
@@ -691,6 +702,15 @@ IGenreEditorState
             })("selling_fee")}
             {(name => {
               const info = infoOfField[name];
+              const days = [
+                "週一",
+                "週二",
+                "週三",
+                "週四",
+                "週五",
+                "週六",
+                "週日"
+              ];
               return (
                 <Form.Item
                   data-name={name}
@@ -700,16 +720,15 @@ IGenreEditorState
                   {getFieldDecorator(name)(
                     <Select optionLabelProp="label" placeholder="Please select">
                       {renderClearOption()}
-                      {fieldOptions[name] &&
-                        fieldOptions[name].map(option => (
-                          <Select.Option
-                            key={option}
-                            value={option}
-                            label={option}
-                          >
-                            {option}
-                          </Select.Option>
-                        ))}
+                      {days.map(option => (
+                        <Select.Option
+                          key={option}
+                          value={option}
+                          label={option}
+                        >
+                          {option}
+                        </Select.Option>
+                      ))}
                     </Select>
                   )}
                 </Form.Item>
