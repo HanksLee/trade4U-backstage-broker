@@ -149,8 +149,7 @@ const styleLoaders = [
     ...getStyleRule({ isProd: config.isProd, preProcessor: "css" })
   },
   {
-    test: /\.scss$/,
-    exclude: /\.module\.scss$/,
+    test: /(?<!\.module)\.scss$/,
     include: [resolve("src")],
     ...getStyleRule({ isProd: config.isProd, preProcessor: "scss" })
   },
