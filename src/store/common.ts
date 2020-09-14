@@ -1,6 +1,5 @@
 import { action, observable, computed } from "mobx";
 import BaseStore from "store/base";
-import { PERMISSION_TO_ROUTE } from 'constant';
 class CommonStore extends BaseStore {
   @observable
   paginationConfig = {

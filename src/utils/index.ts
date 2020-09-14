@@ -195,17 +195,21 @@ function resetFilter(filter) {
   });
   return resetedFilter;
 }
-function calcColumnMaxWidth(list: any, defaultWidth: number, column: string): string {
+function calcColumnMaxWidth(
+  list: any,
+  defaultWidth: number,
+  column: string
+): string {
   const fontSize = 14;
   const paddingSize = 16;
-  if(list.length === 0) {
+  if (list.length === 0) {
     return `${defaultWidth}`;
   }
   let maxLength = 0;
-  list.forEach((item, i)=>{
+  list.forEach((item, i) => {
     const colLength = item[column].length;
 
-    if(maxLength < colLength) {
+    if (maxLength < colLength) {
       maxLength = colLength;
     }
   });
@@ -224,13 +228,12 @@ function getRangeNumberList(start, end) {
 }
 
 function checkDateLimited(start, end, max) {
-  return end.diff(start, 'm') <= max;
+  return end.diff(start, "m") <= max;
 }
 
 function timestampFormatDate(text, type) {
   return (text && moment(text * 1000).format(type)) || "--";
-} 
-
+}
 
 function swapObjectKeyValue(obj) {
   return Object.fromEntries(
@@ -239,19 +242,50 @@ function swapObjectKeyValue(obj) {
 }
 function capitalize(str) {
   // 将首字母大写
-  if (typeof str !== 'string') return '';
+  if (typeof str !== "string") return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
 function parseBool(input) {
   // parse "0", "False" to false
   if (!input) return Boolean(input);
-  const isTrue = /true/i.test(input);
   const isFalse = /false/i.test(input);
-  return isTrue ? true : isFalse ? false : Boolean(input);
+  const isZero = Number(input) === 0;
+  if (isFalse || isZero) return false;
+  return Boolean(input);
 }
 
+/**
+ * @param queryString URL 参数段字串, 含?
+ * 解析后回传物件 {key, val}
+ */
+function parseQueryString(queryString) {
+  if (!queryString) return {};
+  const pairs = queryString.slice(1).split("&");
+  const obj = pairs.reduce((obj, curr) => {
+    const [key, val] = curr.split("=");
+    obj[key] = val;
+    return obj;
+  }, {});
+  return obj;
+}
+
+/**
+ * @param obj 参数物件
+ * 拼接成 url queryString 字串, 不含?
+ */
+function makeQueryString(obj) {
+  const qs = Object.entries(obj).reduce((qs, curr) => {
+    const [key, val] = curr;
+    qs += `${key}=${val}&`;
+    return qs;
+  }, "");
+  return qs.slice(0, -1);
+}
 export default {
   parseBool,
+  parseQueryString,
+  makeQueryString,
   capitalize,
   swapObjectKeyValue,
   setRootFontSizeFromClient,

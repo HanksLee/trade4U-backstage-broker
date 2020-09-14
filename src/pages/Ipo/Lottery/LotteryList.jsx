@@ -9,8 +9,12 @@ import {
   Icon,
   Pagination,
   Spin,
-  Tag
+  Tag,
+  Row,
+  Col,
+  Form
 } from "antd";
+import utils from "utils";
 
 // ! 栏位名是暂定的，因为后端 api 还没做
 // TODO: 串接后端 api 栏位名
@@ -87,7 +91,7 @@ const columns = [
     render: (text, record, index) => {
       console.log("text,record :>> ", text, record);
       if (record["中签状态"] === "已中签") {
-        return <input />;
+        return <Input />;
       }
     },
   }
@@ -130,37 +134,63 @@ const dataSource = [
 ];
 class LotteryList extends React.Component {
   state = {};
+  componentDidMount() {
+    // 根据路由参数拿取目前的产品名称
+    console.log("this.props.history :>> ", this.props.history);
+    const parsedQueryString = utils.parseQueryString(
+      this.props.history.location.search
+    );
+    console.log("parsedQueryString :>> ", parsedQueryString);
+  }
   renderFilter = () => {
+    const formItemLayout = {
+      labelCol: { span: 6, },
+      wrapperCol: { span: 18, },
+    };
     return (
-      <div style={{ display: "flex", }}>
-        <div>
-          <div>
-            用户名: <Input placeholder="请输入品种名称"></Input>
+      <Row>
+        <Col span={16}>
+          <Form>
+            <Row>
+              <Col span={12}>
+                <Form.Item label="用户名" {...formItemLayout}>
+                  <Input placeholder="请输入用户名"></Input>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="手机" {...formItemLayout}>
+                  <Input placeholder="请输入手机"></Input>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Form.Item label="新股申购名称" {...formItemLayout}>
+                  <Select placeholder="请选择新股名称"></Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="状态" {...formItemLayout}>
+                  <Select placeholder="请选择状态"></Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Form.Item label="中签状态" {...formItemLayout}>
+                  <Select placeholder="已中签"></Select>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+        <Col span={8}>
+          <div style={{ display: "flex", justifyContent: "center", }}>
+            <Button type="primary">查询</Button>
+            <Button>重置</Button>
           </div>
-          <div>
-            手机: <Input placeholder="请输入产品编码"></Input>
-          </div>
-          <div>
-            新股申购名称:
-            <Select
-              placeholder="请选择新股名称"
-              style={{ width: "100%", }}
-            ></Select>
-          </div>
-          <div>
-            状态:
-            <Select placeholder="请选择状态" style={{ width: "100%", }}></Select>
-          </div>
-          <div>
-            中签状态:
-            <Select placeholder="已中签" style={{ width: "100%", }}></Select>
-          </div>
-        </div>
-        <div>
-          <Button>查询</Button>
-          <Button>重置</Button>
-        </div>
-      </div>
+        </Col>
+      </Row>
     );
   };
   render() {

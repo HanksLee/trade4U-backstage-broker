@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Button,
   Select,
@@ -9,7 +10,10 @@ import {
   Icon,
   Pagination,
   Spin,
-  Tag
+  Tag,
+  Row,
+  Col,
+  Form
 } from "antd";
 
 const dataSource = [
@@ -86,42 +90,62 @@ class SubscriptionList extends React.Component {
           console.log("text,record :>> ", text, record);
           console.log("this.props.history :>> ", this.props.history);
           const symbol = record["产品名称"];
-          const handleClick = () => {
-            this.props.history.replace(`/dashboard/ipo/lottery/list/${symbol}`);
-          };
-          return <button onClick={handleClick}>{text}</button>;
+          // 跳转到中签管理页，并筛选出此产品之明细
+          return (
+            <Link to={`/dashboard/ipo/lottery/list?symbol=${symbol}`}>
+              {text}
+            </Link>
+          );
         },
       }
     ];
     return columns;
   };
   renderFilter = () => {
+    const formItemLayout = {
+      labelCol: { span: 6, },
+      wrapperCol: { span: 18, },
+    };
     return (
-      <div style={{ display: "flex", }}>
-        <div>
-          <div>
-            品种名称: <Input placeholder="请输入品种名称"></Input>
+      <Row>
+        <Col span={16}>
+          <Form>
+            <Row>
+              <Col span={12}>
+                <Form.Item label="品种名称" {...formItemLayout}>
+                  <Input placeholder="请输入品种名称"></Input>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="产品编码" {...formItemLayout}>
+                  <Input placeholder="请输入产品编码"></Input>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Form.Item label="品种类型" {...formItemLayout}>
+                  <Select
+                    placeholder="请选择品种类型"
+                    style={{ width: "100%", }}
+                  ></Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="状态" {...formItemLayout}>
+                  <Select placeholder="请选择状态"></Select>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+        <Col span={8}>
+          <div style={{ display: "flex", justifyContent: "center", }}>
+            <Button type="primary">查询</Button>
+            <Button>重置</Button>
           </div>
-          <div>
-            产品编码: <Input placeholder="请输入产品编码"></Input>
-          </div>
-          <div>
-            品种类型:
-            <Select
-              placeholder="请选择品种类型"
-              style={{ width: "100%", }}
-            ></Select>
-          </div>
-          <div>
-            状态:
-            <Select placeholder="请选择状态" style={{ width: "100%", }}></Select>
-          </div>
-        </div>
-        <div>
-          <Button>查询</Button>
-          <Button>重置</Button>
-        </div>
-      </div>
+        </Col>
+      </Row>
     );
   };
   render() {
