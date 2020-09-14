@@ -96,11 +96,11 @@ export const ROUTE_TO_PERMISSION = {
   "/dashboard/finance/withdraw": "VIEW_FINANCE_WITHDRAW_PAGE",
   "/dashboard/finance/payment": "VIEW_FINANCE_PAYMENT_PAGE",
   "/dashboard/finance/rate": "VIEW_FINANCE_RATE_PAGE",
-
+  // 交易品种管理
   "/dashboard/exchange": "VIEW_PRODUCT_PAGE",
   "/dashboard/exchange/product": "view_broker_symbol",
   "/dashboard/exchange/genre": "view_broker_symbol_type",
-
+  //
   "/dashboard/group": "view_group",
   "/dashboard/agency": "VIEW_AGENCY_PAGE",
   "/dashboard/agency/log": "VIEW_AGENCY_LOG_PAGE",
@@ -124,13 +124,16 @@ export const ROUTE_TO_PERMISSION = {
   "/dashboard/sms/smschannel": "view_sms_channel",
   "/dashboard/sms/smstemplate": "view_sms_template",
   "/dashboard/sms/smsrecord": "view_sms_record",
+  // 新股申购
+  "/dashboard/ipo": "VIEW_IPO_PAGE",
+  "/dashboard/ipo/subscription": "VIEW_IPO_SUBSCRIPTION_PAGE",
+  "/dashboard/ipo/lottery": "VIEW_IPO_LOTTERY_PAGE",
 };
 
 // 交换 ROUTE_TO_PERMISSION 键值，key 为权限名，value 为路由名
-export const PERMISSION_TO_ROUTE = utils.swapObjectKeyValue(ROUTE_TO_PERMISSION);
-
-
-
+export const PERMISSION_TO_ROUTE = utils.swapObjectKeyValue(
+  ROUTE_TO_PERMISSION
+);
 
 // export const PAGE_ROUTES = [
 //   {

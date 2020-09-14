@@ -212,6 +212,20 @@ const routes: any[] = [
         /* webpackChunkName: "agency-report-page" */ "./pages/CurrencyHistory/CurrencyHistoryList"
       )
     ),
+  },
+  {
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "agency-report-page" */ "./pages/Ipo/Subscription"
+      )
+    ),
+  },
+  {
+    component: loadable(() =>
+      import(
+        /* webpackChunkName: "agency-report-page" */ "./pages/Ipo/Lottery"
+      )
+    ),
   }
 ];
 
