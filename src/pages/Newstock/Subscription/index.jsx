@@ -13,19 +13,19 @@ import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import SubscriptionList from "./SubscriptionList";
 
 /* eslint new-cap: "off" */
-@withRoutePermissionGuard("/dashboard/ipo/subscription", { exact: false, })
+@withRoutePermissionGuard("/dashboard/newstock/subscription", { exact: false, })
 @inject("common")
 @observer
-export default class IpoSubscription extends React.Component {
+export default class NewStockSubscription extends React.Component {
   state = {};
   componentDidMount() {
-    if (this.props.location.pathname === "/dashboard/ipo/subscription") {
-      this.props.history.replace("/dashboard/ipo/subscription/list");
+    if (this.props.location.pathname === "/dashboard/newstock/subscription") {
+      this.props.history.replace("/dashboard/newstock/subscription/list");
     }
   }
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/ipo/subscription") {
-      this.props.history.replace("/dashboard/ipo/subscription/list");
+    if (this.props.location.pathname === "/dashboard/newstock/subscription") {
+      this.props.history.replace("/dashboard/newstock/subscription/list");
     }
   }
 

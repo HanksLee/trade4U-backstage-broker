@@ -56,9 +56,9 @@ export const ROUTE_TO_PERMISSION = {
   "/dashboard/sms/smstemplate": "view_sms_template",
   "/dashboard/sms/smsrecord": "view_sms_record",
   // 新股申购
-  "/dashboard/ipo": "VIEW_IPO_PAGE",
-  "/dashboard/ipo/subscription": "VIEW_IPO_SUBSCRIPTION_PAGE",
-  "/dashboard/ipo/lottery": "VIEW_IPO_LOTTERY_PAGE",
+  "/dashboard/newstock": "VIEW_NEWSTOCK_PAGE",
+  "/dashboard/newstock/subscription": "VIEW_NEWSTOCK_SUBSCRIPTION_PAGE",
+  "/dashboard/newstock/lottery": "VIEW_NEWSTOCK_LOTTERY_PAGE",
 };
 
 // 交换 ROUTE_TO_PERMISSION 键值，key 为权限名，value 为路由名

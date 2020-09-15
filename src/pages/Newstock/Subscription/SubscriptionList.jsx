@@ -16,31 +16,38 @@ import {
   Form
 } from "antd";
 
+// TODO: 目前后端只有港股栏位
 const dataSource = [
   {
     key: "1",
-    产品名称: "众望布艺",
+    stock_name: "众望布艺",
     品种: "港股",
-    申购代码: "707003",
-    发行价格: "22.1",
-    合约大小: "0.90672",
-    申购开始日: "2020-08-07",
-    申购截止日: "2020-08-30",
-    上市日期: "2020-09-10",
-    中签公布日: "2020-08-30",
-    操作: "抽签明细",
+    stock_code: "707003",
+    public_price: "22.1",
+    lots_size: "0.90672",
+    subscription_date_start: "2020-08-07",
+    subscription_date_end: "2020-08-30",
+    public_date: "2020-09-10",
+    draw_result_date: "2020-08-30",
+    operation: "抽签明细",
   }
 ];
 class SubscriptionList extends React.Component {
-  state = {};
+  state = {
+    filterInput:{
+      stock_name:"",
+      stock_code:"",
+      品种:"",
+    },
+  };
   getColumns = () => {
     // ! 栏位名是暂定的，因为后端 api 还没做
     // TODO: 串接后端 api 栏位名
     const columns = [
       {
         title: "产品名称",
-        dataIndex: "产品名称",
-        key: "产品名称",
+        dataIndex: "stock_name",
+        key: "stock_name",
       },
       {
         title: "品种",
@@ -49,50 +56,50 @@ class SubscriptionList extends React.Component {
       },
       {
         title: "申购代码",
-        dataIndex: "申购代码",
-        key: "申购代码",
+        dataIndex: "stock_code",
+        key: "stock_code",
       },
       {
         title: "发行价格",
-        dataIndex: "发行价格",
-        key: "发行价格",
+        dataIndex: "public_price",
+        key: "public_price",
       },
       {
         title: "合约大小",
-        dataIndex: "合约大小",
-        key: "合约大小",
+        dataIndex: "lots_size",
+        key: "lots_size",
       },
       {
         title: "申购开始日",
-        dataIndex: "申购开始日",
-        key: "申购开始日",
+        dataIndex: "subscription_date_start",
+        key: "subscription_date_start",
       },
       {
         title: "申购截止日",
-        dataIndex: "申购截止日",
-        key: "申购截止日",
+        dataIndex: "subscription_date_end",
+        key: "subscription_date_end",
       },
       {
         title: "上市日期",
-        dataIndex: "上市日期",
-        key: "上市日期",
+        dataIndex: "public_date",
+        key: "public_date",
       },
       {
         title: "中签公布日",
-        dataIndex: "中签公布日",
-        key: "中签公布日",
+        dataIndex: "draw_result_date",
+        key: "draw_result_date",
       },
       {
         title: "操作",
-        dataIndex: "操作",
-        key: "操作",
+        dataIndex: "operation",
+        key: "operation",
         render: (text, record, index) => {
           console.log("text,record :>> ", text, record);
           console.log("this.props.history :>> ", this.props.history);
-          const symbol = record["产品名称"];
+          const stock_name = record["stock_name"];
           // 跳转到中签管理页，并筛选出此产品之明细
           return (
-            <Link to={`/dashboard/ipo/lottery/list?symbol=${symbol}`}>
+            <Link to={`/dashboard/newstock/lottery/list?stock_name=${stock_name}`}>
               {text}
             </Link>
           );

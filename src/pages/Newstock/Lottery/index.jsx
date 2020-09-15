@@ -12,19 +12,19 @@ import GenreEditor from "pages/Exchange/GenreEditor";
 import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import LotteryList from "./LotteryList";
 /* eslint new-cap: "off" */
-@withRoutePermissionGuard("/dashboard/ipo/lottery", { exact: false, })
+@withRoutePermissionGuard("/dashboard/newstock/lottery", { exact: false, })
 @inject("common")
 @observer
-export default class IpoLottery extends React.Component {
+export default class NewStockLottery extends React.Component {
   state = {};
   componentDidMount() {
-    if (this.props.location.pathname === "/dashboard/ipo/lottery") {
-      this.props.history.replace("/dashboard/ipo/lottery/list");
+    if (this.props.location.pathname === "/dashboard/newstock/lottery") {
+      this.props.history.replace("/dashboard/newstock/lottery/list");
     }
   }
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/ipo/lottery") {
-      this.props.history.replace("/dashboard/ipo/lottery/list");
+    if (this.props.location.pathname === "/dashboard/newstock/lottery") {
+      this.props.history.replace("/dashboard/newstock/lottery/list");
     }
   }
 
