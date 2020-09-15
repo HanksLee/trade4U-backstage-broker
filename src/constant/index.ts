@@ -80,3 +80,9 @@ export const THREE_DAY_OPTIONS = [
     name: "周日",
   }
 ];
+
+export const MARKET_TYPE = {
+  HK: { name: "港股", },
+  SZ: { name: "深圳", },
+  SH: { name: "上证", },
+};

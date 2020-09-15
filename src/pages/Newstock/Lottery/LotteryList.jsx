@@ -1,4 +1,5 @@
 import React from "react";
+import api from "services";
 import {
   Button,
   Select,
@@ -17,15 +18,19 @@ import {
 import utils from "utils";
 import styles from "../index.module.scss";
 import classNames from "classnames/bind";
+import moment from "moment";
+import axios from "axios";
 const cx = classNames.bind(styles);
+const CancelToken = axios.CancelToken;
+let cancelPrevRequest;
 
 // ! 栏位名是暂定的，因为后端 api 还没做
 // TODO: 串接后端 api 栏位名
 const columns = [
   {
     title: "名字",
-    dataIndex: "名字",
-    key: "名字",
+    dataIndex: "user_name",
+    key: "user_name",
   },
   {
     title: "手机号",
@@ -34,13 +39,13 @@ const columns = [
   },
   {
     title: "客户组",
-    dataIndex: "客户组",
-    key: "客户组",
+    dataIndex: "group_name",
+    key: "group_name",
   },
   {
     title: "新股申购名称",
-    dataIndex: "新股申购名称",
-    key: "新股申购名称",
+    dataIndex: "stock_name",
+    key: "stock_name",
   },
   {
     title: "数量",
@@ -69,13 +74,13 @@ const columns = [
   },
   {
     title: "状态",
-    dataIndex: "状态",
-    key: "状态",
+    dataIndex: "status",
+    key: "status",
   },
   {
     title: "申购日期",
-    dataIndex: "申购日期",
-    key: "申购日期",
+    dataIndex: "create_time",
+    key: "create_time",
   },
   {
     title: "中签公布日",
@@ -99,7 +104,7 @@ const columns = [
     },
   }
 ];
-const dataSource = [
+const fakeDataSource = [
   {
     key: 1,
     名字: "张维",
@@ -136,7 +141,13 @@ const dataSource = [
   }
 ];
 class LotteryList extends React.Component {
-  state = {};
+  state = {
+    filter: {},
+    dataSource: [],
+    page: 1,
+    pageSize: 10,
+    total: null,
+  };
   componentDidMount() {
     // 根据路由参数拿取目前的产品名称
     console.log("this.props.history :>> ", this.props.history);
@@ -144,7 +155,50 @@ class LotteryList extends React.Component {
       this.props.history.location.search
     );
     console.log("parsedQueryString :>> ", parsedQueryString);
+    this.fetchData();
   }
+  fetchData = async () => {
+    const { pageSize, page, } = this.state;
+    if (cancelPrevRequest) cancelPrevRequest();
+    // TODO: 根据路由跳转参数 stock_name 抓列表
+    const res = await api.newStock.getLotteryList({
+      params: {
+        page: page,
+        page_size: pageSize,
+      },
+      cancelToken: new CancelToken(c => (cancelPrevRequest = c)),
+    });
+    const dataSource = res.data.results.map(each => {
+      const data = this.mapApiDataToDataSource(each);
+      return data;
+    });
+    console.log("LotteryList res :>> ", res);
+    console.log("dataSource res :>> ", dataSource);
+    this.setState({ dataSource, total: res.data.count, });
+  };
+  mapApiDataToDataSource = raw => {
+    const payload = { ...raw, };
+    payload["key"] = payload["id"];
+    payload["create_time"] = moment(payload["create_time"]).format(
+      "YYYY-MM-DD"
+    );
+    // user_data
+    payload["user_phone"] = payload["user_data"]["phone"];
+    payload["user_name"] = payload["user_data"]["username"];
+    payload["group_name"] = payload["user_data"]["group_name"];
+    // newstock_data
+    payload["stock_name"] = payload["newstock_data"]["stock_name"];
+    return payload;
+  };
+  handleSearch = () => {
+    // 搜寻前先重置分页状态
+    this.setState({ page: 1, pageSize: 10, });
+    queueMicrotask(() => this.fetchData());
+  };
+  handleReset = () => {};
+  handlePaginationChange = (page, pageSize) => {
+    this.setState({ page, pageSize, });
+  };
   renderFilter = () => {
     const formItemLayout = {
       labelCol: { span: 6, },
@@ -189,7 +243,7 @@ class LotteryList extends React.Component {
         </Col>
         <Col span={8}>
           <div style={{ display: "flex", justifyContent: "center", }}>
-            <Button type="primary" className={cx("search-button")}>
+            <Button type="primary" className={cx("search-button")} onClick={this.handleSearch}>
               查询
             </Button>
             <Button className={cx("search-button")}>重置</Button>
@@ -199,6 +253,7 @@ class LotteryList extends React.Component {
     );
   };
   render() {
+    const { dataSource, pageSize, page, total, } = this.state;
     return (
       <div className="common-list">
         {this.renderFilter()}
@@ -207,6 +262,13 @@ class LotteryList extends React.Component {
             columns={columns}
             dataSource={dataSource}
             scroll={{ x: true, }}
+            pagination={false}
+          />
+          <Pagination
+            total={total}
+            pageSize={pageSize}
+            onChange={this.handlePaginationChange}
+            current={page}
           />
         </section>
       </div>

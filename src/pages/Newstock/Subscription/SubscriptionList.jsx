@@ -16,12 +16,15 @@ import {
   Col,
   Form
 } from "antd";
+import { MARKET_TYPE } from "constant";
+import moment from "moment";
+import axios from "axios";
 import styles from "../index.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
+const CancelToken = axios.CancelToken;
+let cancelPrevRequest;
 
-// ! 栏位名是暂定的，因为后端 api 还没做
-// TODO: 串接后端 api 栏位名
 const columns = [
   {
     title: "产品名称",
@@ -30,8 +33,8 @@ const columns = [
   },
   {
     title: "品种",
-    dataIndex: "品种",
-    key: "品种",
+    dataIndex: "market",
+    key: "market",
   },
   {
     title: "申购代码",
@@ -73,7 +76,7 @@ const columns = [
     dataIndex: "operation",
     key: "operation",
     render: (text, record, index) => {
-      console.log("text,record :>> ", text, record);
+      // console.log("text,record :>> ", text, record);
       const stock_name = record["stock_name"];
       // 跳转到中签管理页，并筛选出此产品之明细
       return (
@@ -87,36 +90,91 @@ const columns = [
     },
   }
 ];
-// TODO: 目前后端只有港股栏位
-const dataSource = [
-  {
-    key: "1",
-    stock_name: "众望布艺",
-    品种: "港股",
-    stock_code: "707003",
-    public_price: "22.1",
-    lots_size: "0.90672",
-    subscription_date_start: "2020-08-07",
-    subscription_date_end: "2020-08-30",
-    public_date: "2020-09-10",
-    draw_result_date: "2020-08-30",
-    operation: "抽签明细",
-  }
-];
+// const fakeDataSource = [
+//   {
+//     key: "1",
+//     stock_name: "众望布艺",
+//     market: "港股",
+//     stock_code: "707003",
+//     public_price: "22.1",
+//     lots_size: "0.90672",
+//     subscription_date_start: "2020-08-07",
+//     subscription_date_end: "2020-08-30",
+//     public_date: "2020-09-10",
+//     draw_result_date: "2020-08-30",
+//     operation: "抽签明细",
+//   }
+// ];
 class SubscriptionList extends React.Component {
   state = {
-    filterInput: {
+    filter: {
       stock_name: "",
       stock_code: "",
       品种: "",
     },
+    dataSource: [],
+    page: 1,
+    pageSize: 10,
+    total: null,
   };
   componentDidMount() {
-    this.init();
+    this.fetchData();
   }
-  init = async () => {
-    const res = await api.newStock.getNewStockList();
-    console.log("res :>> ", res);
+  fetchData = async () => {
+    const { pageSize, page, } = this.state;
+    if (cancelPrevRequest) cancelPrevRequest();
+    const res = await api.newStock.getSubscriptionList({
+      params: {
+        page: page,
+        page_size: pageSize,
+      },
+      cancelToken: new CancelToken(c => (cancelPrevRequest = c)),
+    });
+    console.log("SubscriptionList res :>> ", res);
+
+    const dataSource = res.data.results.map(each => {
+      const data = this.mapApiDataToDataSource(each);
+      return data;
+    });
+    this.setState({ dataSource, total: res.data.count, });
+  };
+  mapApiDataToDataSource = raw => {
+    const payload = { ...raw, };
+    const {
+      public_date,
+      subscription_date_start,
+      subscription_date_end,
+      draw_result_date,
+      market,
+    } = payload;
+    payload["key"] = payload["id"];
+    payload["public_date"] =
+      public_date && moment(public_date).format("YYYY-MM-DD");
+    payload["subscription_date_start"] =
+      subscription_date_start &&
+      moment(subscription_date_start).format("YYYY-MM-DD");
+    payload["subscription_date_end"] =
+      subscription_date_end &&
+      moment(subscription_date_end).format("YYYY-MM-DD");
+    payload["draw_result_date"] =
+      draw_result_date && moment(draw_result_date).format("YYYY-MM-DD");
+    payload["market"] = MARKET_TYPE[market]?.name;
+    payload["operation"] = "抽签明细";
+    return payload;
+  };
+  mapDataSourceToApiData = raw => {
+    return raw;
+  };
+
+  handleSearch = () => {
+    // 搜寻前先重置分页状态
+    this.setState({ page: 1, pageSize: 10, });
+    queueMicrotask(() => this.fetchData());
+  };
+  handleReset = () => {};
+  handlePaginationChange = (page, pageSize) => {
+    this.setState({ page, pageSize, });
+    queueMicrotask(() => this.fetchData());
   };
   renderFilter = () => {
     const formItemLayout = {
@@ -158,7 +216,7 @@ class SubscriptionList extends React.Component {
         </Col>
         <Col span={8}>
           <div style={{ display: "flex", justifyContent: "center", }}>
-            <Button type="primary" className={cx("search-button")}>
+            <Button type="primary" className={cx("search-button")} onClick={this.handleSearch}>
               查询
             </Button>
             <Button className={cx("search-button")}>重置</Button>
@@ -168,6 +226,7 @@ class SubscriptionList extends React.Component {
     );
   };
   render() {
+    const { dataSource, pageSize, page, total, } = this.state;
     return (
       <div className="common-list">
         {this.renderFilter()}
@@ -176,6 +235,13 @@ class SubscriptionList extends React.Component {
             columns={columns}
             dataSource={dataSource}
             scroll={{ x: true, }}
+            pagination={false}
+          />
+          <Pagination
+            total={total}
+            pageSize={pageSize}
+            onChange={this.handlePaginationChange}
+            current={page}
           />
         </section>
       </div>
