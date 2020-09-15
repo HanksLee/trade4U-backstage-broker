@@ -130,7 +130,7 @@ class SubscriptionList extends React.Component {
       },
       cancelToken: new CancelToken(c => (cancelPrevRequest = c)),
     });
-    console.log("SubscriptionList res :>> ", res);
+    // console.log("SubscriptionList res :>> ", res);
 
     const dataSource = res.data.results.map(each => {
       const data = this.mapApiDataToDataSource(each);

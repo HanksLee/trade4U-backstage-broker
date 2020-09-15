@@ -97,7 +97,7 @@ const columns = [
     dataIndex: "real_lots",
     key: "real_lots",
     render: (text, record, index) => {
-      console.log("text,record :>> ", text, record);
+      // console.log("text,record :>> ", text, record);
       if (record["中签状态"] === "已中签") {
         return <Input />;
       }
@@ -150,11 +150,11 @@ class LotteryList extends React.Component {
   };
   componentDidMount() {
     // 根据路由参数拿取目前的产品名称
-    console.log("this.props.history :>> ", this.props.history);
+    // console.log("this.props.history :>> ", this.props.history);
     const parsedQueryString = utils.parseQueryString(
       this.props.history.location.search
     );
-    console.log("parsedQueryString :>> ", parsedQueryString);
+    // console.log("parsedQueryString :>> ", parsedQueryString);
     this.fetchData();
   }
   fetchData = async () => {
@@ -172,8 +172,8 @@ class LotteryList extends React.Component {
       const data = this.mapApiDataToDataSource(each);
       return data;
     });
-    console.log("LotteryList res :>> ", res);
-    console.log("dataSource res :>> ", dataSource);
+    // console.log("LotteryList res :>> ", res);
+    // console.log("dataSource res :>> ", dataSource);
     this.setState({ dataSource, total: res.data.count, });
   };
   mapApiDataToDataSource = raw => {

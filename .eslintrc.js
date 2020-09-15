@@ -33,7 +33,7 @@ module.exports = {
       "react/jsx-no-target-blank": 0,
       '@typescript-eslint/indent': ['error', 2],
       'eqeqeq': 0,
-      "no-console": 2,
+      "no-console": 1,
       "semi": 2,
       "max-len": ["error", 140],
       "space-before-blocks": 2,
