@@ -15,6 +15,9 @@ import {
   Form
 } from "antd";
 import utils from "utils";
+import styles from "../index.module.scss";
+import classNames from "classnames/bind";
+const cx = classNames.bind(styles);
 
 // ! 栏位名是暂定的，因为后端 api 还没做
 // TODO: 串接后端 api 栏位名
@@ -41,8 +44,8 @@ const columns = [
   },
   {
     title: "数量",
-    dataIndex: "数量",
-    key: "数量",
+    dataIndex: "wanted_lots",
+    key: "wanted_lots",
   },
   {
     title: "申购金额",
@@ -56,13 +59,13 @@ const columns = [
   },
   {
     title: "融资金额",
-    dataIndex: "融资金额",
-    key: "融资金额",
+    dataIndex: "loan",
+    key: "loan",
   },
   {
     title: "已冻结资金",
-    dataIndex: "已冻结资金",
-    key: "已冻结资金",
+    dataIndex: "entrance_fee",
+    key: "entrance_fee",
   },
   {
     title: "状态",
@@ -86,8 +89,8 @@ const columns = [
   },
   {
     title: "中签数量",
-    dataIndex: "中签数量",
-    key: "中签数量",
+    dataIndex: "real_lots",
+    key: "real_lots",
     render: (text, record, index) => {
       console.log("text,record :>> ", text, record);
       if (record["中签状态"] === "已中签") {
@@ -105,7 +108,7 @@ const dataSource = [
     新股申购名称: "众望布艺",
     wanted_lots: "1",
     申购金额: "12500", //  entrance_fee ＋ loan
-    融资比例: "60%", // 7500 / entrance_fee ＋ loan
+    融资比例: "60%", // loan / entrance_fee ＋ loan
     loan: "7500",
     entrance_fee: "7500",
     状态: "申购中",
@@ -120,16 +123,16 @@ const dataSource = [
     user_phone: "3345678",
     客户组: "测试组",
     新股申购名称: "众望布艺",
-    数量: "1",
+    wanted_lots: "1",
     申购金额: "12500",
     融资比例: "60%",
-    融资金额: "7500",
-    已冻结资金: "7500",
+    loan: "7500",
+    entrance_fee: "7500",
     状态: "申购中",
     申购日期: "2020-8-15",
     中签公布日: "2020-8-30",
     中签状态: "已中签",
-    中签数量: "",
+    real_lots: "",
   }
 ];
 class LotteryList extends React.Component {
@@ -186,8 +189,10 @@ class LotteryList extends React.Component {
         </Col>
         <Col span={8}>
           <div style={{ display: "flex", justifyContent: "center", }}>
-            <Button type="primary">查询</Button>
-            <Button>重置</Button>
+            <Button type="primary" className={cx("search-button")}>
+              查询
+            </Button>
+            <Button className={cx("search-button")}>重置</Button>
           </div>
         </Col>
       </Row>
@@ -198,7 +203,11 @@ class LotteryList extends React.Component {
       <div className="common-list">
         {this.renderFilter()}
         <section className="common-list-table">
-          <Table columns={columns} dataSource={dataSource} />
+          <Table
+            columns={columns}
+            dataSource={dataSource}
+            scroll={{ x: true, }}
+          />
         </section>
       </div>
     );

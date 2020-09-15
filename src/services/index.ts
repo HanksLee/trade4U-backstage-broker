@@ -13,8 +13,10 @@ import message from "./message";
 import order from "./order";
 import report from "./report";
 import sms from "./sms";
-import currencyHistory from './currencyHistory';
+import currencyHistory from "./currencyHistory";
+import newStock from "./newStock";
 export default {
+  newStock,
   account,
   common,
   finance,

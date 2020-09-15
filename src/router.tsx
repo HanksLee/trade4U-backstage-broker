@@ -216,14 +216,14 @@ const routes: any[] = [
   {
     component: loadable(() =>
       import(
-        /* webpackChunkName: "agency-report-page" */ "./pages/Newstock/Subscription"
+        /* webpackChunkName: "agency-report-page" */ "./pages/NewStock/Subscription"
       )
     ),
   },
   {
     component: loadable(() =>
       import(
-        /* webpackChunkName: "agency-report-page" */ "./pages/Newstock/Lottery"
+        /* webpackChunkName: "agency-report-page" */ "./pages/NewStock/Lottery"
       )
     ),
   }
