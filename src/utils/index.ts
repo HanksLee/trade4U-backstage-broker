@@ -264,7 +264,7 @@ function parseQueryString(queryString) {
   const pairs = queryString.slice(1).split("&");
   const obj = pairs.reduce((obj, curr) => {
     const [key, val] = curr.split("=");
-    obj[key] = val;
+    obj[key] = decodeURIComponent(val);
     return obj;
   }, {});
   return obj;
@@ -277,7 +277,7 @@ function parseQueryString(queryString) {
 function makeQueryString(obj) {
   const qs = Object.entries(obj).reduce((qs, curr) => {
     const [key, val] = curr;
-    qs += `${key}=${val}&`;
+    qs += `${key}=${encodeURIComponent(val)}&`;
     return qs;
   }, "");
   return qs.slice(0, -1);
