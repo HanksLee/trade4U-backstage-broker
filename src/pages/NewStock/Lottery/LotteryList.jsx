@@ -1,5 +1,6 @@
 import React from "react";
 import api from "services";
+import { Link } from "react-router-dom";
 import {
   Button,
   Select,
@@ -24,8 +25,6 @@ const cx = classNames.bind(styles);
 const CancelToken = axios.CancelToken;
 let cancelPrevRequest;
 
-// ! 栏位名是暂定的，因为后端 api 还没做
-// TODO: 串接后端 api 栏位名
 const columns = [
   {
     title: "名字",
@@ -84,8 +83,8 @@ const columns = [
   },
   {
     title: "中签公布日",
-    dataIndex: "中签公布日",
-    key: "中签公布日",
+    dataIndex: "draw_result_date",
+    key: "draw_result_date",
   },
   {
     title: "中签状态",
@@ -96,48 +95,14 @@ const columns = [
     title: "中签数量",
     dataIndex: "real_lots",
     key: "real_lots",
-    render: (text, record, index) => {
-      // console.log("text,record :>> ", text, record);
-      if (record["中签状态"] === "已中签") {
-        return <Input />;
-      }
-    },
-  }
-];
-const fakeDataSource = [
-  {
-    key: 1,
-    名字: "张维",
-    user_phone: "123456",
-    客户组: "测试组",
-    新股申购名称: "众望布艺",
-    wanted_lots: "1",
-    申购金额: "12500", //  entrance_fee ＋ loan
-    融资比例: "60%", // loan / entrance_fee ＋ loan
-    loan: "7500",
-    entrance_fee: "7500",
-    状态: "申购中",
-    申购日期: "2020-8-15",
-    中签公布日: "2020-8-30",
-    中签状态: "未中签",
-    real_lots: "",
   },
   {
-    key: 2,
-    名字: "李星星",
-    user_phone: "3345678",
-    客户组: "测试组",
-    新股申购名称: "众望布艺",
-    wanted_lots: "1",
-    申购金额: "12500",
-    融资比例: "60%",
-    loan: "7500",
-    entrance_fee: "7500",
-    状态: "申购中",
-    申购日期: "2020-8-15",
-    中签公布日: "2020-8-30",
-    中签状态: "已中签",
-    real_lots: "",
+    title: "操作",
+    dataIndex: "operation",
+    key: "operation",
+    render: (text, record, index) => {
+      return <Link style={{ color: "#1890ff", }}>{text}</Link>;
+    },
   }
 ];
 class LotteryList extends React.Component {
@@ -178,16 +143,21 @@ class LotteryList extends React.Component {
   };
   mapApiDataToDataSource = raw => {
     const payload = { ...raw, };
+    const { user_data, newstock_data, } = payload;
     payload["key"] = payload["id"];
     payload["create_time"] = moment(payload["create_time"]).format(
       "YYYY-MM-DD"
     );
     // user_data
-    payload["user_phone"] = payload["user_data"]["phone"];
-    payload["user_name"] = payload["user_data"]["username"];
-    payload["group_name"] = payload["user_data"]["group_name"];
+    payload["user_phone"] = user_data["phone"];
+    payload["user_name"] = user_data["username"];
+    payload["group_name"] = user_data["group_name"];
     // newstock_data
-    payload["stock_name"] = payload["newstock_data"]["stock_name"];
+    payload["stock_name"] = newstock_data["stock_name"];
+    payload["draw_result_date"] = moment(
+      newstock_data["draw_result_date"]
+    ).format("YYYY-MM-DD");
+    payload["operation"] = "编辑";
     return payload;
   };
   handleSearch = () => {
@@ -243,7 +213,11 @@ class LotteryList extends React.Component {
         </Col>
         <Col span={8}>
           <div style={{ display: "flex", justifyContent: "center", }}>
-            <Button type="primary" className={cx("search-button")} onClick={this.handleSearch}>
+            <Button
+              type="primary"
+              className={cx("search-button")}
+              onClick={this.handleSearch}
+            >
               查询
             </Button>
             <Button className={cx("search-button")}>重置</Button>

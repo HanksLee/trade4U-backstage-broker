@@ -7,7 +7,7 @@ const getSubscriptionList = (
   return API.get("/broker/newstock", config);
 };
 const getLotteryList = (config: AxiosRequestConfig): Promise<any> => {
-  return API.get("broker/newstockparticipant", config);
+  return API.get("broker/newstock-participate", config);
 };
 
 export default { getSubscriptionList, getLotteryList, };
