@@ -5,16 +5,13 @@ import {
   Button,
   Select,
   Input,
+  InputNumber,
   Table,
-  DatePicker,
-  Checkbox,
-  Icon,
   Pagination,
-  Spin,
-  Tag,
   Row,
   Col,
-  Form
+  Form,
+  message
 } from "antd";
 import utils from "utils";
 import styles from "../index.module.scss";
@@ -25,86 +22,7 @@ const cx = classNames.bind(styles);
 const CancelToken = axios.CancelToken;
 let cancelPrevRequest;
 
-const columns = [
-  {
-    title: "名字",
-    dataIndex: "user_name",
-    key: "user_name",
-  },
-  {
-    title: "手机号",
-    dataIndex: "user_phone",
-    key: "user_phone",
-  },
-  {
-    title: "客户组",
-    dataIndex: "group_name",
-    key: "group_name",
-  },
-  {
-    title: "新股申购名称",
-    dataIndex: "stock_name",
-    key: "stock_name",
-  },
-  {
-    title: "数量",
-    dataIndex: "wanted_lots",
-    key: "wanted_lots",
-  },
-  {
-    title: "申购金额",
-    dataIndex: "申购金额",
-    key: "申购金额",
-  },
-  {
-    title: "融资比例",
-    dataIndex: "融资比例",
-    key: "融资比例",
-  },
-  {
-    title: "融资金额",
-    dataIndex: "loan",
-    key: "loan",
-  },
-  {
-    title: "已冻结资金",
-    dataIndex: "entrance_fee",
-    key: "entrance_fee",
-  },
-  {
-    title: "状态",
-    dataIndex: "status",
-    key: "status",
-  },
-  {
-    title: "申购日期",
-    dataIndex: "create_time",
-    key: "create_time",
-  },
-  {
-    title: "中签公布日",
-    dataIndex: "draw_result_date",
-    key: "draw_result_date",
-  },
-  {
-    title: "中签状态",
-    dataIndex: "中签状态",
-    key: "中签状态",
-  },
-  {
-    title: "中签数量",
-    dataIndex: "real_lots",
-    key: "real_lots",
-  },
-  {
-    title: "操作",
-    dataIndex: "operation",
-    key: "operation",
-    render: (text, record, index) => {
-      return <Link style={{ color: "#1890ff", }}>{text}</Link>;
-    },
-  }
-];
+@Form.create()
 class LotteryList extends React.Component {
   state = {
     filter: {},
@@ -112,6 +30,7 @@ class LotteryList extends React.Component {
     page: 1,
     pageSize: 10,
     total: null,
+    realLots: {}, // 已调整数值，待更新的中签数量，key 为订单 id，val 为数量
   };
   componentDidMount() {
     // 根据路由参数拿取目前的产品名称
@@ -157,9 +76,9 @@ class LotteryList extends React.Component {
     payload["draw_result_date"] = moment(
       newstock_data["draw_result_date"]
     ).format("YYYY-MM-DD");
-    payload["operation"] = "编辑";
     return payload;
   };
+
   handleSearch = () => {
     // 搜寻前先重置分页状态
     this.setState({ page: 1, pageSize: 10, });
@@ -168,7 +87,24 @@ class LotteryList extends React.Component {
   handleReset = () => {};
   handlePaginationChange = (page, pageSize) => {
     this.setState({ page, pageSize, });
+    queueMicrotask(() => this.fetchData());
   };
+  updateLotteryList = async () => {
+    const { realLots, } = this.state;
+    console.log("realLots to be update :>> ", realLots);
+    try {
+      const requests = Object.entries(realLots).map(([key, val]) => {
+        return api.newStock.updateLotteryList(key, { real_lots: val, });
+      });
+      await Promise.allSettled(requests);
+      message.success("中签数量更新成功");
+    } catch (e) {
+      message.error("部分数据更新失败，请确认");
+    } finally {
+      this.setState({ realLots: {}, });
+    }
+  };
+
   renderFilter = () => {
     const formItemLayout = {
       labelCol: { span: 6, },
@@ -226,12 +162,106 @@ class LotteryList extends React.Component {
       </Row>
     );
   };
+  getColumns = () => {
+    const columns = [
+      {
+        title: "名字",
+        dataIndex: "user_name",
+        key: "user_name",
+      },
+      {
+        title: "手机号",
+        dataIndex: "user_phone",
+        key: "user_phone",
+      },
+      {
+        title: "客户组",
+        dataIndex: "group_name",
+        key: "group_name",
+      },
+      {
+        title: "新股申购名称",
+        dataIndex: "stock_name",
+        key: "stock_name",
+      },
+      {
+        title: "数量",
+        dataIndex: "wanted_lots",
+        key: "wanted_lots",
+      },
+      {
+        title: "申购金额",
+        dataIndex: "申购金额",
+        key: "申购金额",
+      },
+      {
+        title: "融资比例",
+        dataIndex: "融资比例",
+        key: "融资比例",
+      },
+      {
+        title: "融资金额",
+        dataIndex: "loan",
+        key: "loan",
+      },
+      {
+        title: "已冻结资金",
+        dataIndex: "entrance_fee",
+        key: "entrance_fee",
+      },
+      {
+        title: "状态",
+        dataIndex: "status",
+        key: "status",
+      },
+      {
+        title: "申购日期",
+        dataIndex: "create_time",
+        key: "create_time",
+      },
+      {
+        title: "中签公布日",
+        dataIndex: "draw_result_date",
+        key: "draw_result_date",
+      },
+      {
+        title: "中签数量",
+        dataIndex: "real_lots",
+        key: "real_lots",
+        render: (_, record) => {
+          console.log("record :>> ", record);
+          const { id, real_lots, } = record;
+          const handleChange = val => {
+            this.setState({ realLots: { ...this.state.realLots, [id]: val, }, });
+          };
+          // 判断中签数量是否有正被修改中的数量，若无则使用 api 回传的资料
+          const defaultValue = this.state.realLots[id]
+            ? this.state.realLots[id]
+            : real_lots;
+          return (
+            <InputNumber
+              defaultValue={defaultValue}
+              onChange={handleChange}
+              min={0}
+            />
+          );
+        },
+      }
+    ];
+    return columns;
+  };
   render() {
     const { dataSource, pageSize, page, total, } = this.state;
+    const columns = this.getColumns();
     return (
       <div className="common-list">
         {this.renderFilter()}
         <section className="common-list-table">
+          <Row>
+            <Button type="primary" onClick={this.updateLotteryList}>
+              更新中签数量
+            </Button>
+          </Row>
           <Table
             columns={columns}
             dataSource={dataSource}

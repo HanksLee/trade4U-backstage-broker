@@ -1,13 +1,14 @@
 import { AxiosRequestConfig } from "axios";
 import { moonAPI as API } from "utils/request";
 
-const getSubscriptionList = (
-  config: AxiosRequestConfig
-): Promise<any> => {
-  return API.get("/broker/newstock", config);
+const getSubscriptionList = (payload: AxiosRequestConfig): Promise<any> => {
+  return API.get("/broker/newstock", payload);
 };
-const getLotteryList = (config: AxiosRequestConfig): Promise<any> => {
-  return API.get("broker/newstock-participate", config);
+const getLotteryList = (payload: AxiosRequestConfig): Promise<any> => {
+  return API.get("broker/newstock-participate", payload);
+};
+const updateLotteryList = (id, payload: AxiosRequestConfig): Promise<any> => {
+  return API.patch(`broker/newstock-participate/${id}`, payload);
 };
 
-export default { getSubscriptionList, getLotteryList, };
+export default { getSubscriptionList, getLotteryList, updateLotteryList, };
