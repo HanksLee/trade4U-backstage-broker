@@ -11,7 +11,8 @@ import {
   Row,
   Col,
   Form,
-  message
+  message,
+  Checkbox
 } from "antd";
 import utils from "utils";
 import styles from "../index.module.scss";
@@ -22,15 +23,17 @@ const cx = classNames.bind(styles);
 const CancelToken = axios.CancelToken;
 let cancelPrevRequest;
 
-@Form.create()
 class LotteryList extends React.Component {
   state = {
     filter: {},
     dataSource: [],
+    dataSourceMap: {},
     page: 1,
     pageSize: 10,
     total: null,
+    formData: {},
     realLots: {}, // 已调整数值，待更新的中签数量，key 为订单 id，val 为数量
+    realLotsStatus: {}, //
   };
   componentDidMount() {
     // 根据路由参数拿取目前的产品名称
@@ -41,6 +44,9 @@ class LotteryList extends React.Component {
     // console.log("parsedQueryString :>> ", parsedQueryString);
     this.fetchData();
   }
+  // componentDidUpdate(prevProps, prevState) {
+  //   console.log(this.state);
+  // }
   fetchData = async () => {
     const { pageSize, page, } = this.state;
     if (cancelPrevRequest) cancelPrevRequest();
@@ -56,13 +62,16 @@ class LotteryList extends React.Component {
       const data = this.mapApiDataToDataSource(each);
       return data;
     });
-    // console.log("LotteryList res :>> ", res);
-    // console.log("dataSource res :>> ", dataSource);
-    this.setState({ dataSource, total: res.data.count, });
+    const formData = dataSource.reduce((obj, curr) => {
+      const { id, real_lots, real_lots_status, } = curr;
+      obj[id] = { realLots: real_lots, realLotsStatus: real_lots_status, };
+      return obj;
+    }, {});
+    this.setState({ dataSource, formData, total: res.data.count, });
   };
   mapApiDataToDataSource = raw => {
     const payload = { ...raw, };
-    const { user_data, newstock_data, } = payload;
+    const { user_data, newstock_data, real_lots, } = payload;
     payload["key"] = payload["id"];
     payload["create_time"] = moment(payload["create_time"]).format(
       "YYYY-MM-DD"
@@ -76,6 +85,7 @@ class LotteryList extends React.Component {
     payload["draw_result_date"] = moment(
       newstock_data["draw_result_date"]
     ).format("YYYY-MM-DD");
+    payload["real_lots_status"] = Number(real_lots) > 0 ? true : false;
     return payload;
   };
 
@@ -89,19 +99,16 @@ class LotteryList extends React.Component {
     this.setState({ page, pageSize, });
     queueMicrotask(() => this.fetchData());
   };
-  updateLotteryList = async () => {
-    const { realLots, } = this.state;
-    console.log("realLots to be update :>> ", realLots);
+  updateRealLots = async id => {
+    if (!id) return;
+    const { formData, } = this.state;
+    const { realLots, } = formData[id];
+    // console.log("realLots to be updated :>> ", id, realLots);
     try {
-      const requests = Object.entries(realLots).map(([key, val]) => {
-        return api.newStock.updateLotteryList(key, { real_lots: val, });
-      });
-      await Promise.allSettled(requests);
+      await api.newStock.updateLotteryList(id, { real_lots: realLots, });
       message.success("中签数量更新成功");
     } catch (e) {
-      message.error("部分数据更新失败，请确认");
-    } finally {
-      this.setState({ realLots: {}, });
+      message.error("数据更新失败，请确认");
     }
   };
 
@@ -185,7 +192,7 @@ class LotteryList extends React.Component {
         key: "stock_name",
       },
       {
-        title: "数量",
+        title: "申购数量",
         dataIndex: "wanted_lots",
         key: "wanted_lots",
       },
@@ -224,26 +231,91 @@ class LotteryList extends React.Component {
         dataIndex: "draw_result_date",
         key: "draw_result_date",
       },
+
+      {
+        title: "中签状态",
+        dataIndex: "real_lots_status",
+        key: "real_lots_status",
+        render: (_, record) => {
+          // console.log("record :>> ", record);
+          const { id, real_lots, real_lots_status, } = record;
+          const { realLotsStatus, } = this.state.formData[id];
+          const handleChange = e => {
+            const status = e.target.checked;
+            if (status) {
+              this.setState({
+                formData: {
+                  ...this.state.formData,
+                  [id]: {
+                    ...this.state.formData[id],
+                    realLots: real_lots,
+                    realLotsStatus: true,
+                  },
+                },
+              });
+            } else {
+              this.setState({
+                formData: {
+                  ...this.state.formData,
+                  [id]: {
+                    ...this.state.formData[id],
+                    realLots: 0,
+                    realLotsStatus: false,
+                  },
+                },
+              });
+            }
+          };
+          return (
+            <Checkbox
+              onChange={handleChange}
+              checked={realLotsStatus}
+            ></Checkbox>
+          );
+        },
+      },
       {
         title: "中签数量",
         dataIndex: "real_lots",
         key: "real_lots",
         render: (_, record) => {
-          console.log("record :>> ", record);
-          const { id, real_lots, } = record;
+          const { id, real_lots, wanted_lots, real_lots_status, } = record;
+          const { realLots, realLotsStatus, } = this.state.formData[id];
           const handleChange = val => {
-            this.setState({ realLots: { ...this.state.realLots, [id]: val, }, });
+            this.setState({
+              formData: {
+                ...this.state.formData,
+                [id]: { ...this.state.formData[id], realLots: val, },
+              },
+            });
           };
-          // 判断中签数量是否有正被修改中的数量，若无则使用 api 回传的资料
-          const defaultValue = this.state.realLots[id]
-            ? this.state.realLots[id]
-            : real_lots;
           return (
             <InputNumber
-              defaultValue={defaultValue}
+              value={realLots}
               onChange={handleChange}
+              disabled={!realLotsStatus}
               min={0}
+              max={wanted_lots}
             />
+          );
+        },
+      },
+      {
+        title: "更新",
+        dataIndex: "update_real_lots",
+        key: "update_real_lots",
+        render: (_, record) => {
+          const { id, real_lots, real_lots_status, } = record;
+          const { realLots, realLotsStatus, } = this.state.formData[id];
+          const isDisabled = realLots === real_lots;
+          return (
+            <Button
+              type="primary"
+              onClick={() => this.updateRealLots(id)}
+              disabled={isDisabled}
+            >
+              更新
+            </Button>
           );
         },
       }
@@ -257,11 +329,6 @@ class LotteryList extends React.Component {
       <div className="common-list">
         {this.renderFilter()}
         <section className="common-list-table">
-          <Row>
-            <Button type="primary" onClick={this.updateLotteryList}>
-              更新中签数量
-            </Button>
-          </Row>
           <Table
             columns={columns}
             dataSource={dataSource}
