@@ -31,9 +31,8 @@ class LotteryList extends React.Component {
     page: 1,
     pageSize: 10,
     total: null,
-    formData: {},
-    realLots: {}, // 已调整数值，待更新的中签数量，key 为订单 id，val 为数量
-    realLotsStatus: {}, //
+    realLots: {},
+    isEditableMap: {},
   };
   componentDidMount() {
     // 根据路由参数拿取目前的产品名称
@@ -62,12 +61,12 @@ class LotteryList extends React.Component {
       const data = this.mapApiDataToDataSource(each);
       return data;
     });
-    const formData = dataSource.reduce((obj, curr) => {
-      const { id, real_lots, real_lots_status, } = curr;
-      obj[id] = { realLots: real_lots, realLotsStatus: real_lots_status, };
+    const realLots = dataSource.reduce((obj, curr) => {
+      const { id, real_lots, } = curr;
+      obj[id] = real_lots;
       return obj;
     }, {});
-    this.setState({ dataSource, formData, total: res.data.count, });
+    this.setState({ dataSource, realLots, total: res.data.count, });
   };
   mapApiDataToDataSource = raw => {
     const payload = { ...raw, };
@@ -85,7 +84,7 @@ class LotteryList extends React.Component {
     payload["draw_result_date"] = moment(
       newstock_data["draw_result_date"]
     ).format("YYYY-MM-DD");
-    payload["real_lots_status"] = Number(real_lots) > 0 ? true : false;
+    payload["real_lots_status"] = Number(real_lots) > 0 ? "已中签" : "未中签";
     return payload;
   };
 
@@ -101,17 +100,21 @@ class LotteryList extends React.Component {
   };
   updateRealLots = async id => {
     if (!id) return;
-    const { formData, } = this.state;
-    const { realLots, } = formData[id];
-    // console.log("realLots to be updated :>> ", id, realLots);
+    const real_lots = this.state.realLots[id];
     try {
-      await api.newStock.updateLotteryList(id, { real_lots: realLots, });
+      await api.newStock.updateLotteryList(id, { real_lots, });
       message.success("中签数量更新成功");
+      this.toggleEditor(id, false);
+      this.fetchData();
     } catch (e) {
       message.error("数据更新失败，请确认");
     }
   };
-
+  toggleEditor = (id, isEditable) => {
+    this.setState({
+      isEditableMap: { [id]: isEditable, },
+    });
+  };
   renderFilter = () => {
     const formItemLayout = {
       labelCol: { span: 6, },
@@ -236,64 +239,25 @@ class LotteryList extends React.Component {
         title: "中签状态",
         dataIndex: "real_lots_status",
         key: "real_lots_status",
-        render: (_, record) => {
-          // console.log("record :>> ", record);
-          const { id, real_lots, real_lots_status, } = record;
-          const { realLotsStatus, } = this.state.formData[id];
-          const handleChange = e => {
-            const status = e.target.checked;
-            if (status) {
-              this.setState({
-                formData: {
-                  ...this.state.formData,
-                  [id]: {
-                    ...this.state.formData[id],
-                    realLots: real_lots,
-                    realLotsStatus: true,
-                  },
-                },
-              });
-            } else {
-              this.setState({
-                formData: {
-                  ...this.state.formData,
-                  [id]: {
-                    ...this.state.formData[id],
-                    realLots: 0,
-                    realLotsStatus: false,
-                  },
-                },
-              });
-            }
-          };
-          return (
-            <Checkbox
-              onChange={handleChange}
-              checked={realLotsStatus}
-            ></Checkbox>
-          );
-        },
       },
       {
         title: "中签数量",
         dataIndex: "real_lots",
         key: "real_lots",
         render: (_, record) => {
-          const { id, real_lots, wanted_lots, real_lots_status, } = record;
-          const { realLots, realLotsStatus, } = this.state.formData[id];
+          const { id, real_lots, wanted_lots, } = record;
+          const { [id]: value, } = this.state.realLots;
           const handleChange = val => {
             this.setState({
-              formData: {
-                ...this.state.formData,
-                [id]: { ...this.state.formData[id], realLots: val, },
-              },
+              realLots: { ...this.state.realLots, [id]: val, },
             });
           };
+          const isEditable = this.state.isEditableMap[id];
           return (
             <InputNumber
-              value={realLots}
+              value={value}
+              disabled={!isEditable}
               onChange={handleChange}
-              disabled={!realLotsStatus}
               min={0}
               max={wanted_lots}
             />
@@ -301,21 +265,25 @@ class LotteryList extends React.Component {
         },
       },
       {
-        title: "更新",
-        dataIndex: "update_real_lots",
-        key: "update_real_lots",
+        title: "编辑",
+        dataIndex: "edit",
+        key: "edit",
         render: (_, record) => {
-          const { id, real_lots, real_lots_status, } = record;
-          const { realLots, realLotsStatus, } = this.state.formData[id];
-          const isDisabled = realLots === real_lots;
+          const { id, } = record;
+          const { [id]: isEditable, } = this.state.isEditableMap;
           return (
-            <Button
-              type="primary"
-              onClick={() => this.updateRealLots(id)}
-              disabled={isDisabled}
-            >
-              更新
-            </Button>
+            <React.Fragment>
+              {!isEditable && (
+                <Button onClick={() => this.toggleEditor(id, true)}>
+                  启用编辑
+                </Button>
+              )}
+              {isEditable && (
+                <Button type="primary" onClick={() => this.updateRealLots(id)}>
+                  更新数量
+                </Button>
+              )}
+            </React.Fragment>
           );
         },
       }
@@ -348,3 +316,36 @@ class LotteryList extends React.Component {
 }
 
 export default LotteryList;
+
+const render = (_, record) => {
+  // console.log("record :>> ", record);
+  const { id, real_lots, real_lots_status, } = record;
+  const { realLotsStatus, } = this.state.formData[id];
+  const handleChange = e => {
+    const status = e.target.checked;
+    if (status) {
+      this.setState({
+        formData: {
+          ...this.state.formData,
+          [id]: {
+            ...this.state.formData[id],
+            realLots: real_lots,
+            realLotsStatus: true,
+          },
+        },
+      });
+    } else {
+      this.setState({
+        formData: {
+          ...this.state.formData,
+          [id]: {
+            ...this.state.formData[id],
+            realLots: 0,
+            realLotsStatus: false,
+          },
+        },
+      });
+    }
+  };
+  return <Checkbox onChange={handleChange} checked={realLotsStatus}></Checkbox>;
+};
