@@ -19,6 +19,7 @@ import styles from "../index.module.scss";
 import classNames from "classnames/bind";
 import moment from "moment";
 import axios from "axios";
+import produce from "immer";
 const cx = classNames.bind(styles);
 const CancelToken = axios.CancelToken;
 let cancelPrevRequest;
@@ -31,7 +32,7 @@ class LotteryList extends React.Component {
     page: 1,
     pageSize: 10,
     total: null,
-    realLots: {},
+    realLotsMap: {},
     isEditableMap: {},
   };
   componentDidMount() {
@@ -61,12 +62,12 @@ class LotteryList extends React.Component {
       const data = this.mapApiDataToDataSource(each);
       return data;
     });
-    const realLots = dataSource.reduce((obj, curr) => {
+    const realLotsMap = dataSource.reduce((obj, curr) => {
       const { id, real_lots, } = curr;
       obj[id] = real_lots;
       return obj;
     }, {});
-    this.setState({ dataSource, realLots, total: res.data.count, });
+    this.setState({ dataSource, realLotsMap, total: res.data.count, });
   };
   mapApiDataToDataSource = raw => {
     const payload = { ...raw, };
@@ -100,7 +101,7 @@ class LotteryList extends React.Component {
   };
   updateRealLots = async id => {
     if (!id) return;
-    const real_lots = this.state.realLots[id];
+    const real_lots = this.state.realLotsMap[id];
     try {
       await api.newStock.updateLotteryList(id, { real_lots, });
       message.success("中签数量更新成功");
@@ -246,11 +247,13 @@ class LotteryList extends React.Component {
         key: "real_lots",
         render: (_, record) => {
           const { id, real_lots, wanted_lots, } = record;
-          const { [id]: value, } = this.state.realLots;
+          const { [id]: value, } = this.state.realLotsMap;
           const handleChange = val => {
-            this.setState({
-              realLots: { ...this.state.realLots, [id]: val, },
-            });
+            this.setState(
+              produce(draft => {
+                draft.realLotsMap[id] = val;
+              })
+            );
           };
           const isEditable = this.state.isEditableMap[id];
           return (
@@ -269,8 +272,10 @@ class LotteryList extends React.Component {
         dataIndex: "edit",
         key: "edit",
         render: (_, record) => {
-          const { id, } = record;
+          const { id, real_lots, } = record;
+          const { [id]: realLots, } = this.state.realLotsMap;
           const { [id]: isEditable, } = this.state.isEditableMap;
+          const canUpdate = real_lots !== realLots;
           return (
             <React.Fragment>
               {!isEditable && (
@@ -279,7 +284,11 @@ class LotteryList extends React.Component {
                 </Button>
               )}
               {isEditable && (
-                <Button type="primary" onClick={() => this.updateRealLots(id)}>
+                <Button
+                  type="primary"
+                  onClick={() => this.updateRealLots(id)}
+                  disabled={!canUpdate}
+                >
                   更新数量
                 </Button>
               )}
@@ -316,36 +325,3 @@ class LotteryList extends React.Component {
 }
 
 export default LotteryList;
-
-const render = (_, record) => {
-  // console.log("record :>> ", record);
-  const { id, real_lots, real_lots_status, } = record;
-  const { realLotsStatus, } = this.state.formData[id];
-  const handleChange = e => {
-    const status = e.target.checked;
-    if (status) {
-      this.setState({
-        formData: {
-          ...this.state.formData,
-          [id]: {
-            ...this.state.formData[id],
-            realLots: real_lots,
-            realLotsStatus: true,
-          },
-        },
-      });
-    } else {
-      this.setState({
-        formData: {
-          ...this.state.formData,
-          [id]: {
-            ...this.state.formData[id],
-            realLots: 0,
-            realLotsStatus: false,
-          },
-        },
-      });
-    }
-  };
-  return <Checkbox onChange={handleChange} checked={realLotsStatus}></Checkbox>;
-};
