@@ -1,0 +1,7 @@
+.trading-time-board {
+  :global(.ant-table-thead > tr > th ),
+  :global(.ant-table-tbody > tr > td ) {
+    text-align: center;
+    vertical-align: middle;
+  }
+}

@@ -3,13 +3,13 @@ import { Button, Icon, Popconfirm, Checkbox } from "antd";
 import utils from "utils";
 import { WeeklyOrder } from "constant";
 import moment from "moment";
-import { toJS } from 'mobx';
+import { toJS } from "mobx";
 
 // 传给 CommentList 的设定，渲染列表
 const config = self => {
   const { selectedRowKeys, } = self.state;
   const permissions = self.props.common.permissions;
-  
+
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
@@ -89,9 +89,11 @@ const config = self => {
       width: 50,
       dataIndex: "status",
       render: (text, record) => {
+        // console.log("record :>> ", toJS(record));
         const handleChange = async e => {
+          const status = e.target.checked ? 1 : 0;
           const res = await self.$api.product.updateProduct(record.id, {
-            status: text == 0 ? 1 : 0,
+            status,
           });
           if (res.status === 200) {
             self.getDataList(self.props.product.filterProduct);
@@ -99,7 +101,8 @@ const config = self => {
             self.$msg.error(res.data.message);
           }
         };
-        return <Checkbox checked={text} onChange={handleChange} />;
+        const isEnable = record.status === 1 ? true : false;
+        return <Checkbox checked={isEnable} onChange={handleChange} />;
       },
     },
     {
@@ -109,21 +112,19 @@ const config = self => {
       render: (text, record) => {
         // console.log('permissions :>> ', toJS(permissions));
         return (
-
           <div className="common-list-table-operation">
             {permissions.includes("view_broker_symbol_history") && (
               <>
-              <span
-                onClick={() => {
-                  self.goToHistory(record);
-                }}
-              >
-                行情
-              </span>
-              <span className="common-list-table-operation-spliter"></span>
+                <span
+                  onClick={() => {
+                    self.goToHistory(record);
+                  }}
+                >
+                  行情
+                </span>
+                <span className="common-list-table-operation-spliter"></span>
               </>
-            )
-            }
+            )}
             {permissions.includes("edit_product") && (
               <span
                 onClick={() => {
@@ -147,7 +148,7 @@ const config = self => {
                     self.$msg.error(res.data.message);
                   }
                 }}
-                onCancel={() => { }}
+                onCancel={() => {}}
               >
                 <span>删除</span>
               </Popconfirm>
@@ -162,7 +163,7 @@ const config = self => {
     ...self.props.common.paginationConfig,
     total: self.props.product.productListMeta.total,
     current: self.state.currentPage,
-    onChange: (current, pageSize) => { },
+    onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
       // @todo 调用获取表接口
       self.resetPagination(pageSize, current);
@@ -170,21 +171,6 @@ const config = self => {
   };
 
   return {
-    // 是否显示增加按钮
-    addBtn: {
-      title: () => (
-        <Button
-          type="primary"
-          style={{ display: "none", }}
-          onClick={() => {
-            self.goToEditor({});
-          }}
-        >
-          <Icon type="plus" />
-          添加
-        </Button>
-      ),
-    },
     searcher: {
       // hideSearcher: true,
       batchControl: {

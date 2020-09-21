@@ -1,1349 +1,1018 @@
 import * as React from "react";
+import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
 import { BaseReact } from "components/BaseReact";
-
 import {
   Form,
   Input,
   Select,
-  Button,
-  Modal,
-  Radio,
   InputNumber,
-  DatePicker,
-  TimePicker,
+  Tooltip,
+  Button,
+  Radio,
+  Col,
   Row,
-  Col
+  message
 } from "antd";
-import "./index.scss";
-import Validator from "utils/validator";
-import { inject, observer } from "mobx-react";
-import utils from "utils";
-import cloneDeep from "lodash/cloneDeep";
-import { WeeklyOrder, THREE_DAY_OPTIONS, WeeklyMap } from "constant";
-import moment from "moment";
+import { THREE_DAY_OPTIONS } from "constant";
+import { TradingTimeBoard } from "../TradingTimeBoard";
+import { inject } from "mobx-react";
+import styles from "./index.module.scss";
+import classnames from "classnames/bind";
+const cx = classnames.bind(styles);
 
-const FormItem = Form.Item;
-const Option = Select.Option;
-const confirm = Modal.confirm;
-const TextArea = Input.TextArea;
-const radioStyle = { display: "block", marginBottom: 12, };
-const RangePicker = DatePicker.RangePicker;
+// 利润规则 scope
+const scopes = [
+  "margin_rule",
+  "profit_rule",
+  "pre_pay_rule",
+  "delay_rule",
+  "tax_rule",
+  "fee_rule"
+];
+// 栏位的利润规则 scope
+const scopeOfField = {
+  calculate_for_buy_hands_fee: "fee_rule",
+  calculate_for_sell_hands_fee: "fee_rule",
+  calculate_for_buy_tax: "tax_rule",
+  calculate_for_sell_tax: "tax_rule",
+  calculate_for_buy_stock_fee: "delay_rule",
+  calculate_for_sell_stock_fee: "delay_rule",
+  profit_calculate_for_bought: "profit_rule",
+  profit_calculate_for_sale: "profit_rule",
+  calculate_for_cash_deposit: "margin_rule",
+};
 
-const getFormItemLayout = (label, wrapper, offset?) => ({
-  labelCol: { span: label, offset, },
-  wrapperCol: { span: wrapper, },
-});
-const placeholders = { label: "placeholder", };
-export interface IProductEditorProps {}
+/**
+ * MT 外汇
+ * HK 港股
+ * ASHARES Ａ股
+ * commodity 大宗商品
+ * IXIX 指数
+ * 该种产品分类的栏位选项
+ */
+const fieldOptionsOfSymbolType = {
+  HK: {
+    position_type: ["T+0"],
+  },
+  MT: {
+    position_type: ["T+0", "T+1", "T+2", "T+3"],
+  },
+  ASHARES: {
+    position_type: ["T+0", "T+1"],
+  },
+};
+// 找不到产品选项时的预设值
+const defaultFieldOptionsOfSymbolType = {
+  position_type: ["T+0", "T+1", "T+2", "T+3"],
+};
+// 栏位资讯
+const infoOfField = {
+  type_display: { label: "交易类型", },
+  name: { label: "产品名称", },
+  decimals_place: { label: "小位数", },
+  description: { label: "描述", },
+  transaction_mode: { label: "成交模式", },
+  profit_currency: { label: "获利货币", },
+  margin_currency: { label: "预付款货币", },
+  orders_mode: { label: "挂单模式", },
+  volume_step: { label: "交易数步长", },
+  contract_size: { label: "合约大小", },
+  position_type: { label: "持仓类型", },
+  max_position_days: { label: "持仓天数", },
+  leverage: { label: "杠杆", },
+  calculate_for_buy_hands_fee: { label: "买入手续费计算", },
+  calculate_for_sell_hands_fee: { label: "卖出手续费计算", },
+  hands_fee_for_buy: { label: "买入手续费率", },
+  hands_fee_for_sell: { label: "卖出手续费率", },
+  calculate_for_buy_tax: { label: "买入税费计算", },
+  calculate_for_sell_tax: { label: "卖出税费计算", },
+  tax_for_buy: { label: "买入税率", },
+  tax_for_sell: { label: "卖出税率", },
+  calculate_for_buy_stock_fee: { label: "买入库存费计算(多)", },
+  calculate_for_sell_stock_fee: { label: "卖出库存费計算(空)", },
+  purchase_fee: { label: "买入库存费率(多)", },
+  selling_fee: { label: "卖出库存费率(空)", },
+  max_lots: { label: "最大手数", },
+  min_lots: { label: "最小手数", },
+  spread: { label: "点差", },
+  spread_mode: { label: "点差模式", },
+  calculate_for_cash_deposit: { label: "保证金计算", },
+  profit_calculate_for_bought: { label: "盈亏计算(多)", },
+  profit_calculate_for_sale: { label: "盈亏计算(空)", },
+  three_days_swap: { label: "三日库存费", },
+  status: { label: "是否可用", },
+};
 
-export interface IProductEditorState {}
-
-// @ts-ignore
+const spreadModeOptions = [
+  {
+    field: "fix",
+    translation: "固定点差",
+  },
+  {
+    field: "float",
+    translation: "浮动点差",
+  }
+];
+@withRoutePermissionGuard("/dashboard/exchange/product/editor", {
+  exact: false,
+})
 @Form.create()
 @inject("common", "product")
-@observer
-export default class ProductEditor extends BaseReact<
-IProductEditorProps,
-IProductEditorState
-> {
+export default class ProductEditor extends BaseReact {
   state = {
-    mode: "add",
-    typeOptions: [],
-    marketOptions: [],
+    scopes,
+    rulesOfScope: {},
+    formItemLayout: {
+      labelCol: { span: 4, },
+      wrapperCol: { span: 12, },
+    },
+    fieldOptions: {},
     transactionModeOptions: [],
-    bgColorOptions: [],
-    currencyOptions: [],
     orderModeOptions: [],
-    deposit_rule_options: [],
-    profit_bounght_rule_options: [],
-    profit_sale_rule_options: [],
-    margin_rule_options: [], // 保证金
-    profit_rule_options: [], // 盈亏计算
-    pre_pay_rule_options: [], // 预付款
-    delay_rule_options: [], // 库存费
-    tax_rule_options: [], // 税金
-    fee_rule_options: [],
+    currencyOptions: [],
+    spreadModeOptions,
+    tradingTime: [],
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     this.init();
-    this.getGenreOptions(); // 获取品种类型
-    this.getMarketOptions(); // 获取行情产品类型
-    this.getTransactionModeOptions(); // 获取成交模式
-    this.getBgColorOptions(); // 获取背景色
-    this.getCurrencyOptions(); // 获取货币类型
-    this.getOrderModeOptions(); // 获取挂单模式
-    this.getDifferentScopeOptions(); // 获取不同 scope 下的计算规则
   }
-
-  componentWillUnmount() {
-    this.props.product.setCurrentProduct({}, true, false);
-  }
-
   init = async () => {
-    const search = this.$qs.parse(this.props.location.search);
+    const { scopes, } = this.state;
+    const parsedQueryString = this.$qs.parse(this.props.location.search);
+    const { id, } = parsedQueryString;
+    const { setFieldsValue, } = this.props.form;
+    const res = await this.$api.product.getCurrentProduct(id);
+    // console.log("res.data :>> ", res.data);
+    const initFieldValue = this.mapApiDataToFieldValue(res.data);
+    const fieldOptions =
+      fieldOptionsOfSymbolType[res.data.code] ||
+      defaultFieldOptionsOfSymbolType;
+    const tradingTime = res.data.trading_times_display;
+    this.setState({ fieldOptions, tradingTime, });
+    setFieldsValue(initFieldValue);
 
-    this.setState(
-      {
-        mode: search.id == 0 ? "add" : "edit",
-      },
-      async () => {
-        const currentProduct = utils.getLStorage("currentProduct");
-
-        if (currentProduct) {
-          confirm({
-            title: "行情产品恢复操作",
-            content:
-              "检测到您存在未提交的行情产品记录，请问是否从上次编辑中恢复状态？",
-            onOk: () => {
-              this.props.product.setCurrentProduct(currentProduct);
-            },
-            onCancel: () => {
-              this.init();
-              utils.rmLStorage("currentProduct");
-            },
-          });
-        } else {
-          if (this.state.mode === "edit") {
-            await this.$store.product.getCurrentProduct(search.id);
-          } else {
-            this.props.product.setCurrentProduct({}, true, false);
-          }
-        }
-      }
+    this.getRulesOfScope();
+    this.getTransactionModeOptions();
+    this.getOrderModeOptions();
+    this.getCurrencyOptions();
+  };
+  getRulesOfScope = async () => {
+    // 取得栏位选项公式 （利润规则）
+    const ruleList = await Promise.all(
+      scopes.map(scope =>
+        this.$api.product.getRuleList({
+          params: {
+            scope,
+          },
+        })
+      )
     );
+    const rulesOfScope = ruleList
+      .map(each => each.data.results)
+      .reduce((obj, rules, index) => {
+        const scope = scopes[index];
+        obj[scope] = rules;
+        return obj;
+      }, {});
+    this.setState({ rulesOfScope, });
+    // console.log("ruleList :>> ", ruleList);
+    // console.log("this.state.rulesOfScope :>> ", this.state.rulesOfScope);
   };
-
-  getDifferentScopeOptions = () => {
-    const scopes = [
-      "margin_rule",
-      "profit_rule",
-      "pre_pay_rule",
-      "delay_rule",
-      "tax_rule",
-      "fee_rule"
-    ];
-
-    scopes.forEach(scope => {
-      this.getScopeOptions(scope);
-    });
-  };
-  getScopeOptions = async (scope?) => {
-    const res = await this.$api.product.getRuleList({
-      params: {
-        scope,
-      },
-    });
-
-    this.setState({
-      [`${scope}_options`]: res.data.results,
-    });
-  };
-
-  getGenreOptions = async () => {
-    const res = await this.$api.product.getGenreList({ offset: 0, limit: 200, });
-    this.setState({
-      typeOptions: res.data.results,
-    });
-  };
-
-  getMarketOptions = async () => {
-    const res = await this.$api.product.getProductList({
-      offset: 0,
-      limit: 200,
-    });
-    this.setState({
-      marketOptions: res.data.results,
-      marketMeta: {
-        total: res.count,
-      },
-    });
-  };
-
   getTransactionModeOptions = async () => {
-    const res = await this.$api.product.getTransactionModeOptions({
-      page: 1,
-      page_size: 200,
+    const res = await this.$api.product.getTransactionModeOptions();
+    this.setState({
+      transactionModeOptions: res.data.data,
     });
-
-    if (res.status == 200) {
-      this.setState({
-        transactionModeOptions: res.data.data || [],
-      });
-    }
+    // console.log("transactionModeOptions :>> ", res);
   };
-
-  getBgColorOptions = async () => {
-    const res = await this.$api.product.getBgColorOptions({
-      page: 1,
-      page_size: 200,
+  getOrderModeOptions = async () => {
+    const res = await this.$api.product.getOrderModeOptions();
+    // console.log("orderModeOptions :>> ", res);
+    this.setState({
+      orderModeOptions: res.data.data,
     });
-
-    if (res.status == 200) {
-      this.setState({
-        bgColorOptions: res.data.data || [],
-      });
-    }
   };
-
   getCurrencyOptions = async () => {
-    // const res = await this.$api.exchange.getProfitOptioins({ page: 1, page_size: 200, });
-
     const res = await this.$api.common.getConstantByKey(
       "system_currency_choices"
     );
+    // console.log("currencyOptions :>> ", res);
     this.setState({
       currencyOptions: res.data.data,
     });
   };
 
-  getOrderModeOptions = async () => {
-    const res = await this.$api.product.getOrderModeOptions({
-      page: 1,
-      page_size: 200,
-    });
+  mapApiDataToFieldValue = input => {
+    // 将 api 回传格式转为栏位值
+    const payload = { ...input, };
 
-    if (res.status == 200) {
-      this.setState({
-        orderModeOptions: res.data.data || [],
-      });
-    }
+    payload.leverage = payload.leverage ? payload.leverage.split(",") : [];
+    return payload;
   };
-
-  renderEditor = () => {
-    const { getFieldDecorator, } = this.props.form;
-    const {
-      setCurrentProduct,
-      currentShowProduct,
-      currentProduct,
-    } = this.props.product;
-    const {
-      typeOptions,
-      marketOptions,
-      transactionModeOptions,
-      bgColorOptions,
-      currencyOptions,
-      orderModeOptions,
-      margin_rule_options,
-      profit_rule_options,
-      tax_rule_options,
-      fee_rule_options,
-      delay_rule_options,
-    } = this.state;
-
+  mapFieldValueToApiData = input => {
+    // 将表单栏位值转为 api 吃的格式
+    const payload = { ...input, };
+    payload.leverage = payload.leverage.join(",");
+    return payload;
+  };
+  getRulesOfField = fieldName => {
+    const scope = scopeOfField[fieldName];
+    const rules = this.state.rulesOfScope[scope];
+    return rules || [];
+  };
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.form.validateFields(async (err, values) => {
+      if (err) return;
+      const payload = this.mapFieldValueToApiData(values);
+      const parsedQueryString = this.$qs.parse(this.props.location.search);
+      const { id, } = parsedQueryString;
+      const res = await this.$api.product.updateProduct(id, payload);
+      if (res.status === 200) {
+        message.success("编辑成功");
+        this.props.product.getProductList();
+        this.props.history.push("/dashboard/exchange/product");
+      } else {
+        message.error("表单送出失败，请确认");
+      }
+      console.log("payload :>> ", payload);
+      console.log("res :>> ", res);
+    });
+  };
+  renderGroupHeader = title => {
     return (
-      <Form className="editor-form">
-        <FormItem>
-          <h2 className="editor-form-title form-title">基本配置</h2>
-        </FormItem>
-
-        <FormItem label="产品名称" {...getFormItemLayout(3, 12)} required>
-          {getFieldDecorator("name", {
-            initialValue: currentShowProduct && currentShowProduct.name,
-          })(
-            <Input
-              placeholder="请输入产品名称"
-              onChange={evt => {
-                setCurrentProduct(
-                  {
-                    name: evt.target.value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
-        </FormItem>
-        <FormItem
-          label="行情产品"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-          required
-        >
-          {getFieldDecorator("product", {
-            initialValue:
-              currentShowProduct.product &&
-              currentShowProduct.product.toString(),
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择行情产品"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    product: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {marketOptions.map(item => (
-                // @ts-ignore
-                <Option key={item.id.toString()}>{item.name}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem label="小位数" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("decimals_place", {
-            initialValue:
-              currentShowProduct && currentShowProduct.decimals_place,
-          })(
-            <InputNumber
-              min={0}
-              type="number"
-              placeholder="请输入小位数"
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    decimals_place: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem label="描述" {...getFormItemLayout(3, 8)}>
-          {getFieldDecorator("description", {
-            initialValue: currentShowProduct && currentShowProduct.description,
-            rules: [],
-          })(
-            <TextArea
-              placeholder="请输入产品描述"
-              rows={6}
-              onChange={evt => {
-                setCurrentProduct(
-                  {
-                    description: evt.target.value,
-                  },
-                  false
-                );
-              }}
-            />
-          )}
-        </FormItem>
-        <FormItem
-          label="交易品种类型"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-          required
-        >
-          {getFieldDecorator("type", {
-            initialValue:
-              currentShowProduct.type && currentShowProduct.type.toString(),
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择交易品种类型"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    type: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {typeOptions.map(item => (
-                // @ts-ignore
-                <Option key={item.id.toString()}>{item.name}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem
-          label="成交模式"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-          required
-        >
-          {getFieldDecorator("transaction_mode", {
-            initialValue:
-              currentShowProduct.transaction_mode != null &&
-              currentShowProduct.transaction_mode.toString(),
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择成交模式"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    transaction_mode: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {transactionModeOptions.map(item => (
-                // @ts-ignore
-                <Option key={item.field.toString()}>{item.translation}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem
-          label="背景颜色"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-          required
-        >
-          {getFieldDecorator("background", {
-            initialValue: currentShowProduct && currentShowProduct.background,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择背景颜色"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    background: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {bgColorOptions.map(item => (
-                // @ts-ignore
-                <Option key={item.field}>{item.translation}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem
-          label="获利货币"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-          required
-        >
-          {getFieldDecorator("profit_currency", {
-            initialValue:
-              currentShowProduct && currentShowProduct.profit_currency,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择获利货币"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    profit_currency: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {currencyOptions.map(item => (
-                // @ts-ignore
-                <Option key={item.field}>{item.translation}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-
-        <FormItem
-          label="预付款货币"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-          required
-        >
-          {getFieldDecorator("margin_currency", {
-            initialValue:
-              currentShowProduct && currentShowProduct.margin_currency,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择预付款货币"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    margin_currency: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {currencyOptions.map(item => (
-                // @ts-ignore
-                <Option key={item.field}>{item.translation}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-
-        <FormItem label="最大交易手数" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("max_lots", {
-            initialValue: currentShowProduct && currentShowProduct.max_lots,
-          })(
-            <InputNumber
-              min={0}
-              type="number"
-              placeholder="请输入最大交易手数"
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    max_lots: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem label="最小交易手数" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("min_lots", {
-            initialValue: currentShowProduct && currentShowProduct.min_lots,
-          })(
-            <InputNumber
-              min={0}
-              type="number"
-              placeholder="请输入最小交易手数"
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    min_lots: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem
-          label="挂单模式"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-          required
-        >
-          {getFieldDecorator("orders_mode", {
-            initialValue: currentShowProduct && currentShowProduct.orders_mode,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择挂单模式"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    orders_mode: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {orderModeOptions.map(item => (
-                // @ts-ignore
-                <Option key={item.field}>{item.translation}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem label="点差" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("spread", {
-            initialValue: currentShowProduct && currentShowProduct.spread,
-          })(
-            <InputNumber
-              min={0}
-              type="number"
-              placeholder="请输入点差"
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    spread: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem
-          label="点差模式"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-          required
-        >
-          {getFieldDecorator("spread_mode", {
-            initialValue: currentShowProduct && currentShowProduct.spread_mode,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择点差模式"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    spread_mode: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {[
-                {
-                  field: "fix",
-                  translation: "固定点差",
-                },
-                {
-                  field: "float",
-                  translation: "浮动点差",
-                }
-              ].map(item => (
-                // @ts-ignore
-                <Option key={item.field}>{item.translation}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem label="止盈止损位" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("limit_stop_level", {
-            initialValue:
-              currentShowProduct && currentShowProduct.limit_stop_level,
-          })(
-            <InputNumber
-              min={0}
-              type="number"
-              placeholder="请输入点差"
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    limit_stop_level: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-
-        <FormItem label="交易数步长" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("lots_step", {
-            initialValue: currentShowProduct && currentShowProduct.lots_step,
-          })(
-            <InputNumber
-              min={0}
-              type="number"
-              placeholder="请输入交易量步长"
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    lots_step: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem
-          label="价格变动最小单位"
-          {...getFormItemLayout(3, 12)}
-        >
-          {getFieldDecorator("min_unit_of_price_change", {
-            initialValue:
-              currentShowProduct && currentShowProduct.min_unit_of_price_change,
-          })(
-            <InputNumber
-              min={0}
-              type="number"
-              placeholder="请输入价格变动最小单位"
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    min_unit_of_price_change: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem>
-          <h2 className="editor-form-title form-title">保证金计算</h2>
-        </FormItem>
-
-        <FormItem label="合约大小" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("contract_size", {
-            initialValue: currentShowProduct && currentShowProduct.contract_size,
-          })(
-            <InputNumber
-              min={0}
-              type="number"
-              placeholder="请输入合约大小"
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    contract_size: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem
-          label="保证金计算"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-        >
-          {getFieldDecorator("calculate_for_cash_deposit", {
-            initialValue:
-              currentShowProduct &&
-              currentShowProduct.calculate_for_cash_deposit,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择保证金计算"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    calculate_for_cash_deposit: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {margin_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem
-          label="盈亏计算（多）"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-        >
-          {getFieldDecorator("profit_calculate_for_bought", {
-            initialValue:
-              currentShowProduct &&
-              currentShowProduct.profit_calculate_for_bought,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择盈亏计算（多）"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    profit_calculate_for_bought: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {profit_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem
-          label="盈亏计算（空）"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-        >
-          {getFieldDecorator("profit_calculate_for_sale", {
-            initialValue:
-              currentShowProduct && currentShowProduct.profit_calculate_for_sale,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择盈亏计算（空）"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    profit_calculate_for_sale: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {profit_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem>
-          <h2 className="editor-form-title form-title">利润设定</h2>
-        </FormItem>
-        <FormItem label="买入库存费（%）" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("purchase_fee", {
-            initialValue: currentShowProduct && currentShowProduct.purchase_fee,
-          })(
-            <InputNumber
-              type="number"
-              placeholder="请输入买入库存费
-            "
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    purchase_fee: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem label="卖出库存费（%）" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("selling_fee", {
-            initialValue: currentShowProduct && currentShowProduct.selling_fee,
-          })(
-            <InputNumber
-              type="number"
-              placeholder="请输入卖出库存费"
-              onChange={value => {
-                setCurrentProduct(
-                  {
-                    selling_fee: value,
-                  },
-                  false
-                );
-              }}
-              style={{ display: "inline-block", width: 200, }}
-            />
-          )}
-        </FormItem>
-        <FormItem
-          label="库存费计算"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-        >
-          {getFieldDecorator("calculate_for_fee", {
-            initialValue:
-              currentShowProduct && currentShowProduct.calculate_for_fee,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择税金计算"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    calculate_for_fee: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {delay_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-
-        <FormItem
-          label="三日库存费"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-        >
-          {getFieldDecorator("three_days_swap", {
-            initialValue:
-              currentShowProduct && currentShowProduct.three_days_swap,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择三日库存费"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    three_days_swap: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {THREE_DAY_OPTIONS.map(item => (
-                // @ts-ignore
-                <Option key={item.id}>{item.name}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem
-          label="买入手续费"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-        >
-          {getFieldDecorator("hands_fee_for_bought", {
-            initialValue:
-              currentShowProduct && currentShowProduct.hands_fee_for_bought,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择买入手续费"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    hands_fee_for_bought: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {fee_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem
-          label="卖出手续费"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-        >
-          {getFieldDecorator("hands_fee_for_sale", {
-            initialValue:
-              currentShowProduct && currentShowProduct.hands_fee_for_sale,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请输入卖出手续费"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    hands_fee_for_sale: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {fee_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem
-          label="税金计算"
-          className="push-type-select"
-          {...getFormItemLayout(3, 6)}
-        >
-          {getFieldDecorator("calculate_for_tax", {
-            initialValue:
-              currentShowProduct && currentShowProduct.calculate_for_tax,
-          })(
-            <Select
-              // @ts-ignore
-              getPopupContainer={() =>
-                document.getElementsByClassName("push-type-select")[0]
-              }
-              placeholder="请选择税金计算"
-              onChange={(value, elem: any) => {
-                setCurrentProduct(
-                  {
-                    calculate_for_tax: value,
-                  },
-                  false
-                );
-              }}
-              onFocus={async () => {}}
-            >
-              {tax_rule_options.map(item => (
-                // @ts-ignore
-                <Option key={item.func_name}>{item.name}</Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem>
-          <h2 className="editor-form-title form-title">交易时间段</h2>
-        </FormItem>
-        <Row style={{ marginBottom: 10, textAlign: "center", fontWeight: 500, }}>
-          <Col span={3}>交易日</Col>
-          <Col span={6}>上午交易时间</Col>
-          <Col span={6}>下午交易时间</Col>
-        </Row>
-        {!utils.isEmpty(currentShowProduct.trading_times) && (
-          <>
-            {currentShowProduct.trading_times.map((item, index) => {
-              return (
-                <FormItem
-                  key={item.day}
-                  label={WeeklyMap[item.day]}
-                  {...getFormItemLayout(3, 16)}
-                >
-                  <TimePicker
-                    style={{ marginRight: 10, width: 200, }}
-                    placeholder={"请输入上午交易开始时间"}
-                    value={item.trades && item.trades[0]}
-                    onChange={time => {
-                      const tradeMap = {};
-                      const copy = currentProduct.trading_times
-                        ? cloneDeep(JSON.parse(currentProduct.trading_times))
-                        : tradeMap;
-
-                      if (utils.isEmpty(copy)) {
-                        WeeklyOrder.forEach(item => {
-                          copy[item] = {
-                            trades: [],
-                          };
-                        });
-                      }
-                      // if (!copy[item.day].trades ) {
-                      //   copy[item.day].trades  = [];
-                      // }
-                      copy[item.day].trades[0] = time.unix();
-
-                      setCurrentProduct(
-                        {
-                          trading_times: JSON.stringify(copy),
-                        },
-                        false
-                      );
-
-                      setCurrentProduct(
-                        {
-                          trading_times: JSON.stringify(copy),
-                        },
-                        false
-                      );
-                    }}
-                  />
-                  <TimePicker
-                    value={item.trades && item.trades[1]}
-                    placeholder={"请输入上午交易结束时间"}
-                    style={{ marginRight: 10, width: 200, }}
-                    onChange={time => {
-                      const tradeMap = {};
-                      const copy = currentProduct.trading_times
-                        ? cloneDeep(JSON.parse(currentProduct.trading_times))
-                        : tradeMap;
-
-                      if (utils.isEmpty(copy)) {
-                        WeeklyOrder.forEach(item => {
-                          copy[item] = {
-                            trades: [],
-                          };
-                        });
-                      }
-                      copy[item.day].trades[1] = time.unix();
-                      setCurrentProduct(
-                        {
-                          trading_times: JSON.stringify(copy),
-                        },
-                        false
-                      );
-                    }}
-                  />
-                  <TimePicker
-                    value={item.trades && item.trades[2]}
-                    placeholder={"请输入下午交易开始时间"}
-                    style={{ marginRight: 10, width: 200, }}
-                    onChange={time => {
-                      const tradeMap = {};
-                      const copy = currentProduct.trading_times
-                        ? cloneDeep(JSON.parse(currentProduct.trading_times))
-                        : tradeMap;
-
-                      if (utils.isEmpty(copy)) {
-                        WeeklyOrder.forEach(item => {
-                          copy[item] = {
-                            trades: [],
-                          };
-                        });
-                      }
-                      copy[item.day].trades[2] = time.unix();
-                      setCurrentProduct(
-                        {
-                          trading_times: JSON.stringify(copy),
-                        },
-                        false
-                      );
-                    }}
-                  />
-                  <TimePicker
-                    value={item.trades && item.trades[3]}
-                    placeholder={"请输入下午交易结束时间"}
-                    style={{ marginRight: 10, width: 200, }}
-                    onChange={time => {
-                      const tradeMap = {};
-                      const copy = currentProduct.trading_times
-                        ? cloneDeep(JSON.parse(currentProduct.trading_times))
-                        : tradeMap;
-
-                      if (utils.isEmpty(copy)) {
-                        WeeklyOrder.forEach(item => {
-                          copy[item] = {
-                            trades: [],
-                          };
-                        });
-                      }
-                      copy[item.day].trades[3] = time.unix();
-                      setCurrentProduct(
-                        {
-                          trading_times: JSON.stringify(copy),
-                        },
-                        false
-                      );
-                    }}
-                  />
-                </FormItem>
-              );
-            })}
-          </>
-        )}
-        <FormItem className="editor-form-btns">
-          <Button onClick={this.goBack}>取消</Button>
-          {
-            <Button
-              disabled={currentProduct.id}
-              type="primary"
-              onClick={this.handleSubmit}
-            >
-              {this.state.mode == "edit" ? "确认修改" : "保存"}
-            </Button>
-          }
-        </FormItem>
-      </Form>
+      <Form.Item>
+        <h2 className="form-title">{title}</h2>
+      </Form.Item>
     );
   };
-
-  goBack = () => {
-    setTimeout(() => {
-      this.props.history.goBack();
-      this.props.product.setCurrentProduct({});
-      utils.rmLStorage("currentProduct");
-    }, 300);
-  };
-
-  handleSubmit = async evt => {
-    this.props.form.validateFields(async (err, values) => {
-      if (!err) {
-        const { currentProduct, } = this.props.product;
-        const { mode, } = this.state;
-        let payload: any = {
-          name: currentProduct.name,
-          type: currentProduct.type,
-          product: currentProduct.product,
-          decimals_place: currentProduct.decimals_place,
-          contract_size: currentProduct.contract_size,
-          spread: currentProduct.spread,
-          limit_stop_level: currentProduct.limit_stop_level,
-          margin_currency: currentProduct.margin_currency,
-          profit_currency: currentProduct.profit_currency,
-          max_lots: currentProduct.max_lots,
-          min_lots: currentProduct.min_lots,
-          lots_step: currentProduct.lots_step,
-          min_unit_of_price_change: currentProduct.min_unit_of_price_change,
-          transaction_mode: currentProduct.transaction_mode,
-          purchase_fee: currentProduct.purchase_fee,
-          selling_fee: currentProduct.selling_fee,
-          description: currentProduct.description,
-          background: currentProduct.background,
-          orders_mode: currentProduct.orders_mode,
-          hands_fee_for_bought: currentProduct.hands_fee_for_bought,
-          hands_fee_for_sale: currentProduct.hands_fee_for_sale,
-          three_days_swap: currentProduct.three_days_swap,
-          trading_times: currentProduct.trading_times,
-          calculate_for_cash_deposit: currentProduct.calculate_for_cash_deposit,
-          profit_calculate_for_bought:
-            currentProduct.profit_calculate_for_bought,
-          profit_calculate_for_sale: currentProduct.profit_calculate_for_sale,
-          calculate_for_fee: currentProduct.calculate_for_fee,
-          calculate_for_tax: currentProduct.calculate_for_tax,
-          spread_mode: currentProduct.spread_mode,
-        };
-
-        const errMsg = this.getValidation(payload);
-        // payload.trading_times = JSON.stringify(payload.trading_times);
-        if (errMsg) return this.$msg.warn(errMsg);
-        if (mode == "add") {
-          const res = await this.$api.product.createProduct(payload);
-
-          if (res.status == 201) {
-            this.$msg.success("交易品种创建成功");
-            setTimeout(() => {
-              this.goBack();
-              this.props.product.getProductList({
-                current_page: this.props.product.filterProduct.current_page,
-                page_size: this.props.product.filterProduct.page_size,
-              });
-            }, 1500);
-          }
-        } else {
-          const res = await this.$api.product.updateProduct(
-            currentProduct.id,
-            payload
-          );
-
-          if (res.status == 200) {
-            this.$msg.success("交易品种更新成功");
-            setTimeout(() => {
-              this.goBack();
-              this.props.product.getProductList({
-                current_page: this.props.product.filterProduct.current_page,
-                page_size: this.props.product.filterProduct.page_size,
-              });
-            }, 1500);
-          }
-        }
-      }
-    });
-  };
-
-  getValidation = (payload: any) => {
-    const validator = new Validator();
-
-    validator.add(payload.name, [
-      {
-        strategy: "isNonEmpty",
-        errMsg: "请输入交易品种名字",
-      }
-    ]);
-
-    validator.add(payload.type, [
-      {
-        strategy: "isNonEmpty",
-        errMsg: "请选择交易品种类型",
-      }
-    ]);
-
-    validator.add(payload.product, [
-      {
-        strategy: "isNonEmpty",
-        errMsg: "请选择行情产品",
-      }
-    ]);
-
-    validator.add(payload.margin_currency, [
-      {
-        strategy: "isNonEmpty",
-        errMsg: "请选择预售货币款",
-      }
-    ]);
-
-    validator.add(payload.profit_currency, [
-      {
-        strategy: "isNonEmpty",
-        errMsg: "请选择获利货币",
-      }
-    ]);
-
-    validator.add(payload.transaction_mode, [
-      {
-        strategy: "isNonEmpty",
-        errMsg: "请选择成交模式",
-      }
-    ]);
-
-    let errMsg: any = validator.start();
-    if (!payload.trading_times) {
-      errMsg = "请设置交易时间段";
-    } else {
-      for (let i = 0; i < WeeklyOrder.length; i++) {
-        let dayKey = WeeklyOrder[i];
-        let dayValue = WeeklyMap[dayKey];
-        let trading_times = JSON.parse(payload.trading_times);
-        let day: any = trading_times[dayKey];
-
-        if (utils.isEmpty(day.trades)) {
-          errMsg = `请输入 ${dayValue} 的交易时间段`;
-          break;
-        } else {
-          if (day.trades[1] < day.trades[0]) {
-            errMsg = `${dayValue} 的上午交易结束时间不得小于开始时间`;
-            break;
-          }
-
-          if (day.trades[2] < day.trades[1]) {
-            errMsg = `${dayValue} 的下午交易开始时间不得小于上午交易结束时间`;
-            break;
-          }
-
-          if (day.trades[3] < day.trades[2]) {
-            errMsg = `${dayValue} 的下午交易结束时间不得小于开始时间`;
-            break;
-          }
-        }
-      }
-    }
-
-    return errMsg;
-  };
-
-  render() {
+  renderClearOption = () => {
     return (
-      <div className="editor food-card-editor">
-        <section className="editor-content panel-block">
-          {this.renderEditor()}
+      <Select.Option key="clear" value={null} label="">
+        －清除设置－
+      </Select.Option>
+    );
+  };
+  render() {
+    const { getFieldDecorator, } = this.props.form;
+    const { formItemLayout, fieldOptions, } = this.state;
+    const { renderGroupHeader, renderClearOption, } = this;
+
+    return (
+      <div className="editor">
+        <section className="panel-block">
+          <Form className="editor-form" layout={"horizontal"}>
+            {renderGroupHeader("基本配置")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Input type="text" disabled={true} />
+                  )}
+                </Form.Item>
+              );
+            })("type_display")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Input type="text" disabled={true} />
+                  )}
+                </Form.Item>
+              );
+            })("name")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <InputNumber className={cx("input-number")} min={0} />
+                  )}
+                </Form.Item>
+              );
+            })("decimals_place")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<Input.TextArea autoSize />)}
+                </Form.Item>
+              );
+            })("description")}
+            {(name => {
+              const info = infoOfField[name];
+              const options = fieldOptions[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  <Tooltip
+                    title="T+0 (可多可空)、T+1 (只能作多)"
+                    placement="topLeft"
+                  >
+                    {getFieldDecorator(name, {
+                      rules: [
+                        {
+                          required: true,
+                          message: "必填",
+                        }
+                      ],
+                    })(
+                      <Select mode="tags" placeholder="Please select">
+                        {options &&
+                          options.map(option => (
+                            <Select.Option key={option} value={option}>
+                              {option}
+                            </Select.Option>
+                          ))}
+                      </Select>
+                    )}
+                  </Tooltip>
+                </Form.Item>
+              );
+            })("position_type")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <InputNumber className={cx("input-number")} />
+                  )}
+                </Form.Item>
+              );
+            })("max_position_days")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  <Tooltip
+                    title="最多3个，以 , 符号区隔，例如： 1,2,3"
+                    placement="topLeft"
+                  >
+                    {getFieldDecorator(name, {
+                      rules: [
+                        {
+                          required: true,
+                          message: "必填",
+                        },
+                        {
+                          validator: async (_, value) => {
+                            if (value.length > 3)
+                              throw new Error("不能设置超过 3 个");
+                          },
+                        }
+                      ],
+                    })(
+                      <Select
+                        mode="tags"
+                        tokenSeparators={[","]}
+                        open={false}
+                      />
+                    )}
+                  </Tooltip>
+                </Form.Item>
+              );
+            })("leverage")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {this.state.transactionModeOptions.map(each => (
+                        <Select.Option
+                          key={each.field}
+                          value={each.field}
+                          label={each.translation}
+                        >
+                          {each.translation}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("transaction_mode")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {this.state.orderModeOptions.map(each => (
+                        <Select.Option
+                          key={each.field}
+                          value={each.field}
+                          label={each.translation}
+                        >
+                          {each.translation}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("orders_mode")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {this.state.currencyOptions.map(each => (
+                        <Select.Option
+                          key={each.field}
+                          value={each.field}
+                          label={each.translation}
+                        >
+                          {each.translation}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("profit_currency")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {this.state.currencyOptions.map(each => (
+                        <Select.Option
+                          key={each.field}
+                          value={each.field}
+                          label={each.translation}
+                        >
+                          {each.translation}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("margin_currency")}
+
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <InputNumber className={cx("input-number")} min={0} />
+                  )}
+                </Form.Item>
+              );
+            })("volume_step")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(<InputNumber className={cx("input-number")} min={0} />)}
+                </Form.Item>
+              );
+            })("contract_size")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  <Tooltip title="不限制请填 -1" placement="topLeft">
+                    {getFieldDecorator(name, {
+                      rules: [
+                        {
+                          required: true,
+                          message: "最大手数必填，如不限制请填 -1",
+                        }
+                      ],
+                    })(<InputNumber className={cx("input-number")} min={-1} />)}
+                  </Tooltip>
+                </Form.Item>
+              );
+            })("max_lots")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "最小手数必填",
+                      }
+                    ],
+                  })(<InputNumber className={cx("input-number")} min={1} />)}
+                </Form.Item>
+              );
+            })("min_lots")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <InputNumber className={cx("input-number")} />
+                  )}
+                </Form.Item>
+              );
+            })("spread")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {this.renderClearOption()}
+                      {this.state.spreadModeOptions.map(each => (
+                        <Select.Option
+                          key={each.field}
+                          value={each.field}
+                          label={each.translation}
+                        >
+                          {each.translation}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("spread_mode")}
+            {renderGroupHeader("税费计算")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select placeholder="Please select">
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option key={rule.id} value={rule.func_name}>
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("calculate_for_buy_tax")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select placeholder="Please select">
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option key={rule.id} value={rule.func_name}>
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("calculate_for_sell_tax")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("tax_for_buy")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("tax_for_sell")}
+            {renderGroupHeader("保证金计算")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(
+                    <Select placeholder="Please select">
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option key={rule.id} value={rule.func_name}>
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("calculate_for_cash_deposit")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(
+                    <Select placeholder="Please select">
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option key={rule.id} value={rule.func_name}>
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("profit_calculate_for_bought")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name, {
+                    rules: [
+                      {
+                        required: true,
+                        message: "必填",
+                      }
+                    ],
+                  })(
+                    <Select placeholder="Please select">
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option key={rule.id} value={rule.func_name}>
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("profit_calculate_for_sale")}
+            {renderGroupHeader("利润设定")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {renderClearOption()}
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option
+                          key={rule.id}
+                          value={rule.func_name}
+                          label={rule.name}
+                        >
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("calculate_for_buy_hands_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {renderClearOption()}
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option
+                          key={rule.id}
+                          value={rule.func_name}
+                          label={rule.name}
+                        >
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("calculate_for_sell_hands_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("hands_fee_for_buy")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("hands_fee_for_sell")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {renderClearOption()}
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option
+                          key={rule.id}
+                          value={rule.func_name}
+                          label={rule.name}
+                        >
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("calculate_for_buy_stock_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {renderClearOption()}
+                      {this.getRulesOfField(name).map(rule => (
+                        <Select.Option
+                          key={rule.id}
+                          value={rule.func_name}
+                          label={rule.name}
+                        >
+                          {rule.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("calculate_for_sell_stock_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("purchase_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(<InputPercent />)}
+                </Form.Item>
+              );
+            })("selling_fee")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <Select optionLabelProp="label" placeholder="Please select">
+                      {renderClearOption()}
+                      {THREE_DAY_OPTIONS.map(day => (
+                        <Select.Option
+                          key={day.id}
+                          value={day.name}
+                          label={day.name}
+                        >
+                          {day.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              );
+            })("three_days_swap")}
+            {renderGroupHeader("交易时段")}
+            <Row>
+              <Col span={16}>
+                <TradingTimeBoard data={this.state.tradingTime} />
+              </Col>
+            </Row>
+            {renderGroupHeader("其他设定")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item label={info.label} required {...formItemLayout}>
+                  {getFieldDecorator(name)(
+                    <Radio.Group>
+                      <Radio value={1}>是</Radio>
+                      <Radio value={0}>否</Radio>
+                    </Radio.Group>
+                  )}
+                </Form.Item>
+              );
+            })("status")}
+            <Row>
+              <Col span={16} className={cx("button-group")}>
+                <Button
+                  className={cx("button")}
+                  onClick={() => this.props.history.go(-1)}
+                >
+                  取消
+                </Button>
+                <Button
+                  className={cx("button")}
+                  type="primary"
+                  onClick={this.handleSubmit}
+                >
+                  提交
+                </Button>
+              </Col>
+            </Row>
+          </Form>
         </section>
       </div>
+    );
+  }
+}
+
+class InputPercent extends React.Component {
+  render() {
+    return (
+      <InputNumber
+        className={cx("input-number")}
+        formatter={value => `${value}%`}
+        parser={value => value.replace("%", "")}
+        {...this.props}
+      />
     );
   }
 }

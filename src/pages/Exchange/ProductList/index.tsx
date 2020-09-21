@@ -189,18 +189,10 @@ IProductListState
     }`;
     this.props.history.push(url);
   };
-
-  renderMenu = (record): JSX.Element => {
-    return null;
-  };
-
-  // @ts-ignore
-  private onBatch = async value => { };
-
   render() {
     const { match, } = this.props;
     const computedTitle = "交易品种设置";
-
+    const productList = this.props.product.productList; // productList 需被使用 @observer 才会更新
     return (
       <div>
         <CommonHeader {...this.props} links={[]} title={computedTitle} />

@@ -10,8 +10,10 @@ import {
   Button,
   Radio,
   Col,
-  Row
+  Row,
+  message
 } from "antd";
+import { THREE_DAY_OPTIONS } from "constant";
 import { inject } from "mobx-react";
 import styles from "./index.module.scss";
 import classnames from "classnames/bind";
@@ -106,9 +108,7 @@ IGenreEditorState
 > {
   state = {
     scopes,
-    scopeOfFields: scopeOfField,
     rulesOfScope: {},
-    formLayout: "horizontal",
     formItemLayout: {
       labelCol: { span: 4, },
       wrapperCol: { span: 12, },
@@ -133,7 +133,10 @@ IGenreEditorState
     this.setState({ fieldOptions, });
     setFieldsValue(initFieldValue);
     // console.log("res :>> ", res);
+    this.getRulesOfScope();
+  };
 
+  getRulesOfScope = async () => {
     // 取得栏位选项公式 （利润规则）
     const ruleList = await Promise.all(
       scopes.map(scope =>
@@ -168,7 +171,7 @@ IGenreEditorState
     return payload;
   };
   getRulesOfField = fieldName => {
-    const scope = this.state.scopeOfFields[fieldName];
+    const scope = scopeOfField[fieldName];
     const rules = this.state.rulesOfScope[scope];
     return rules || [];
   };
@@ -185,10 +188,12 @@ IGenreEditorState
       // console.log("res :>> ", res);
       if (res.status === 200) {
         // 编辑表单后，重抓分类列表数据
+        message.success("编辑成功");
+
         this.props.product.getGenreList();
         this.props.history.push("/dashboard/exchange/genre");
       } else {
-        // TODO: 提示使用者表单送出失败
+        message.error("表单送出失败，请确认");
       }
     });
   };
@@ -214,7 +219,7 @@ IGenreEditorState
     return (
       <div className="editor">
         <section className="panel-block">
-          <Form className="editor-form" layout={this.formLayout}>
+          <Form className="editor-form" layout={"horizontal"}>
             {renderGroupHeader("基本配置")}
             {(name => {
               const info = infoOfField[name];
@@ -702,15 +707,6 @@ IGenreEditorState
             })("selling_fee")}
             {(name => {
               const info = infoOfField[name];
-              const days = [
-                "週一",
-                "週二",
-                "週三",
-                "週四",
-                "週五",
-                "週六",
-                "週日"
-              ];
               return (
                 <Form.Item
                   data-name={name}
@@ -720,13 +716,13 @@ IGenreEditorState
                   {getFieldDecorator(name)(
                     <Select optionLabelProp="label" placeholder="Please select">
                       {renderClearOption()}
-                      {days.map(option => (
+                      {THREE_DAY_OPTIONS.map(day => (
                         <Select.Option
-                          key={option}
-                          value={option}
-                          label={option}
+                          key={day.id}
+                          value={day.name}
+                          label={day.name}
                         >
-                          {option}
+                          {day.name}
                         </Select.Option>
                       ))}
                     </Select>
@@ -751,7 +747,17 @@ IGenreEditorState
             })("status")}
             <Row>
               <Col span={16} className={cx("button-group")}>
-                <Button type="primary" onClick={this.handleSubmit}>
+                <Button
+                  className={cx("button")}
+                  onClick={() => this.props.history.go(-1)}
+                >
+                  取消
+                </Button>
+                <Button
+                  className={cx("button")}
+                  type="primary"
+                  onClick={this.handleSubmit}
+                >
                   提交
                 </Button>
               </Col>
