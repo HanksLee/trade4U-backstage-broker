@@ -20,13 +20,27 @@ import classNames from "classnames/bind";
 import moment from "moment";
 import axios from "axios";
 import produce from "immer";
+import { MARKET_TYPE, NEW_STOCK_STATUS } from "constant";
 const cx = classNames.bind(styles);
 const CancelToken = axios.CancelToken;
 let cancelPrevRequest;
 
+// TODO: 等 api 修改后，改为 0 未中，1 有中
+const DRAWING_STATUS = {
+  1: "未中签",
+  2: "已中签",
+};
+
+const defaultFilter = {
+  userName: null,
+  userPhone: null,
+  stockName: null,
+  drawingStatus: null,
+  subscriptionStatus: null,
+};
 class LotteryList extends React.Component {
   state = {
-    filter: {},
+    filter: defaultFilter,
     dataSource: [],
     dataSourceMap: {},
     page: 1,
@@ -35,32 +49,44 @@ class LotteryList extends React.Component {
     realLotsMap: {},
     isEditableMap: {},
   };
+
   componentDidMount() {
     // 根据路由参数拿取目前的产品名称
-    // console.log("this.props.history :>> ", this.props.history);
     const parsedQueryString = utils.parseQueryString(
       this.props.history.location.search
     );
     // console.log("parsedQueryString :>> ", parsedQueryString);
-    this.fetchData();
+    this.setState(
+      produce(draft => {
+        draft.filter.stockName = parsedQueryString.stock_name;
+      })
+    );
+    queueMicrotask(() => this.fetchData());
   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   console.log(this.state);
-  // }
   fetchData = async () => {
     const { pageSize, page, } = this.state;
+    const {
+      userName,
+      userPhone,
+      stockName,
+      drawingStatus,
+      subscriptionStatus,
+    } = this.state.filter;
     if (cancelPrevRequest) cancelPrevRequest();
-    // TODO: 根据路由跳转参数 stock_name 抓列表
     const res = await api.newStock.getLotteryList({
       params: {
         page: page,
         page_size: pageSize,
+        stock_name: stockName,
+        username: userName,
+        phone: userPhone,
+        subscription_status: subscriptionStatus,
+        drawing_of_lots_status: drawingStatus,
       },
       cancelToken: new CancelToken(c => (cancelPrevRequest = c)),
     });
     const dataSource = res.data.results.map(each => {
-      const data = this.mapApiDataToDataSource(each);
-      return data;
+      return this.mapApiDataToDataSource(each);
     });
     const realLotsMap = dataSource.reduce((obj, curr) => {
       const { id, real_lots, } = curr;
@@ -85,18 +111,28 @@ class LotteryList extends React.Component {
     payload["draw_result_date"] = moment(
       newstock_data["draw_result_date"]
     ).format("YYYY-MM-DD");
-    payload["real_lots_status"] = Number(real_lots) > 0 ? "已中签" : "未中签";
+    payload["drawing_of_lots_status"] =
+      Number(real_lots) > 0 ? "已中签" : "未中签";
     return payload;
   };
-
-  handleSearch = () => {
-    // 搜寻前先重置分页状态
-    this.setState({ page: 1, pageSize: 10, });
-    queueMicrotask(() => this.fetchData());
-  };
-  handleReset = () => {};
   handlePaginationChange = (page, pageSize) => {
     this.setState({ page, pageSize, });
+    queueMicrotask(() => this.fetchData());
+  };
+  handleFilterChange = (val, fieldName) => {
+    this.setState(
+      produce(draft => {
+        draft.filter[fieldName] = val;
+      })
+    );
+  };
+  handleFilterReset = () => {
+    this.setState({ filter: defaultFilter, });
+  };
+  handleSearch = () => {
+    // 搜寻前先重置分页状态
+    console.log("this.state.filter :>> ", this.state.filter);
+    this.setState({ page: 1, pageSize: 10, });
     queueMicrotask(() => this.fetchData());
   };
   updateRealLots = async id => {
@@ -116,63 +152,7 @@ class LotteryList extends React.Component {
       isEditableMap: { [id]: isEditable, },
     });
   };
-  renderFilter = () => {
-    const formItemLayout = {
-      labelCol: { span: 6, },
-      wrapperCol: { span: 18, },
-    };
-    return (
-      <Row>
-        <Col span={16}>
-          <Form>
-            <Row>
-              <Col span={12}>
-                <Form.Item label="用户名" {...formItemLayout}>
-                  <Input placeholder="请输入用户名"></Input>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="手机" {...formItemLayout}>
-                  <Input placeholder="请输入手机"></Input>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <Form.Item label="新股申购名称" {...formItemLayout}>
-                  <Select placeholder="请选择新股名称"></Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="状态" {...formItemLayout}>
-                  <Select placeholder="请选择状态"></Select>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <Form.Item label="中签状态" {...formItemLayout}>
-                  <Select placeholder="已中签"></Select>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </Col>
-        <Col span={8}>
-          <div style={{ display: "flex", justifyContent: "center", }}>
-            <Button
-              type="primary"
-              className={cx("search-button")}
-              onClick={this.handleSearch}
-            >
-              查询
-            </Button>
-            <Button className={cx("search-button")}>重置</Button>
-          </div>
-        </Col>
-      </Row>
-    );
-  };
+
   getColumns = () => {
     const columns = [
       {
@@ -201,16 +181,6 @@ class LotteryList extends React.Component {
         key: "wanted_lots",
       },
       {
-        title: "申购金额",
-        dataIndex: "申购金额",
-        key: "申购金额",
-      },
-      {
-        title: "融资比例",
-        dataIndex: "融资比例",
-        key: "融资比例",
-      },
-      {
         title: "融资金额",
         dataIndex: "loan",
         key: "loan",
@@ -219,11 +189,6 @@ class LotteryList extends React.Component {
         title: "已冻结资金",
         dataIndex: "entrance_fee",
         key: "entrance_fee",
-      },
-      {
-        title: "状态",
-        dataIndex: "status",
-        key: "status",
       },
       {
         title: "申购日期",
@@ -238,13 +203,15 @@ class LotteryList extends React.Component {
 
       {
         title: "中签状态",
-        dataIndex: "real_lots_status",
-        key: "real_lots_status",
+        dataIndex: "drawing_of_lots_status",
+        key: "drawing_of_lots_status",
+        fixed: "right",
       },
       {
         title: "中签数量",
         dataIndex: "real_lots",
         key: "real_lots",
+        fixed: "right",
         render: (_, record) => {
           const { id, real_lots, wanted_lots, } = record;
           const { [id]: value, } = this.state.realLotsMap;
@@ -271,6 +238,7 @@ class LotteryList extends React.Component {
         title: "编辑",
         dataIndex: "edit",
         key: "edit",
+        fixed: "right",
         render: (_, record) => {
           const { id, real_lots, } = record;
           const { [id]: realLots, } = this.state.realLotsMap;
@@ -299,6 +267,133 @@ class LotteryList extends React.Component {
     ];
     return columns;
   };
+  renderFilter = () => {
+    const formItemLayout = {
+      labelCol: { span: 6, },
+      wrapperCol: { span: 18, },
+    };
+    const { filter, } = this.state;
+
+    return (
+      <Row>
+        <Col span={16}>
+          <Form>
+            <Row>
+              <Col span={12}>
+                <Form.Item label="用户名" {...formItemLayout}>
+                  {(fieldName => {
+                    return (
+                      <Input
+                        placeholder="请输入用户名"
+                        value={filter[fieldName]}
+                        onChange={e =>
+                          this.handleFilterChange(e.target.value, fieldName)
+                        }
+                      ></Input>
+                    );
+                  })("userName")}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="手机" {...formItemLayout}>
+                  {(fieldName => {
+                    return (
+                      <Input
+                        placeholder="请输入手机"
+                        value={filter[fieldName]}
+                        onChange={e =>
+                          this.handleFilterChange(e.target.value, fieldName)
+                        }
+                      ></Input>
+                    );
+                  })("userPhone")}
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Form.Item label="新股名称" {...formItemLayout}>
+                  {(fieldName => {
+                    return (
+                      <Input
+                        placeholder="请输入新股名称"
+                        value={filter[fieldName]}
+                        onChange={e =>
+                          this.handleFilterChange(e.target.value, fieldName)
+                        }
+                      ></Input>
+                    );
+                  })("stockName")}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="活动状态" {...formItemLayout}>
+                  {(fieldName => {
+                    return (
+                      <Select
+                        placeholder="请选择状态"
+                        value={filter[fieldName]}
+                        onChange={val =>
+                          this.handleFilterChange(val, fieldName)
+                        }
+                      >
+                        {Object.entries(NEW_STOCK_STATUS).map(([key, val]) => (
+                          <Select.Option value={key} key={key}>
+                            {val}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    );
+                  })("subscriptionStatus")}
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Form.Item label="中签状态" {...formItemLayout}>
+                  {(fieldName => {
+                    return (
+                      <Select
+                        placeholder="请选择中签状态"
+                        value={filter[fieldName]}
+                        onChange={val =>
+                          this.handleFilterChange(val, fieldName)
+                        }
+                      >
+                        {Object.entries(DRAWING_STATUS).map(([key, val]) => (
+                          <Select.Option key={key} value={key}>
+                            {val}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    );
+                  })("drawingStatus")}
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+        <Col span={8}>
+          <div style={{ display: "flex", justifyContent: "center", }}>
+            <Button
+              className={cx("search-button")}
+              onClick={this.handleFilterReset}
+            >
+              重置
+            </Button>
+            <Button
+              type="primary"
+              className={cx("search-button")}
+              onClick={this.handleSearch}
+            >
+              查询
+            </Button>
+          </div>
+        </Col>
+      </Row>
+    );
+  };
+
   render() {
     const { dataSource, pageSize, page, total, } = this.state;
     const columns = this.getColumns();
