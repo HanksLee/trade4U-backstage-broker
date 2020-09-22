@@ -1,8 +1,6 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm, Checkbox } from "antd";
 import utils from "utils";
-import { WEEKLY_ORDER } from "constant";
-import moment from "moment";
 import { toJS } from "mobx";
 
 // 传给 CommentList 的设定，渲染列表

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm, Checkbox } from "antd";
 import utils from "utils";
-import { WEEKLY_ORDER } from "constant";
 import moment from "moment";
 import { FORMAT_TIME } from "constant";
 

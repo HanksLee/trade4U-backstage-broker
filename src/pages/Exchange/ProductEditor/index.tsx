@@ -949,7 +949,7 @@ export default class ProductEditor extends BaseReact {
                       {THREE_DAY_OPTIONS.map(day => (
                         <Select.Option
                           key={day.id}
-                          value={day.name}
+                          value={String(day.id)}
                           label={day.name}
                         >
                           {day.name}
