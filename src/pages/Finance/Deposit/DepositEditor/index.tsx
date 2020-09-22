@@ -10,7 +10,7 @@ import {
   inject
 } from 'mobx-react';
 import {
-  depositOptions
+  DEPOSIT_OPTIONS
 } from 'constant';
 
 const FormItem = Form.Item;
@@ -109,7 +109,7 @@ export default class DepositEditor extends BaseReact<IDepositEditorProps, IDepos
                   disabled={this.props.initStatus == 1}
                 >
                   {
-                    depositOptions.map(item => (
+                    DEPOSIT_OPTIONS.map(item => (
                       // @ts-ignore
                       <Option key={item.id.toString()}>
                         {item.name}

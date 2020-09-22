@@ -1,36 +1,29 @@
 import * as React from "react";
 import { TimePicker, Row, Col, Table } from "antd";
+import { DAYS_OF_WEEK } from "constant";
 import moment from "moment";
 import styles from "./index.module.scss";
 import classnames from "classnames/bind";
 const cx = classnames.bind(styles);
 
 export function TradingTimeBoard(props) {
-  const dayString = {
-    0: "Monday 周一",
-    1: "Tuesday 周二",
-    2: "Wednesday 周三",
-    3: "Thursday 周四",
-    4: "Friday 周五",
-    5: "Saturday 周六",
-    6: "Sunday 周日",
-  };
   const formatData = data => {
     return Object.values(data)
       .map((each, index) => {
         if (each.trades.length < 1) return null;
-        const morning = each.trades.slice(0, 2);
-        const afternoon = each.trades.slice(2);
-        return { day: dayString[index], morning, afternoon, };
+        const day = `${DAYS_OF_WEEK[index]["en-us"]} ${DAYS_OF_WEEK[index]["zh-cn"]}`;
+        const tradingTimeAM = each.trades.slice(0, 2);
+        const tradingTimePM = each.trades.slice(2);
+        return { day, tradingTimeAM, tradingTimePM, };
       })
       .filter(v => v);
   };
   const dataSource = formatData(props.data);
   // console.log("data :>> ", data);
-  function timestampToMoment(timestamp) {
+  const timestampToMoment = timestamp => {
     const hhmmss = moment(timestamp).format("HH:mm:ss");
     return moment(hhmmss, "HH:mm:ss");
-  }
+  };
   const columns = [
     {
       title: "交易日",
@@ -39,11 +32,11 @@ export function TradingTimeBoard(props) {
     },
     {
       title: "上午交易时段",
-      dataIndex: "morning",
-      key: "morning",
+      dataIndex: "tradingTimeAM",
+      key: "tradingTimeAM",
       render(text, record) {
-        const { morning, } = record;
-        const [from, to] = morning;
+        const { tradingTimeAM, } = record;
+        const [from, to] = tradingTimeAM;
         return (
           <React.Fragment>
             <TimePicker
@@ -60,11 +53,11 @@ export function TradingTimeBoard(props) {
     },
     {
       title: "下午交易时段",
-      dataIndex: "afternoon",
-      key: "afternoon",
+      dataIndex: "tradingTimePM",
+      key: "tradingTimePM",
       render(text, record) {
-        const { afternoon, } = record;
-        const [from, to] = afternoon;
+        const { tradingTimePM, } = record;
+        const [from, to] = tradingTimePM;
         return (
           <React.Fragment>
             <TimePicker

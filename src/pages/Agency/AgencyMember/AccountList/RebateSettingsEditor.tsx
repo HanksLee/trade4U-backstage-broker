@@ -19,7 +19,7 @@ import Validator from "utils/validator";
 import { inject, observer } from "mobx-react";
 import utils from "utils";
 import cloneDeep from "lodash/cloneDeep";
-import { WeeklyOrder, THREE_DAY_OPTIONS } from "constant";
+import { WEEKLY_ORDER, THREE_DAY_OPTIONS } from "constant";
 import moment from "moment";
 
 const FormItem = Form.Item;

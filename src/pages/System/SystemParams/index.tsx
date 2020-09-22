@@ -15,7 +15,7 @@ import {
 } from "antd";
 import CommonHeader from "components/CommonHeader";
 import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
-import { ROUTE_TO_PERMISSION } from "constant";
+import { ROUTE_TO_PERMISSION, DAYS_OF_WEEK } from "constant";
 import { inject, observer } from "mobx-react";
 import utils from "utils";
 import moment from "moment";
@@ -45,15 +45,6 @@ export interface ISystemEditorState {}
 
 // @ts-ignore
 
-const dayIndex = {
-  0: "周一",
-  1: "周二",
-  2: "周三",
-  3: "周四",
-  4: "周五",
-  5: "周六",
-  6: "周日",
-};
 const platformCurrency = {
   HKD: "港币",
   CNY: "人民币",
@@ -209,9 +200,9 @@ ISystemEditorState
                     style={{ width: "100%", }}
                     onChange={this.onPeriodsChange}
                   >
-                    {Object.entries(dayIndex).map(([key, val]) => (
+                    {Object.entries(DAYS_OF_WEEK).map(([key, val]) => (
                       <Col span={3} key={key}>
-                        <Checkbox value={key}>{val}</Checkbox>
+                        <Checkbox value={key}>{val["zh-cn"]}</Checkbox>
                       </Col>
                     ))}
                   </Checkbox.Group>

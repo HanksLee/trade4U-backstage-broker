@@ -10,24 +10,8 @@ export const SHARE_DATA = {
 
 export const FORMAT_TIME = "YYYY.MM.DD HH:mm:ss";
 
-export const UPLOAD_URL = "https://upyun.com";
 
-export const marketOptions = [
-  {
-    id: 1,
-    name: "上证",
-  },
-  {
-    id: 2,
-    name: "日经",
-  },
-  {
-    id: 3,
-    name: "纳斯达克",
-  }
-];
-
-export const depositOptions = [
+export const DEPOSIT_OPTIONS = [
   {
     id: 0,
     name: "未支付",
@@ -37,18 +21,6 @@ export const depositOptions = [
     name: "已支付",
   }
 ];
-
-export const WeeklyOrder = [6, 0, 1, 2, 3, 4, 5];
-
-export const WeeklyMap = {
-  6: "Sunday",
-  0: "Monday",
-  1: "Tuesday",
-  2: "Wednesday",
-  3: "Thursday",
-  4: "Friday",
-  5: "Saturday",
-};
 
 export const THREE_DAY_OPTIONS = [
   {
@@ -80,9 +52,27 @@ export const THREE_DAY_OPTIONS = [
     name: "周日",
   }
 ];
+export const WEEKLY_ORDER = [6, 0, 1, 2, 3, 4, 5];
+export const DAYS_OF_WEEK = {
+  0: { "zh-cn": "周一", "en-us": "Monday", },
+  1: { "zh-cn": "周二", "en-us": "Tuesday", },
+  2: { "zh-cn": "周三", "en-us": "Wednesday", },
+  3: { "zh-cn": "周四", "en-us": "Thursday", },
+  4: { "zh-cn": "周五", "en-us": "Friday", },
+  5: { "zh-cn": "周六", "en-us": "Saturday", },
+  6: { "zh-cn": "周日", "en-us": "Sunday", },
+};
 
+// 市场品种类型
 export const MARKET_TYPE = {
   HK: { name: "港股", },
   SZ: { name: "深圳", },
   SH: { name: "上证", },
+};
+
+// 新股申购活动状态
+export const NEW_STOCK_STATUS = {
+  1: "未开始",
+  2: "进行中",
+  3: "已结束",
 };

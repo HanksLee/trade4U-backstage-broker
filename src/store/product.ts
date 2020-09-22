@@ -1,7 +1,7 @@
 import { action, observable, computed } from "mobx";
 import BaseStore from "store/base";
 import utils from "utils";
-import { WeeklyOrder } from "constant";
+import { WEEKLY_ORDER } from "constant";
 import moment from "moment";
 
 class ProductStore extends BaseStore {
@@ -65,7 +65,7 @@ class ProductStore extends BaseStore {
     const obj: any = {};
 
     if (!utils.isEmpty(this.currentProduct.trading_times)) {
-      obj.trading_times = WeeklyOrder.map(item => {
+      obj.trading_times = WEEKLY_ORDER.map(item => {
         const matched = JSON.parse(this.currentProduct.trading_times)[item];
 
         if (matched) {
@@ -83,7 +83,7 @@ class ProductStore extends BaseStore {
         };
       });
     } else {
-      obj.trading_times = WeeklyOrder.map(item => {
+      obj.trading_times = WEEKLY_ORDER.map(item => {
         return {
           day: item,
           trades: [],
