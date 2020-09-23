@@ -94,6 +94,8 @@ const infoOfField = {
   selling_fee: { label: "卖出库存费率(空)", },
   max_lots: { label: "最大手数", },
   min_lots: { label: "最小手数", },
+  max_margin_value: { label: "最大交易金额", },
+  min_margin_value: { label: "最小交易金额", },
   spread: { label: "点差", },
   spread_mode: { label: "点差模式", },
   calculate_for_cash_deposit: { label: "保证金计算", },
@@ -236,8 +238,8 @@ export default class ProductEditor extends BaseReact {
       } else {
         message.error("表单送出失败，请确认");
       }
-      console.log("payload :>> ", payload);
-      console.log("res :>> ", res);
+      // console.log("payload :>> ", payload);
+      // console.log("res :>> ", res);
     });
   };
   renderGroupHeader = title => {
@@ -609,6 +611,34 @@ export default class ProductEditor extends BaseReact {
                   {...formItemLayout}
                 >
                   {getFieldDecorator(name)(
+                    <InputNumber className={cx("input-number")} min={0} />
+                  )}
+                </Form.Item>
+              );
+            })("max_margin_value")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <InputNumber className={cx("input-number")} min={0} />
+                  )}
+                </Form.Item>
+              );
+            })("min_margin_value")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
                     <InputNumber className={cx("input-number")} />
                   )}
                 </Form.Item>
@@ -639,6 +669,7 @@ export default class ProductEditor extends BaseReact {
                 </Form.Item>
               );
             })("spread_mode")}
+
             {renderGroupHeader("税费计算")}
             {(name => {
               const info = infoOfField[name];

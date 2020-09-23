@@ -87,6 +87,8 @@ const infoOfField = {
   selling_fee: { label: "卖出库存费率(空)", },
   max_lots: { label: "最大手数", },
   min_lots: { label: "最小手数", },
+  max_margin_value: { label: "最大交易金额", },
+  min_margin_value: { label: "最小交易金额", },
   take_profit_point: { label: "止盈线", },
   stop_loss_point: { label: "止损线", },
   spread: { label: "点差", },
@@ -367,6 +369,34 @@ IGenreEditorState
                   label={info.label}
                   {...formItemLayout}
                 >
+                  {getFieldDecorator(name)(
+                    <InputNumber className={cx("input-number")} min={0} />
+                  )}
+                </Form.Item>
+              );
+            })("max_margin_value")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator(name)(
+                    <InputNumber className={cx("input-number")} min={0} />
+                  )}
+                </Form.Item>
+              );
+            })("min_margin_value")}
+            {(name => {
+              const info = infoOfField[name];
+              return (
+                <Form.Item
+                  data-name={name}
+                  label={info.label}
+                  {...formItemLayout}
+                >
                   {getFieldDecorator(name)(<InputPercent />)}
                 </Form.Item>
               );
@@ -409,6 +439,7 @@ IGenreEditorState
                 </Form.Item>
               );
             })("spread_mode")}
+
             {renderGroupHeader("税费计算")}
             {(name => {
               const info = infoOfField[name];
