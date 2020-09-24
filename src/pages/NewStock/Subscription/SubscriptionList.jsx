@@ -36,9 +36,9 @@ const columns = [
     key: "stock_name",
   },
   {
-    title: "品种",
-    dataIndex: "market",
-    key: "market",
+    title: "产品品种",
+    dataIndex: "symbol_type",
+    key: "symbol_type",
   },
   {
     title: "申购代码",
@@ -137,7 +137,7 @@ class SubscriptionList extends React.Component {
         page_size: pageSize,
         stock_name: stockName,
         stock_code: stockCode,
-        market: symbolType,
+        symbol_type: symbolType,
         status,
       },
       cancelToken: new CancelToken(c => (cancelPrevRequest = c)),
@@ -160,8 +160,9 @@ class SubscriptionList extends React.Component {
       market,
     } = payload;
     payload["key"] = payload["id"];
-    payload["public_date"] =
-      public_date && moment(public_date).format("YYYY-MM-DD");
+    payload["public_date"] = public_date
+      ? moment(public_date).format("YYYY-MM-DD")
+      : "尚未公布";
     payload["subscription_date_start"] =
       subscription_date_start &&
       moment(subscription_date_start).format("YYYY-MM-DD");
@@ -180,7 +181,7 @@ class SubscriptionList extends React.Component {
         ? "已结束"
         : "进行中";
     payload["subscription_status"] = subscriptionStatus;
-    payload["market"] = MARKET_TYPE[market]?.name;
+    // payload["market"] = MARKET_TYPE[market]?.name;
     payload["operation"] = "抽签明细";
     return payload;
   };

@@ -11,7 +11,8 @@ import {
   Row,
   Col,
   Radio,
-  Select
+  Select,
+  message
 } from "antd";
 import CommonHeader from "components/CommonHeader";
 import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
@@ -73,7 +74,7 @@ ISystemEditorState
     const { configMap, } = this.props.system;
     const initFieldsValue = this.mapApiDataToFieldValue(configMap);
     setFieldsValue(initFieldsValue);
-    // console.log("initFieldsValue :>> ", initFieldsValue);
+    console.log("initFieldsValue :>> ", initFieldsValue);
   };
   mapApiDataToFieldValue = input => {
     // 将 api 回来的值转为表格栏位要求的格式
@@ -85,6 +86,8 @@ ISystemEditorState
       withdraw_periods,
       function_ipo,
       function_news,
+      hk_new_stock_switch,
+      loan_options,
     } = payload;
     payload["withdraw_periods"] = withdraw_periods?.split(",");
     payload["withdraw_daily_start"] = withdraw_daily_start
@@ -96,8 +99,8 @@ ISystemEditorState
     payload["function_ipo"] = utils.parseBool(function_ipo); // convert "false" to false
     payload["function_news"] = utils.parseBool(function_news);
     // TODO: 等后端 api 完成
-    payload["hk_new_stock_switch"] = utils.parseBool(true);
-    payload["loan_options"] = "0,10,50".split(",");
+    payload["hk_new_stock_switch"] = utils.parseBool(hk_new_stock_switch);
+    payload["loan_options"] = loan_options?.split(",");
     return payload;
   };
   mapFieldValueToApiData = input => {
@@ -109,6 +112,8 @@ ISystemEditorState
       withdraw_periods,
       function_ipo,
       function_news,
+      hk_new_stock_switch,
+      loan_options,
     } = payload;
     payload["withdraw_periods"] = withdraw_periods.join(",");
     payload["withdraw_daily_start"] = withdraw_daily_start
@@ -119,7 +124,8 @@ ISystemEditorState
       : "";
     payload["function_ipo"] = String(function_ipo); // convert false to "false"
     payload["function_news"] = String(function_news);
-    payload["loan_options"] = payload["loan_options"].join(",");
+    payload["hk_new_stock_switch"] = String(hk_new_stock_switch);
+    payload["loan_options"] = loan_options.join(",");
     // 转换 json 物件 => api 吃的 json 阵列
     return Object.entries(payload).map(([key, val]) => ({ key, value: val, }));
   };
@@ -132,11 +138,10 @@ ISystemEditorState
       const payload = this.mapFieldValueToApiData(values);
       const configs = JSON.stringify(payload); // api 要求将阵列序列化
       console.log("payload :>> ", payload);
-      return;
       try {
         const res = await $api.system.updateBrokerConfig({ configs, });
         if (res.status === 200) {
-          this.$msg.success("系统参数更新成功");
+          message.success("系统参数更新成功");
           this.init();
         }
       } catch (err) {

@@ -54,7 +54,124 @@ class LotteryList extends React.Component {
     realLotsMap: {},
     isEditableMap: {},
   };
-
+  getColumns = () => {
+    const columns = [
+      {
+        title: "名字",
+        dataIndex: "user_name",
+        key: "user_name",
+      },
+      {
+        title: "手机号",
+        dataIndex: "user_phone",
+        key: "user_phone",
+      },
+      {
+        title: "客户组",
+        dataIndex: "group_name",
+        key: "group_name",
+      },
+      {
+        title: "新股申购名称",
+        dataIndex: "stock_name",
+        key: "stock_name",
+      },
+      {
+        title: "申购数量",
+        dataIndex: "wanted_lots",
+        key: "wanted_lots",
+      },
+      {
+        title: "融资金额",
+        dataIndex: "loan",
+        key: "loan",
+      },
+      {
+        title: "已冻结资金",
+        dataIndex: "entrance_fee",
+        key: "entrance_fee",
+      },
+      {
+        title: "申购日期",
+        dataIndex: "create_time",
+        key: "create_time",
+      },
+      {
+        title: "中签公布日",
+        dataIndex: "draw_result_date",
+        key: "draw_result_date",
+      },
+      {
+        title: "活动状态",
+        dataIndex: "subscription_status",
+        key: "subscription_status",
+      },
+      {
+        title: "中签状态",
+        dataIndex: "drawing_of_lots_status",
+        key: "drawing_of_lots_status",
+        fixed: "right",
+      },
+      {
+        title: "中签数量",
+        dataIndex: "real_lots",
+        key: "real_lots",
+        fixed: "right",
+        render: (_, record) => {
+          const { id, real_lots, wanted_lots, } = record;
+          const { [id]: value, } = this.state.realLotsMap;
+          const handleChange = val => {
+            this.setState(
+              produce(draft => {
+                draft.realLotsMap[id] = val;
+              })
+            );
+          };
+          const isEditable = this.state.isEditableMap[id];
+          return (
+            <InputNumber
+              value={value}
+              disabled={!isEditable}
+              onChange={handleChange}
+              min={0}
+              max={wanted_lots}
+            />
+          );
+        },
+      },
+      {
+        title: "编辑",
+        dataIndex: "edit",
+        key: "edit",
+        fixed: "right",
+        render: (_, record) => {
+          const { id, real_lots, } = record;
+          const { [id]: realLots, } = this.state.realLotsMap;
+          const { [id]: isEditable, } = this.state.isEditableMap;
+          const canUpdate = real_lots !== realLots;
+          return (
+            <React.Fragment>
+              {!isEditable && (
+                <Button onClick={() => this.toggleEditor(id, true)}>
+                  启用编辑
+                </Button>
+              )}
+              {isEditable && (
+                <Button
+                  type="primary"
+                  onClick={() => this.updateRealLots(id)}
+                  disabled={!canUpdate}
+                >
+                  更新数量
+                </Button>
+              )}
+            </React.Fragment>
+          );
+        },
+      }
+    ];
+    return columns;
+  };
   componentDidMount() {
     // 根据路由参数拿取目前的产品名称
     const parsedQueryString = utils.parseQueryString(
@@ -176,124 +293,6 @@ class LotteryList extends React.Component {
     });
   };
 
-  getColumns = () => {
-    const columns = [
-      {
-        title: "名字",
-        dataIndex: "user_name",
-        key: "user_name",
-      },
-      {
-        title: "手机号",
-        dataIndex: "user_phone",
-        key: "user_phone",
-      },
-      {
-        title: "客户组",
-        dataIndex: "group_name",
-        key: "group_name",
-      },
-      {
-        title: "新股申购名称",
-        dataIndex: "stock_name",
-        key: "stock_name",
-      },
-      {
-        title: "申购数量",
-        dataIndex: "wanted_lots",
-        key: "wanted_lots",
-      },
-      {
-        title: "融资金额",
-        dataIndex: "loan",
-        key: "loan",
-      },
-      {
-        title: "已冻结资金",
-        dataIndex: "entrance_fee",
-        key: "entrance_fee",
-      },
-      {
-        title: "申购日期",
-        dataIndex: "create_time",
-        key: "create_time",
-      },
-      {
-        title: "中签公布日",
-        dataIndex: "draw_result_date",
-        key: "draw_result_date",
-      },
-      {
-        title: "活动状态",
-        dataIndex: "subscription_status",
-        key: "subscription_status",
-      },
-      {
-        title: "中签状态",
-        dataIndex: "drawing_of_lots_status",
-        key: "drawing_of_lots_status",
-        fixed: "right",
-      },
-      {
-        title: "中签数量",
-        dataIndex: "real_lots",
-        key: "real_lots",
-        fixed: "right",
-        render: (_, record) => {
-          const { id, real_lots, wanted_lots, } = record;
-          const { [id]: value, } = this.state.realLotsMap;
-          const handleChange = val => {
-            this.setState(
-              produce(draft => {
-                draft.realLotsMap[id] = val;
-              })
-            );
-          };
-          const isEditable = this.state.isEditableMap[id];
-          return (
-            <InputNumber
-              value={value}
-              disabled={!isEditable}
-              onChange={handleChange}
-              min={0}
-              max={wanted_lots}
-            />
-          );
-        },
-      },
-      {
-        title: "编辑",
-        dataIndex: "edit",
-        key: "edit",
-        fixed: "right",
-        render: (_, record) => {
-          const { id, real_lots, } = record;
-          const { [id]: realLots, } = this.state.realLotsMap;
-          const { [id]: isEditable, } = this.state.isEditableMap;
-          const canUpdate = real_lots !== realLots;
-          return (
-            <React.Fragment>
-              {!isEditable && (
-                <Button onClick={() => this.toggleEditor(id, true)}>
-                  启用编辑
-                </Button>
-              )}
-              {isEditable && (
-                <Button
-                  type="primary"
-                  onClick={() => this.updateRealLots(id)}
-                  disabled={!canUpdate}
-                >
-                  更新数量
-                </Button>
-              )}
-            </React.Fragment>
-          );
-        },
-      }
-    ];
-    return columns;
-  };
   renderFilter = () => {
     const formItemLayout = {
       labelCol: { span: 6, },
