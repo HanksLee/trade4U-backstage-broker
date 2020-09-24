@@ -18,6 +18,7 @@ import {
 } from "antd";
 import { MARKET_TYPE, NEW_STOCK_STATUS } from "constant";
 import moment from "moment";
+import momentTimezone from "moment-timezone";
 import axios from "axios";
 import styles from "../index.module.scss";
 import classNames from "classnames/bind";
@@ -76,8 +77,8 @@ const columns = [
   },
   {
     title: "活动状态",
-    dataIndex: "status",
-    key: "status",
+    dataIndex: "subscription_status",
+    key: "subscription_status",
   },
   {
     title: "操作",
@@ -105,7 +106,7 @@ const defaultFilter = {
   symbolType: null,
   status: null,
 };
-@inject("product")
+@inject("product", "system")
 @observer
 class SubscriptionList extends React.Component {
   state = {
@@ -148,6 +149,8 @@ class SubscriptionList extends React.Component {
     this.setState({ dataSource, total: res.data.count, });
   };
   mapApiDataToDataSource = raw => {
+    const { configMap, } = this.props.system;
+    const brokerTimezone = configMap["broker_tz"] || "Asia/Shanghai";
     const payload = { ...raw, };
     const {
       public_date,
@@ -167,10 +170,21 @@ class SubscriptionList extends React.Component {
       moment(subscription_date_end).format("YYYY-MM-DD");
     payload["draw_result_date"] =
       draw_result_date && moment(draw_result_date).format("YYYY-MM-DD");
+
+    const nowMoment = momentTimezone(Date.now()).tz(brokerTimezone);
+    const subscriptionStatus = nowMoment.isBefore(
+      moment(subscription_date_start)
+    )
+      ? "未开始"
+      : nowMoment.isAfter(moment(subscription_date_end))
+        ? "已结束"
+        : "进行中";
+    payload["subscription_status"] = subscriptionStatus;
     payload["market"] = MARKET_TYPE[market]?.name;
     payload["operation"] = "抽签明细";
     return payload;
   };
+
   handlePaginationChange = (page, pageSize) => {
     this.setState({ page, pageSize, });
     queueMicrotask(() => this.fetchData());
