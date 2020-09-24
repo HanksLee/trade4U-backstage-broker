@@ -15,7 +15,7 @@ import {
 } from "antd";
 import CommonHeader from "components/CommonHeader";
 import { withRoutePermissionGuard } from "components/withRoutePermissionGuard";
-import { ROUTE_TO_PERMISSION, DAYS_OF_WEEK } from "constant";
+import { ROUTE_TO_PERMISSION, DAYS_OF_WEEK, LOAN_OPTIONS } from "constant";
 import { inject, observer } from "mobx-react";
 import utils from "utils";
 import moment from "moment";
@@ -68,28 +68,6 @@ ISystemEditorState
     this.init();
   }
 
-  componentWillUnmount() {}
-
-  onPeriodsChange = (checkedValues: any) => {
-    checkedValues.sort(function(a, b) {
-      return a - b;
-    });
-    this.setState({
-      withdraw_periods: checkedValues.toString(),
-    });
-  };
-
-  onStartTimeChange = (time: any, timeString: any) => {
-    this.setState({
-      withdraw_daily_start: timeString,
-    });
-  };
-
-  onEndTimeChange = (time: any, timeString: any) => {
-    this.setState({
-      withdraw_daily_end: timeString,
-    });
-  };
   mapFieldValueToApiData = input => {
     // 将栏位值转为 API 吃的格式
     const payload = { ...input, };
@@ -109,6 +87,7 @@ ISystemEditorState
       : "";
     payload["function_ipo"] = String(function_ipo); // convert false to "false"
     payload["function_news"] = String(function_news);
+    payload["loan_options"] = payload["loan_options"].join(",");
     // 转换 json 物件 => api 吃的 json 阵列
     return Object.entries(payload).map(([key, val]) => ({ key, value: val, }));
   };
@@ -132,6 +111,9 @@ ISystemEditorState
       : null;
     payload["function_ipo"] = utils.parseBool(function_ipo); // convert "false" to false
     payload["function_news"] = utils.parseBool(function_news);
+    // TODO: 等后端 api 完成
+    payload["hk_new_stock_switch"] = utils.parseBool(true);
+    payload["loan_options"] = "0,10,50".split(",");
     return payload;
   };
   init = async () => {
@@ -158,7 +140,8 @@ ISystemEditorState
       // console.log("values :>> ", values);
       const payload = this.mapFieldValueToApiData(values);
       const configs = JSON.stringify(payload); // api 要求将阵列序列化
-      // console.log("payload :>> ", payload);
+      console.log("payload :>> ", payload);
+      return;
       try {
         const res = await $api.system.updateBrokerConfig({ configs, });
         if (res.status === 200) {
@@ -193,13 +176,38 @@ ISystemEditorState
         <div className="editor food-card-editor">
           <section className="editor-content panel-block">
             <Form className="editor-form">
+              {renderGroupHeader("新股申购")}
+              <Form.Item label="可用融资比例" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("loan_options")(
+                  <Checkbox.Group style={{ width: "100%", }}>
+                    {Object.entries(LOAN_OPTIONS).map(([key, val]) => (
+                      <Col span={3} key={key}>
+                        <Checkbox value={key}>{val}</Checkbox>
+                      </Col>
+                    ))}
+                  </Checkbox.Group>
+                )}
+              </Form.Item>
+              <Form.Item label="港股申购启用" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("hk_new_stock_switch")(
+                  <Radio.Group>
+                    <Radio value={false}>否</Radio>
+                    <Radio value={true}>是</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+              <Form.Item label="每手手续费" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("new_stock_hand_fee")(
+                  <InputNumber style={{ width: "100%", }} />
+                )}
+              </Form.Item>
+              <Form.Item label="融资利息年化率" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("new_stock_loan_interest")(<InputPercent />)}
+              </Form.Item>
               {renderGroupHeader("出金时间配置")}
               <Form.Item label="時間段" {...getFormItemLayout(4, 12)}>
                 {getFieldDecorator("withdraw_periods")(
-                  <Checkbox.Group
-                    style={{ width: "100%", }}
-                    onChange={this.onPeriodsChange}
-                  >
+                  <Checkbox.Group style={{ width: "100%", }}>
                     {Object.entries(DAYS_OF_WEEK).map(([key, val]) => (
                       <Col span={3} key={key}>
                         <Checkbox value={key}>{val["zh-cn"]}</Checkbox>
@@ -386,6 +394,18 @@ class InputFloat extends React.Component {
     const parser = value => value;
     return (
       <InputNumber step={step} parser={parser} {...restProps}></InputNumber>
+    );
+  }
+}
+class InputPercent extends React.Component {
+  render() {
+    return (
+      <InputNumber
+        className={cx("input-number")}
+        formatter={value => `${value}%`}
+        parser={value => value.replace("%", "")}
+        {...this.props}
+      />
     );
   }
 }
