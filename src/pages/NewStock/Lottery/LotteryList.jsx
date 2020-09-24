@@ -18,7 +18,9 @@ import utils from "utils";
 import styles from "../index.module.scss";
 import classNames from "classnames/bind";
 import moment from "moment";
+import momentTimezone from "moment-timezone";
 import axios from "axios";
+import { inject, observer } from "mobx-react";
 import produce from "immer";
 import { MARKET_TYPE, NEW_STOCK_STATUS } from "constant";
 const cx = classNames.bind(styles);
@@ -27,8 +29,8 @@ let cancelPrevRequest;
 
 // TODO: 等 api 修改后，改为 0 未中，1 有中
 const DRAWING_STATUS = {
-  1: "未中签",
-  2: "已中签",
+  0: "未中签",
+  1: "已中签",
 };
 
 const defaultFilter = {
@@ -38,6 +40,9 @@ const defaultFilter = {
   drawingStatus: null,
   subscriptionStatus: null,
 };
+
+@inject("system")
+@observer
 class LotteryList extends React.Component {
   state = {
     filter: defaultFilter,
@@ -96,6 +101,9 @@ class LotteryList extends React.Component {
     this.setState({ dataSource, realLotsMap, total: res.data.count, });
   };
   mapApiDataToDataSource = raw => {
+    const { configMap, } = this.props.system;
+    const brokerTimezone = configMap["broker_tz"] || "Asia/Shanghai";
+
     const payload = { ...raw, };
     const { user_data, newstock_data, real_lots, } = payload;
     payload["key"] = payload["id"];
@@ -106,11 +114,26 @@ class LotteryList extends React.Component {
     payload["user_phone"] = user_data["phone"];
     payload["user_name"] = user_data["username"];
     payload["group_name"] = user_data["group_name"];
+
     // newstock_data
-    payload["stock_name"] = newstock_data["stock_name"];
-    payload["draw_result_date"] = moment(
-      newstock_data["draw_result_date"]
-    ).format("YYYY-MM-DD");
+    const {
+      stock_name,
+      draw_result_date,
+      subscription_date_start,
+      subscription_date_end,
+    } = newstock_data;
+    payload["stock_name"] = stock_name;
+    payload["draw_result_date"] = moment(draw_result_date).format("YYYY-MM-DD");
+    const nowMoment = momentTimezone(Date.now()).tz(brokerTimezone);
+    const subscriptionStatus = nowMoment.isBefore(
+      moment(subscription_date_start)
+    )
+      ? "未开始"
+      : nowMoment.isAfter(moment(subscription_date_end))
+        ? "已结束"
+        : "进行中";
+    payload["subscription_status"] = subscriptionStatus;
+
     payload["drawing_of_lots_status"] =
       Number(real_lots) > 0 ? "已中签" : "未中签";
     return payload;
@@ -200,7 +223,11 @@ class LotteryList extends React.Component {
         dataIndex: "draw_result_date",
         key: "draw_result_date",
       },
-
+      {
+        title: "活动状态",
+        dataIndex: "subscription_status",
+        key: "subscription_status",
+      },
       {
         title: "中签状态",
         dataIndex: "drawing_of_lots_status",
