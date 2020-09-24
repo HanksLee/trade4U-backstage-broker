@@ -67,7 +67,39 @@ ISystemEditorState
   async componentDidMount() {
     this.init();
   }
-
+  init = async () => {
+    const { setFieldsValue, } = this.props.form;
+    await this.props.system.getConfigList();
+    const { configMap, } = this.props.system;
+    const initFieldsValue = this.mapApiDataToFieldValue(configMap);
+    setFieldsValue(initFieldsValue);
+    // console.log("initFieldsValue :>> ", initFieldsValue);
+  };
+  mapApiDataToFieldValue = input => {
+    // 将 api 回来的值转为表格栏位要求的格式
+    // console.log("input :>> ", input);
+    const payload = { ...input, };
+    const {
+      withdraw_daily_start,
+      withdraw_daily_end,
+      withdraw_periods,
+      function_ipo,
+      function_news,
+    } = payload;
+    payload["withdraw_periods"] = withdraw_periods?.split(",");
+    payload["withdraw_daily_start"] = withdraw_daily_start
+      ? moment(withdraw_daily_start, "HH:mm")
+      : null;
+    payload["withdraw_daily_end"] = withdraw_daily_end
+      ? moment(withdraw_daily_end, "HH:mm")
+      : null;
+    payload["function_ipo"] = utils.parseBool(function_ipo); // convert "false" to false
+    payload["function_news"] = utils.parseBool(function_news);
+    // TODO: 等后端 api 完成
+    payload["hk_new_stock_switch"] = utils.parseBool(true);
+    payload["loan_options"] = "0,10,50".split(",");
+    return payload;
+  };
   mapFieldValueToApiData = input => {
     // 将栏位值转为 API 吃的格式
     const payload = { ...input, };
@@ -90,47 +122,6 @@ ISystemEditorState
     payload["loan_options"] = payload["loan_options"].join(",");
     // 转换 json 物件 => api 吃的 json 阵列
     return Object.entries(payload).map(([key, val]) => ({ key, value: val, }));
-  };
-  mapApiDataToFieldValue = input => {
-    // 将 api 回来的值转为表格栏位要求的格式
-    // console.log("input :>> ", input);
-    const payload = { ...input, };
-    const {
-      withdraw_daily_start,
-      withdraw_daily_end,
-      withdraw_periods,
-      function_ipo,
-      function_news,
-    } = payload;
-    payload["withdraw_periods"] = withdraw_periods.split(",");
-    payload["withdraw_daily_start"] = withdraw_daily_start
-      ? moment(withdraw_daily_start, "HH:mm")
-      : null;
-    payload["withdraw_daily_end"] = withdraw_daily_end
-      ? moment(withdraw_daily_end, "HH:mm")
-      : null;
-    payload["function_ipo"] = utils.parseBool(function_ipo); // convert "false" to false
-    payload["function_news"] = utils.parseBool(function_news);
-    // TODO: 等后端 api 完成
-    payload["hk_new_stock_switch"] = utils.parseBool(true);
-    payload["loan_options"] = "0,10,50".split(",");
-    return payload;
-  };
-  init = async () => {
-    const { setFieldsValue, } = this.props.form;
-    const { $api, } = this.props.system;
-    const res = await $api.system.getBrokerConfigList();
-    if (res.status === 200) {
-      // 转换 api 回传的 json 阵列 => json 物件
-      const initApiData = res.data.reduce((obj, curr) => {
-        const { key, value, } = curr;
-        obj[key] = value;
-        return obj;
-      }, {});
-      const initFieldsValue = this.mapApiDataToFieldValue(initApiData);
-      setFieldsValue(initFieldsValue);
-      // console.log("initFieldsValue :>> ", initFieldsValue);
-    }
   };
 
   handleSubmit = async (evt: any) => {

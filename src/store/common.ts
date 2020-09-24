@@ -36,16 +36,6 @@ class CommonStore extends BaseStore {
       return obj;
     }, {});
   }
-  // @computed
-  // get permissionRoutes() {
-  //   // console.log('PERMISSION_TO_ROUTE :>> ', PERMISSION_TO_ROUTE);
-  //   // 映射 permission 成允許顯示的 route hashmap
-  //   return this.permissions.reduce((obj, permission, idx) => {
-  //     const route = PERMISSION_TO_ROUTE[permission];
-  //     if (route) obj[route] = true;
-  //     return obj;
-  //   }, {});
-  // }
   @action
   getUserInfo = async params => {
     const token = "";
