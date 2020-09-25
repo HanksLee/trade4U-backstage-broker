@@ -16,7 +16,7 @@ import {
   Col,
   Form
 } from "antd";
-import { MARKET_TYPE, NEW_STOCK_STATUS } from "constant";
+import { MARKET_TYPE, NEW_STOCK_STATUS, SYMBOL_TYPE } from "constant";
 import moment from "moment";
 import momentTimezone from "moment-timezone";
 import axios from "axios";
@@ -157,7 +157,7 @@ class SubscriptionList extends React.Component {
       subscription_date_start,
       subscription_date_end,
       draw_result_date,
-      market,
+      symbol_type,
     } = payload;
     payload["key"] = payload["id"];
     payload["public_date"] = public_date
@@ -181,7 +181,7 @@ class SubscriptionList extends React.Component {
         ? "已结束"
         : "进行中";
     payload["subscription_status"] = subscriptionStatus;
-    // payload["market"] = MARKET_TYPE[market]?.name;
+    payload["symbol_type"] = SYMBOL_TYPE[symbol_type];
     payload["operation"] = "抽签明细";
     return payload;
   };

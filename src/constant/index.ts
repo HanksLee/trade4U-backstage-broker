@@ -69,6 +69,13 @@ export const MARKET_TYPE = {
   SH: { name: "上证", },
 };
 
+export const SYMBOL_TYPE = {
+  HK: "港股",
+  ASHARES: "A股",
+  MT: "外汇",
+  hk: "港股",
+  a_shares: "A股",
+};
 // 新股申购活动状态
 export const NEW_STOCK_STATUS = {
   1: "未开始",
