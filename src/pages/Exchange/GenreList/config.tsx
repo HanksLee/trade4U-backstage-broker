@@ -20,7 +20,7 @@ const config = self => {
     },
     {
       // width: 120,
-      title: "品种类型名称",
+      title: "品种类型",
       dataIndex: "symbol_type_name",
       render: (text, record) => {
         return text || "--";

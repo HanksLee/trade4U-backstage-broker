@@ -72,7 +72,7 @@ class LotteryList extends React.Component {
         key: "group_name",
       },
       {
-        title: "新股申购名称",
+        title: "新股品种名称",
         dataIndex: "stock_name",
         key: "stock_name",
       },
@@ -310,7 +310,6 @@ class LotteryList extends React.Component {
                   {(fieldName => {
                     return (
                       <Input
-                        placeholder="请输入用户名"
                         value={filter[fieldName]}
                         onChange={e =>
                           this.handleFilterChange(e.target.value, fieldName)
@@ -325,7 +324,6 @@ class LotteryList extends React.Component {
                   {(fieldName => {
                     return (
                       <Input
-                        placeholder="请输入手机"
                         value={filter[fieldName]}
                         onChange={e =>
                           this.handleFilterChange(e.target.value, fieldName)
@@ -338,11 +336,10 @@ class LotteryList extends React.Component {
             </Row>
             <Row>
               <Col span={12}>
-                <Form.Item label="新股名称" {...formItemLayout}>
+                <Form.Item label="新股品种名称" {...formItemLayout}>
                   {(fieldName => {
                     return (
                       <Input
-                        placeholder="请输入新股名称"
                         value={filter[fieldName]}
                         onChange={e =>
                           this.handleFilterChange(e.target.value, fieldName)
@@ -357,7 +354,6 @@ class LotteryList extends React.Component {
                   {(fieldName => {
                     return (
                       <Select
-                        placeholder="请选择状态"
                         value={filter[fieldName]}
                         onChange={val =>
                           this.handleFilterChange(val, fieldName)
@@ -380,7 +376,6 @@ class LotteryList extends React.Component {
                   {(fieldName => {
                     return (
                       <Select
-                        placeholder="请选择中签状态"
                         value={filter[fieldName]}
                         onChange={val =>
                           this.handleFilterChange(val, fieldName)

@@ -31,12 +31,12 @@ let cancelPrevRequest;
 
 const columns = [
   {
-    title: "产品名称",
+    title: "新股品种名称",
     dataIndex: "stock_name",
     key: "stock_name",
   },
   {
-    title: "产品品种",
+    title: "新股品种类型",
     dataIndex: "symbol_type",
     key: "symbol_type",
   },
@@ -219,11 +219,10 @@ class SubscriptionList extends React.Component {
           <Form>
             <Row>
               <Col span={12}>
-                <Form.Item label="产品名称" {...formItemLayout}>
+                <Form.Item label="新股品种名称" {...formItemLayout}>
                   {(fieldName => {
                     return (
                       <Input
-                        placeholder="请输入产品名称"
                         value={filter[fieldName]}
                         onChange={e =>
                           this.handleFilterChange(e.target.value, fieldName)
@@ -234,11 +233,10 @@ class SubscriptionList extends React.Component {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="产品编码" {...formItemLayout}>
+                <Form.Item label="新股品种编号" {...formItemLayout}>
                   {(fieldName => {
                     return (
                       <Input
-                        placeholder="请输入产品编码"
                         value={filter[fieldName]}
                         onChange={e =>
                           this.handleFilterChange(e.target.value, fieldName)
@@ -251,11 +249,10 @@ class SubscriptionList extends React.Component {
             </Row>
             <Row>
               <Col span={12}>
-                <Form.Item label="品种类型" {...formItemLayout}>
+                <Form.Item label="新股品种类型" {...formItemLayout}>
                   {(fieldName => {
                     return (
                       <Select
-                        placeholder="请选择品种类型"
                         style={{ width: "100%", }}
                         value={filter[fieldName]}
                         onChange={val =>
@@ -280,7 +277,6 @@ class SubscriptionList extends React.Component {
                   {(fieldName => {
                     return (
                       <Select
-                        placeholder="请选择状态"
                         value={filter[fieldName]}
                         onChange={val =>
                           this.handleFilterChange(val, fieldName)
