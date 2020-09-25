@@ -261,8 +261,8 @@ class SubscriptionList extends React.Component {
                       >
                         {symbolTypeOptions.map(option => (
                           <Select.Option
-                            value={option.symbol_type_name}
-                            key={option.symbol_type_name}
+                            value={option.code}
+                            key={option.code}
                           >
                             {option.symbol_type_name}
                           </Select.Option>
