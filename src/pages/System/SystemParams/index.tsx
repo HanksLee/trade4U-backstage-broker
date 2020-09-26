@@ -74,7 +74,7 @@ ISystemEditorState
     const { configMap, } = this.props.system;
     const initFieldsValue = this.mapApiDataToFieldValue(configMap);
     setFieldsValue(initFieldsValue);
-    console.log("initFieldsValue :>> ", initFieldsValue);
+    // console.log("initFieldsValue :>> ", initFieldsValue);
   };
   mapApiDataToFieldValue = input => {
     // 将 api 回来的值转为表格栏位要求的格式
@@ -87,6 +87,7 @@ ISystemEditorState
       function_ipo,
       function_news,
       hk_new_stock_switch,
+      ashares_new_stock_switch,
       loan_options,
     } = payload;
     payload["withdraw_periods"] = withdraw_periods?.split(",");
@@ -100,6 +101,9 @@ ISystemEditorState
     payload["function_news"] = utils.parseBool(function_news);
     // TODO: 等后端 api 完成
     payload["hk_new_stock_switch"] = utils.parseBool(hk_new_stock_switch);
+    payload["ashares_new_stock_switch"] = utils.parseBool(
+      ashares_new_stock_switch
+    );
     payload["loan_options"] = loan_options?.split(",");
     return payload;
   };
@@ -113,6 +117,7 @@ ISystemEditorState
       function_ipo,
       function_news,
       hk_new_stock_switch,
+      ashares_new_stock_switch,
       loan_options,
     } = payload;
     payload["withdraw_periods"] = withdraw_periods.join(",");
@@ -125,6 +130,7 @@ ISystemEditorState
     payload["function_ipo"] = String(function_ipo); // convert false to "false"
     payload["function_news"] = String(function_news);
     payload["hk_new_stock_switch"] = String(hk_new_stock_switch);
+    payload["ashares_new_stock_switch"] = String(ashares_new_stock_switch);
     payload["loan_options"] = loan_options.join(",");
     // 转换 json 物件 => api 吃的 json 阵列
     return Object.entries(payload).map(([key, val]) => ({ key, value: val, }));
@@ -186,6 +192,14 @@ ISystemEditorState
               </Form.Item>
               <Form.Item label="港股申购启用" {...getFormItemLayout(4, 12)}>
                 {getFieldDecorator("hk_new_stock_switch")(
+                  <Radio.Group>
+                    <Radio value={false}>否</Radio>
+                    <Radio value={true}>是</Radio>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+              <Form.Item label="A股申购启用" {...getFormItemLayout(4, 12)}>
+                {getFieldDecorator("ashares_new_stock_switch")(
                   <Radio.Group>
                     <Radio value={false}>否</Radio>
                     <Radio value={true}>是</Radio>
