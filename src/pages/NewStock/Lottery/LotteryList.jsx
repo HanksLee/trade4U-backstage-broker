@@ -431,9 +431,11 @@ class LotteryList extends React.Component {
           <div className={cx("pagination-container")}>
             <Pagination
               showQuickJumper
+              showSizeChanger
               total={total}
               pageSize={pageSize}
               onChange={this.handlePaginationChange}
+              onShowSizeChange={this.handlePaginationChange}
               current={page}
             />
           </div>

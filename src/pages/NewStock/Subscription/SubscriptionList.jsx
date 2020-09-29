@@ -187,9 +187,11 @@ class SubscriptionList extends React.Component {
   };
 
   handlePaginationChange = (page, pageSize) => {
+    // console.log("page,pageSize :>> ", page, pageSize);
     this.setState({ page, pageSize, });
     queueMicrotask(() => this.fetchData());
   };
+
   handleFilterChange = (val, fieldName) => {
     this.setState(
       produce(draft => {
@@ -202,7 +204,7 @@ class SubscriptionList extends React.Component {
   };
   handleSearch = () => {
     // 搜寻前先重置分页状态
-    console.log("this.state.filter :>> ", this.state.filter);
+    // console.log("this.state.filter :>> ", this.state.filter);
     this.setState({ page: 1, pageSize: 10, });
     queueMicrotask(() => this.fetchData());
   };
@@ -327,9 +329,11 @@ class SubscriptionList extends React.Component {
           <div className={cx("pagination-container")}>
             <Pagination
               showQuickJumper
+              showSizeChanger
               total={total}
               pageSize={pageSize}
               onChange={this.handlePaginationChange}
+              onShowSizeChange={this.handlePaginationChange}
               current={page}
             />
           </div>
