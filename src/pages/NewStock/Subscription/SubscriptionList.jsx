@@ -31,12 +31,12 @@ let cancelPrevRequest;
 
 const columns = [
   {
-    title: "新股品种名称",
+    title: "新股名称",
     dataIndex: "stock_name",
     key: "stock_name",
   },
   {
-    title: "新股品种类型",
+    title: "新股类型",
     dataIndex: "symbol_type",
     key: "symbol_type",
   },
@@ -219,7 +219,7 @@ class SubscriptionList extends React.Component {
           <Form>
             <Row>
               <Col span={12}>
-                <Form.Item label="新股品种名称" {...formItemLayout}>
+                <Form.Item label="新股名称" {...formItemLayout}>
                   {(fieldName => {
                     return (
                       <Input
@@ -233,7 +233,7 @@ class SubscriptionList extends React.Component {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="新股品种编号" {...formItemLayout}>
+                <Form.Item label="新股编号" {...formItemLayout}>
                   {(fieldName => {
                     return (
                       <Input
@@ -249,7 +249,7 @@ class SubscriptionList extends React.Component {
             </Row>
             <Row>
               <Col span={12}>
-                <Form.Item label="新股品种类型" {...formItemLayout}>
+                <Form.Item label="新股类型" {...formItemLayout}>
                   {(fieldName => {
                     return (
                       <Select
@@ -260,10 +260,7 @@ class SubscriptionList extends React.Component {
                         }
                       >
                         {symbolTypeOptions.map(option => (
-                          <Select.Option
-                            value={option.code}
-                            key={option.code}
-                          >
+                          <Select.Option value={option.code} key={option.code}>
                             {option.symbol_type_name}
                           </Select.Option>
                         ))}
@@ -327,12 +324,15 @@ class SubscriptionList extends React.Component {
             scroll={{ x: true, }}
             pagination={false}
           />
-          <Pagination
-            total={total}
-            pageSize={pageSize}
-            onChange={this.handlePaginationChange}
-            current={page}
-          />
+          <div className={cx("pagination-container")}>
+            <Pagination
+              showQuickJumper
+              total={total}
+              pageSize={pageSize}
+              onChange={this.handlePaginationChange}
+              current={page}
+            />
+          </div>
         </section>
       </div>
     );

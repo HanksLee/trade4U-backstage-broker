@@ -72,7 +72,7 @@ class LotteryList extends React.Component {
         key: "group_name",
       },
       {
-        title: "新股品种名称",
+        title: "新股名称",
         dataIndex: "stock_name",
         key: "stock_name",
       },
@@ -336,7 +336,7 @@ class LotteryList extends React.Component {
             </Row>
             <Row>
               <Col span={12}>
-                <Form.Item label="新股品种名称" {...formItemLayout}>
+                <Form.Item label="新股名称" {...formItemLayout}>
                   {(fieldName => {
                     return (
                       <Input
@@ -428,12 +428,15 @@ class LotteryList extends React.Component {
             scroll={{ x: true, }}
             pagination={false}
           />
-          <Pagination
-            total={total}
-            pageSize={pageSize}
-            onChange={this.handlePaginationChange}
-            current={page}
-          />
+          <div className={cx("pagination-container")}>
+            <Pagination
+              showQuickJumper
+              total={total}
+              pageSize={pageSize}
+              onChange={this.handlePaginationChange}
+              current={page}
+            />
+          </div>
         </section>
       </div>
     );
