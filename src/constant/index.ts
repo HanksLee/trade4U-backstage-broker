@@ -76,12 +76,6 @@ export const SYMBOL_TYPE = {
   hk: "港股",
   a_shares: "A股",
 };
-// 新股申购活动状态
-export const NEW_STOCK_STATUS = {
-  1: "未开始",
-  2: "进行中",
-  3: "已结束",
-};
 
 // 可用融资比例
 export const LOAN_OPTIONS = {
@@ -95,4 +89,11 @@ export const LOAN_OPTIONS = {
   70: "70%",
   80: "80%",
   90: "90%",
+};
+// 新股申购活动状态
+export const NEW_STOCK_SUBSCRIPTION_STATUS = {
+  1: "未开始",
+  2: "进行中",
+  3: "已截止",
+  4: "已公布",
 };

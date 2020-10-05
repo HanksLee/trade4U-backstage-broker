@@ -22,12 +22,12 @@ import momentTimezone from "moment-timezone";
 import axios from "axios";
 import { inject, observer } from "mobx-react";
 import produce from "immer";
-import { MARKET_TYPE, NEW_STOCK_STATUS } from "constant";
+import { MARKET_TYPE, NEW_STOCK_SUBSCRIPTION_STATUS } from "constant";
+
 const cx = classNames.bind(styles);
 const CancelToken = axios.CancelToken;
 let cancelPrevRequest;
 
-// TODO: 等 api 修改后，改为 0 未中，1 有中
 const DRAWING_STATUS = {
   0: "未中签",
   1: "已中签",
@@ -218,9 +218,6 @@ class LotteryList extends React.Component {
     this.setState({ dataSource, realLotsMap, total: res.data.count, });
   };
   mapApiDataToDataSource = raw => {
-    const { configMap, } = this.props.system;
-    const brokerTimezone = configMap["broker_tz"] || "Asia/Shanghai";
-
     const payload = { ...raw, };
     const { user_data, newstock_data, real_lots, } = payload;
     payload["key"] = payload["id"];
@@ -233,23 +230,11 @@ class LotteryList extends React.Component {
     payload["group_name"] = user_data["group_name"];
 
     // newstock_data
-    const {
-      stock_name,
-      draw_result_date,
-      subscription_date_start,
-      subscription_date_end,
-    } = newstock_data;
+    const { stock_name, draw_result_date, status, } = newstock_data;
     payload["stock_name"] = stock_name;
     payload["draw_result_date"] = moment(draw_result_date).format("YYYY-MM-DD");
-    const nowMoment = momentTimezone(Date.now()).tz(brokerTimezone);
-    const subscriptionStatus = nowMoment.isBefore(
-      moment(subscription_date_start)
-    )
-      ? "未开始"
-      : nowMoment.isAfter(moment(subscription_date_end))
-        ? "已结束"
-        : "进行中";
-    payload["subscription_status"] = subscriptionStatus;
+
+    payload["subscription_status"] = NEW_STOCK_SUBSCRIPTION_STATUS[status];
 
     payload["drawing_of_lots_status"] =
       Number(real_lots) > 0 ? "已中签" : "未中签";
@@ -271,7 +256,7 @@ class LotteryList extends React.Component {
   };
   handleSearch = () => {
     // 搜寻前先重置分页状态
-    console.log("this.state.filter :>> ", this.state.filter);
+    // console.log("this.state.filter :>> ", this.state.filter);
     this.setState({ page: 1, pageSize: 10, });
     queueMicrotask(() => this.fetchData());
   };
@@ -359,11 +344,13 @@ class LotteryList extends React.Component {
                           this.handleFilterChange(val, fieldName)
                         }
                       >
-                        {Object.entries(NEW_STOCK_STATUS).map(([key, val]) => (
-                          <Select.Option value={key} key={key}>
-                            {val}
-                          </Select.Option>
-                        ))}
+                        {Object.entries(NEW_STOCK_SUBSCRIPTION_STATUS).map(
+                          ([key, val]) => (
+                            <Select.Option value={key} key={key}>
+                              {val}
+                            </Select.Option>
+                          )
+                        )}
                       </Select>
                     );
                   })("subscriptionStatus")}

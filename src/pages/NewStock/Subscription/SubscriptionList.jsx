@@ -1,22 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import api from "services";
+import { Button, Select, Input, Table, Pagination, Row, Col, Form } from "antd";
 import {
-  Button,
-  Select,
-  Input,
-  Table,
-  DatePicker,
-  Checkbox,
-  Icon,
-  Pagination,
-  Spin,
-  Tag,
-  Row,
-  Col,
-  Form
-} from "antd";
-import { MARKET_TYPE, NEW_STOCK_STATUS, SYMBOL_TYPE } from "constant";
+  MARKET_TYPE,
+  NEW_STOCK_SUBSCRIPTION_STATUS,
+  SYMBOL_TYPE
+} from "constant";
 import moment from "moment";
 import momentTimezone from "moment-timezone";
 import axios from "axios";
@@ -150,7 +140,6 @@ class SubscriptionList extends React.Component {
   };
   mapApiDataToDataSource = raw => {
     const { configMap, } = this.props.system;
-    const brokerTimezone = configMap["broker_tz"] || "Asia/Shanghai";
     const payload = { ...raw, };
     const {
       public_date,
@@ -158,6 +147,7 @@ class SubscriptionList extends React.Component {
       subscription_date_end,
       draw_result_date,
       symbol_type,
+      status,
     } = payload;
     payload["key"] = payload["id"];
     payload["public_date"] = public_date
@@ -171,16 +161,7 @@ class SubscriptionList extends React.Component {
       moment(subscription_date_end).format("YYYY-MM-DD");
     payload["draw_result_date"] =
       draw_result_date && moment(draw_result_date).format("YYYY-MM-DD");
-
-    const nowMoment = momentTimezone(Date.now()).tz(brokerTimezone);
-    const subscriptionStatus = nowMoment.isBefore(
-      moment(subscription_date_start)
-    )
-      ? "未开始"
-      : nowMoment.isAfter(moment(subscription_date_end))
-        ? "已结束"
-        : "进行中";
-    payload["subscription_status"] = subscriptionStatus;
+    payload["subscription_status"] = NEW_STOCK_SUBSCRIPTION_STATUS[status];
     payload["symbol_type"] = SYMBOL_TYPE[symbol_type];
     payload["operation"] = "抽签明细";
     return payload;
@@ -281,7 +262,7 @@ class SubscriptionList extends React.Component {
                           this.handleFilterChange(val, fieldName)
                         }
                       >
-                        {Object.entries(NEW_STOCK_STATUS).map(([key, val]) => (
+                        {Object.entries(NEW_STOCK_SUBSCRIPTION_STATUS).map(([key, val]) => (
                           <Select.Option value={key} key={key}>
                             {val}
                           </Select.Option>
