@@ -23,43 +23,43 @@ export const DEPOSIT_OPTIONS = [
 
 export const THREE_DAY_OPTIONS = [
   {
-    id: 0,
+    id: 6,
     name: "周日",
   },
   {
-    id: 1,
+    id: 0,
     name: "周一",
   },
   {
-    id: 2,
+    id: 1,
     name: "周二",
   },
   {
-    id: 3,
+    id: 2,
     name: "周三",
   },
   {
-    id: 4,
+    id: 3,
     name: "周四",
   },
   {
-    id: 5,
+    id: 4,
     name: "周五",
   },
   {
-    id: 6,
+    id: 5,
     name: "周六",
   }
 ];
 export const WEEKLY_ORDER = [0, 1, 2, 3, 4, 5, 6];
 export const DAYS_OF_WEEK = {
-  0: { "zh-cn": "周日", "en-us": "Sunday", },
-  1: { "zh-cn": "周一", "en-us": "Monday", },
-  2: { "zh-cn": "周二", "en-us": "Tuesday", },
-  3: { "zh-cn": "周三", "en-us": "Wednesday", },
-  4: { "zh-cn": "周四", "en-us": "Thursday", },
-  5: { "zh-cn": "周五", "en-us": "Friday", },
-  6: { "zh-cn": "周六", "en-us": "Saturday", },
+  6: { "zh-cn": "周日", "en-us": "Sunday", },
+  0: { "zh-cn": "周一", "en-us": "Monday", },
+  1: { "zh-cn": "周二", "en-us": "Tuesday", },
+  2: { "zh-cn": "周三", "en-us": "Wednesday", },
+  3: { "zh-cn": "周四", "en-us": "Thursday", },
+  4: { "zh-cn": "周五", "en-us": "Friday", },
+  5: { "zh-cn": "周六", "en-us": "Saturday", },
 };
 
 // 市场品种类型

@@ -10,7 +10,7 @@ export function TradingTimeBoard(props) {
   const formatData = data => {
     return Object.values(data)
       .map((each, index) => {
-        if (each.trades.length < 1) return null;
+        // if (each.trades.length < 1) return null;
         const day = `${DAYS_OF_WEEK[index]["en-us"]} ${DAYS_OF_WEEK[index]["zh-cn"]}`;
         const tradingTimeAM = each.trades.slice(0, 2);
         const tradingTimePM = each.trades.slice(2);
@@ -19,7 +19,7 @@ export function TradingTimeBoard(props) {
       .filter(v => v);
   };
   const dataSource = formatData(props.data);
-  // console.log("data :>> ", data);
+  // console.log("dataSource :>> ", dataSource);
   const timestampToMoment = timestamp => {
     const hhmmss = moment(timestamp).format("HH:mm:ss");
     return moment(hhmmss, "HH:mm:ss");
@@ -38,7 +38,7 @@ export function TradingTimeBoard(props) {
         const { tradingTimeAM, } = record;
         const [from, to] = tradingTimeAM;
         return (
-          <React.Fragment>
+          <div className={cx("time-picker-wrap")}>
             <TimePicker
               disabled
               defaultValue={timestampToMoment(from)}
@@ -47,7 +47,7 @@ export function TradingTimeBoard(props) {
               disabled
               defaultValue={timestampToMoment(to)}
             ></TimePicker>
-          </React.Fragment>
+          </div>
         );
       },
     },
@@ -59,7 +59,7 @@ export function TradingTimeBoard(props) {
         const { tradingTimePM, } = record;
         const [from, to] = tradingTimePM;
         return (
-          <React.Fragment>
+          <div className={cx("time-picker-wrap")}>
             <TimePicker
               disabled
               defaultValue={timestampToMoment(from)}
@@ -68,7 +68,7 @@ export function TradingTimeBoard(props) {
               disabled
               defaultValue={timestampToMoment(to)}
             ></TimePicker>
-          </React.Fragment>
+          </div>
         );
       },
     }
