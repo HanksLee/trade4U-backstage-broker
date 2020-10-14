@@ -138,7 +138,7 @@ const config = self => {
     {
       title: "操作",
       width: 200,
-      // fixed: "right",
+      fixed: "right",
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
