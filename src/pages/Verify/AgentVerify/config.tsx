@@ -37,9 +37,9 @@ const config = self => {
       dataIndex: "id_card_front",
       render: (text, record) => {
         return <img
-        src={record.id_card_front}
-        onClick={() => { window.open(record.id_card_front, "_blank", "width=500,height=500", false); }}
-      /> || "--";
+          src={record.id_card_front}
+          onClick={() => { window.open(record.id_card_front, "_blank", "width=500,height=500", false); }}
+        /> || "--";
       },
     },
     {
@@ -189,9 +189,9 @@ const config = self => {
     },
   };
 
-   // 操作欄位 - 依圖片高度對齊
-   const tableResize = new Event('resize');
-   window.dispatchEvent(tableResize);
+  // 操作欄位 - 依圖片高度對齊
+  const tableResize = new Event('resize');
+  window.dispatchEvent(tableResize);
   return {
     // 是否显示增加按钮
     // addBtn: {
@@ -242,7 +242,7 @@ const config = self => {
     },
     table: {
       rowKey: "id",
-      scroll: { x: columnsWidth},
+      scroll: { x: columnsWidth, },
       columns,
       dataSource: self.state.agentVerifyList,
       pagination,

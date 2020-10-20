@@ -36,7 +36,7 @@ const config = self => {
       width: 200,
       dataIndex: "id_card_front",
       render: (text, record) => {
-       return <img
+        return <img
           src={record.id_card_front}
           onClick={() => { window.open(record.id_card_front, "_blank", "width=500,height=500", false); }}
         /> || "--";
@@ -241,7 +241,7 @@ const config = self => {
     },
     table: {
       rowKey: "id",
-      scroll: { x: columnsWidth },
+      scroll: { x: columnsWidth, },
       columns,
       dataSource: self.state.verifyList,
       pagination,
