@@ -24,7 +24,7 @@ export interface VerifyOpenAccountType {
   reason: string;
 }
 
-interface IVerifyOpenAccountProps {}
+interface IVerifyOpenAccountProps { }
 
 interface IVerifyOpenAccountState {
   verifyList: VerifyOpenAccountType[];
@@ -68,12 +68,16 @@ VerifyOpenAccountListState
       page_size: filter.page_size || paginationConfig.defaultPageSize,
       page: filter.page || 1,
     });
+ 
   }
 
   componentDidUpdate() {
     if (this.props.location.pathname === "/dashboard/verify/openaccount") {
       this.props.history.replace("/dashboard/verify/openaccount/list");
     }
+
+    const myEvent = new Event('resize');
+    window.dispatchEvent(myEvent);
   }
 
   getDataList = async (filter?: any) => {
