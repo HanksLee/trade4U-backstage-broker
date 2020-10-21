@@ -5,7 +5,6 @@ import moment from "moment";
 import { FORMAT_TIME } from "constant";
 
 const config = self => {
-  
   const columns = [
     {
       title: "用户名",
