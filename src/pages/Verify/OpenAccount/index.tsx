@@ -68,7 +68,7 @@ VerifyOpenAccountListState
       page_size: filter.page_size || paginationConfig.defaultPageSize,
       page: filter.page || 1,
     });
- 
+    
   }
 
   componentDidUpdate() {
