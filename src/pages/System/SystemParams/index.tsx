@@ -143,7 +143,7 @@ ISystemEditorState
       // console.log("values :>> ", values);
       const payload = this.mapFieldValueToApiData(values);
       const configs = JSON.stringify(payload); // api 要求将阵列序列化
-      console.log("payload :>> ", payload);
+      // console.log("payload :>> ", payload);
       try {
         const res = await $api.system.updateBrokerConfig({ configs, });
         if (res.status === 200) {
@@ -302,9 +302,9 @@ ISystemEditorState
               <Form.Item label="审批提示时间" {...getFormItemLayout(4, 12)}>
                 {getFieldDecorator("user_authentication")(
                   <Radio.Group>
-                    <Radio value={"not_required"}>不认证</Radio>
+                    {/* <Radio value={"not_required"}>不认证</Radio> */}
                     <Radio value={"deposit_authentication"}>入金前认证</Radio>
-                    <Radio value={"withdraw_authentication"}>出金前认证</Radio>
+                    {/* <Radio value={"withdraw_authentication"}>出金前认证</Radio> */}
                   </Radio.Group>
                 )}
               </Form.Item>

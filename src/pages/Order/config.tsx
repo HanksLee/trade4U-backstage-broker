@@ -70,6 +70,11 @@ const config = self => {
       width: 100,
     },
     {
+      title: "操作资金",
+      dataIndex: "margin_value",
+      width: 100,
+    },
+    {
       title: "止盈金额",
       dataIndex: "take_profit",
       width: 100,
