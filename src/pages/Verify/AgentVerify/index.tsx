@@ -72,6 +72,8 @@ VerifyAgentVerifyListState
     if (this.props.location.pathname === "/dashboard/verify/agentverify") {
       this.props.history.replace("/dashboard/verify/agentverify/list");
     }
+    const myEvent = new Event('resize');
+    window.dispatchEvent(myEvent);
   }
 
   getDataList = async (filter?: any) => {

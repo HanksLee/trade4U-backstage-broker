@@ -41,11 +41,13 @@ export function TradingTimeBoard(props) {
           <div className={cx("time-picker-wrap")}>
             <TimePicker
               disabled
-              defaultValue={timestampToMoment(from)}
+              placeholder="尚未設定"
+              defaultValue={from && timestampToMoment(from * 1000)}
             ></TimePicker>
             <TimePicker
               disabled
-              defaultValue={timestampToMoment(to)}
+              placeholder="尚未設定"
+              defaultValue={to && timestampToMoment(to * 1000)}
             ></TimePicker>
           </div>
         );
@@ -62,11 +64,13 @@ export function TradingTimeBoard(props) {
           <div className={cx("time-picker-wrap")}>
             <TimePicker
               disabled
-              defaultValue={timestampToMoment(from)}
+              placeholder="尚未設定"
+              defaultValue={from && timestampToMoment(from * 1000)}
             ></TimePicker>
             <TimePicker
               disabled
-              defaultValue={timestampToMoment(to)}
+              placeholder="尚未設定"
+              defaultValue={to && timestampToMoment(to * 1000)}
             ></TimePicker>
           </div>
         );
@@ -83,27 +87,3 @@ export function TradingTimeBoard(props) {
     />
   );
 }
-
-// const mockTradingTime = {
-//   "0": {
-//     trades: [1585531800, 1585540800, 1585544400, 1585555200],
-//   },
-//   "1": {
-//     trades: [1585531800, 1585540800, 1585544400, 1585555200],
-//   },
-//   "2": {
-//     trades: [1585497600, 1585540800, 1585544400, 1585555200],
-//   },
-//   "3": {
-//     trades: [1585531800, 1585540800, 1585544400, 1585555200],
-//   },
-//   "4": {
-//     trades: [1585531800, 1585540800, 1585544400, 1585555200],
-//   },
-//   "5": {
-//     trades: [],
-//   },
-//   "6": {
-//     trades: [],
-//   },
-// };

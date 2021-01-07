@@ -36,7 +36,10 @@ const config = self => {
       width: 200,
       dataIndex: "id_card_front",
       render: (text, record) => {
-        return <img src={record.id_card_front} /> || "--";
+        return <img
+          src={record.id_card_front} 
+          onClick={() => { window.open(record.id_card_front, "_blank", "width=500,height=500", false); }}
+        /> || "--";
       },
     },
     {
@@ -44,7 +47,10 @@ const config = self => {
       width: 200,
       dataIndex: "id_card_back",
       render: (text, record) => {
-        return <img src={record.id_card_back} /> || "--";
+        return <img
+          src={record.id_card_back} 
+          onClick={() => { window.open(record.id_card_back, "_blank", "width=500,height=500", false); }}
+        /> || "--";
       },
     },
     {
@@ -52,7 +58,7 @@ const config = self => {
       width: 200,
       dataIndex: "create_time",
       render: (text, record) => {
-        return  utils.timestampFormatDate(text, FORMAT_TIME);
+        return utils.timestampFormatDate(text, FORMAT_TIME);
       },
     },
     {
@@ -138,7 +144,7 @@ const config = self => {
     {
       title: "操作",
       width: 200,
-      // fixed: "right",
+      fixed: "right",
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
@@ -153,7 +159,7 @@ const config = self => {
             <Popconfirm
               title="请问是否确定删除此用户"
               onConfirm={() => self.deleteVerify(record.id)}
-              onCancel={() => {}}
+              onCancel={() => { }}
             >
               <span>删除</span>
             </Popconfirm>
@@ -163,7 +169,7 @@ const config = self => {
     }
   ];
 
-  const columnsWidth = columns.reduce(function(total, cur) {
+  const columnsWidth = columns.reduce(function (total, cur) {
     return total + cur.width;
   }, 0);
 
@@ -172,7 +178,7 @@ const config = self => {
     total: self.state.total,
     current: self.props.verify.filter.page,
     pageSize: self.props.verify.filter.page_size,
-    onChange: (current, pageSize) => {},
+    onChange: (current, pageSize) => { },
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
         page_size: pageSize,
@@ -182,6 +188,7 @@ const config = self => {
   };
 
   return {
+    
     // 是否显示增加按钮
     // addBtn: {
     //   title: () => (

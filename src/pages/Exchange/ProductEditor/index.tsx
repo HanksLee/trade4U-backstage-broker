@@ -383,10 +383,6 @@ export default class ProductEditor extends BaseReact {
                     {getFieldDecorator(name, {
                       rules: [
                         {
-                          required: true,
-                          message: "必填",
-                        },
-                        {
                           validator: async (_, value) => {
                             if (value.length > 3)
                               throw new Error("不能设置超过 3 个");

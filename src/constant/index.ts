@@ -79,7 +79,7 @@ export const SYMBOL_TYPE = {
 
 // 可用融资比例
 export const LOAN_OPTIONS = {
-  0: "不融资",
+  0: "0%",
   10: "10%",
   20: "20%",
   30: "30%",
@@ -89,6 +89,9 @@ export const LOAN_OPTIONS = {
   70: "70%",
   80: "80%",
   90: "90%",
+  95: "95%",
+  97: "97%",
+  98: "98%",
 };
 // 新股申购活动状态
 export const NEW_STOCK_SUBSCRIPTION_STATUS = {

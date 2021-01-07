@@ -24,7 +24,7 @@ export interface VerifyOpenAccountType {
   reason: string;
 }
 
-interface IVerifyOpenAccountProps {}
+interface IVerifyOpenAccountProps { }
 
 interface IVerifyOpenAccountState {
   verifyList: VerifyOpenAccountType[];
@@ -74,6 +74,9 @@ VerifyOpenAccountListState
     if (this.props.location.pathname === "/dashboard/verify/openaccount") {
       this.props.history.replace("/dashboard/verify/openaccount/list");
     }
+
+    const myEvent = new Event('resize');
+    window.dispatchEvent(myEvent);
   }
 
   getDataList = async (filter?: any) => {
